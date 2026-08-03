@@ -262,6 +262,7 @@ _VERSION_FEATURES: dict[str, frozenset[str]] = {
 # v2.8 preserves v2.7 governance semantics and adds a strict fail-closed
 # structured-input contract before any Router or governance gate executes.
 _VERSION_FEATURES["2.8-RC1"] = _VERSION_FEATURES["2.7-RC2"] | frozenset({"input_contract_gate"})
+_VERSION_FEATURES["2.8-RC2"] = _VERSION_FEATURES["2.8-RC1"]
 
 
 def supported_versions() -> tuple[str, ...]:
