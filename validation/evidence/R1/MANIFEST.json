@@ -1,0 +1,8 @@
+{
+  "batch_id": "R1",
+  "binding": "d6e8fbb8918cf1edded7ae4eeb8881ec494d8a6a",
+  "candidate_commit": "9d6f0d90b743c153bdf065bde915d773af2b3c64",
+  "count": 32,
+  "payload_sha256": "8bee51160e5d96a78d55a0f8dbd225835edaa82a6b2c54cf5e719c757fe3f223",
+  "protocol": "TRIAXIS_SEMANTIC_INGRESS_v1"
+}
