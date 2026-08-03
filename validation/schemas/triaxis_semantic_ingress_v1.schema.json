@@ -1,0 +1,637 @@
+{
+  "$comment": "Digest, provenance, modality, graph and action-coverage rules are enforced by validate_ingress_record.",
+  "$id": "https://local.invalid/triaxis/semantic-ingress-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "completion_mode": {
+      "enum": [
+        "ALL_OR_NOTHING",
+        "BEST_EFFORT",
+        "ORDERED_COMMIT",
+        "SAFE_PARTIAL"
+      ],
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_SEMANTIC_INGRESS_v1"
+    },
+    "extraction_status": {
+      "enum": [
+        "INVALID",
+        "NEEDS_CLARIFICATION",
+        "VALID"
+      ],
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "action_type": {
+            "enum": [
+              "ANALYZE",
+              "DELETE",
+              "DEPLOY",
+              "EXECUTE",
+              "HANDLE_SECRETS",
+              "MODIFY_ACCESS",
+              "PUBLISH",
+              "READ",
+              "SEND",
+              "SPEND",
+              "TRADE",
+              "WRITE"
+            ],
+            "type": "string"
+          },
+          "authority_basis": {
+            "enum": [
+              "CURRENT_USER_DIRECTIVE",
+              "EXTERNAL_TEXT",
+              "NONE",
+              "PRIOR_RECEIPT"
+            ],
+            "type": "string"
+          },
+          "authority_receipt_ref": {
+            "type": "string"
+          },
+          "condition_status": {
+            "enum": [
+              "NOT_APPLICABLE",
+              "SATISFIED",
+              "UNKNOWN",
+              "UNSATISFIED"
+            ],
+            "type": "string"
+          },
+          "depends_on": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "field_bindings": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "evidence_ref": {
+                  "type": "string"
+                },
+                "origin": {
+                  "enum": [
+                    "AUTHORITY_STORE",
+                    "DERIVED_RULE",
+                    "SYSTEM_CONTEXT",
+                    "TOOL_OUTPUT",
+                    "USER_TEXT"
+                  ],
+                  "type": "string"
+                },
+                "path": {
+                  "enum": [
+                    "approval_quorum_met",
+                    "atomic_budget_reservation",
+                    "atomic_compare_and_commit",
+                    "authority_expired",
+                    "authority_revoked",
+                    "authority_scope_match",
+                    "authority_status",
+                    "budget_gate_required",
+                    "budget_status",
+                    "capability_evidence_trust_required",
+                    "capability_evidence_trusted",
+                    "capability_status",
+                    "case_id",
+                    "concurrent_budget_reservation",
+                    "contradiction_material_to_decision",
+                    "critical_claim",
+                    "data_gate_required",
+                    "data_lineage_preserved",
+                    "data_status",
+                    "declared_action_type",
+                    "degraded_capability_adequate",
+                    "delegation_chain_valid",
+                    "delegation_validation_required",
+                    "derived_data_lineage_required",
+                    "downstream_reliance_material",
+                    "e_level",
+                    "environment_alias",
+                    "extensions",
+                    "family",
+                    "hard_prohibition",
+                    "idempotency_payload_binding_required",
+                    "idempotency_payload_match",
+                    "independent_basis_present",
+                    "ledger_integrity_required",
+                    "ledger_integrity_valid",
+                    "ledger_state_used",
+                    "material_contradiction_open",
+                    "multi_principal_required",
+                    "nonce",
+                    "object_binding_current",
+                    "object_binding_required",
+                    "policy_binding_required",
+                    "policy_conflict_open",
+                    "policy_digest_match",
+                    "policy_status",
+                    "possible_commit_timeout",
+                    "preconditions_pass",
+                    "preconditions_required",
+                    "principal_authenticated",
+                    "prose_hint",
+                    "redaction_applied",
+                    "release_gate_required",
+                    "release_manifest_valid",
+                    "reliance_conditions_satisfied",
+                    "resume_checkpoint_valid",
+                    "resume_integrity_required",
+                    "resumed_state_used",
+                    "soft_preference_present",
+                    "source_independence_established",
+                    "source_independence_required",
+                    "target_alias",
+                    "target_binding_required",
+                    "target_digest_match",
+                    "template_name",
+                    "tool_binding_required",
+                    "tool_digest_match",
+                    "trace_contains_sensitive_data",
+                    "transactional_commit_required",
+                    "uses_tool_output",
+                    "verification_required",
+                    "verification_status",
+                    "verified_scope_adequate",
+                    "x_level"
+                  ],
+                  "type": "string"
+                },
+                "rule_id": {
+                  "type": "string"
+                },
+                "support_span_ids": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "value": {}
+              },
+              "required": [
+                "origin",
+                "path",
+                "support_span_ids",
+                "value"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "node_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "scenario": {
+            "$comment": "Cross-field conditional, semantic, and action-risk rules are enforced by triaxis.input_contract.validate_scenario.",
+            "$id": "https://local.invalid/triaxis/structured-scenario-v2.schema.json",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "additionalProperties": false,
+            "properties": {
+              "approval_quorum_met": {
+                "type": "boolean"
+              },
+              "atomic_budget_reservation": {
+                "type": "boolean"
+              },
+              "atomic_compare_and_commit": {
+                "type": "boolean"
+              },
+              "authority_expired": {
+                "type": "boolean"
+              },
+              "authority_revoked": {
+                "type": "boolean"
+              },
+              "authority_scope_match": {
+                "type": "boolean"
+              },
+              "authority_status": {
+                "enum": [
+                  "AMBIGUOUS",
+                  "INVALID",
+                  "NOT_REQUIRED",
+                  "VALID"
+                ],
+                "type": "string"
+              },
+              "budget_gate_required": {
+                "type": "boolean"
+              },
+              "budget_status": {
+                "enum": [
+                  "EXHAUSTED",
+                  "NOT_REQUIRED",
+                  "UNDEFINED",
+                  "WITHIN_LIMIT"
+                ],
+                "type": "string"
+              },
+              "capability_evidence_trust_required": {
+                "type": "boolean"
+              },
+              "capability_evidence_trusted": {
+                "type": "boolean"
+              },
+              "capability_status": {
+                "enum": [
+                  "AVAILABLE",
+                  "DEGRADED",
+                  "NOT_REQUIRED",
+                  "UNAVAILABLE",
+                  "UNKNOWN"
+                ],
+                "type": "string"
+              },
+              "case_id": {
+                "type": "string"
+              },
+              "concurrent_budget_reservation": {
+                "type": "boolean"
+              },
+              "contradiction_material_to_decision": {
+                "type": "boolean"
+              },
+              "critical_claim": {
+                "type": "boolean"
+              },
+              "data_gate_required": {
+                "type": "boolean"
+              },
+              "data_lineage_preserved": {
+                "type": "boolean"
+              },
+              "data_status": {
+                "enum": [
+                  "ALLOW",
+                  "ALLOW_WITH_REDACTION",
+                  "DENY",
+                  "NOT_REQUIRED"
+                ],
+                "type": "string"
+              },
+              "declared_action_type": {
+                "enum": [
+                  "ANALYZE",
+                  "DELETE",
+                  "DEPLOY",
+                  "EXECUTE",
+                  "HANDLE_SECRETS",
+                  "MODIFY_ACCESS",
+                  "PUBLISH",
+                  "READ",
+                  "SEND",
+                  "SPEND",
+                  "TRADE",
+                  "WRITE"
+                ],
+                "type": "string"
+              },
+              "degraded_capability_adequate": {
+                "type": "boolean"
+              },
+              "delegation_chain_valid": {
+                "type": "boolean"
+              },
+              "delegation_validation_required": {
+                "type": "boolean"
+              },
+              "derived_data_lineage_required": {
+                "type": "boolean"
+              },
+              "downstream_reliance_material": {
+                "type": "boolean"
+              },
+              "e_level": {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "environment_alias": {
+                "type": "string"
+              },
+              "extensions": {
+                "type": "object"
+              },
+              "family": {
+                "type": "string"
+              },
+              "hard_prohibition": {
+                "type": "boolean"
+              },
+              "idempotency_payload_binding_required": {
+                "type": "boolean"
+              },
+              "idempotency_payload_match": {
+                "type": "boolean"
+              },
+              "independent_basis_present": {
+                "type": "boolean"
+              },
+              "ledger_integrity_required": {
+                "type": "boolean"
+              },
+              "ledger_integrity_valid": {
+                "type": "boolean"
+              },
+              "ledger_state_used": {
+                "type": "boolean"
+              },
+              "material_contradiction_open": {
+                "type": "boolean"
+              },
+              "multi_principal_required": {
+                "type": "boolean"
+              },
+              "nonce": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "object_binding_current": {
+                "type": "boolean"
+              },
+              "object_binding_required": {
+                "type": "boolean"
+              },
+              "policy_binding_required": {
+                "type": "boolean"
+              },
+              "policy_conflict_open": {
+                "type": "boolean"
+              },
+              "policy_digest_match": {
+                "type": "boolean"
+              },
+              "policy_status": {
+                "enum": [
+                  "ALLOW",
+                  "ALLOW_WITH_LIMITS",
+                  "DENY"
+                ],
+                "type": "string"
+              },
+              "possible_commit_timeout": {
+                "type": "boolean"
+              },
+              "preconditions_pass": {
+                "type": "boolean"
+              },
+              "preconditions_required": {
+                "type": "boolean"
+              },
+              "principal_authenticated": {
+                "type": "boolean"
+              },
+              "prose_hint": {
+                "type": "string"
+              },
+              "redaction_applied": {
+                "type": "boolean"
+              },
+              "release_gate_required": {
+                "type": "boolean"
+              },
+              "release_manifest_valid": {
+                "type": "boolean"
+              },
+              "reliance_conditions_satisfied": {
+                "type": "boolean"
+              },
+              "resume_checkpoint_valid": {
+                "type": "boolean"
+              },
+              "resume_integrity_required": {
+                "type": "boolean"
+              },
+              "resumed_state_used": {
+                "type": "boolean"
+              },
+              "soft_preference_present": {
+                "type": "boolean"
+              },
+              "source_independence_established": {
+                "type": "boolean"
+              },
+              "source_independence_required": {
+                "type": "boolean"
+              },
+              "target_alias": {
+                "type": "string"
+              },
+              "target_binding_required": {
+                "type": "boolean"
+              },
+              "target_digest_match": {
+                "type": "boolean"
+              },
+              "template_name": {
+                "type": "string"
+              },
+              "tool_binding_required": {
+                "type": "boolean"
+              },
+              "tool_digest_match": {
+                "type": "boolean"
+              },
+              "trace_contains_sensitive_data": {
+                "type": "boolean"
+              },
+              "transactional_commit_required": {
+                "type": "boolean"
+              },
+              "uses_tool_output": {
+                "type": "boolean"
+              },
+              "verification_required": {
+                "type": "boolean"
+              },
+              "verification_status": {
+                "enum": [
+                  "FAILED",
+                  "INCONCLUSIVE",
+                  "NOT_APPLICABLE",
+                  "NOT_RUN",
+                  "VERIFIED_WITHIN_SCOPE"
+                ],
+                "type": "string"
+              },
+              "verified_scope_adequate": {
+                "type": "boolean"
+              },
+              "x_level": {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "authority_expired",
+              "authority_revoked",
+              "authority_scope_match",
+              "authority_status",
+              "budget_gate_required",
+              "budget_status",
+              "capability_status",
+              "contradiction_material_to_decision",
+              "critical_claim",
+              "data_gate_required",
+              "data_status",
+              "declared_action_type",
+              "degraded_capability_adequate",
+              "e_level",
+              "hard_prohibition",
+              "independent_basis_present",
+              "material_contradiction_open",
+              "object_binding_current",
+              "policy_status",
+              "possible_commit_timeout",
+              "preconditions_pass",
+              "principal_authenticated",
+              "redaction_applied",
+              "target_digest_match",
+              "verification_required",
+              "verification_status",
+              "verified_scope_adequate",
+              "x_level"
+            ],
+            "title": "TRIAXIS Structured Scenario Input Contract v2",
+            "type": "object"
+          },
+          "support_span_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "target_ref": {
+            "type": "string"
+          },
+          "target_status": {
+            "enum": [
+              "AMBIGUOUS",
+              "EXACT",
+              "MISSING",
+              "NOT_APPLICABLE"
+            ],
+            "type": "string"
+          },
+          "unresolved_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "action_type",
+          "authority_basis",
+          "authority_receipt_ref",
+          "condition_status",
+          "depends_on",
+          "field_bindings",
+          "node_id",
+          "scenario",
+          "support_span_ids",
+          "target_ref",
+          "target_status",
+          "unresolved_fields"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_text": {
+      "type": "string"
+    },
+    "spans": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "modality": {
+            "enum": [
+              "ASSERTION",
+              "CONDITIONAL",
+              "DIRECTIVE",
+              "HYPOTHETICAL",
+              "PROHIBITION",
+              "QUESTION"
+            ],
+            "type": "string"
+          },
+          "polarity": {
+            "enum": [
+              "NEGATIVE",
+              "POSITIVE"
+            ],
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "EXTERNAL_CONTENT",
+              "QUOTED_DATA",
+              "SYSTEM_CONTEXT",
+              "USER_CONTROL"
+            ],
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "span_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "start": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "end",
+          "modality",
+          "polarity",
+          "role",
+          "sha256",
+          "span_id",
+          "start"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "completion_mode",
+    "contract_id",
+    "extraction_status",
+    "nodes",
+    "source_sha256",
+    "source_text",
+    "spans"
+  ],
+  "title": "TRIAXIS Semantic Ingress Contract v1",
+  "type": "object"
+}

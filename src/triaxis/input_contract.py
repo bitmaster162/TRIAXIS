@@ -1,18 +1,39 @@
-"""Strict fail-closed input contract for TRIAXIS deterministic scenarios.
+"""Versioned, strict, fail-closed input contracts for TRIAXIS scenarios.
 
-The contract validates structured scenarios before any governance gate executes.
-It deliberately rejects unsafe coercion, missing required fields, unknown fields,
-invalid enum values, and selected semantic contradictions. Natural-language
-extraction into this structure is outside this module's scope.
+The contracts validate structured scenarios before any governance gate executes.
+They reject unsafe coercion, missing required fields, unknown fields, invalid enum
+values, and selected semantic contradictions. Natural-language extraction into
+this structure is handled separately by :mod:`triaxis.semantic_ingress`.
 """
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, Mapping
 
-INPUT_CONTRACT_ID = "TRIAXIS_STRUCTURED_SCENARIO_v1"
+INPUT_CONTRACT_V1_ID = "TRIAXIS_STRUCTURED_SCENARIO_v1"
+INPUT_CONTRACT_V2_ID = "TRIAXIS_STRUCTURED_SCENARIO_v2"
+INPUT_CONTRACT_ID = INPUT_CONTRACT_V2_ID
 
-_REQUIRED_FIELDS = frozenset(
+# Conservative lower bounds frozen by Routing Semantics Protocol v1.0.  The
+# mapping is intentionally deterministic; project-specific controls may raise a
+# route, but no caller may route an action below this floor.
+ACTION_MINIMUM_X: dict[str, int] = {
+    "ANALYZE": 0,
+    "READ": 0,
+    "WRITE": 1,
+    "EXECUTE": 1,
+    "DELETE": 1,
+    "SEND": 2,
+    "PUBLISH": 2,
+    "DEPLOY": 2,
+    "SPEND": 3,
+    "TRADE": 3,
+    "MODIFY_ACCESS": 3,
+    "HANDLE_SECRETS": 3,
+}
+
+_REQUIRED_FIELDS_V1 = frozenset(
     {
         "e_level",
         "x_level",
@@ -43,6 +64,7 @@ _REQUIRED_FIELDS = frozenset(
         "contradiction_material_to_decision",
     }
 )
+_REQUIRED_FIELDS_V2 = _REQUIRED_FIELDS_V1 | frozenset({"declared_action_type"})
 
 _BOOL_FIELDS = frozenset(
     {
@@ -117,22 +139,7 @@ _ENUM_FIELDS: dict[str, frozenset[str]] = {
     "verification_status": frozenset(
         {"NOT_RUN", "VERIFIED_WITHIN_SCOPE", "FAILED", "INCONCLUSIVE", "NOT_APPLICABLE"}
     ),
-    "declared_action_type": frozenset(
-        {
-            "ANALYZE",
-            "READ",
-            "WRITE",
-            "EXECUTE",
-            "SEND",
-            "PUBLISH",
-            "DEPLOY",
-            "DELETE",
-            "SPEND",
-            "TRADE",
-            "MODIFY_ACCESS",
-            "HANDLE_SECRETS",
-        }
-    ),
+    "declared_action_type": frozenset(ACTION_MINIMUM_X),
 }
 
 _STRING_FIELDS = frozenset(
@@ -145,11 +152,10 @@ _STRING_FIELDS = frozenset(
         "prose_hint",
     }
 )
-
 _INT_FIELDS = frozenset({"e_level", "x_level", "nonce"})
 
 _ALLOWED_FIELDS = frozenset(
-    set(_REQUIRED_FIELDS)
+    set(_REQUIRED_FIELDS_V2)
     | set(_BOOL_FIELDS)
     | set(_ENUM_FIELDS)
     | set(_STRING_FIELDS)
@@ -157,7 +163,6 @@ _ALLOWED_FIELDS = frozenset(
     | {"extensions"}
 )
 
-# A dependent evidence field is mandatory whenever its activation flag is true.
 _CONDITIONAL_REQUIRED: tuple[tuple[str, str], ...] = (
     ("policy_binding_required", "policy_digest_match"),
     ("multi_principal_required", "approval_quorum_met"),
@@ -177,8 +182,6 @@ _CONDITIONAL_REQUIRED: tuple[tuple[str, str], ...] = (
     ("source_independence_required", "source_independence_established"),
 )
 
-# For these optional gates, evidence without an active gate is ambiguous and
-# therefore rejected instead of silently ignored.
 _EXCLUSIVE_DEPENDENCIES: tuple[tuple[str, str], ...] = (
     ("release_gate_required", "release_manifest_valid"),
     ("policy_binding_required", "policy_digest_match"),
@@ -200,13 +203,25 @@ def _error(code: str, path: str, message: str) -> dict[str, str]:
     return {"code": code, "path": path, "message": message}
 
 
-def validate_scenario(scenario: Any) -> list[dict[str, str]]:
+def _required_fields(contract_id: str) -> frozenset[str]:
+    if contract_id == INPUT_CONTRACT_V1_ID:
+        return _REQUIRED_FIELDS_V1
+    if contract_id == INPUT_CONTRACT_V2_ID:
+        return _REQUIRED_FIELDS_V2
+    raise ValueError(f"unsupported TRIAXIS input contract: {contract_id}")
+
+
+def validate_scenario(
+    scenario: Any,
+    contract_id: str = INPUT_CONTRACT_ID,
+) -> list[dict[str, str]]:
     """Return deterministic validation errors; an empty list means valid.
 
     Values are never coerced. In particular, ``bool`` is rejected for integer
     fields and strings such as ``"false"`` are rejected for boolean fields.
     """
 
+    required_fields = _required_fields(contract_id)
     if not isinstance(scenario, Mapping):
         return [_error("invalid_type", "$", "scenario must be an object")]
 
@@ -215,11 +230,9 @@ def validate_scenario(scenario: Any) -> list[dict[str, str]]:
 
     for key in sorted(set(s) - set(_ALLOWED_FIELDS)):
         errors.append(_error("unknown_field", key, "field is not defined by the active input contract"))
-
-    for key in sorted(_REQUIRED_FIELDS - set(s)):
+    for key in sorted(required_fields - set(s)):
         errors.append(_error("missing_required", key, "required field is missing"))
 
-    # Type checks are strict and occur before all semantic checks.
     for key in sorted(set(s) & set(_BOOL_FIELDS)):
         if type(s[key]) is not bool:  # noqa: E721 - exact type is intentional
             errors.append(_error("invalid_type", key, "expected boolean without coercion"))
@@ -249,8 +262,11 @@ def validate_scenario(scenario: Any) -> list[dict[str, str]]:
     if "extensions" in s and not isinstance(s["extensions"], Mapping):
         errors.append(_error("invalid_type", "extensions", "extensions must be an object"))
 
-    # Do not run semantic checks on fields whose exact types are already invalid.
-    invalid_paths = {item["path"] for item in errors if item["code"] in {"invalid_type", "invalid_enum", "invalid_range"}}
+    invalid_paths = {
+        item["path"]
+        for item in errors
+        if item["code"] in {"invalid_type", "invalid_enum", "invalid_range"}
+    }
 
     for trigger, dependent in _CONDITIONAL_REQUIRED:
         if s.get(trigger) is True and dependent not in s:
@@ -287,6 +303,18 @@ def validate_scenario(scenario: Any) -> list[dict[str, str]]:
             if x_level == 0 and s.get("possible_commit_timeout") is True:
                 errors.append(_error("semantic_inconsistency", "possible_commit_timeout", "commit timeout is incompatible with X0"))
 
+    if contract_id == INPUT_CONTRACT_V2_ID and not ({"declared_action_type", "x_level"} & invalid_paths):
+        action = s.get("declared_action_type")
+        x_level = s.get("x_level")
+        if action in ACTION_MINIMUM_X and type(x_level) is int and x_level < ACTION_MINIMUM_X[action]:
+            errors.append(
+                _error(
+                    "risk_underclassification",
+                    "x_level",
+                    f"{action} requires X{ACTION_MINIMUM_X[action]} or higher",
+                )
+            )
+
     if s.get("data_gate_required") is False:
         if s.get("derived_data_lineage_required") is True:
             errors.append(_error("semantic_inconsistency", "derived_data_lineage_required", "data lineage requires an active data gate"))
@@ -310,24 +338,16 @@ def validate_scenario(scenario: Any) -> list[dict[str, str]]:
         if dependent in s and s.get(trigger) is not True:
             errors.append(_error("semantic_inconsistency", dependent, f"field is present while {trigger} is not true"))
 
-    # A false release receipt with an explicitly inactive gate was the observed
-    # Q1 bypass; the generic exclusive-dependency rule above closes it.
-
-    # Stable deterministic ordering and de-duplication.
     unique: dict[tuple[str, str, str], dict[str, str]] = {}
     for item in errors:
         unique[(item["code"], item["path"], item["message"])] = item
     return [unique[key] for key in sorted(unique)]
 
 
-def schema_document() -> dict[str, Any]:
-    """Return a machine-readable JSON Schema projection of the contract.
+def schema_document(contract_id: str = INPUT_CONTRACT_ID) -> dict[str, Any]:
+    """Return a machine-readable JSON Schema projection of a contract."""
 
-    Cross-field semantic rules remain normative in :func:`validate_scenario`;
-    the schema covers field closure, required properties, exact primitive types,
-    ranges and enums.
-    """
-
+    required_fields = _required_fields(contract_id)
     properties: dict[str, Any] = {}
     for key in sorted(_BOOL_FIELDS):
         properties[key] = {"type": "boolean"}
@@ -342,16 +362,62 @@ def schema_document() -> dict[str, Any]:
         properties[key] = {"type": "string", "enum": sorted(values)}
     properties["extensions"] = {"type": "object"}
 
+    version = "v1" if contract_id == INPUT_CONTRACT_V1_ID else "v2"
+    comment = (
+        "Cross-field conditional and semantic rules are enforced by "
+        "triaxis.input_contract.validate_scenario."
+        if contract_id == INPUT_CONTRACT_V1_ID
+        else "Cross-field conditional, semantic, and action-risk rules are enforced by "
+        "triaxis.input_contract.validate_scenario."
+    )
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": "https://local.invalid/triaxis/structured-scenario-v1.schema.json",
-        "title": "TRIAXIS Structured Scenario Input Contract v1",
+        "$id": f"https://local.invalid/triaxis/structured-scenario-{version}.schema.json",
+        "title": f"TRIAXIS Structured Scenario Input Contract {version}",
         "type": "object",
-        "required": sorted(_REQUIRED_FIELDS),
+        "required": sorted(required_fields),
         "properties": properties,
         "additionalProperties": False,
-        "$comment": "Cross-field conditional and semantic rules are enforced by triaxis.input_contract.validate_scenario.",
+        "$comment": comment,
     }
 
 
-__all__ = ["INPUT_CONTRACT_ID", "schema_document", "validate_scenario"]
+def validate_scenario_v1(scenario: Any) -> list[dict[str, str]]:
+    return validate_scenario(scenario, INPUT_CONTRACT_V1_ID)
+
+
+def validate_scenario_v2(scenario: Any) -> list[dict[str, str]]:
+    return validate_scenario(scenario, INPUT_CONTRACT_V2_ID)
+
+
+def schema_document_v1() -> dict[str, Any]:
+    return schema_document(INPUT_CONTRACT_V1_ID)
+
+
+def schema_document_v2() -> dict[str, Any]:
+    return schema_document(INPUT_CONTRACT_V2_ID)
+
+
+def migrate_v1_to_v2(scenario: Mapping[str, Any], declared_action_type: str) -> dict[str, Any]:
+    """Return an explicit v2 copy; no action type is inferred from X level."""
+
+    if declared_action_type not in ACTION_MINIMUM_X:
+        raise ValueError(f"unsupported declared action type: {declared_action_type}")
+    migrated = deepcopy(dict(scenario))
+    migrated["declared_action_type"] = declared_action_type
+    return migrated
+
+
+__all__ = [
+    "ACTION_MINIMUM_X",
+    "INPUT_CONTRACT_ID",
+    "INPUT_CONTRACT_V1_ID",
+    "INPUT_CONTRACT_V2_ID",
+    "migrate_v1_to_v2",
+    "schema_document",
+    "schema_document_v1",
+    "schema_document_v2",
+    "validate_scenario",
+    "validate_scenario_v1",
+    "validate_scenario_v2",
+]

@@ -10,7 +10,12 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Dict, Iterable, Mapping
 
-from .input_contract import INPUT_CONTRACT_ID, validate_scenario
+from .input_contract import (
+    INPUT_CONTRACT_ID,
+    INPUT_CONTRACT_V1_ID,
+    INPUT_CONTRACT_V2_ID,
+    validate_scenario,
+)
 from .semantic_ingress import SEMANTIC_INGRESS_CONTRACT_ID, validate_ingress
 
 Decision = Dict[str, Any]
@@ -267,7 +272,14 @@ _VERSION_FEATURES["2.8-RC2"] = _VERSION_FEATURES["2.8-RC1"]
 
 # v2.9 preserves structured governance semantics and adds a source-bound
 # semantic-ingress contract before structured scenarios are trusted.
-_VERSION_FEATURES["2.9-RC1"] = _VERSION_FEATURES["2.8-RC2"] | frozenset({"semantic_ingress_gate"})
+_VERSION_FEATURES["2.9-RC1"] = _VERSION_FEATURES["2.8-RC2"] | frozenset(
+    {
+        "semantic_ingress_gate",
+        "input_contract_v2",
+        "x0_decision_gate_closure",
+        "limit_accumulator",
+    }
+)
 _VERSION_FEATURES["2.9-RC2"] = _VERSION_FEATURES["2.9-RC1"]
 
 
@@ -293,6 +305,22 @@ def _allow(controls: Iterable[str], *, limited: bool = False, notes: Iterable[st
     }
 
 
+def _final_allow(
+    controls: Iterable[str],
+    *,
+    limit_reasons: Iterable[str] = (),
+    degraded_capability: bool = False,
+) -> Decision:
+    reasons = list(dict.fromkeys(limit_reasons))
+    if degraded_capability:
+        reasons.append("CAPABILITY_DEGRADED")
+        reasons = list(dict.fromkeys(reasons))
+    decision = _allow(controls, limited=bool(reasons), notes=reasons)
+    if reasons:
+        decision["primary_reason"] = reasons[0]
+    return decision
+
+
 def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
     """Evaluate one structured scenario under a frozen TRIAXIS projection."""
 
@@ -300,8 +328,9 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         raise ValueError(f"Unsupported TRIAXIS projection: {version}")
 
     features = _VERSION_FEATURES[version]
+    input_contract = INPUT_CONTRACT_V2_ID if "input_contract_v2" in features else INPUT_CONTRACT_V1_ID
     if "input_contract_gate" in features:
-        input_errors = validate_scenario(scenario)
+        input_errors = validate_scenario(scenario, input_contract)
         if input_errors:
             return {
                 "status": "BLOCK",
@@ -309,7 +338,7 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
                 "reasons": ["BLOCKED_BY_INPUT_CONTRACT"],
                 "controls": ["INPUT_CONTRACT_GATE"],
                 "input_status": "INVALID",
-                "input_contract": INPUT_CONTRACT_ID,
+                "input_contract": input_contract,
                 "input_errors": input_errors,
             }
 
@@ -317,6 +346,9 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
     controls: list[str] = ["INPUT_CONTRACT_GATE", "ROUTER"] if "input_contract_gate" in features else ["ROUTER"]
     e_level = int(s.get("e_level", 0))
     x_level = int(s.get("x_level", 0))
+    limit_reasons: list[str] = []
+    if "limit_accumulator" in features and s.get("policy_status") == "ALLOW_WITH_LIMITS":
+        limit_reasons.append("POLICY_LIMITS_APPLY")
 
     if s.get("hard_prohibition", False) or s.get("policy_status") == "DENY":
         controls.append("POLICY_GATE")
@@ -329,13 +361,11 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         if s.get("policy_binding_required", False) and not s.get("policy_digest_match", False):
             return _block("BLOCKED_BY_STALE_POLICY", controls)
 
-    # Earlier versions block material contradictions only for X3; v2.7 applies the gate to any decision scope.
     contradiction_applies = x_level == 3 or "contradiction_all_x" in features
     if contradiction_applies and s.get("material_contradiction_open", False) and s.get("contradiction_material_to_decision", True):
         controls.extend(["WITNESS", "CONTRADICTION_REGISTER"])
         return _block("BLOCKED_BY_VERIFICATION", controls)
 
-    # v2.3 requires an independent basis for critical E3/X3 claims.
     if (e_level == 3 or x_level == 3) and s.get("critical_claim", False):
         controls.append("INDEPENDENCE_GATE")
         if not s.get("independent_basis_present", False):
@@ -344,12 +374,18 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
             controls.append("EVIDENCE_ORIGIN_GRAPH")
             return _block("BLOCKED_BY_CORRELATED_EVIDENCE", controls)
 
-    if "reliance_gate" in features and "decision_severity_lattice" not in features and x_level == 0 and s.get("downstream_reliance_material", False):
+    # Legacy pre-v2.7 reliance behavior is preserved for historical projections.
+    if (
+        "reliance_gate" in features
+        and "decision_severity_lattice" not in features
+        and "limit_accumulator" not in features
+        and x_level == 0
+        and s.get("downstream_reliance_material", False)
+    ):
         controls.append("RELIANCE_GATE")
         if not s.get("reliance_conditions_satisfied", False):
             return _allow(controls, limited=True, notes=["RELIANCE_RESTRICTIONS_REQUIRED"]) | {"primary_reason": "RELIANCE_RESTRICTIONS_REQUIRED"}
 
-    # v2.7 cross-axis integrity is triggered by dependencies, including X0.
     if "cross_axis_integrity" in features:
         if s.get("uses_tool_output", False) and s.get("tool_binding_required", False) and not s.get("tool_digest_match", False):
             controls.append("TOOLCHAIN_INTEGRITY")
@@ -364,7 +400,7 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
             controls.append("LEDGER_INTEGRITY")
             return _block("BLOCKED_BY_LEDGER_INTEGRITY", controls)
 
-    # Data Gate can apply even at X0 when the response discloses data.
+    # Data Gate applies even at X0 when the response discloses data.
     if s.get("data_gate_required", False):
         controls.append("DATA_GATE")
         if "data_lineage" in features and s.get("derived_data_lineage_required", False) and not s.get("data_lineage_preserved", False):
@@ -374,9 +410,8 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         data_status = s.get("data_status", "NOT_REQUIRED")
         if data_status == "DENY":
             return _block("BLOCKED_BY_DATA", controls)
-        if data_status == "ALLOW_WITH_REDACTION":
-            if not s.get("redaction_applied", False):
-                return _block("BLOCKED_BY_DATA", controls)
+        if data_status == "ALLOW_WITH_REDACTION" and not s.get("redaction_applied", False):
+            return _block("BLOCKED_BY_DATA", controls)
 
     if "release_integrity" in features and s.get("release_gate_required", False):
         controls.append("RELEASE_INTEGRITY")
@@ -386,10 +421,36 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
     if "decision_severity_lattice" in features and "reliance_gate" in features and x_level == 0 and s.get("downstream_reliance_material", False):
         controls.append("RELIANCE_GATE")
         if not s.get("reliance_conditions_satisfied", False):
-            return _allow(controls, limited=True, notes=["RELIANCE_RESTRICTIONS_REQUIRED"]) | {"primary_reason": "RELIANCE_RESTRICTIONS_REQUIRED"}
+            if "limit_accumulator" in features:
+                limit_reasons.append("RELIANCE_RESTRICTIONS_REQUIRED")
+            else:
+                return _allow(controls, limited=True, notes=["RELIANCE_RESTRICTIONS_REQUIRED"]) | {"primary_reason": "RELIANCE_RESTRICTIONS_REQUIRED"}
 
-    # Pure advisory output has no Authority/Capability Action Gate in v2.3.
+    # v2.9 closes explicitly activated decision gates for X0 instead of
+    # returning before their evidence is inspected.
     if x_level == 0:
+        if "x0_decision_gate_closure" in features:
+            if s.get("target_binding_required", False) and not s.get("target_digest_match", False):
+                controls.append("TOCTOU_GUARD")
+                return _block("BLOCKED_BY_STALE_BINDING", controls)
+            if s.get("object_binding_required", False) and not s.get("object_binding_current", False):
+                controls.append("TOCTOU_GUARD")
+                return _block("BLOCKED_BY_STALE_BINDING", controls)
+            if s.get("preconditions_required", False) and not s.get("preconditions_pass", False):
+                controls.append("PRECONDITION_GATE")
+                return _block("BLOCKED_BY_PRECONDITION", controls)
+            if s.get("budget_gate_required", False):
+                controls.append("BUDGET_GATE")
+                if s.get("budget_status") not in {"WITHIN_LIMIT", "NOT_REQUIRED"}:
+                    return _block("BLOCKED_BY_BUDGET", controls)
+                if "atomic_budget_reservation" in features and s.get("concurrent_budget_reservation", False) and not s.get("atomic_budget_reservation", False):
+                    controls.append("BUDGET_RESERVATION")
+                    return _block("BLOCKED_BY_BUDGET_RACE", controls)
+            if s.get("verification_required", False):
+                controls.append("VERIFICATION_GATE")
+                if s.get("verification_status") != "VERIFIED_WITHIN_SCOPE" or not s.get("verified_scope_adequate", True):
+                    return _block("BLOCKED_BY_VERIFICATION", controls)
+            return _final_allow(controls, limit_reasons=limit_reasons)
         return _allow(controls)
 
     controls.extend(["POLICY_GATE", "AUTHORITY_GATE", "CAPABILITY_GATE"])
@@ -478,6 +539,12 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
             "controls": sorted(set(controls)),
         }
 
+    if "limit_accumulator" in features:
+        return _final_allow(
+            controls,
+            limit_reasons=limit_reasons,
+            degraded_capability=capability == "DEGRADED",
+        )
     limited = s.get("policy_status") == "ALLOW_WITH_LIMITS" or capability == "DEGRADED"
     return _allow(controls, limited=limited)
 
@@ -527,7 +594,7 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
             "ingress_status": extraction_status,
             "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
         }
-    if extraction_status == "BLOCKED":
+    if extraction_status == "INVALID":
         return {
             "status": "BLOCK",
             "primary_reason": "BLOCKED_BY_SEMANTIC_INGRESS",

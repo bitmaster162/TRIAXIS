@@ -13,7 +13,12 @@ from collections import Counter
 from copy import deepcopy
 from typing import Any, Iterable, Mapping
 
-from .input_contract import ACTION_MINIMUM_X, INPUT_CONTRACT_V2_ID, schema_document
+from .input_contract import (
+    ACTION_MINIMUM_X,
+    INPUT_CONTRACT_V2_ID,
+    schema_document as structured_schema_document,
+    validate_scenario,
+)
 
 SEMANTIC_INGRESS_CONTRACT_ID = "TRIAXIS_SEMANTIC_INGRESS_v1"
 
@@ -65,7 +70,7 @@ _BINDING_OPTIONAL = frozenset({"rule_id", "evidence_ref"})
 _BINDING_ALLOWED = _BINDING_REQUIRED | _BINDING_OPTIONAL
 _BINDING_ORIGINS = frozenset({"USER_TEXT", "DERIVED_RULE", "SYSTEM_CONTEXT", "AUTHORITY_STORE", "TOOL_OUTPUT"})
 
-_SCENARIO_FIELDS = frozenset(schema_document(INPUT_CONTRACT_V2_ID)["properties"])
+_SCENARIO_FIELDS = frozenset(structured_schema_document(INPUT_CONTRACT_V2_ID)["properties"])
 _SCENARIO_METADATA = frozenset({"template_name", "family", "case_id", "nonce", "prose_hint"})
 
 # Conservative scanner. It is intentionally bounded and only rejects when an
@@ -158,6 +163,22 @@ def _detected_actions(text: str) -> set[str]:
 def _contains_sensitive_surface(text: str) -> bool:
     lowered = text.lower()
     return any(re.search(pattern, lowered, flags=re.IGNORECASE) for pattern in _SENSITIVE_PATTERNS)
+
+
+def scan_control_surface(text: str) -> dict[str, Any]:
+    """Return the bounded explicit action/data surface seen by the backstop.
+
+    This is not a general semantic parser. It is an auditable conservative
+    scanner used to detect explicit action omissions and sensitive-transfer
+    surfaces in a source-bound extraction receipt.
+    """
+
+    if type(text) is not str:  # noqa: E721 - fail closed, no coercion
+        raise TypeError("text must be a string")
+    return {
+        "actions": sorted(_detected_actions(text)),
+        "sensitive_surface": _contains_sensitive_surface(text),
+    }
 
 
 def _has_cycle(graph: dict[str, list[str]]) -> bool:
@@ -329,6 +350,16 @@ def validate_ingress_record(record: Any) -> list[dict[str, str]]:
             scenario = {}
         else:
             scenario = dict(scenario)
+            for scenario_error in validate_scenario(scenario, INPUT_CONTRACT_V2_ID):
+                inner_path = scenario_error["path"]
+                suffix = "" if inner_path == "$" else f".{inner_path}"
+                errors.append(
+                    _error(
+                        f"scenario_{scenario_error['code']}",
+                        f"{path}.scenario{suffix}",
+                        scenario_error["message"],
+                    )
+                )
             if action in _ACTION_TYPES and scenario.get("declared_action_type") != action:
                 errors.append(_error("semantic_mismatch", f"{path}.scenario.declared_action_type", "node action and scenario action differ"))
             x_level = scenario.get("x_level")
@@ -425,7 +456,12 @@ def validate_ingress_record(record: Any) -> list[dict[str, str]]:
         if unresolved and extraction_status == "VALID":
             errors.append(_error("unresolved_fields", f"{path}.unresolved_fields", "VALID extraction cannot contain unresolved fields"))
 
-        if _is_exact_int(x_level) and x_level > 0 and authority_status == "VALID":
+        preserved_prohibition = (
+            scenario.get("hard_prohibition") is True
+            and scenario.get("policy_status") == "DENY"
+            and bool(prohibitions)
+        )
+        if _is_exact_int(x_level) and x_level > 0 and authority_status == "VALID" and not preserved_prohibition:
             if basis == "CURRENT_USER_DIRECTIVE":
                 if not direct_positive:
                     errors.append(_error("authority_laundering", f"{path}.authority_basis", "current-turn authority lacks a positive user directive"))
@@ -523,7 +559,7 @@ def ingress_schema_document() -> dict[str, Any]:
             "depends_on": {"type": "array", "items": {"type": "string"}},
             "support_span_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
             "unresolved_fields": {"type": "array", "items": {"type": "string"}},
-            "scenario": schema_document(INPUT_CONTRACT_V2_ID),
+            "scenario": structured_schema_document(INPUT_CONTRACT_V2_ID),
             "field_bindings": {"type": "array", "minItems": 1, "items": binding_schema},
         },
     }
@@ -547,8 +583,16 @@ def ingress_schema_document() -> dict[str, Any]:
     }
 
 
+# Stable public aliases used by the projection and package surface.
+validate_ingress = validate_ingress_record
+schema_document = ingress_schema_document
+
 __all__ = [
+    "ACTION_MINIMUM_X",
     "SEMANTIC_INGRESS_CONTRACT_ID",
     "ingress_schema_document",
+    "scan_control_surface",
+    "schema_document",
+    "validate_ingress",
     "validate_ingress_record",
 ]

@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 
-from triaxis.input_contract import schema_document, validate_scenario
+from triaxis.input_contract import INPUT_CONTRACT_V1_ID, schema_document, validate_scenario
 from triaxis.projection import evaluate_candidate
 from validation.framework.case_bank import templates as holdout_templates
 from validation.input_contract.fault_bank import templates as fault_templates
@@ -49,7 +49,7 @@ class V28PatchTests(unittest.TestCase):
 
     def test_schema_artifact_matches_runtime_projection(self) -> None:
         schema_path = ROOT / "validation" / "schemas" / "triaxis_structured_scenario_v1.schema.json"
-        self.assertEqual(json.loads(schema_path.read_text(encoding="utf-8")), schema_document())
+        self.assertEqual(json.loads(schema_path.read_text(encoding="utf-8")), schema_document(INPUT_CONTRACT_V1_ID))
 
     def test_validator_does_not_coerce_boolean_strings(self) -> None:
         scenario = holdout_templates()[0]
