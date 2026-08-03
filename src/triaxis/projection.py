@@ -70,6 +70,41 @@ _VERSION_FEATURES: dict[str, frozenset[str]] = {
             "ledger_integrity",
         }
     ),
+    "2.5-RC1": frozenset(
+        {
+            "task_graph",
+            "e_x_routing",
+            "policy_gate",
+            "policy_integrity",
+            "authority_receipt",
+            "principal_authentication",
+            "authority_composition",
+            "delegation_validation",
+            "target_digest_binding",
+            "capability_gate",
+            "toolchain_integrity",
+            "capability_evidence_trust",
+            "data_gate",
+            "data_lineage",
+            "trace_secrecy",
+            "budget_gate",
+            "atomic_budget_reservation",
+            "verification_gate",
+            "contradiction_gate_x3",
+            "independence_gate_critical",
+            "evidence_origin_graph",
+            "reliance_gate",
+            "toctou_target_binding",
+            "atomic_compare_and_commit",
+            "idempotency_key",
+            "idempotency_payload_binding",
+            "unknown_outcome",
+            "dynamic_revalidation",
+            "partial_execution_ledger",
+            "resume_integrity",
+            "ledger_integrity",
+        }
+    ),
 }
 
 
@@ -128,6 +163,9 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         controls.append("INDEPENDENCE_GATE")
         if not s.get("independent_basis_present", False):
             return _block("BLOCKED_BY_VERIFICATION", controls)
+        if "evidence_origin_graph" in features and s.get("source_independence_required", False) and not s.get("source_independence_established", False):
+            controls.append("EVIDENCE_ORIGIN_GRAPH")
+            return _block("BLOCKED_BY_CORRELATED_EVIDENCE", controls)
 
     if "reliance_gate" in features and x_level == 0 and s.get("downstream_reliance_material", False):
         controls.append("RELIANCE_GATE")
