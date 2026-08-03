@@ -21,6 +21,8 @@ from .input_contract import (
 )
 
 SEMANTIC_INGRESS_CONTRACT_ID = "TRIAXIS_SEMANTIC_INGRESS_v1"
+SEMANTIC_INGRESS_RULESET_V1 = "TRIAXIS_SEMANTIC_RULESET_v1"
+SEMANTIC_INGRESS_RULESET_V2 = "TRIAXIS_SEMANTIC_RULESET_v2"
 
 _ROOT_REQUIRED = frozenset(
     {
@@ -108,6 +110,44 @@ _RU_ACTION_MAP = {
     "TRADE_RU": "TRADE",
 }
 
+# Ruleset v2 removes high-noise bare nouns and adds bounded contextual
+# disambiguation. It remains a backstop, not a general semantic parser.
+_ACTION_PATTERNS_V2: dict[str, tuple[str, ...]] = {
+    "ANALYZE": (r"\banaly[sz]e\b", r"\bassess\b", r"\binspect\b", r"\breview\b", r"\bsummari[sz]e\b"),
+    "READ": (
+        r"\bread\b",
+        r"\bview\b",
+        r"\bopen\s+(?:the\s+|a\s+|an\s+)?(?:file|document|report|page|link|url|folder|archive|attachment|[\w.-]+\.(?:pdf|txt|md|json|csv|docx?|xlsx?))\b",
+    ),
+    "WRITE": (r"\bwrite\b", r"\bdraft\b", r"\bedit\b", r"\bsave\b", r"\bcreate\b", r"\bprepare\b"),
+    "EXECUTE": (r"\bexecute\b", r"\brun\b"),
+    "SEND": (
+        r"\bsend\b",
+        r"\bforward\b",
+        r"\bemail\s+(?!(?:headers?|body|content|message|address|thread)\b)(?:the\s+)?[\w.@+-]+",
+        r"\bmessage\s+(?!(?:content|body|text|headers?)\b)(?:the\s+)?[\w@.+-]+",
+    ),
+    "PUBLISH": (r"\bpublish\b", r"\bpost\s+(?:the\s+|this\s+|a\s+|an\s+|to\s+|on\s+)[\w@#./+-]+"),
+    "DEPLOY": (r"\bdeploy(?:ment)?\b", r"\broll\s*out\b"),
+    "DELETE": (r"\bdelete\b", r"\berase\b", r"\bremove\b"),
+    "SPEND": (r"\bspend\b", r"\bpay\b", r"\bpurchase\b"),
+    "TRADE": (
+        r"\btrade\b", r"\bbuy\b", r"\bsell\b",
+        r"\b(?:place|submit|cancel|amend)\s+(?:a\s+|an\s+|the\s+)?(?:market\s+|limit\s+|stop\s+)?order\b",
+        r"\b(?:open|close)\s+(?:a\s+|an\s+|the\s+)?(?:btc\s+|eth\s+|crypto\s+|long\s+|short\s+|leveraged\s+|spot\s+|futures?\s+)?position\b",
+    ),
+    "MODIFY_ACCESS": (r"\bgrant\s+access\b", r"\brevoke\s+access\b", r"\bmodify\s+permissions?\b"),
+    "HANDLE_SECRETS": (r"\b(?:rotate|reveal|export|copy)\s+(?:the\s+|an?\s+)?(?:api[ _-]?key|secret|password|private[ _-]?key|seed phrase|credentials?)\b",),
+    "ANALYZE_RU": (r"\bпроанализир", r"\bпроверь", r"\bизучи"),
+    "WRITE_RU": (r"\bнапиш", r"\bсоздай", r"\bсохрани"),
+    "SEND_RU": (r"\bотправ",),
+    "PUBLISH_RU": (r"\bопублику", r"\bвылож"),
+    "DEPLOY_RU": (r"\bзадепло", r"\bразверн"),
+    "DELETE_RU": (r"\bудал",),
+    "SPEND_RU": (r"\bоплат", r"\bпотрат"),
+    "TRADE_RU": (r"\bторгу", r"\bкупи", r"\bпродай", r"\bоткрой\s+(?:лонг|шорт|позици)"),
+}
+
 _SENSITIVE_PATTERNS = (
     r"\bapi[ _-]?key\b",
     r"\bsecret\b",
@@ -146,18 +186,25 @@ def _is_str_list(value: Any) -> bool:
     return isinstance(value, list) and all(type(item) is str for item in value)
 
 
-def _detected_actions(text: str) -> set[str]:
+def _detect_with_patterns(text: str, patterns_by_action: Mapping[str, tuple[str, ...]]) -> set[str]:
     lowered = text.lower()
     detected: set[str] = set()
-    for name, patterns in _ACTION_PATTERNS.items():
+    for name, patterns in patterns_by_action.items():
         if any(re.search(pattern, lowered, flags=re.IGNORECASE) for pattern in patterns):
             detected.add(_RU_ACTION_MAP.get(name, name))
-
-    # Generic EXECUTE is not a second action when it merely introduces a more
-    # specific deployment command ("execute the approved deployment").
     if "DEPLOY" in detected and "EXECUTE" in detected:
         detected.remove("EXECUTE")
+    if "TRADE" in detected and "READ" in detected and re.search(r"\b(?:open|close)\b.*\bposition\b", lowered):
+        detected.remove("READ")
     return detected
+
+
+def _detected_actions(text: str, ruleset: str = SEMANTIC_INGRESS_RULESET_V1) -> set[str]:
+    if ruleset == SEMANTIC_INGRESS_RULESET_V1:
+        return _detect_with_patterns(text, _ACTION_PATTERNS)
+    if ruleset == SEMANTIC_INGRESS_RULESET_V2:
+        return _detect_with_patterns(text, _ACTION_PATTERNS_V2)
+    raise ValueError(f"unsupported semantic ingress ruleset: {ruleset}")
 
 
 def _contains_sensitive_surface(text: str) -> bool:
@@ -165,19 +212,39 @@ def _contains_sensitive_surface(text: str) -> bool:
     return any(re.search(pattern, lowered, flags=re.IGNORECASE) for pattern in _SENSITIVE_PATTERNS)
 
 
-def scan_control_surface(text: str) -> dict[str, Any]:
+def scan_control_surface(
+    text: str,
+    spans: Iterable[Mapping[str, Any]] | None = None,
+    *,
+    ruleset: str = SEMANTIC_INGRESS_RULESET_V2,
+) -> dict[str, Any]:
     """Return the bounded explicit action/data surface seen by the backstop.
 
-    This is not a general semantic parser. It is an auditable conservative
-    scanner used to detect explicit action omissions and sensitive-transfer
-    surfaces in a source-bound extraction receipt.
+    Ruleset v2 scans only source segments classified as ``USER_CONTROL``.
+    Quoted, external and system-context spans remain data and cannot create an
+    action-coverage obligation. Without spans, the whole string is treated as a
+    direct control segment for backwards-compatible utility use.
     """
 
     if type(text) is not str:  # noqa: E721 - fail closed, no coercion
         raise TypeError("text must be a string")
+    segments: list[str] = []
+    if spans is None or ruleset == SEMANTIC_INGRESS_RULESET_V1:
+        segments = [text]
+    else:
+        for span in spans:
+            if not isinstance(span, Mapping) or span.get("role") != "USER_CONTROL":
+                continue
+            start, end = span.get("start"), span.get("end")
+            if type(start) is int and type(end) is int and 0 <= start <= end <= len(text):
+                segments.append(text[start:end])
+    actions: set[str] = set()
+    for segment in segments:
+        actions.update(_detected_actions(segment, ruleset))
     return {
-        "actions": sorted(_detected_actions(text)),
+        "actions": sorted(actions),
         "sensitive_surface": _contains_sensitive_surface(text),
+        "ruleset": ruleset,
     }
 
 
@@ -201,9 +268,14 @@ def _has_cycle(graph: dict[str, list[str]]) -> bool:
     return any(visit(node) for node in graph)
 
 
-def validate_ingress_record(record: Any) -> list[dict[str, str]]:
+def validate_ingress_record(
+    record: Any,
+    ruleset: str = SEMANTIC_INGRESS_RULESET_V2,
+) -> list[dict[str, str]]:
     """Return deterministic semantic-ingress errors; empty means valid."""
 
+    if ruleset not in {SEMANTIC_INGRESS_RULESET_V1, SEMANTIC_INGRESS_RULESET_V2}:
+        raise ValueError(f"unsupported semantic ingress ruleset: {ruleset}")
     if not isinstance(record, Mapping):
         return [_error("invalid_type", "$", "semantic ingress record must be an object")]
 
@@ -493,7 +565,10 @@ def validate_ingress_record(record: Any) -> list[dict[str, str]]:
 
     # Conservative source-surface coverage. It does not invent actions when the
     # scanner sees none; it only rejects visible actions omitted or mismatched.
-    detected_actions = _detected_actions(source_text)
+    if ruleset == SEMANTIC_INGRESS_RULESET_V2:
+        detected_actions = set(scan_control_surface(source_text, spans, ruleset=ruleset)["actions"])
+    else:
+        detected_actions = _detected_actions(source_text, ruleset)
     missing_actions = sorted(detected_actions - represented_actions)
     for action in missing_actions:
         errors.append(_error("action_omitted", "nodes", f"explicit source action {action} has no task node"))
@@ -583,16 +658,30 @@ def ingress_schema_document() -> dict[str, Any]:
     }
 
 
-# Stable public aliases used by the projection and package surface.
+def validate_ingress_v1(record: Any) -> list[dict[str, str]]:
+    return validate_ingress_record(record, ruleset=SEMANTIC_INGRESS_RULESET_V1)
+
+
+def validate_ingress_v2(record: Any) -> list[dict[str, str]]:
+    return validate_ingress_record(record, ruleset=SEMANTIC_INGRESS_RULESET_V2)
+
+
+# Stable public aliases used by the projection and package surface. The
+# unversioned alias follows the latest ruleset; historical projections pass an
+# explicit ruleset and remain reproducible.
 validate_ingress = validate_ingress_record
 schema_document = ingress_schema_document
 
 __all__ = [
     "ACTION_MINIMUM_X",
     "SEMANTIC_INGRESS_CONTRACT_ID",
+    "SEMANTIC_INGRESS_RULESET_V1",
+    "SEMANTIC_INGRESS_RULESET_V2",
     "ingress_schema_document",
     "scan_control_surface",
     "schema_document",
     "validate_ingress",
     "validate_ingress_record",
+    "validate_ingress_v1",
+    "validate_ingress_v2",
 ]

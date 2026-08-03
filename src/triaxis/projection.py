@@ -16,7 +16,12 @@ from .input_contract import (
     INPUT_CONTRACT_V2_ID,
     validate_scenario,
 )
-from .semantic_ingress import SEMANTIC_INGRESS_CONTRACT_ID, validate_ingress
+from .semantic_ingress import (
+    SEMANTIC_INGRESS_CONTRACT_ID,
+    SEMANTIC_INGRESS_RULESET_V1,
+    SEMANTIC_INGRESS_RULESET_V2,
+    validate_ingress,
+)
 
 Decision = Dict[str, Any]
 Scenario = Mapping[str, Any]
@@ -281,6 +286,19 @@ _VERSION_FEATURES["2.9-RC1"] = _VERSION_FEATURES["2.8-RC2"] | frozenset(
     }
 )
 _VERSION_FEATURES["2.9-RC2"] = _VERSION_FEATURES["2.9-RC1"]
+
+# v2.10 separates user controls from quoted/external data in the bounded
+# scanner, disambiguates known high-noise lexical surfaces, and resolves task
+# graphs topologically rather than by serialization order.
+_VERSION_FEATURES["2.10-RC1"] = _VERSION_FEATURES["2.9-RC1"] | frozenset(
+    {
+        "semantic_ruleset_v2",
+        "role_aware_control_surface",
+        "lexical_disambiguation_v1",
+        "order_invariant_task_graph",
+    }
+)
+_VERSION_FEATURES["2.10-RC2"] = _VERSION_FEATURES["2.10-RC1"]
 
 
 def supported_versions() -> tuple[str, ...]:
@@ -571,7 +589,12 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
     if "semantic_ingress_gate" not in _VERSION_FEATURES[version]:
         raise ValueError(f"TRIAXIS {version} does not implement semantic ingress")
 
-    ingress_errors = validate_ingress(record)
+    ingress_ruleset = (
+        SEMANTIC_INGRESS_RULESET_V2
+        if "semantic_ruleset_v2" in _VERSION_FEATURES[version]
+        else SEMANTIC_INGRESS_RULESET_V1
+    )
+    ingress_errors = validate_ingress(record, ruleset=ingress_ruleset)
     if ingress_errors:
         return {
             "status": "BLOCK",
@@ -580,6 +603,7 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
             "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
             "ingress_status": "INVALID",
             "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+            "ingress_ruleset": ingress_ruleset,
             "ingress_errors": ingress_errors,
         }
 
@@ -593,6 +617,7 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
             "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
             "ingress_status": extraction_status,
             "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+            "ingress_ruleset": ingress_ruleset,
         }
     if extraction_status == "INVALID":
         return {
@@ -602,40 +627,95 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
             "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
             "ingress_status": extraction_status,
             "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+            "ingress_ruleset": ingress_ruleset,
         }
 
-    node_decisions: list[dict[str, Any]] = []
+    raw_node_decisions: dict[str, dict[str, Any]] = {}
+    input_order: list[str] = []
     for node in data["nodes"]:
-        decision = evaluate_candidate(version, node["scenario"])
-        node_decisions.append({"node_id": node["node_id"], "depends_on": list(node["depends_on"]), "decision": decision})
+        node_id = node["node_id"]
+        input_order.append(node_id)
+        raw_node_decisions[node_id] = {
+            "node_id": node_id,
+            "depends_on": list(node["depends_on"]),
+            "decision": evaluate_candidate(version, node["scenario"]),
+        }
 
-    if len(node_decisions) == 1:
-        result = deepcopy(node_decisions[0]["decision"])
+    if len(raw_node_decisions) == 1:
+        only = raw_node_decisions[input_order[0]]
+        result = deepcopy(only["decision"])
         result["controls"] = sorted(set(result.get("controls", [])) | {"CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"})
         result["ingress_status"] = "VALID"
         result["ingress_contract"] = SEMANTIC_INGRESS_CONTRACT_ID
-        result["node_decisions"] = node_decisions
+        result["ingress_ruleset"] = ingress_ruleset
+        result["node_decisions"] = [only]
         return result
 
-    completion_mode = data["completion_mode"]
-    by_id = {row["node_id"]: row for row in node_decisions}
     executable: set[str] = set()
     dependency_blocked: list[str] = []
-    for row in node_decisions:
-        decision = row["decision"]
-        allowed = decision.get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}
-        dependencies_ok = all(dep in executable for dep in row["depends_on"])
-        if allowed and dependencies_ok:
-            executable.add(row["node_id"])
-        elif allowed and not dependencies_ok:
-            dependency_blocked.append(row["node_id"])
-            row["decision"] = {
-                "status": "BLOCK",
-                "primary_reason": "BLOCKED_BY_DEPENDENCY",
-                "reasons": ["BLOCKED_BY_DEPENDENCY"],
-                "controls": ["TASK_GRAPH"],
-            }
+    node_decisions: list[dict[str, Any]] = []
 
+    if "order_invariant_task_graph" in _VERSION_FEATURES[version]:
+        pending = set(raw_node_decisions)
+        resolved: set[str] = set()
+        while pending:
+            ready = sorted(
+                node_id
+                for node_id in pending
+                if all(dep in resolved for dep in raw_node_decisions[node_id]["depends_on"])
+            )
+            if not ready:
+                # The semantic validator should already reject a cycle or an
+                # unknown dependency. This is a fail-closed defensive receipt.
+                for node_id in sorted(pending):
+                    row = deepcopy(raw_node_decisions[node_id])
+                    row["decision"] = {
+                        "status": "BLOCK",
+                        "primary_reason": "BLOCKED_BY_DEPENDENCY",
+                        "reasons": ["BLOCKED_BY_DEPENDENCY"],
+                        "controls": ["TASK_GRAPH"],
+                    }
+                    node_decisions.append(row)
+                    dependency_blocked.append(node_id)
+                pending.clear()
+                break
+            for node_id in ready:
+                row = deepcopy(raw_node_decisions[node_id])
+                own_allowed = row["decision"].get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}
+                dependencies_ok = all(dep in executable for dep in row["depends_on"])
+                if own_allowed and dependencies_ok:
+                    executable.add(node_id)
+                elif own_allowed:
+                    row["decision"] = {
+                        "status": "BLOCK",
+                        "primary_reason": "BLOCKED_BY_DEPENDENCY",
+                        "reasons": ["BLOCKED_BY_DEPENDENCY"],
+                        "controls": ["TASK_GRAPH"],
+                    }
+                    dependency_blocked.append(node_id)
+                node_decisions.append(row)
+                resolved.add(node_id)
+                pending.remove(node_id)
+    else:
+        # Frozen v2.9 behavior: dependency resolution follows serialization
+        # order. Kept only to preserve the trigger evidence and version history.
+        for node_id in input_order:
+            row = deepcopy(raw_node_decisions[node_id])
+            own_allowed = row["decision"].get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}
+            dependencies_ok = all(dep in executable for dep in row["depends_on"])
+            if own_allowed and dependencies_ok:
+                executable.add(node_id)
+            elif own_allowed:
+                dependency_blocked.append(node_id)
+                row["decision"] = {
+                    "status": "BLOCK",
+                    "primary_reason": "BLOCKED_BY_DEPENDENCY",
+                    "reasons": ["BLOCKED_BY_DEPENDENCY"],
+                    "controls": ["TASK_GRAPH"],
+                }
+            node_decisions.append(row)
+
+    completion_mode = data["completion_mode"]
     decisions = [row["decision"] for row in node_decisions]
     non_allow = [d for d in decisions if d.get("status") not in {"ALLOW", "ALLOW_WITH_LIMITS"}]
     allowed = [d for d in decisions if d.get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}]
@@ -654,6 +734,7 @@ def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
 
     result["ingress_status"] = "VALID"
     result["ingress_contract"] = SEMANTIC_INGRESS_CONTRACT_ID
+    result["ingress_ruleset"] = ingress_ruleset
     result["node_decisions"] = node_decisions
     if dependency_blocked:
         result["dependency_blocked_nodes"] = sorted(dependency_blocked)

@@ -21,9 +21,13 @@ from .projection import evaluate_candidate, evaluate_ingress, supported_versions
 from .semantic_ingress import (
     ACTION_MINIMUM_X,
     SEMANTIC_INGRESS_CONTRACT_ID,
+    SEMANTIC_INGRESS_RULESET_V1,
+    SEMANTIC_INGRESS_RULESET_V2,
     scan_control_surface,
     schema_document as semantic_ingress_schema_document,
     validate_ingress,
+    validate_ingress_v1,
+    validate_ingress_v2,
 )
 
 __all__ = [
@@ -32,6 +36,8 @@ __all__ = [
     "INPUT_CONTRACT_V1_ID",
     "INPUT_CONTRACT_V2_ID",
     "SEMANTIC_INGRESS_CONTRACT_ID",
+    "SEMANTIC_INGRESS_RULESET_V1",
+    "SEMANTIC_INGRESS_RULESET_V2",
     "evaluate_candidate",
     "migrate_v1_to_v2",
     "evaluate_ingress",
@@ -42,6 +48,8 @@ __all__ = [
     "semantic_ingress_schema_document",
     "supported_versions",
     "validate_ingress",
+    "validate_ingress_v1",
+    "validate_ingress_v2",
     "validate_scenario",
     "validate_scenario_v1",
     "validate_scenario_v2",
