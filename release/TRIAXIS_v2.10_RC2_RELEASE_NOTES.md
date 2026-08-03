@@ -16,7 +16,7 @@ Candidate logic commit: `a71d388ebc78504539b8495e9464edcbd53898ef`.
 
 ## RC2 requirement
 
-After this validation-only revision is committed, a fresh commit-bound RS4/SI4/CS3 run must evaluate `2.10-RC2`. RC2 is not complete until that run and the full unit/regression suite pass.
+The validation-only revision was committed as `c295830ce3bde203c4d2e491dfed578c9c5bc079`. Fresh RC2-bound validation passed: RS4 53/53, SI4 37/37, CS3 21/21, and unit/regression 47/47. Product tree remained identical to v2.10-RC1.
 
 ## Honest scope
 

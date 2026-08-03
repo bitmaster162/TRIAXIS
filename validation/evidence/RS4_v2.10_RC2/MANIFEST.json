@@ -1,0 +1,9 @@
+{
+  "batch_id": "RS4-20260803",
+  "candidate_commit": "c295830ce3bde203c4d2e491dfed578c9c5bc079",
+  "candidate_version": "2.10-RC2",
+  "count": 53,
+  "framework_commit": "9cfe7b241a5860f5387b41c643e4e2a200afdf80",
+  "payload_sha256": "6f5fe4693bf6013d1a1437377a0039e74546f83b2ddf23ee35cc8109920fa8a5",
+  "protocol": "TRIAXIS_ROUTING_SEMANTICS_v1"
+}

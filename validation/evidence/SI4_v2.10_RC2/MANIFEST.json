@@ -1,0 +1,8 @@
+{
+  "batch_id": "SI4-20260803",
+  "binding": "d6e8fbb8918cf1edded7ae4eeb8881ec494d8a6a",
+  "candidate_commit": "c295830ce3bde203c4d2e491dfed578c9c5bc079",
+  "count": 37,
+  "payload_sha256": "c809f78d3d2a359c79a8c73c1ce7e6f8a184795a272130612bb33207f2363294",
+  "protocol": "TRIAXIS_SEMANTIC_INGRESS_v1"
+}
