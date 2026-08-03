@@ -10,6 +10,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Dict, Iterable, Mapping
 
+from .input_contract import INPUT_CONTRACT_ID, validate_scenario
+
 Decision = Dict[str, Any]
 Scenario = Mapping[str, Any]
 
@@ -257,6 +259,10 @@ _VERSION_FEATURES: dict[str, frozenset[str]] = {
     ),
 }
 
+# v2.8 preserves v2.7 governance semantics and adds a strict fail-closed
+# structured-input contract before any Router or governance gate executes.
+_VERSION_FEATURES["2.8-RC1"] = _VERSION_FEATURES["2.7-RC2"] | frozenset({"input_contract_gate"})
+
 
 def supported_versions() -> tuple[str, ...]:
     return tuple(sorted(_VERSION_FEATURES))
@@ -286,9 +292,22 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
     if version not in _VERSION_FEATURES:
         raise ValueError(f"Unsupported TRIAXIS projection: {version}")
 
-    s = deepcopy(dict(scenario))
     features = _VERSION_FEATURES[version]
-    controls: list[str] = ["ROUTER"]
+    if "input_contract_gate" in features:
+        input_errors = validate_scenario(scenario)
+        if input_errors:
+            return {
+                "status": "BLOCK",
+                "primary_reason": "BLOCKED_BY_INPUT_CONTRACT",
+                "reasons": ["BLOCKED_BY_INPUT_CONTRACT"],
+                "controls": ["INPUT_CONTRACT_GATE"],
+                "input_status": "INVALID",
+                "input_contract": INPUT_CONTRACT_ID,
+                "input_errors": input_errors,
+            }
+
+    s = deepcopy(dict(scenario))
+    controls: list[str] = ["INPUT_CONTRACT_GATE", "ROUTER"] if "input_contract_gate" in features else ["ROUTER"]
     e_level = int(s.get("e_level", 0))
     x_level = int(s.get("x_level", 0))
 
