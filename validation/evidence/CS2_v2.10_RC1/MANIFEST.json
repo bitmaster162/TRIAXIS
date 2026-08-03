@@ -1,0 +1,9 @@
+{
+  "batch_id": "CS2-20260803",
+  "candidate_commit": "a71d388ebc78504539b8495e9464edcbd53898ef",
+  "candidate_version": "2.10-RC1",
+  "count": 21,
+  "payload_sha256": "c1460a7851ec3105d454243ba16510c4faa934d7d72e7aa2e603795debb7ac38",
+  "protocol": "TRIAXIS_COMPOSITION_STATE_v1",
+  "protocol_commit": "4bc66dd4614017544023d67316cefec7efab726b"
+}
