@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/triaxis/scenario.schema.json",
+  "title": "TRIAXIS Structured Validation Scenario",
+  "type": "object",
+  "required": ["case_id", "template_name", "family", "e_level", "x_level", "policy_status"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "template_name": {"type": "string"},
+    "family": {"type": "string"},
+    "e_level": {"type": "integer", "minimum": 0, "maximum": 3},
+    "x_level": {"type": "integer", "minimum": 0, "maximum": 3},
+    "policy_status": {"enum": ["ALLOW", "ALLOW_WITH_LIMITS", "DENY"]}
+  },
+  "additionalProperties": true
+}
