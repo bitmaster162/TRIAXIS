@@ -177,6 +177,45 @@ _VERSION_FEATURES: dict[str, frozenset[str]] = {
             "release_integrity",
         }
     ),
+    "2.7-RC1": frozenset(
+        {
+            "task_graph",
+            "e_x_routing",
+            "policy_gate",
+            "policy_integrity",
+            "authority_receipt",
+            "principal_authentication",
+            "authority_composition",
+            "delegation_validation",
+            "target_digest_binding",
+            "capability_gate",
+            "toolchain_integrity",
+            "capability_evidence_trust",
+            "data_gate",
+            "data_lineage",
+            "trace_secrecy",
+            "budget_gate",
+            "atomic_budget_reservation",
+            "verification_gate",
+            "contradiction_gate_x3",
+            "independence_gate_critical",
+            "evidence_origin_graph",
+            "reliance_gate",
+            "toctou_target_binding",
+            "atomic_compare_and_commit",
+            "idempotency_key",
+            "idempotency_payload_binding",
+            "unknown_outcome",
+            "dynamic_revalidation",
+            "partial_execution_ledger",
+            "resume_integrity",
+            "ledger_integrity",
+            "release_integrity",
+            "contradiction_all_x",
+            "cross_axis_integrity",
+            "decision_severity_lattice",
+        }
+    ),
 }
 
 
@@ -225,8 +264,9 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         if s.get("policy_binding_required", False) and not s.get("policy_digest_match", False):
             return _block("BLOCKED_BY_STALE_POLICY", controls)
 
-    # v2.3 explicitly blocks material open contradictions only for X3.
-    if x_level == 3 and s.get("material_contradiction_open", False):
+    # Earlier versions block material contradictions only for X3; v2.7 applies the gate to any decision scope.
+    contradiction_applies = x_level == 3 or "contradiction_all_x" in features
+    if contradiction_applies and s.get("material_contradiction_open", False) and s.get("contradiction_material_to_decision", True):
         controls.extend(["WITNESS", "CONTRADICTION_REGISTER"])
         return _block("BLOCKED_BY_VERIFICATION", controls)
 
@@ -239,10 +279,25 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
             controls.append("EVIDENCE_ORIGIN_GRAPH")
             return _block("BLOCKED_BY_CORRELATED_EVIDENCE", controls)
 
-    if "reliance_gate" in features and x_level == 0 and s.get("downstream_reliance_material", False):
+    if "reliance_gate" in features and "decision_severity_lattice" not in features and x_level == 0 and s.get("downstream_reliance_material", False):
         controls.append("RELIANCE_GATE")
         if not s.get("reliance_conditions_satisfied", False):
             return _allow(controls, limited=True, notes=["RELIANCE_RESTRICTIONS_REQUIRED"]) | {"primary_reason": "RELIANCE_RESTRICTIONS_REQUIRED"}
+
+    # v2.7 cross-axis integrity is triggered by dependencies, including X0.
+    if "cross_axis_integrity" in features:
+        if s.get("uses_tool_output", False) and s.get("tool_binding_required", False) and not s.get("tool_digest_match", False):
+            controls.append("TOOLCHAIN_INTEGRITY")
+            return _block("BLOCKED_BY_TOOLCHAIN_INTEGRITY", controls)
+        if s.get("uses_tool_output", False) and s.get("capability_evidence_trust_required", False) and not s.get("capability_evidence_trusted", False):
+            controls.append("CAPABILITY_EVIDENCE")
+            return _block("BLOCKED_BY_CAPABILITY_EVIDENCE", controls)
+        if s.get("resumed_state_used", False) and s.get("resume_integrity_required", False) and not s.get("resume_checkpoint_valid", False):
+            controls.append("CONTINUITY_INTEGRITY")
+            return _block("BLOCKED_BY_RESUME_INTEGRITY", controls)
+        if s.get("ledger_state_used", False) and s.get("ledger_integrity_required", False) and not s.get("ledger_integrity_valid", False):
+            controls.append("LEDGER_INTEGRITY")
+            return _block("BLOCKED_BY_LEDGER_INTEGRITY", controls)
 
     # Data Gate can apply even at X0 when the response discloses data.
     if s.get("data_gate_required", False):
@@ -262,6 +317,11 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
         controls.append("RELEASE_INTEGRITY")
         if not s.get("release_manifest_valid", False):
             return _block("BLOCKED_BY_RELEASE_INTEGRITY", controls)
+
+    if "decision_severity_lattice" in features and "reliance_gate" in features and x_level == 0 and s.get("downstream_reliance_material", False):
+        controls.append("RELIANCE_GATE")
+        if not s.get("reliance_conditions_satisfied", False):
+            return _allow(controls, limited=True, notes=["RELIANCE_RESTRICTIONS_REQUIRED"]) | {"primary_reason": "RELIANCE_RESTRICTIONS_REQUIRED"}
 
     # Pure advisory output has no Authority/Capability Action Gate in v2.3.
     if x_level == 0:
