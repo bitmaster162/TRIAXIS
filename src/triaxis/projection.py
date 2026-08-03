@@ -11,6 +11,7 @@ from copy import deepcopy
 from typing import Any, Dict, Iterable, Mapping
 
 from .input_contract import INPUT_CONTRACT_ID, validate_scenario
+from .semantic_ingress import SEMANTIC_INGRESS_CONTRACT_ID, validate_ingress
 
 Decision = Dict[str, Any]
 Scenario = Mapping[str, Any]
@@ -264,6 +265,11 @@ _VERSION_FEATURES: dict[str, frozenset[str]] = {
 _VERSION_FEATURES["2.8-RC1"] = _VERSION_FEATURES["2.7-RC2"] | frozenset({"input_contract_gate"})
 _VERSION_FEATURES["2.8-RC2"] = _VERSION_FEATURES["2.8-RC1"]
 
+# v2.9 preserves structured governance semantics and adds a source-bound
+# semantic-ingress contract before structured scenarios are trusted.
+_VERSION_FEATURES["2.9-RC1"] = _VERSION_FEATURES["2.8-RC2"] | frozenset({"semantic_ingress_gate"})
+_VERSION_FEATURES["2.9-RC2"] = _VERSION_FEATURES["2.9-RC1"]
+
 
 def supported_versions() -> tuple[str, ...]:
     return tuple(sorted(_VERSION_FEATURES))
@@ -474,3 +480,114 @@ def evaluate_candidate(version: str, scenario: Scenario) -> Decision:
 
     limited = s.get("policy_status") == "ALLOW_WITH_LIMITS" or capability == "DEGRADED"
     return _allow(controls, limited=limited)
+
+
+_INGRESS_SEVERITY = {
+    "ALLOW": 0,
+    "ALLOW_WITH_LIMITS": 1,
+    "HOLD": 2,
+    "HUMAN_DECISION_REQUIRED": 2,
+    "BLOCK": 3,
+}
+
+
+def evaluate_ingress(version: str, record: Mapping[str, Any]) -> Decision:
+    """Evaluate a source-bound semantic-ingress record.
+
+    The ingress gate validates provenance and conservative explicit-action
+    coverage before delegating each structured action node to
+    :func:`evaluate_candidate`.
+    """
+
+    if version not in _VERSION_FEATURES:
+        raise ValueError(f"Unsupported TRIAXIS projection: {version}")
+    if "semantic_ingress_gate" not in _VERSION_FEATURES[version]:
+        raise ValueError(f"TRIAXIS {version} does not implement semantic ingress")
+
+    ingress_errors = validate_ingress(record)
+    if ingress_errors:
+        return {
+            "status": "BLOCK",
+            "primary_reason": "BLOCKED_BY_SEMANTIC_INGRESS",
+            "reasons": ["BLOCKED_BY_SEMANTIC_INGRESS"],
+            "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
+            "ingress_status": "INVALID",
+            "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+            "ingress_errors": ingress_errors,
+        }
+
+    data = deepcopy(dict(record))
+    extraction_status = data["extraction_status"]
+    if extraction_status == "NEEDS_CLARIFICATION":
+        return {
+            "status": "HUMAN_DECISION_REQUIRED",
+            "primary_reason": "SEMANTIC_INGRESS_AMBIGUOUS",
+            "reasons": ["SEMANTIC_INGRESS_AMBIGUOUS"],
+            "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
+            "ingress_status": extraction_status,
+            "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+        }
+    if extraction_status == "BLOCKED":
+        return {
+            "status": "BLOCK",
+            "primary_reason": "BLOCKED_BY_SEMANTIC_INGRESS",
+            "reasons": ["BLOCKED_BY_SEMANTIC_INGRESS"],
+            "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"],
+            "ingress_status": extraction_status,
+            "ingress_contract": SEMANTIC_INGRESS_CONTRACT_ID,
+        }
+
+    node_decisions: list[dict[str, Any]] = []
+    for node in data["nodes"]:
+        decision = evaluate_candidate(version, node["scenario"])
+        node_decisions.append({"node_id": node["node_id"], "depends_on": list(node["depends_on"]), "decision": decision})
+
+    if len(node_decisions) == 1:
+        result = deepcopy(node_decisions[0]["decision"])
+        result["controls"] = sorted(set(result.get("controls", [])) | {"CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE"})
+        result["ingress_status"] = "VALID"
+        result["ingress_contract"] = SEMANTIC_INGRESS_CONTRACT_ID
+        result["node_decisions"] = node_decisions
+        return result
+
+    completion_mode = data["completion_mode"]
+    by_id = {row["node_id"]: row for row in node_decisions}
+    executable: set[str] = set()
+    dependency_blocked: list[str] = []
+    for row in node_decisions:
+        decision = row["decision"]
+        allowed = decision.get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}
+        dependencies_ok = all(dep in executable for dep in row["depends_on"])
+        if allowed and dependencies_ok:
+            executable.add(row["node_id"])
+        elif allowed and not dependencies_ok:
+            dependency_blocked.append(row["node_id"])
+            row["decision"] = {
+                "status": "BLOCK",
+                "primary_reason": "BLOCKED_BY_DEPENDENCY",
+                "reasons": ["BLOCKED_BY_DEPENDENCY"],
+                "controls": ["TASK_GRAPH"],
+            }
+
+    decisions = [row["decision"] for row in node_decisions]
+    non_allow = [d for d in decisions if d.get("status") not in {"ALLOW", "ALLOW_WITH_LIMITS"}]
+    allowed = [d for d in decisions if d.get("status") in {"ALLOW", "ALLOW_WITH_LIMITS"}]
+
+    if completion_mode in {"SAFE_PARTIAL", "BEST_EFFORT"} and allowed and non_allow:
+        result: Decision = {
+            "status": "ALLOW_WITH_LIMITS",
+            "primary_reason": "SAFE_PARTIAL",
+            "reasons": ["SAFE_PARTIAL"],
+            "controls": ["CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE", "TASK_GRAPH"],
+        }
+    else:
+        worst = max(decisions, key=lambda d: _INGRESS_SEVERITY.get(str(d.get("status")), 99))
+        result = deepcopy(worst)
+        result["controls"] = sorted(set(result.get("controls", [])) | {"CONTROL_SURFACE_SCANNER", "SEMANTIC_INGRESS_GATE", "TASK_GRAPH"})
+
+    result["ingress_status"] = "VALID"
+    result["ingress_contract"] = SEMANTIC_INGRESS_CONTRACT_ID
+    result["node_decisions"] = node_decisions
+    if dependency_blocked:
+        result["dependency_blocked_nodes"] = sorted(dependency_blocked)
+    return result
