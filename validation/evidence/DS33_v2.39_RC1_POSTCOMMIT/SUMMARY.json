@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "3ae20af5e735128d3ea8e219e11d4d2c6e1893da",
+  "candidate_tree": "04a5e2458e010a92301e318d35f854ab38983219",
+  "case_count": 10,
+  "fail_count": 6,
+  "pass_count": 4,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_DURABILITY_TRIGGER_v3.3_RECOVERY",
+  "rows_sha256": "a347f48e09796e66822927ca73a782ebad967e1406dada23bdbf91ea4742ccf5",
+  "status": "FAIL"
+}
