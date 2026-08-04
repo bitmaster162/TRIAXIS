@@ -9,11 +9,10 @@ state guard and accepts a signed envelope before analytical validation.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any
 
-from .integrity import canonical_sha256
+from .integrity import canonical_sha256, materialize_json
 
 from .analysis_v5 import (
     ANALYSIS_BUNDLE_CONTRACT_ID,
@@ -28,7 +27,8 @@ AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_
 AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v2"
 AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3"
 AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4"
-AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v5"
+AUTHORITY_ANALYSIS_SESSION_V5_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v5"
+AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v6"
 
 
 def authority_analysis_required(value: Mapping[str, Any]) -> bool:
@@ -130,7 +130,9 @@ def validate_authority_analysis_bundle(
     # exact bytes. A hostile or concurrently mutated Mapping must not create a
     # time-of-check/time-of-use split around checkpoint commitment.
     try:
-        bundle_value = deepcopy(dict(value))
+        bundle_value = materialize_json(value)
+        if not isinstance(bundle_value, dict):
+            raise TypeError("analysis bundle must materialize to an object")
     except Exception as exc:
         return {
             "status": "BLOCK",
@@ -186,7 +188,9 @@ def validate_authority_analysis_bundle(
     # gate so malformed/tampered envelopes retain their exact state error, but
     # this preflight cannot advance the guard.
     try:
-        envelope_value = deepcopy(dict(trust_envelope))
+        envelope_value = materialize_json(trust_envelope)
+        if not isinstance(envelope_value, dict):
+            raise TypeError("trust snapshot envelope must materialize to an object")
     except Exception as exc:
         return _state_block(TrustSnapshotStateError(
             "invalid_trust_snapshot_envelope",
@@ -331,6 +335,7 @@ __all__ = [
     "AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_V5_CONTRACT_ID",
     "AuthorityAnalysisSession",
     "authority_analysis_required",
     "authority_session_required_result",

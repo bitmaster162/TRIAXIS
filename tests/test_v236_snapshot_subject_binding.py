@@ -4,8 +4,8 @@ from copy import deepcopy
 import unittest
 
 from triaxis import (
-    AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
     AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID,
+    AUTHORITY_ANALYSIS_SESSION_V5_CONTRACT_ID,
     AuthorityAnalysisSession,
 )
 from triaxis.integrity import canonical_sha256
@@ -53,7 +53,7 @@ class V236SnapshotSubjectBindingTests(unittest.TestCase):
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4",
         )
         self.assertEqual(
-            AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
+            AUTHORITY_ANALYSIS_SESSION_V5_CONTRACT_ID,
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v5",
         )
 
