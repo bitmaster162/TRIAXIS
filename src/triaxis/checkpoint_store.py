@@ -263,6 +263,7 @@ class SQLiteCheckpointStore:
         checkpoint_owners: dict[str, str] = {}
         envelope_owners: dict[str, str] = {}
         pairs_by_key: dict[tuple[str, int], dict[str, Any]] = {}
+        history_by_namespace: dict[str, list[dict[str, Any]]] = {}
         for row in history_rows:
             pair = self._decode_row_pair_unowned(row)
             namespace = pair["namespace"]
@@ -283,6 +284,7 @@ class SQLiteCheckpointStore:
             checkpoint_owners[checkpoint_sha256] = namespace
             envelope_owners[envelope_sha256] = namespace
             pairs_by_key[(namespace, int(pair["receipt"]["sequence"]))] = pair
+            history_by_namespace.setdefault(namespace, []).append(pair)
             self._conn.execute(
                 "INSERT INTO checkpoint_ownership "
                 "(checkpoint_sha256, envelope_sha256, namespace, sequence) VALUES (?, ?, ?, ?)",
@@ -298,6 +300,7 @@ class SQLiteCheckpointStore:
             "SELECT namespace, head_sha256, sequence, receipt_json, envelope_json "
             "FROM checkpoint_current ORDER BY namespace ASC"
         ).fetchall()
+        current_by_namespace: dict[str, dict[str, Any]] = {}
         for row in current_rows:
             current = self._decode_row_pair_unowned(row)
             key = (current["namespace"], int(current["receipt"]["sequence"]))
@@ -306,6 +309,18 @@ class SQLiteCheckpointStore:
                     "checkpoint_store_corrupt_state",
                     "legacy current checkpoint is missing or differs in immutable history",
                 )
+            current_by_namespace[current["namespace"]] = current
+        if set(history_by_namespace) != set(current_by_namespace):
+            raise CheckpointStoreError(
+                "checkpoint_store_current_not_history_tip",
+                "legacy current/history namespace sets differ",
+            )
+        for namespace, history in history_by_namespace.items():
+            self._validate_chain_pairs(
+                namespace=namespace,
+                current=current_by_namespace[namespace],
+                history=history,
+            )
 
     def _initialize_schema(self) -> None:
         self._conn.execute("BEGIN IMMEDIATE")
@@ -357,6 +372,142 @@ class SQLiteCheckpointStore:
             "FROM checkpoint_current WHERE namespace = ?",
             (self._namespace,),
         ).fetchone()
+
+    def _select_history_rows(self) -> list[sqlite3.Row]:
+        return self._conn.execute(
+            "SELECT namespace, checkpoint_sha256 AS head_sha256, sequence, "
+            "receipt_json, envelope_json FROM checkpoint_history "
+            "WHERE namespace = ? ORDER BY sequence ASC",
+            (self._namespace,),
+        ).fetchall()
+
+    @staticmethod
+    def _validate_chain_pairs(
+        *,
+        namespace: str,
+        current: Mapping[str, Any],
+        history: Sequence[Mapping[str, Any]],
+    ) -> None:
+        current_receipt = current.get("receipt")
+        if not isinstance(current_receipt, Mapping):
+            raise CheckpointStoreError(
+                "checkpoint_store_corrupt_state",
+                "current checkpoint receipt is missing",
+            )
+        current_sequence = current_receipt.get("sequence")
+        if type(current_sequence) is not int or current_sequence < 1:
+            raise CheckpointStoreError(
+                "checkpoint_store_corrupt_state",
+                "current checkpoint sequence is invalid",
+            )
+        if not history:
+            raise CheckpointStoreError(
+                "checkpoint_store_history_incomplete",
+                "non-empty current state has no immutable history",
+            )
+
+        observed_sequences: list[int] = []
+        for pair in history:
+            if pair.get("namespace") != namespace:
+                raise CheckpointStoreError(
+                    "checkpoint_store_namespace_replay",
+                    "history row belongs to another namespace",
+                )
+            receipt = pair.get("receipt")
+            if not isinstance(receipt, Mapping) or type(receipt.get("sequence")) is not int:
+                raise CheckpointStoreError(
+                    "checkpoint_store_corrupt_state",
+                    "history checkpoint sequence is invalid",
+                )
+            observed_sequences.append(int(receipt["sequence"]))
+
+        if observed_sequences[-1] > current_sequence:
+            raise CheckpointStoreError(
+                "checkpoint_store_current_not_history_tip",
+                "immutable history contains a checkpoint after current state",
+            )
+        expected_sequences = list(range(1, current_sequence + 1))
+        if observed_sequences != expected_sequences:
+            raise CheckpointStoreError(
+                "checkpoint_store_history_incomplete",
+                "immutable history is truncated or contains a sequence gap",
+            )
+        if dict(history[-1]) != dict(current):
+            raise CheckpointStoreError(
+                "checkpoint_store_current_not_history_tip",
+                "current checkpoint differs from the immutable history tip",
+            )
+
+        previous_receipt: Mapping[str, Any] | None = None
+        for pair in history:
+            receipt = pair["receipt"]
+            if previous_receipt is None:
+                if receipt.get("previous_envelope_sha256") is not None:
+                    raise CheckpointStoreError(
+                        "checkpoint_store_history_chain_mismatch",
+                        "history genesis has a non-null parent",
+                    )
+            else:
+                if receipt.get("previous_envelope_sha256") != previous_receipt.get("envelope_sha256"):
+                    raise CheckpointStoreError(
+                        "checkpoint_store_history_chain_mismatch",
+                        "history successor parent does not match the previous envelope",
+                    )
+                if int(receipt.get("evaluation_tick", -1)) < int(previous_receipt.get("evaluation_tick", -1)):
+                    raise CheckpointStoreError(
+                        "checkpoint_store_history_chain_mismatch",
+                        "history evaluation time rolls back",
+                    )
+                for field in ("authority_id", "key_id", "authority_root_sha256"):
+                    if receipt.get(field) != previous_receipt.get(field):
+                        raise CheckpointStoreError(
+                            "checkpoint_store_history_chain_mismatch",
+                            f"history {field} continuity mismatch",
+                        )
+            previous_receipt = receipt
+
+    def _validated_namespace_state(
+        self,
+        *,
+        current_row: sqlite3.Row | None = None,
+    ) -> tuple[dict[str, Any] | None, list[dict[str, Any]]]:
+        row = self._select_current_row() if current_row is None else current_row
+        history_rows = self._select_history_rows()
+        if row is None:
+            if history_rows:
+                raise CheckpointStoreError(
+                    "checkpoint_store_current_not_history_tip",
+                    "immutable history exists without current state",
+                )
+            return None, []
+        current = self._row_pair(row)
+        history = [self._row_pair(item) for item in history_rows]
+        self._validate_chain_pairs(
+            namespace=self._namespace,
+            current=current,
+            history=history,
+        )
+        return current, history
+
+    @staticmethod
+    def _authenticate_history(
+        history: Sequence[Mapping[str, Any]],
+        *,
+        authority_roots: Sequence[Mapping[str, Any]],
+    ) -> None:
+        for pair in history:
+            try:
+                ProvenanceTrustStateGuard.from_checkpoint(
+                    authority_roots=authority_roots,
+                    checkpoint_receipt=pair["receipt"],
+                    trust_envelope=pair["envelope"],
+                    expected_checkpoint_sha256=pair["head_sha256"],
+                )
+            except TrustSnapshotStateError as exc:
+                raise CheckpointStoreError(
+                    "checkpoint_store_corrupt_state",
+                    f"immutable history authentication failed: {exc}",
+                ) from exc
 
     def _owner_row(self, checkpoint_sha256: str) -> sqlite3.Row | None:
         return self._conn.execute(
@@ -472,24 +623,19 @@ class SQLiteCheckpointStore:
         with self._lock:
             self._ensure_open()
             try:
-                row = self._select_current_row()
+                current, _ = self._validated_namespace_state()
             except sqlite3.Error as exc:
                 raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
-            return None if row is None else deepcopy(self._row_pair(row))
+            return None if current is None else deepcopy(current)
 
     def history(self) -> list[dict[str, Any]]:
         with self._lock:
             self._ensure_open()
             try:
-                rows = self._conn.execute(
-                    "SELECT namespace, checkpoint_sha256 AS head_sha256, sequence, "
-                    "receipt_json, envelope_json FROM checkpoint_history "
-                    "WHERE namespace = ? ORDER BY sequence ASC",
-                    (self._namespace,),
-                ).fetchall()
+                _, history = self._validated_namespace_state()
             except sqlite3.Error as exc:
                 raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
-            return [deepcopy(self._row_pair(row)) for row in rows]
+            return deepcopy(history)
 
     def load_guard(
         self,
@@ -502,23 +648,29 @@ class SQLiteCheckpointStore:
                 "invalid_checkpoint_store_head",
                 "expected checkpoint head must be 64 lowercase hexadecimal characters",
             )
-        current = self.get_current()
-        if current is None:
-            raise CheckpointStoreError("checkpoint_store_empty", "checkpoint store has no current state")
-        if current["head_sha256"] != expected_checkpoint_sha256:
-            raise CheckpointStoreError(
-                "checkpoint_store_head_mismatch",
-                "durable head does not match the host-controlled expected head",
-            )
-        try:
-            return ProvenanceTrustStateGuard.from_checkpoint(
-                authority_roots=authority_roots,
-                checkpoint_receipt=current["receipt"],
-                trust_envelope=current["envelope"],
-                expected_checkpoint_sha256=expected_checkpoint_sha256,
-            )
-        except TrustSnapshotStateError as exc:
-            raise CheckpointStoreError("checkpoint_store_corrupt_state", str(exc)) from exc
+        with self._lock:
+            self._ensure_open()
+            try:
+                current, history = self._validated_namespace_state()
+            except sqlite3.Error as exc:
+                raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
+            if current is None:
+                raise CheckpointStoreError("checkpoint_store_empty", "checkpoint store has no current state")
+            if current["head_sha256"] != expected_checkpoint_sha256:
+                raise CheckpointStoreError(
+                    "checkpoint_store_head_mismatch",
+                    "durable head does not match the host-controlled expected head",
+                )
+            self._authenticate_history(history, authority_roots=authority_roots)
+            try:
+                return ProvenanceTrustStateGuard.from_checkpoint(
+                    authority_roots=authority_roots,
+                    checkpoint_receipt=current["receipt"],
+                    trust_envelope=current["envelope"],
+                    expected_checkpoint_sha256=expected_checkpoint_sha256,
+                )
+            except TrustSnapshotStateError as exc:
+                raise CheckpointStoreError("checkpoint_store_corrupt_state", str(exc)) from exc
 
     def commit(
         self,
@@ -547,7 +699,13 @@ class SQLiteCheckpointStore:
             try:
                 self._conn.execute("BEGIN IMMEDIATE")
                 row = self._select_current_row()
+                current_state, history_state = self._validated_namespace_state(current_row=row)
                 if row is None:
+                    if current_state is not None or history_state:
+                        raise CheckpointStoreError(
+                            "checkpoint_store_corrupt_state",
+                            "empty durable state validation returned unexpected rows",
+                        )
                     if expected_previous_head is not None:
                         raise CheckpointStoreError(
                             "checkpoint_store_cas_mismatch",
@@ -559,7 +717,13 @@ class SQLiteCheckpointStore:
                             "durable genesis must be sequence 1 with null parent",
                         )
                 else:
-                    current = self._row_pair(row)
+                    if current_state is None:
+                        raise CheckpointStoreError(
+                            "checkpoint_store_corrupt_state",
+                            "non-empty durable row has no validated current state",
+                        )
+                    current = current_state
+                    self._authenticate_history(history_state, authority_roots=authority_roots)
 
                     # Unknown-outcome reconciliation: if the exact requested
                     # pair is already the durable head, validate its immutable
