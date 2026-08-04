@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "b16e203b8cf8280e09c5b897d5edf7dd87e760f1",
+  "candidate_tree": "51749687a5e5b11e09e59d106277287134b35ba0",
+  "case_count": 10,
+  "fail_count": 4,
+  "pass_count": 6,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_IDEMPOTENCY_TRIGGER_v3.4_RECOVERY",
+  "rows_sha256": "9a1077bf5c07f541cefd9d808b3c46a21b7523f29bdf14db96e3b20bf59abf53",
+  "status": "FAIL"
+}
