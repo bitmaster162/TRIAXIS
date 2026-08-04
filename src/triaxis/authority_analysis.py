@@ -13,6 +13,8 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any
 
+from .integrity import canonical_sha256
+
 from .analysis_v5 import (
     ANALYSIS_BUNDLE_CONTRACT_ID,
     validate_analysis_bundle as validate_analysis_bundle_v5,
@@ -25,7 +27,8 @@ from .provenance_trust_state import (
 AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v1"
 AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v2"
 AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3"
-AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4"
+AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4"
+AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v5"
 
 
 def authority_analysis_required(value: Mapping[str, Any]) -> bool:
@@ -244,6 +247,22 @@ def validate_authority_analysis_bundle(
             "trust snapshot evaluation_tick exceeds the host-controlled evaluation tick",
         ))
 
+    # Authenticity and freshness do not establish analytical subject identity.
+    # Bind the signed snapshot to the exact frozen bundle and its exact
+    # provenance registry before any analytical preparation or state mutation.
+    bundle_sha256 = bundle_value.get("bundle_sha256")
+    trust_records_sha256 = canonical_sha256(bundle_value.get("provenance_registry", {}))
+    if parsed_envelope.snapshot.get("source_bundle_sha256") != bundle_sha256:
+        return _state_block(TrustSnapshotStateError(
+            "trust_snapshot_bundle_binding_mismatch",
+            "trust snapshot source bundle digest does not match the frozen Analysis Bundle",
+        ))
+    if parsed_envelope.snapshot.get("trust_records_sha256") != trust_records_sha256:
+        return _state_block(TrustSnapshotStateError(
+            "trust_snapshot_provenance_binding_mismatch",
+            "trust snapshot provenance digest does not match the frozen Analysis Bundle registry",
+        ))
+
     # Prepare is deliberately state-neutral. The raw snapshot was authenticated
     # by the host-configured envelope key, but the monotonic head is not advanced
     # until the exact frozen Analysis Bundle has passed all structural,
@@ -263,6 +282,8 @@ def validate_authority_analysis_bundle(
         trust_guard.accept(
             envelope_value,
             evaluation_tick=effective_tick,
+            expected_bundle_sha256=str(bundle_sha256),
+            expected_trust_records_sha256=trust_records_sha256,
         )
     except TrustSnapshotStateError as exc:
         return _state_block(exc)
@@ -309,6 +330,7 @@ __all__ = [
     "AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID",
     "AuthorityAnalysisSession",
     "authority_analysis_required",
     "authority_session_required_result",

@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "ca779fdd9a91808470a3a338e9e7f0ab5a0bb361",
+  "candidate_tree": "4c5c60a9fd8aa5a84b0c532a7257060876fbcd21",
+  "case_count": 9,
+  "fail_count": 0,
+  "pass_count": 9,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_SNAPSHOT_SUBJECT_BINDING_TRIGGER_v2.9_RECOVERY",
+  "rows_sha256": "527af490beff55733a9c4c242709a0eb8a166e14d5ce4309ad37acc9218257fd",
+  "status": "PASS"
+}

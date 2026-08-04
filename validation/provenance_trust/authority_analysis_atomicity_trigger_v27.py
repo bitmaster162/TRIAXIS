@@ -100,7 +100,7 @@ def _run_case(
 
 def _single(bundle: dict[str, Any], envelope_bundle: dict[str, Any] | None = None, *, host_tick: int = 5, tamper: bool = False):
     guard = ProvenanceTrustStateGuard(authority_roots=[_root()])
-    envelope = _envelope(envelope_bundle or _bundle(5), tick=5, sequence=1, parent=None)
+    envelope = _envelope(envelope_bundle if envelope_bundle is not None else bundle, tick=5, sequence=1, parent=None)
     if tamper:
         envelope = deepcopy(envelope)
         envelope["signature_b64"] = "AA=="
@@ -138,7 +138,7 @@ def _invalid_successor():
     second = _bundle(6)
     second["synthesis"]["rationale_claim_ids"] = ["D_ACTION_RISK"]
     second = reseal_analysis_bundle_v5(second)
-    second_env = _envelope(_bundle(6), tick=6, sequence=2, parent=first_env["envelope_sha256"])
+    second_env = _envelope(second, tick=6, sequence=2, parent=first_env["envelope_sha256"])
     result = AuthorityAnalysisSession(trust_guard=guard).validate(second, trust_envelope=second_env, trusted_evaluation_tick=6)
     return result, before, _state(guard)
 

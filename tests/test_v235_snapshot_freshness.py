@@ -4,8 +4,8 @@ from copy import deepcopy
 import unittest
 
 from triaxis import (
-    AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
     AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID,
+    AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID,
     AuthorityAnalysisSession,
 )
 from triaxis.provenance_trust_state import (
@@ -54,7 +54,7 @@ class V235SnapshotFreshnessTests(unittest.TestCase):
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3",
         )
         self.assertEqual(
-            AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
+            AUTHORITY_ANALYSIS_SESSION_V4_CONTRACT_ID,
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4",
         )
 
@@ -115,7 +115,12 @@ class V235SnapshotFreshnessTests(unittest.TestCase):
         envelope = self._envelope(bundle, snapshot_tick=5, issued_at=6)
         guard = self._guard()
         with self.assertRaises(TrustSnapshotStateError) as caught:
-            guard.accept(envelope, evaluation_tick=6)
+            guard.accept(
+                envelope,
+                evaluation_tick=6,
+                expected_bundle_sha256=bundle["bundle_sha256"],
+                expected_trust_records_sha256=__import__("triaxis.integrity", fromlist=["canonical_sha256"]).canonical_sha256(bundle["provenance_registry"]),
+            )
         self.assertEqual(caught.exception.code, "stale_trust_snapshot_state")
         self.assertIsNone(guard.checkpoint)
 

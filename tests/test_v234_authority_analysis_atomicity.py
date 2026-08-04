@@ -73,7 +73,7 @@ class V234AuthorityAnalysisAtomicityTests(unittest.TestCase):
         invalid = deepcopy(valid)
         invalid["synthesis"]["rationale_claim_ids"] = ["D_ACTION_RISK"]
         invalid = reseal_analysis_bundle_v5(invalid)
-        session, envelope = self._session(valid)
+        session, envelope = self._session(invalid)
         result = session.validate(
             invalid,
             trust_envelope=envelope,
@@ -101,7 +101,7 @@ class V234AuthorityAnalysisAtomicityTests(unittest.TestCase):
         invalid_second = deepcopy(valid_second)
         invalid_second["synthesis"]["rationale_claim_ids"] = ["D_ACTION_RISK"]
         invalid_second = reseal_analysis_bundle_v5(invalid_second)
-        snapshot = build_trust_fixture_v2(valid_second, evaluation_tick=6).snapshot
+        snapshot = build_trust_fixture_v2(invalid_second, evaluation_tick=6).snapshot
         second_envelope = seal_snapshot_envelope(
             snapshot,
             sequence=2,
@@ -123,15 +123,15 @@ class V234AuthorityAnalysisAtomicityTests(unittest.TestCase):
                 super().__init__(**kwargs)
                 self.accept_calls = 0
 
-            def accept(self, value, *, evaluation_tick):
+            def accept(self, value, *, evaluation_tick, **bindings):
                 self.accept_calls += 1
-                return super().accept(value, evaluation_tick=evaluation_tick)
+                return super().accept(value, evaluation_tick=evaluation_tick, **bindings)
 
         valid = self._bundle()
         invalid = deepcopy(valid)
         invalid["synthesis"]["rationale_claim_ids"] = ["D_ACTION_RISK"]
         invalid = reseal_analysis_bundle_v5(invalid)
-        snapshot = build_trust_fixture_v2(valid, evaluation_tick=5).snapshot
+        snapshot = build_trust_fixture_v2(invalid, evaluation_tick=5).snapshot
         root = build_snapshot_authority_root(valid_until=200)
         envelope = seal_snapshot_envelope(
             snapshot,
@@ -152,7 +152,7 @@ class V234AuthorityAnalysisAtomicityTests(unittest.TestCase):
 
     def test_final_commit_recheck_failure_blocks_without_state(self) -> None:
         class RacingGuard(ProvenanceTrustStateGuard):
-            def accept(self, value, *, evaluation_tick):
+            def accept(self, value, *, evaluation_tick, **bindings):
                 raise TrustSnapshotStateError(
                     "simulated_concurrent_state_change",
                     "state changed after preparation",

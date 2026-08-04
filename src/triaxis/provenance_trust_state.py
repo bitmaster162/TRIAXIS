@@ -191,7 +191,14 @@ class ProvenanceTrustStateGuard:
             authority_root=deepcopy(root),
         )
 
-    def accept(self, value: Mapping[str, Any], *, evaluation_tick: int) -> ProvenanceTrustCheckpoint:
+    def accept(
+        self,
+        value: Mapping[str, Any],
+        *,
+        evaluation_tick: int,
+        expected_bundle_sha256: str | None = None,
+        expected_trust_records_sha256: str | None = None,
+    ) -> ProvenanceTrustCheckpoint:
         if type(evaluation_tick) is not int or evaluation_tick < 0:
             raise TrustSnapshotStateError("invalid_trust_snapshot_evaluation_time", "evaluation_tick must be integer >= 0")
         with self._lock:
@@ -234,6 +241,30 @@ class ProvenanceTrustStateGuard:
                 raise TrustSnapshotStateError(
                     "future_trust_snapshot_state",
                     "trust snapshot evaluation_tick exceeds commit evaluation_tick",
+                )
+
+            # Exact subject binding is mandatory at the mutation boundary.
+            # AuthorityAnalysisSession computes these values from one frozen
+            # Analysis Bundle; low-level callers must supply the same bindings.
+            if not isinstance(expected_bundle_sha256, str) or len(expected_bundle_sha256) != 64:
+                raise TrustSnapshotStateError(
+                    "trust_snapshot_subject_binding_required",
+                    "expected bundle digest is required for checkpoint acceptance",
+                )
+            if not isinstance(expected_trust_records_sha256, str) or len(expected_trust_records_sha256) != 64:
+                raise TrustSnapshotStateError(
+                    "trust_snapshot_subject_binding_required",
+                    "expected provenance digest is required for checkpoint acceptance",
+                )
+            if authenticated.snapshot.get("source_bundle_sha256") != expected_bundle_sha256:
+                raise TrustSnapshotStateError(
+                    "trust_snapshot_bundle_binding_mismatch",
+                    "trust snapshot source bundle digest does not match commit subject",
+                )
+            if authenticated.snapshot.get("trust_records_sha256") != expected_trust_records_sha256:
+                raise TrustSnapshotStateError(
+                    "trust_snapshot_provenance_binding_mismatch",
+                    "trust snapshot provenance digest does not match commit subject",
                 )
 
             committed = ProvenanceTrustCheckpoint(
