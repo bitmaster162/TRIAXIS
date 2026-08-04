@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "113fc24457cdd70b6db5bb792509d09c4e039b36",
+  "candidate_tree": "0932cd6982cdace65728790004f9833f68ac6648",
+  "case_count": 9,
+  "fail_count": 5,
+  "pass_count": 4,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_NAMESPACE_CONFINEMENT_TRIGGER_v3.6_RECOVERY",
+  "rows_sha256": "300df1bedd9e28804a82ac14aaf15921a229a34b3bc53c628bc3be291fe695ef",
+  "status": "FAIL"
+}
