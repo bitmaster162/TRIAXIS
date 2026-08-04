@@ -15,6 +15,7 @@ from collections.abc import Mapping, Sequence
 from copy import deepcopy
 from pathlib import Path
 from threading import RLock
+from time import monotonic, sleep
 from typing import Any
 
 from .integrity import canonical_json_bytes, materialize_json
@@ -24,8 +25,9 @@ from .provenance_trust_state import (
     validate_checkpoint_receipt,
 )
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 _HEX64 = re.compile(r"[0-9a-f]{64}")
+_INITIALIZATION_LOCK = RLock()
 
 
 class CheckpointStoreError(RuntimeError):
@@ -95,26 +97,63 @@ class SQLiteCheckpointStore:
         self._path.parent.mkdir(parents=True, exist_ok=True)
         if self._path.exists() and self._path.is_symlink():
             raise CheckpointStoreError("checkpoint_store_unsafe_path", "checkpoint database path cannot be a symlink")
-        try:
-            self._conn = sqlite3.connect(
-                str(self._path),
-                timeout=float(timeout),
-                isolation_level=None,
-                check_same_thread=False,
-            )
-            self._conn.row_factory = sqlite3.Row
-            self._conn.execute("PRAGMA foreign_keys = ON")
-            self._conn.execute("PRAGMA journal_mode = WAL")
-            self._conn.execute("PRAGMA synchronous = FULL")
-            self._conn.execute(f"PRAGMA busy_timeout = {int(float(timeout) * 1000)}")
-            self._initialize_schema()
-            if self._path.exists():
+        deadline = monotonic() + float(timeout)
+        with _INITIALIZATION_LOCK:
+            while True:
+                conn: sqlite3.Connection | None = None
                 try:
-                    os.chmod(self._path, 0o600)
-                except OSError:
-                    pass
-        except sqlite3.Error as exc:
-            raise CheckpointStoreError("checkpoint_store_io_error", f"cannot open checkpoint store: {exc}") from exc
+                    conn = sqlite3.connect(
+                        str(self._path),
+                        timeout=float(timeout),
+                        isolation_level=None,
+                        check_same_thread=False,
+                    )
+                    conn.row_factory = sqlite3.Row
+                    # Configure lock waiting before any PRAGMA that may need a
+                    # schema or journal lock. The process-local lock removes the
+                    # common first-open race; the bounded retry also covers a
+                    # cooperating process finishing its own initialization.
+                    conn.execute(f"PRAGMA busy_timeout = {int(float(timeout) * 1000)}")
+                    conn.execute("PRAGMA foreign_keys = ON")
+                    conn.execute("PRAGMA journal_mode = WAL")
+                    conn.execute("PRAGMA synchronous = FULL")
+                    self._conn = conn
+                    self._initialize_schema()
+                    break
+                except sqlite3.OperationalError as exc:
+                    if conn is not None:
+                        try:
+                            conn.close()
+                        except sqlite3.Error:
+                            pass
+                    if "locked" not in str(exc).lower() or monotonic() >= deadline:
+                        raise CheckpointStoreError(
+                            "checkpoint_store_io_error",
+                            f"cannot open checkpoint store: {exc}",
+                        ) from exc
+                    sleep(min(0.025, max(0.0, deadline - monotonic())))
+                except CheckpointStoreError:
+                    if conn is not None:
+                        try:
+                            conn.close()
+                        except sqlite3.Error:
+                            pass
+                    raise
+                except sqlite3.Error as exc:
+                    if conn is not None:
+                        try:
+                            conn.close()
+                        except sqlite3.Error:
+                            pass
+                    raise CheckpointStoreError(
+                        "checkpoint_store_io_error",
+                        f"cannot open checkpoint store: {exc}",
+                    ) from exc
+        if self._path.exists():
+            try:
+                os.chmod(self._path, 0o600)
+            except OSError:
+                pass
 
     @property
     def path(self) -> Path:
@@ -145,41 +184,159 @@ class SQLiteCheckpointStore:
         if self._closed:
             raise CheckpointStoreError("checkpoint_store_closed", "checkpoint store is closed")
 
+    @staticmethod
+    def _create_base_tables(conn: sqlite3.Connection) -> None:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS checkpoint_current (
+                namespace TEXT PRIMARY KEY,
+                head_sha256 TEXT NOT NULL,
+                sequence INTEGER NOT NULL CHECK(sequence >= 1),
+                receipt_json BLOB NOT NULL,
+                envelope_json BLOB NOT NULL
+            ) WITHOUT ROWID
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS checkpoint_history (
+                namespace TEXT NOT NULL,
+                sequence INTEGER NOT NULL CHECK(sequence >= 1),
+                checkpoint_sha256 TEXT NOT NULL,
+                receipt_json BLOB NOT NULL,
+                envelope_json BLOB NOT NULL,
+                PRIMARY KEY(namespace, sequence),
+                UNIQUE(namespace, checkpoint_sha256)
+            ) WITHOUT ROWID
+            """
+        )
+
+    @staticmethod
+    def _create_ownership_table(conn: sqlite3.Connection) -> None:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS checkpoint_ownership (
+                checkpoint_sha256 TEXT PRIMARY KEY,
+                envelope_sha256 TEXT NOT NULL UNIQUE,
+                namespace TEXT NOT NULL,
+                sequence INTEGER NOT NULL CHECK(sequence >= 1)
+            ) WITHOUT ROWID
+            """
+        )
+
+    @staticmethod
+    def _table_exists(conn: sqlite3.Connection, name: str) -> bool:
+        row = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
+            (name,),
+        ).fetchone()
+        return row is not None
+
+    @staticmethod
+    def _decode_row_pair_unowned(row: sqlite3.Row) -> dict[str, Any]:
+        receipt = _decode_canonical(row["receipt_json"], label="checkpoint receipt")
+        envelope = _decode_canonical(row["envelope_json"], label="trust envelope")
+        validation = validate_checkpoint_receipt(receipt)
+        if validation.get("status") != "PASS":
+            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored checkpoint receipt is invalid")
+        head_key = "head_sha256" if "head_sha256" in row.keys() else "checkpoint_sha256"
+        if row[head_key] != receipt.get("checkpoint_sha256"):
+            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored head does not match receipt")
+        if row["sequence"] != receipt.get("sequence"):
+            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored sequence does not match receipt")
+        if envelope.get("envelope_sha256") != receipt.get("envelope_sha256"):
+            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored envelope does not match receipt")
+        return {
+            "namespace": str(row["namespace"]),
+            "head_sha256": str(row[head_key]),
+            "receipt": receipt,
+            "envelope": envelope,
+        }
+
+    def _migrate_v1_to_v2(self) -> None:
+        self._create_ownership_table(self._conn)
+        history_rows = self._conn.execute(
+            "SELECT namespace, checkpoint_sha256 AS head_sha256, sequence, "
+            "receipt_json, envelope_json FROM checkpoint_history "
+            "ORDER BY namespace ASC, sequence ASC"
+        ).fetchall()
+        checkpoint_owners: dict[str, str] = {}
+        envelope_owners: dict[str, str] = {}
+        pairs_by_key: dict[tuple[str, int], dict[str, Any]] = {}
+        for row in history_rows:
+            pair = self._decode_row_pair_unowned(row)
+            namespace = pair["namespace"]
+            checkpoint_sha256 = pair["head_sha256"]
+            envelope_sha256 = str(pair["receipt"]["envelope_sha256"])
+            previous_checkpoint_owner = checkpoint_owners.get(checkpoint_sha256)
+            previous_envelope_owner = envelope_owners.get(envelope_sha256)
+            if previous_checkpoint_owner is not None and previous_checkpoint_owner != namespace:
+                raise CheckpointStoreError(
+                    "checkpoint_store_namespace_replay",
+                    "legacy database assigns one checkpoint identity to multiple namespaces",
+                )
+            if previous_envelope_owner is not None and previous_envelope_owner != namespace:
+                raise CheckpointStoreError(
+                    "checkpoint_store_namespace_replay",
+                    "legacy database assigns one envelope identity to multiple namespaces",
+                )
+            checkpoint_owners[checkpoint_sha256] = namespace
+            envelope_owners[envelope_sha256] = namespace
+            pairs_by_key[(namespace, int(pair["receipt"]["sequence"]))] = pair
+            self._conn.execute(
+                "INSERT INTO checkpoint_ownership "
+                "(checkpoint_sha256, envelope_sha256, namespace, sequence) VALUES (?, ?, ?, ?)",
+                (
+                    checkpoint_sha256,
+                    envelope_sha256,
+                    namespace,
+                    pair["receipt"]["sequence"],
+                ),
+            )
+
+        current_rows = self._conn.execute(
+            "SELECT namespace, head_sha256, sequence, receipt_json, envelope_json "
+            "FROM checkpoint_current ORDER BY namespace ASC"
+        ).fetchall()
+        for row in current_rows:
+            current = self._decode_row_pair_unowned(row)
+            key = (current["namespace"], int(current["receipt"]["sequence"]))
+            if pairs_by_key.get(key) != current:
+                raise CheckpointStoreError(
+                    "checkpoint_store_corrupt_state",
+                    "legacy current checkpoint is missing or differs in immutable history",
+                )
+
     def _initialize_schema(self) -> None:
         self._conn.execute("BEGIN IMMEDIATE")
         try:
             version = int(self._conn.execute("PRAGMA user_version").fetchone()[0])
-            if version not in (0, SCHEMA_VERSION):
+            if version not in (0, 1, SCHEMA_VERSION):
                 raise CheckpointStoreError(
                     "checkpoint_store_schema_mismatch",
                     f"unsupported checkpoint store schema version {version}",
                 )
-            self._conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS checkpoint_current (
-                    namespace TEXT PRIMARY KEY,
-                    head_sha256 TEXT NOT NULL,
-                    sequence INTEGER NOT NULL CHECK(sequence >= 1),
-                    receipt_json BLOB NOT NULL,
-                    envelope_json BLOB NOT NULL
-                ) WITHOUT ROWID
-                """
-            )
-            self._conn.execute(
-                """
-                CREATE TABLE IF NOT EXISTS checkpoint_history (
-                    namespace TEXT NOT NULL,
-                    sequence INTEGER NOT NULL CHECK(sequence >= 1),
-                    checkpoint_sha256 TEXT NOT NULL,
-                    receipt_json BLOB NOT NULL,
-                    envelope_json BLOB NOT NULL,
-                    PRIMARY KEY(namespace, sequence),
-                    UNIQUE(namespace, checkpoint_sha256)
-                ) WITHOUT ROWID
-                """
-            )
             if version == 0:
+                self._create_base_tables(self._conn)
+                self._create_ownership_table(self._conn)
                 self._conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+            elif version == 1:
+                if not self._table_exists(self._conn, "checkpoint_current") or not self._table_exists(
+                    self._conn, "checkpoint_history"
+                ):
+                    raise CheckpointStoreError(
+                        "checkpoint_store_schema_mismatch",
+                        "legacy checkpoint schema is incomplete",
+                    )
+                self._migrate_v1_to_v2()
+                self._conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+            else:
+                for name in ("checkpoint_current", "checkpoint_history", "checkpoint_ownership"):
+                    if not self._table_exists(self._conn, name):
+                        raise CheckpointStoreError(
+                            "checkpoint_store_schema_mismatch",
+                            f"checkpoint schema v{SCHEMA_VERSION} is missing table {name}",
+                        )
             self._conn.execute("COMMIT")
         except Exception:
             self._conn.execute("ROLLBACK")
@@ -201,23 +358,79 @@ class SQLiteCheckpointStore:
             (self._namespace,),
         ).fetchone()
 
-    @staticmethod
-    def _row_pair(row: sqlite3.Row) -> dict[str, Any]:
-        receipt = _decode_canonical(row["receipt_json"], label="checkpoint receipt")
-        envelope = _decode_canonical(row["envelope_json"], label="trust envelope")
-        validation = validate_checkpoint_receipt(receipt)
-        if validation.get("status") != "PASS":
-            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored checkpoint receipt is invalid")
-        if row["head_sha256"] != receipt.get("checkpoint_sha256"):
-            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored head does not match receipt")
-        if row["sequence"] != receipt.get("sequence"):
-            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored sequence does not match receipt")
-        return {
-            "namespace": str(row["namespace"]),
-            "head_sha256": str(row["head_sha256"]),
-            "receipt": receipt,
-            "envelope": envelope,
-        }
+    def _owner_row(self, checkpoint_sha256: str) -> sqlite3.Row | None:
+        return self._conn.execute(
+            "SELECT checkpoint_sha256, envelope_sha256, namespace, sequence "
+            "FROM checkpoint_ownership WHERE checkpoint_sha256 = ?",
+            (checkpoint_sha256,),
+        ).fetchone()
+
+    def _assert_pair_ownership(self, pair: Mapping[str, Any]) -> None:
+        receipt = pair.get("receipt")
+        if not isinstance(receipt, Mapping):
+            raise CheckpointStoreError("checkpoint_store_corrupt_state", "stored checkpoint receipt missing")
+        checkpoint_sha256 = str(pair.get("head_sha256"))
+        owner = self._owner_row(checkpoint_sha256)
+        if owner is None:
+            raise CheckpointStoreError(
+                "checkpoint_store_corrupt_state",
+                "stored checkpoint has no durable namespace owner",
+            )
+        namespace = str(pair.get("namespace"))
+        if str(owner["namespace"]) != namespace:
+            raise CheckpointStoreError(
+                "checkpoint_store_namespace_replay",
+                "checkpoint identity is owned by another namespace",
+            )
+        if str(owner["envelope_sha256"]) != str(receipt.get("envelope_sha256")):
+            raise CheckpointStoreError(
+                "checkpoint_store_corrupt_state",
+                "checkpoint owner envelope differs from stored receipt",
+            )
+        if int(owner["sequence"]) != int(receipt.get("sequence", -1)):
+            raise CheckpointStoreError(
+                "checkpoint_store_corrupt_state",
+                "checkpoint owner sequence differs from stored receipt",
+            )
+
+    def _row_pair(self, row: sqlite3.Row) -> dict[str, Any]:
+        pair = self._decode_row_pair_unowned(row)
+        self._assert_pair_ownership(pair)
+        return pair
+
+    def _claim_pair_ownership(self, receipt: Mapping[str, Any]) -> None:
+        checkpoint_sha256 = str(receipt["checkpoint_sha256"])
+        envelope_sha256 = str(receipt["envelope_sha256"])
+        sequence = int(receipt["sequence"])
+        by_checkpoint = self._owner_row(checkpoint_sha256)
+        by_envelope = self._conn.execute(
+            "SELECT checkpoint_sha256, envelope_sha256, namespace, sequence "
+            "FROM checkpoint_ownership WHERE envelope_sha256 = ?",
+            (envelope_sha256,),
+        ).fetchone()
+        for owner in (by_checkpoint, by_envelope):
+            if owner is None:
+                continue
+            if str(owner["namespace"]) != self._namespace:
+                raise CheckpointStoreError(
+                    "checkpoint_store_namespace_replay",
+                    "checkpoint or envelope identity is already owned by another namespace",
+                )
+            if (
+                str(owner["checkpoint_sha256"]) != checkpoint_sha256
+                or str(owner["envelope_sha256"]) != envelope_sha256
+                or int(owner["sequence"]) != sequence
+            ):
+                raise CheckpointStoreError(
+                    "checkpoint_store_head_collision",
+                    "namespace owner identifies different checkpoint bytes",
+                )
+        if by_checkpoint is None and by_envelope is None:
+            self._conn.execute(
+                "INSERT INTO checkpoint_ownership "
+                "(checkpoint_sha256, envelope_sha256, namespace, sequence) VALUES (?, ?, ?, ?)",
+                (checkpoint_sha256, envelope_sha256, self._namespace, sequence),
+            )
 
     @staticmethod
     def _validated_pair(
@@ -439,6 +652,7 @@ class SQLiteCheckpointStore:
                                 f"successor {field} breaks durable root continuity",
                             )
 
+                self._claim_pair_ownership(receipt)
                 self._conn.execute(
                     "INSERT INTO checkpoint_history "
                     "(namespace, sequence, checkpoint_sha256, receipt_json, envelope_json) "
