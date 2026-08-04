@@ -1,0 +1,73 @@
+{
+  "case_count": 48,
+  "fail_count": 0,
+  "pass_count": 48,
+  "positive_control_count": 20,
+  "positive_control_pass_count": 20,
+  "protocol_count": 5,
+  "protocols": [
+    {
+      "candidate_commit": "1bbc5b7d5861856eee030544c44ee3ba2cf9fe78",
+      "candidate_tree": "dc1fb2ca3b5ed81cf3937df819dc676e19a4db9c",
+      "case_count": 9,
+      "fail_count": 0,
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_RECEIPT_TRIGGER_v3.1_RECOVERY",
+      "rows_sha256": "f9b8760f1b737ab6f56b42c56a1fb36c9ed53d23c3382752c5fbd9753c99e9b2",
+      "status": "PASS"
+    },
+    {
+      "candidate_commit": "c6f31e1d0797b2c2d067f80241011d4808e067f4",
+      "candidate_tree": "893cb92e8071d863a4b541f9c645c95e257798a3",
+      "case_count": 10,
+      "fail_count": 0,
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_RESTORE_TRIGGER_v3.2_RECOVERY",
+      "rows_sha256": "7782407da0ab64e8f384dabc468fe1bcc102dc90747717a7c635cde9ef4cca73",
+      "status": "PASS"
+    },
+    {
+      "candidate_commit": "3ae20af5e735128d3ea8e219e11d4d2c6e1893da",
+      "candidate_tree": "04a5e2458e010a92301e318d35f854ab38983219",
+      "case_count": 10,
+      "fail_count": 0,
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_DURABILITY_TRIGGER_v3.3_RECOVERY",
+      "rows_sha256": "57802a76efd245971a0e188332180fa4dfd4b214a1ee7b38a6099aafab93a3a4",
+      "status": "PASS"
+    },
+    {
+      "candidate_commit": "b16e203b8cf8280e09c5b897d5edf7dd87e760f1",
+      "candidate_tree": "51749687a5e5b11e09e59d106277287134b35ba0",
+      "case_count": 10,
+      "fail_count": 0,
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_IDEMPOTENCY_TRIGGER_v3.4_RECOVERY",
+      "rows_sha256": "66d0b59f20923162665f3307c520fa213798338bd4e77ecc2f1f4f38a3ae747f",
+      "status": "PASS"
+    },
+    {
+      "candidate_commit": "9ef3a3850278a45eddfc15361f0e9955cb746d70",
+      "candidate_tree": "f487f5bec1185077f447e092be389a6d7ea93a59",
+      "case_count": 9,
+      "fail_count": 0,
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_CRASH_ATOMICITY_TRIGGER_v3.5_RECOVERY",
+      "rows_sha256": "4860d8345c638c9291f027e11153ccc47b08268a1cda744a69dc42dacfa043e6",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "unit_status": "PASS",
+  "unit_test_count": 88
+}

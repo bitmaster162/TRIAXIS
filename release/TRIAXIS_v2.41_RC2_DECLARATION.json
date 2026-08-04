@@ -1,0 +1,15 @@
+{
+  "contract_id": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "version": "2.41-RC2-RECOVERED",
+  "revision_kind": "VALIDATION_ONLY",
+  "logic_commit": "9ef3a3850278a45eddfc15361f0e9955cb746d70",
+  "logic_tree": "f487f5bec1185077f447e092be389a6d7ea93a59",
+  "src_tree": "7aac55268992d113d2477f33b5bec06ac0d93211",
+  "post_product_evidence_commit": "54372437bb2eed08614e7f9fdc871c31ab592955",
+  "unit_test_count": 88,
+  "frozen_protocol_count": 5,
+  "frozen_protocol_case_count": 48,
+  "positive_control_count": 20,
+  "production_qualified": false,
+  "external_execution_permission_implied": false
+}
