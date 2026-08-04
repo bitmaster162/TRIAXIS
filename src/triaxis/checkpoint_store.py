@@ -347,6 +347,61 @@ class SQLiteCheckpointStore:
                         )
                 else:
                     current = self._row_pair(row)
+
+                    # Unknown-outcome reconciliation: if the exact requested
+                    # pair is already the durable head, validate its immutable
+                    # history position and exact predecessor claim, then return
+                    # without appending or updating anything.  A merely stale
+                    # but different writer must continue to fail CAS.
+                    if current["head_sha256"] == new_head:
+                        if current["receipt"] != receipt or current["envelope"] != envelope:
+                            raise CheckpointStoreError(
+                                "checkpoint_store_head_collision",
+                                "current head identifies different receipt or envelope bytes",
+                            )
+                        history_row = self._conn.execute(
+                            "SELECT namespace, checkpoint_sha256 AS head_sha256, sequence, "
+                            "receipt_json, envelope_json FROM checkpoint_history "
+                            "WHERE namespace = ? AND sequence = ?",
+                            (self._namespace, receipt["sequence"]),
+                        ).fetchone()
+                        if history_row is None or self._row_pair(history_row) != current:
+                            raise CheckpointStoreError(
+                                "checkpoint_store_corrupt_state",
+                                "current checkpoint is missing or differs in immutable history",
+                            )
+                        if receipt["sequence"] == 1:
+                            actual_previous_head = None
+                        else:
+                            previous_row = self._conn.execute(
+                                "SELECT namespace, checkpoint_sha256 AS head_sha256, sequence, "
+                                "receipt_json, envelope_json FROM checkpoint_history "
+                                "WHERE namespace = ? AND sequence = ?",
+                                (self._namespace, receipt["sequence"] - 1),
+                            ).fetchone()
+                            if previous_row is None:
+                                raise CheckpointStoreError(
+                                    "checkpoint_store_corrupt_state",
+                                    "idempotent checkpoint predecessor is missing from history",
+                                )
+                            previous = self._row_pair(previous_row)
+                            if (
+                                receipt["previous_envelope_sha256"]
+                                != previous["receipt"]["envelope_sha256"]
+                            ):
+                                raise CheckpointStoreError(
+                                    "checkpoint_store_corrupt_state",
+                                    "idempotent checkpoint parent differs from history",
+                                )
+                            actual_previous_head = previous["head_sha256"]
+                        if expected_previous_head != actual_previous_head:
+                            raise CheckpointStoreError(
+                                "checkpoint_store_cas_mismatch",
+                                "idempotent retry does not name the exact predecessor head",
+                            )
+                        self._conn.execute("COMMIT")
+                        return new_head
+
                     if current["head_sha256"] != expected_previous_head:
                         raise CheckpointStoreError(
                             "checkpoint_store_cas_mismatch",
