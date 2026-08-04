@@ -1,0 +1,13 @@
+{
+  "analysis_status": "PASS_WITH_CONDITIONS",
+  "external_execution_permission": "NOT_IMPLIED",
+  "implementation_status": "PARTIALLY_IMPLEMENTED",
+  "independent_certification": false,
+  "logic_commit": "fe465aabde921b6c0b94d449114cf202cc0b24da",
+  "logic_src_tree": "d941c4032c8e00ca71816f0f1f56cafa043d329a",
+  "post_product_evidence_commit": "1d8c289216ce27020208a458109f4a4295571187",
+  "production_qualified": false,
+  "specification_status": "RELEASE_CANDIDATE",
+  "validation_only": true,
+  "version": "TRIAXIS v2.44-RC2 Recovery"
+}

@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "fe465aabde921b6c0b94d449114cf202cc0b24da",
+  "candidate_tree": "03a396c877e03be87a56ea2442f9e9a15a37d7f7",
+  "case_count": 9,
+  "fail_count": 0,
+  "pass_count": 9,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_SCOPE_ATOMICITY_TRIGGER_v3.9_RECOVERY",
+  "rows_sha256": "8842d77fe7b61e28a86763dee89f4237eab662bc27fc461efd63493d6558b569",
+  "status": "PASS"
+}
