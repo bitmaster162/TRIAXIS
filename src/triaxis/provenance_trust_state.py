@@ -221,9 +221,21 @@ class ProvenanceTrustStateGuard:
                 ):
                     raise TrustSnapshotStateError("trust_snapshot_root_continuity_mismatch", "authority root continuity mismatch")
 
-            # v2.34 recovered behavior intentionally does not require the
-            # snapshot's own evaluation_tick to equal the host evaluation tick.
-            # The frozen v2.8 bank is expected to expose this gap.
+            # Defense in depth at the mutation boundary.  The authority layer
+            # performs the same comparison before analytical preparation, but
+            # direct guard callers must not bypass exact snapshot-time binding.
+            snapshot_tick = authenticated.snapshot["evaluation_tick"]
+            if snapshot_tick < evaluation_tick:
+                raise TrustSnapshotStateError(
+                    "stale_trust_snapshot_state",
+                    "trust snapshot evaluation_tick precedes commit evaluation_tick",
+                )
+            if snapshot_tick > evaluation_tick:
+                raise TrustSnapshotStateError(
+                    "future_trust_snapshot_state",
+                    "trust snapshot evaluation_tick exceeds commit evaluation_tick",
+                )
+
             committed = ProvenanceTrustCheckpoint(
                 sequence=int(envelope["sequence"]),
                 envelope_sha256=str(envelope["envelope_sha256"]),

@@ -5,8 +5,8 @@ from copy import deepcopy
 import unittest
 
 from triaxis import (
-    AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
     AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID,
+    AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID,
     AuthorityAnalysisSession,
 )
 from triaxis.provenance_trust_state import (
@@ -54,7 +54,7 @@ class V234AuthorityAnalysisAtomicityTests(unittest.TestCase):
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v2",
         )
         self.assertEqual(
-            AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
+            AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID,
             "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3",
         )
 

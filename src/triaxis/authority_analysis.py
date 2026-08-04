@@ -24,7 +24,8 @@ from .provenance_trust_state import (
 
 AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v1"
 AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v2"
-AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3"
+AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v3"
+AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID = "TRIAXIS_AUTHORITY_ANALYSIS_SESSION_v4"
 
 
 def authority_analysis_required(value: Mapping[str, Any]) -> bool:
@@ -228,6 +229,21 @@ def validate_authority_analysis_bundle(
             path="bundle.frame.evaluation_tick",
         )
 
+    # A signed snapshot is an observation of trust state at one exact logical
+    # time. Re-signing old bytes or keeping an old envelope valid cannot make
+    # omitted revocations or root changes observable at a later host tick.
+    snapshot_tick = parsed_envelope.snapshot.get("evaluation_tick")
+    if snapshot_tick < effective_tick:
+        return _state_block(TrustSnapshotStateError(
+            "stale_trust_snapshot_state",
+            "trust snapshot evaluation_tick precedes the host-controlled evaluation tick",
+        ))
+    if snapshot_tick > effective_tick:
+        return _state_block(TrustSnapshotStateError(
+            "future_trust_snapshot_state",
+            "trust snapshot evaluation_tick exceeds the host-controlled evaluation tick",
+        ))
+
     # Prepare is deliberately state-neutral. The raw snapshot was authenticated
     # by the host-configured envelope key, but the monotonic head is not advanced
     # until the exact frozen Analysis Bundle has passed all structural,
@@ -292,6 +308,7 @@ __all__ = [
     "AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID",
     "AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_V3_CONTRACT_ID",
     "AuthorityAnalysisSession",
     "authority_analysis_required",
     "authority_session_required_result",
