@@ -1,0 +1,60 @@
+{
+  "$id": "urn:triaxis:checkpoint-scope-envelope:v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "checkpoint_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_CHECKPOINT_SCOPE_ENVELOPE_v1"
+    },
+    "envelope_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "issued_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "key_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "namespace_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "scope_envelope_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signature_b64": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "authority_id",
+    "key_id",
+    "namespace_sha256",
+    "checkpoint_sha256",
+    "envelope_sha256",
+    "issued_at",
+    "valid_until",
+    "signature_b64",
+    "scope_envelope_sha256"
+  ],
+  "title": "TRIAXIS Checkpoint Scope Envelope v1",
+  "type": "object"
+}

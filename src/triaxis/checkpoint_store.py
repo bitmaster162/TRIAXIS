@@ -18,6 +18,12 @@ from threading import RLock
 from time import monotonic, sleep
 from typing import Any
 
+from .checkpoint_scope import (
+    AuthenticatedCheckpointScope,
+    CheckpointScopeError,
+    checkpoint_namespace_sha256,
+    verify_checkpoint_scope_envelope,
+)
 from .integrity import canonical_json_bytes, materialize_json
 from .provenance_trust_state import (
     ProvenanceTrustStateGuard,
@@ -25,7 +31,7 @@ from .provenance_trust_state import (
     validate_checkpoint_receipt,
 )
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 _HEX64 = re.compile(r"[0-9a-f]{64}")
 _INITIALIZATION_LOCK = RLock()
 
@@ -225,6 +231,21 @@ class SQLiteCheckpointStore:
         )
 
     @staticmethod
+    def _create_scope_table(conn: sqlite3.Connection) -> None:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS checkpoint_scope (
+                checkpoint_sha256 TEXT PRIMARY KEY,
+                envelope_sha256 TEXT NOT NULL,
+                namespace TEXT NOT NULL,
+                namespace_sha256 TEXT NOT NULL,
+                scope_envelope_sha256 TEXT NOT NULL UNIQUE,
+                scope_envelope_json BLOB NOT NULL
+            ) WITHOUT ROWID
+            """
+        )
+
+    @staticmethod
     def _table_exists(conn: sqlite3.Connection, name: str) -> bool:
         row = conn.execute(
             "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?",
@@ -326,7 +347,7 @@ class SQLiteCheckpointStore:
         self._conn.execute("BEGIN IMMEDIATE")
         try:
             version = int(self._conn.execute("PRAGMA user_version").fetchone()[0])
-            if version not in (0, 1, SCHEMA_VERSION):
+            if version not in (0, 1, 2, SCHEMA_VERSION):
                 raise CheckpointStoreError(
                     "checkpoint_store_schema_mismatch",
                     f"unsupported checkpoint store schema version {version}",
@@ -334,6 +355,7 @@ class SQLiteCheckpointStore:
             if version == 0:
                 self._create_base_tables(self._conn)
                 self._create_ownership_table(self._conn)
+                self._create_scope_table(self._conn)
                 self._conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             elif version == 1:
                 if not self._table_exists(self._conn, "checkpoint_current") or not self._table_exists(
@@ -344,9 +366,24 @@ class SQLiteCheckpointStore:
                         "legacy checkpoint schema is incomplete",
                     )
                 self._migrate_v1_to_v2()
+                self._create_scope_table(self._conn)
+                self._conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
+            elif version == 2:
+                for name in ("checkpoint_current", "checkpoint_history", "checkpoint_ownership"):
+                    if not self._table_exists(self._conn, name):
+                        raise CheckpointStoreError(
+                            "checkpoint_store_schema_mismatch",
+                            f"checkpoint schema v2 is missing table {name}",
+                        )
+                self._create_scope_table(self._conn)
                 self._conn.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
             else:
-                for name in ("checkpoint_current", "checkpoint_history", "checkpoint_ownership"):
+                for name in (
+                    "checkpoint_current",
+                    "checkpoint_history",
+                    "checkpoint_ownership",
+                    "checkpoint_scope",
+                ):
                     if not self._table_exists(self._conn, name):
                         raise CheckpointStoreError(
                             "checkpoint_store_schema_mismatch",
@@ -509,6 +546,153 @@ class SQLiteCheckpointStore:
                     f"immutable history authentication failed: {exc}",
                 ) from exc
 
+    def _scope_row(self, checkpoint_sha256: str) -> sqlite3.Row | None:
+        return self._conn.execute(
+            "SELECT checkpoint_sha256, envelope_sha256, namespace, namespace_sha256, "
+            "scope_envelope_sha256, scope_envelope_json FROM checkpoint_scope "
+            "WHERE checkpoint_sha256 = ?",
+            (checkpoint_sha256,),
+        ).fetchone()
+
+    @staticmethod
+    def _decode_scope_row(row: sqlite3.Row) -> dict[str, Any]:
+        scope = _decode_canonical(row["scope_envelope_json"], label="checkpoint scope envelope")
+        exact = {
+            "checkpoint_sha256": row["checkpoint_sha256"],
+            "envelope_sha256": row["envelope_sha256"],
+            "namespace_sha256": row["namespace_sha256"],
+            "scope_envelope_sha256": row["scope_envelope_sha256"],
+        }
+        for field, observed in exact.items():
+            if scope.get(field) != observed:
+                raise CheckpointStoreError(
+                    "checkpoint_store_corrupt_state",
+                    f"stored checkpoint scope field {field} differs from its indexed value",
+                )
+        return {
+            "namespace": str(row["namespace"]),
+            "scope": scope,
+        }
+
+    def _scope_rows_for_namespace(self) -> list[sqlite3.Row]:
+        return self._conn.execute(
+            "SELECT checkpoint_sha256, envelope_sha256, namespace, namespace_sha256, "
+            "scope_envelope_sha256, scope_envelope_json FROM checkpoint_scope "
+            "WHERE namespace = ? ORDER BY checkpoint_sha256 ASC",
+            (self._namespace,),
+        ).fetchall()
+
+    def _namespace_has_scope_rows(self) -> bool:
+        return self._conn.execute(
+            "SELECT 1 FROM checkpoint_scope WHERE namespace = ? LIMIT 1",
+            (self._namespace,),
+        ).fetchone() is not None
+
+    def _authenticate_scope_history(
+        self,
+        history: Sequence[Mapping[str, Any]],
+        *,
+        authority_roots: Sequence[Mapping[str, Any]],
+        current_scope_tick: int | None = None,
+    ) -> list[dict[str, Any]]:
+        authenticated: list[dict[str, Any]] = []
+        for index, pair in enumerate(history):
+            receipt = pair.get("receipt")
+            envelope = pair.get("envelope")
+            if not isinstance(receipt, Mapping) or not isinstance(envelope, Mapping):
+                raise CheckpointStoreError(
+                    "checkpoint_store_corrupt_state",
+                    "scoped history contains an invalid checkpoint pair",
+                )
+            checkpoint_sha256 = str(pair.get("head_sha256"))
+            row = self._scope_row(checkpoint_sha256)
+            if row is None:
+                raise CheckpointStoreError(
+                    "checkpoint_scope_history_incomplete",
+                    "scoped checkpoint history contains an entry without a signed scope",
+                )
+            decoded = self._decode_scope_row(row)
+            if decoded["namespace"] != self._namespace:
+                raise CheckpointStoreError(
+                    "checkpoint_scope_namespace_mismatch",
+                    "stored checkpoint scope belongs to another namespace",
+                )
+            tick = int(receipt.get("evaluation_tick", -1))
+            if current_scope_tick is not None and index == len(history) - 1:
+                tick = current_scope_tick
+            try:
+                verified = verify_checkpoint_scope_envelope(
+                    decoded["scope"],
+                    namespace=self._namespace,
+                    checkpoint_sha256=checkpoint_sha256,
+                    trust_envelope_sha256=str(envelope.get("envelope_sha256")),
+                    authority_roots=authority_roots,
+                    trusted_evaluation_tick=tick,
+                )
+            except CheckpointScopeError as exc:
+                raise CheckpointStoreError(exc.code, str(exc)) from exc
+            authenticated.append(deepcopy(verified.envelope))
+        return authenticated
+
+    def _claim_scope_binding(self, scope: AuthenticatedCheckpointScope) -> None:
+        checkpoint_sha256 = scope.checkpoint_sha256
+        scope_sha256 = scope.scope_envelope_sha256
+        rows = self._conn.execute(
+            "SELECT checkpoint_sha256, envelope_sha256, namespace, namespace_sha256, "
+            "scope_envelope_sha256, scope_envelope_json FROM checkpoint_scope "
+            "WHERE checkpoint_sha256 = ? OR scope_envelope_sha256 = ?",
+            (checkpoint_sha256, scope_sha256),
+        ).fetchall()
+        expected = {
+            "namespace": self._namespace,
+            "checkpoint_sha256": checkpoint_sha256,
+            "envelope_sha256": scope.trust_envelope_sha256,
+            "namespace_sha256": scope.namespace_sha256,
+            "scope_envelope_sha256": scope_sha256,
+            "scope": scope.envelope,
+        }
+        if rows:
+            if len(rows) != 1:
+                raise CheckpointStoreError(
+                    "checkpoint_scope_binding_conflict",
+                    "checkpoint scope identities resolve to multiple durable rows",
+                )
+            decoded = self._decode_scope_row(rows[0])
+            observed = {
+                "namespace": decoded["namespace"],
+                "checkpoint_sha256": str(rows[0]["checkpoint_sha256"]),
+                "envelope_sha256": str(rows[0]["envelope_sha256"]),
+                "namespace_sha256": str(rows[0]["namespace_sha256"]),
+                "scope_envelope_sha256": str(rows[0]["scope_envelope_sha256"]),
+                "scope": decoded["scope"],
+            }
+            if observed != expected:
+                raise CheckpointStoreError(
+                    "checkpoint_scope_binding_conflict",
+                    "checkpoint or scope identity is already bound to different bytes",
+                )
+            return
+        self._conn.execute(
+            "INSERT INTO checkpoint_scope "
+            "(checkpoint_sha256, envelope_sha256, namespace, namespace_sha256, "
+            "scope_envelope_sha256, scope_envelope_json) VALUES (?, ?, ?, ?, ?, ?)",
+            (
+                checkpoint_sha256,
+                scope.trust_envelope_sha256,
+                self._namespace,
+                scope.namespace_sha256,
+                scope_sha256,
+                canonical_json_bytes(scope.envelope),
+            ),
+        )
+
+    def _assert_unscoped_mode(self, checkpoint_sha256: str) -> None:
+        if self._namespace_has_scope_rows() or self._scope_row(checkpoint_sha256) is not None:
+            raise CheckpointStoreError(
+                "checkpoint_scope_envelope_required",
+                "a scope-bound checkpoint lineage cannot be changed through the legacy unscoped API",
+            )
+
     def _owner_row(self, checkpoint_sha256: str) -> sqlite3.Row | None:
         return self._conn.execute(
             "SELECT checkpoint_sha256, envelope_sha256, namespace, sequence "
@@ -643,6 +827,8 @@ class SQLiteCheckpointStore:
         authority_roots: Sequence[Mapping[str, Any]],
         expected_checkpoint_sha256: str,
     ) -> ProvenanceTrustStateGuard:
+        """Restore an explicitly legacy, unscoped durable lineage."""
+
         if not _is_hex64(expected_checkpoint_sha256):
             raise CheckpointStoreError(
                 "invalid_checkpoint_store_head",
@@ -652,6 +838,8 @@ class SQLiteCheckpointStore:
             self._ensure_open()
             try:
                 current, history = self._validated_namespace_state()
+                if current is not None:
+                    self._assert_unscoped_mode(current["head_sha256"])
             except sqlite3.Error as exc:
                 raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
             if current is None:
@@ -672,6 +860,72 @@ class SQLiteCheckpointStore:
             except TrustSnapshotStateError as exc:
                 raise CheckpointStoreError("checkpoint_store_corrupt_state", str(exc)) from exc
 
+    def get_scope_binding(self, *, checkpoint_sha256: str) -> dict[str, Any] | None:
+        """Return one exact stored scope envelope for inspection."""
+
+        if not _is_hex64(checkpoint_sha256):
+            raise CheckpointStoreError(
+                "invalid_checkpoint_store_head",
+                "checkpoint head must be 64 lowercase hexadecimal characters",
+            )
+        with self._lock:
+            self._ensure_open()
+            try:
+                row = self._scope_row(checkpoint_sha256)
+                if row is None:
+                    return None
+                return deepcopy(self._decode_scope_row(row))
+            except sqlite3.Error as exc:
+                raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
+
+    def load_guard_scoped(
+        self,
+        *,
+        authority_roots: Sequence[Mapping[str, Any]],
+        expected_checkpoint_sha256: str,
+        trusted_evaluation_tick: int,
+    ) -> ProvenanceTrustStateGuard:
+        """Restore a complete scope-bound lineage under host time and head anchors."""
+
+        if not _is_hex64(expected_checkpoint_sha256):
+            raise CheckpointStoreError(
+                "invalid_checkpoint_store_head",
+                "expected checkpoint head must be 64 lowercase hexadecimal characters",
+            )
+        if type(trusted_evaluation_tick) is not int or trusted_evaluation_tick < 0:
+            raise CheckpointStoreError(
+                "invalid_checkpoint_scope_time",
+                "trusted evaluation tick must be an integer >= 0",
+            )
+        with self._lock:
+            self._ensure_open()
+            try:
+                current, history = self._validated_namespace_state()
+            except sqlite3.Error as exc:
+                raise CheckpointStoreError("checkpoint_store_io_error", str(exc)) from exc
+            if current is None:
+                raise CheckpointStoreError("checkpoint_store_empty", "checkpoint store has no current state")
+            if current["head_sha256"] != expected_checkpoint_sha256:
+                raise CheckpointStoreError(
+                    "checkpoint_store_head_mismatch",
+                    "durable head does not match the host-controlled expected head",
+                )
+            self._authenticate_history(history, authority_roots=authority_roots)
+            self._authenticate_scope_history(
+                history,
+                authority_roots=authority_roots,
+                current_scope_tick=trusted_evaluation_tick,
+            )
+            try:
+                return ProvenanceTrustStateGuard.from_checkpoint(
+                    authority_roots=authority_roots,
+                    checkpoint_receipt=current["receipt"],
+                    trust_envelope=current["envelope"],
+                    expected_checkpoint_sha256=expected_checkpoint_sha256,
+                )
+            except TrustSnapshotStateError as exc:
+                raise CheckpointStoreError("checkpoint_store_corrupt_state", str(exc)) from exc
+
     def commit(
         self,
         *,
@@ -680,11 +934,80 @@ class SQLiteCheckpointStore:
         authority_roots: Sequence[Mapping[str, Any]],
         expected_previous_head: str | None,
     ) -> str:
+        """Commit through the retained legacy unscoped API.
+
+        Once any checkpoint in this namespace is scope-bound, this entry point
+        fails closed and callers must use :meth:`commit_scoped`.
+        """
+
         receipt, envelope, _ = self._validated_pair(
             checkpoint_receipt=checkpoint_receipt,
             trust_envelope=trust_envelope,
             authority_roots=authority_roots,
         )
+        return self._commit_validated(
+            receipt=receipt,
+            envelope=envelope,
+            authority_roots=authority_roots,
+            expected_previous_head=expected_previous_head,
+            checkpoint_scope=None,
+        )
+
+    def commit_scoped(
+        self,
+        *,
+        checkpoint_receipt: Mapping[str, Any],
+        trust_envelope: Mapping[str, Any],
+        checkpoint_scope_envelope: Mapping[str, Any] | None,
+        authority_roots: Sequence[Mapping[str, Any]],
+        expected_previous_head: str | None,
+        trusted_evaluation_tick: int,
+    ) -> str:
+        """Atomically commit one exact authority-scoped checkpoint pair."""
+
+        receipt, envelope, _ = self._validated_pair(
+            checkpoint_receipt=checkpoint_receipt,
+            trust_envelope=trust_envelope,
+            authority_roots=authority_roots,
+        )
+        if type(trusted_evaluation_tick) is not int or trusted_evaluation_tick < 0:
+            raise CheckpointStoreError(
+                "invalid_checkpoint_scope_time",
+                "trusted evaluation tick must be an integer >= 0",
+            )
+        try:
+            scope = verify_checkpoint_scope_envelope(
+                checkpoint_scope_envelope,
+                namespace=self._namespace,
+                checkpoint_sha256=str(receipt["checkpoint_sha256"]),
+                trust_envelope_sha256=str(envelope["envelope_sha256"]),
+                authority_roots=authority_roots,
+                trusted_evaluation_tick=trusted_evaluation_tick,
+            )
+        except CheckpointScopeError as exc:
+            raise CheckpointStoreError(exc.code, str(exc)) from exc
+        if trusted_evaluation_tick != receipt["evaluation_tick"]:
+            raise CheckpointStoreError(
+                "checkpoint_scope_time_mismatch",
+                "trusted evaluation tick must equal the checkpoint evaluation tick at commit",
+            )
+        return self._commit_validated(
+            receipt=receipt,
+            envelope=envelope,
+            authority_roots=authority_roots,
+            expected_previous_head=expected_previous_head,
+            checkpoint_scope=scope,
+        )
+
+    def _commit_validated(
+        self,
+        *,
+        receipt: dict[str, Any],
+        envelope: dict[str, Any],
+        authority_roots: Sequence[Mapping[str, Any]],
+        expected_previous_head: str | None,
+        checkpoint_scope: AuthenticatedCheckpointScope | None,
+    ) -> str:
         new_head = str(receipt["checkpoint_sha256"])
         if expected_previous_head is not None and not _is_hex64(expected_previous_head):
             raise CheckpointStoreError(
@@ -700,6 +1023,17 @@ class SQLiteCheckpointStore:
                 self._conn.execute("BEGIN IMMEDIATE")
                 row = self._select_current_row()
                 current_state, history_state = self._validated_namespace_state(current_row=row)
+                if checkpoint_scope is None:
+                    self._assert_unscoped_mode(new_head)
+                elif history_state:
+                    # A scoped successor may not silently upgrade an older
+                    # unscoped prefix. Every prior checkpoint needs its own
+                    # independently signed namespace intent.
+                    self._authenticate_scope_history(
+                        history_state,
+                        authority_roots=authority_roots,
+                    )
+
                 if row is None:
                     if current_state is not None or history_state:
                         raise CheckpointStoreError(
@@ -728,8 +1062,7 @@ class SQLiteCheckpointStore:
                     # Unknown-outcome reconciliation: if the exact requested
                     # pair is already the durable head, validate its immutable
                     # history position and exact predecessor claim, then return
-                    # without appending or updating anything.  A merely stale
-                    # but different writer must continue to fail CAS.
+                    # without appending or updating anything.
                     if current["head_sha256"] == new_head:
                         if current["receipt"] != receipt or current["envelope"] != envelope:
                             raise CheckpointStoreError(
@@ -776,6 +1109,8 @@ class SQLiteCheckpointStore:
                                 "checkpoint_store_cas_mismatch",
                                 "idempotent retry does not name the exact predecessor head",
                             )
+                        if checkpoint_scope is not None:
+                            self._claim_scope_binding(checkpoint_scope)
                         self._conn.execute("COMMIT")
                         return new_head
 
@@ -817,6 +1152,8 @@ class SQLiteCheckpointStore:
                             )
 
                 self._claim_pair_ownership(receipt)
+                if checkpoint_scope is not None:
+                    self._claim_scope_binding(checkpoint_scope)
                 self._conn.execute(
                     "INSERT INTO checkpoint_history "
                     "(namespace, sequence, checkpoint_sha256, receipt_json, envelope_json) "

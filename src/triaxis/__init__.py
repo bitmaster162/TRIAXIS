@@ -111,3 +111,23 @@ __all__ += [
     "CheckpointStoreError",
     "SQLiteCheckpointStore",
 ]
+
+from .checkpoint_scope import (
+    AuthenticatedCheckpointScope,
+    CHECKPOINT_NAMESPACE_CONTRACT_ID,
+    CHECKPOINT_SCOPE_ENVELOPE_CONTRACT_ID,
+    CheckpointScopeError,
+    checkpoint_namespace_sha256,
+    checkpoint_scope_schema_document,
+    verify_checkpoint_scope_envelope,
+)
+
+__all__ += [
+    "AuthenticatedCheckpointScope",
+    "CHECKPOINT_NAMESPACE_CONTRACT_ID",
+    "CHECKPOINT_SCOPE_ENVELOPE_CONTRACT_ID",
+    "CheckpointScopeError",
+    "checkpoint_namespace_sha256",
+    "checkpoint_scope_schema_document",
+    "verify_checkpoint_scope_envelope",
+]

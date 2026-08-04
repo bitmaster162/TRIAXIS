@@ -1,0 +1,99 @@
+{
+  "case_count": 75,
+  "fail_count": 0,
+  "pass_count": 75,
+  "positive_control_count": 32,
+  "positive_control_pass_count": 32,
+  "protocol_count": 8,
+  "protocols": [
+    {
+      "case_count": 9,
+      "fail_count": 0,
+      "file": "v31_SUMMARY.json",
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_RECEIPT_TRIGGER_v3.1_RECOVERY",
+      "rows_sha256": "f9b8760f1b737ab6f56b42c56a1fb36c9ed53d23c3382752c5fbd9753c99e9b2",
+      "status": "PASS"
+    },
+    {
+      "case_count": 10,
+      "fail_count": 0,
+      "file": "v32_SUMMARY.json",
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_RESTORE_TRIGGER_v3.2_RECOVERY",
+      "rows_sha256": "7782407da0ab64e8f384dabc468fe1bcc102dc90747717a7c635cde9ef4cca73",
+      "status": "PASS"
+    },
+    {
+      "case_count": 10,
+      "fail_count": 0,
+      "file": "v33_SUMMARY.json",
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_DURABILITY_TRIGGER_v3.3_RECOVERY",
+      "rows_sha256": "57802a76efd245971a0e188332180fa4dfd4b214a1ee7b38a6099aafab93a3a4",
+      "status": "PASS"
+    },
+    {
+      "case_count": 10,
+      "fail_count": 0,
+      "file": "v34_SUMMARY.json",
+      "pass_count": 10,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_IDEMPOTENCY_TRIGGER_v3.4_RECOVERY",
+      "rows_sha256": "66d0b59f20923162665f3307c520fa213798338bd4e77ecc2f1f4f38a3ae747f",
+      "status": "PASS"
+    },
+    {
+      "case_count": 9,
+      "fail_count": 0,
+      "file": "v35_SUMMARY.json",
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_CRASH_ATOMICITY_TRIGGER_v3.5_RECOVERY",
+      "rows_sha256": "4860d8345c638c9291f027e11153ccc47b08268a1cda744a69dc42dacfa043e6",
+      "status": "PASS"
+    },
+    {
+      "case_count": 9,
+      "fail_count": 0,
+      "file": "v36_SUMMARY.json",
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_NAMESPACE_CONFINEMENT_TRIGGER_v3.6_RECOVERY",
+      "rows_sha256": "f28c5c95ab130a087de24f8aa1af77017c1f7d5bd7e44f8377bbbec6288db5fc",
+      "status": "PASS"
+    },
+    {
+      "case_count": 9,
+      "fail_count": 0,
+      "file": "v37_SUMMARY.json",
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_HISTORY_INTEGRITY_TRIGGER_v3.7_RECOVERY",
+      "rows_sha256": "07a5ce4da7f03c19218024fe0e2beaa47dd485c89dd6f4683390521c9e020b42",
+      "status": "PASS"
+    },
+    {
+      "case_count": 9,
+      "fail_count": 0,
+      "file": "v38_SUMMARY.json",
+      "pass_count": 9,
+      "positive_control_count": 4,
+      "positive_control_pass_count": 4,
+      "protocol_id": "TRIAXIS_AUTHORITY_CHECKPOINT_SCOPE_BINDING_TRIGGER_v3.8_RECOVERY",
+      "rows_sha256": "f7ae6e7404bb67d7719316736c2eb6ea2846dedfe3b81e2f660a77a042c4477e",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

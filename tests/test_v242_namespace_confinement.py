@@ -95,7 +95,7 @@ class V242NamespaceConfinementTests(unittest.TestCase):
                     store.get_current()
             self.assertEqual(caught.exception.code, "checkpoint_store_corrupt_state")
 
-    def test_clean_v1_database_migrates_to_schema_v2(self) -> None:
+    def test_clean_v1_database_migrates_through_v2_to_current_schema(self) -> None:
         receipt, envelope = self._chain()
         with tempfile.TemporaryDirectory() as td:
             path = Path(td) / "state.sqlite3"
@@ -125,7 +125,7 @@ class V242NamespaceConfinementTests(unittest.TestCase):
             with SQLiteCheckpointStore(path, namespace="tenant:A") as store:
                 self.assertEqual(store.get_current()["head_sha256"], receipt["checkpoint_sha256"])
             conn = sqlite3.connect(path)
-            self.assertEqual(conn.execute("PRAGMA user_version").fetchone()[0], 2)
+            self.assertEqual(conn.execute("PRAGMA user_version").fetchone()[0], 3)
             owner = conn.execute(
                 "SELECT namespace, checkpoint_sha256 FROM checkpoint_ownership"
             ).fetchone()
