@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import re
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
 from dataclasses import dataclass
@@ -16,7 +17,8 @@ from .integrity import canonical_json_bytes, canonical_sha256, materialize_json
 
 TRUST_SNAPSHOT_CONTRACT_ID = "TRIAXIS_PROVENANCE_TRUST_SNAPSHOT_v2"
 TRUST_SNAPSHOT_ENVELOPE_CONTRACT_ID = "TRIAXIS_PROVENANCE_TRUST_SNAPSHOT_ENVELOPE_v1"
-TRUST_CHECKPOINT_CONTRACT_ID = "TRIAXIS_PROVENANCE_TRUST_CHECKPOINT_v2"
+TRUST_CHECKPOINT_V2_CONTRACT_ID = "TRIAXIS_PROVENANCE_TRUST_CHECKPOINT_v2"
+TRUST_CHECKPOINT_CONTRACT_ID = "TRIAXIS_PROVENANCE_TRUST_CHECKPOINT_v3"
 SNAPSHOT_AUTHORITY_ROOT_CONTRACT_ID = "TRIAXIS_SNAPSHOT_AUTHORITY_ROOT_v1"
 
 
@@ -47,17 +49,149 @@ class ProvenanceTrustCheckpoint:
     contract_id: str = TRUST_CHECKPOINT_CONTRACT_ID
 
     def as_dict(self) -> dict[str, Any]:
-        return {
+        receipt = {
             "contract_id": self.contract_id,
             "sequence": self.sequence,
             "envelope_sha256": self.envelope_sha256,
             "snapshot_sha256": self.snapshot_sha256,
+            "previous_envelope_sha256": self.previous_envelope_sha256,
             "issued_at": self.issued_at,
             "evaluation_tick": self.evaluation_tick,
             "authority_id": self.authority_id,
             "key_id": self.key_id,
             "authority_root_sha256": self.authority_root_sha256,
+            "checkpoint_sha256": "",
         }
+        receipt["checkpoint_sha256"] = canonical_sha256(receipt)
+        return receipt
+
+
+def _checkpoint_receipt_block(code: str, path: str, message: str) -> dict[str, Any]:
+    return {
+        "status": "BLOCK",
+        "primary_reason": "BLOCKED_BY_TRUST_CHECKPOINT_RECEIPT",
+        "errors": [{"code": code, "path": path, "message": message}],
+        "error_count": 1,
+    }
+
+
+def validate_checkpoint_receipt(value: Any) -> dict[str, Any]:
+    """Validate one self-contained public checkpoint receipt."""
+
+    try:
+        receipt = materialize_json(value)
+    except Exception as exc:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_materialization",
+            "checkpoint_receipt",
+            f"checkpoint receipt could not be materialized: {type(exc).__name__}",
+        )
+    if not isinstance(receipt, dict):
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_type",
+            "checkpoint_receipt",
+            "checkpoint receipt must be an object",
+        )
+
+    required = {
+        "contract_id", "sequence", "envelope_sha256", "snapshot_sha256",
+        "previous_envelope_sha256", "issued_at", "evaluation_tick",
+        "authority_id", "key_id", "authority_root_sha256",
+        "checkpoint_sha256",
+    }
+    missing = sorted(required - receipt.keys())
+    if missing:
+        return _checkpoint_receipt_block(
+            "missing_checkpoint_receipt_field",
+            f"checkpoint_receipt.{missing[0]}",
+            f"missing checkpoint receipt field: {missing[0]}",
+        )
+    extras = sorted(receipt.keys() - required)
+    if extras:
+        return _checkpoint_receipt_block(
+            "unknown_checkpoint_receipt_field",
+            f"checkpoint_receipt.{extras[0]}",
+            f"unknown checkpoint receipt field: {extras[0]}",
+        )
+    if receipt.get("contract_id") != TRUST_CHECKPOINT_CONTRACT_ID:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_contract",
+            "checkpoint_receipt.contract_id",
+            "unexpected checkpoint receipt contract",
+        )
+
+    observed_digest = receipt.get("checkpoint_sha256")
+    if not isinstance(observed_digest, str) or re.fullmatch(r"[0-9a-f]{64}", observed_digest) is None:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_digest",
+            "checkpoint_receipt.checkpoint_sha256",
+            "checkpoint_sha256 must be 64 lowercase hexadecimal characters",
+        )
+    digest_payload = dict(receipt)
+    digest_payload["checkpoint_sha256"] = ""
+    if canonical_sha256(digest_payload) != observed_digest:
+        return _checkpoint_receipt_block(
+            "checkpoint_receipt_digest_mismatch",
+            "checkpoint_receipt.checkpoint_sha256",
+            "checkpoint receipt digest mismatch",
+        )
+
+    sequence = receipt.get("sequence")
+    if type(sequence) is not int or sequence < 1:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_sequence",
+            "checkpoint_receipt.sequence",
+            "sequence must be an integer >= 1",
+        )
+    for field in ("issued_at", "evaluation_tick"):
+        if type(receipt.get(field)) is not int or receipt[field] < 0:
+            return _checkpoint_receipt_block(
+                "invalid_checkpoint_receipt_time",
+                f"checkpoint_receipt.{field}",
+                f"{field} must be an integer >= 0",
+            )
+    if receipt["issued_at"] > receipt["evaluation_tick"]:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_time",
+            "checkpoint_receipt.evaluation_tick",
+            "evaluation_tick cannot precede issued_at",
+        )
+    for field in ("envelope_sha256", "snapshot_sha256", "authority_root_sha256"):
+        value_field = receipt.get(field)
+        if not isinstance(value_field, str) or re.fullmatch(r"[0-9a-f]{64}", value_field) is None:
+            return _checkpoint_receipt_block(
+                "invalid_checkpoint_receipt_digest",
+                f"checkpoint_receipt.{field}",
+                f"{field} must be 64 lowercase hexadecimal characters",
+            )
+    for field in ("authority_id", "key_id"):
+        if not isinstance(receipt.get(field), str) or not receipt[field]:
+            return _checkpoint_receipt_block(
+                "invalid_checkpoint_receipt_identity",
+                f"checkpoint_receipt.{field}",
+                f"{field} must be a non-empty string",
+            )
+    parent = receipt.get("previous_envelope_sha256")
+    if sequence == 1:
+        if parent is not None:
+            return _checkpoint_receipt_block(
+                "invalid_checkpoint_receipt_parent",
+                "checkpoint_receipt.previous_envelope_sha256",
+                "genesis receipt parent must be null",
+            )
+    elif not isinstance(parent, str) or re.fullmatch(r"[0-9a-f]{64}", parent) is None:
+        return _checkpoint_receipt_block(
+            "invalid_checkpoint_receipt_parent",
+            "checkpoint_receipt.previous_envelope_sha256",
+            "successor receipt parent must be a 64-hex envelope digest",
+        )
+    return {
+        "status": "PASS",
+        "primary_reason": "CHECKPOINT_RECEIPT_VALID",
+        "errors": [],
+        "error_count": 0,
+        "checkpoint_sha256": observed_digest,
+    }
 
 
 def _root_digest(root: Mapping[str, Any]) -> str:
@@ -288,7 +422,9 @@ __all__ = [
     "ProvenanceTrustStateGuard",
     "SNAPSHOT_AUTHORITY_ROOT_CONTRACT_ID",
     "TRUST_CHECKPOINT_CONTRACT_ID",
+    "TRUST_CHECKPOINT_V2_CONTRACT_ID",
     "TRUST_SNAPSHOT_CONTRACT_ID",
     "TRUST_SNAPSHOT_ENVELOPE_CONTRACT_ID",
     "TrustSnapshotStateError",
+    "validate_checkpoint_receipt",
 ]

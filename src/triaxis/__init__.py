@@ -75,7 +75,10 @@ from .authority_analysis import (
 from .provenance_trust_state import (
     ProvenanceTrustCheckpoint,
     ProvenanceTrustStateGuard,
+    TRUST_CHECKPOINT_CONTRACT_ID,
+    TRUST_CHECKPOINT_V2_CONTRACT_ID,
     TrustSnapshotStateError,
+    validate_checkpoint_receipt,
 )
 
 __all__ += [
@@ -89,9 +92,12 @@ __all__ += [
     "AuthorityAnalysisSession",
     "ProvenanceTrustCheckpoint",
     "ProvenanceTrustStateGuard",
+    "TRUST_CHECKPOINT_CONTRACT_ID",
+    "TRUST_CHECKPOINT_V2_CONTRACT_ID",
     "TrustSnapshotStateError",
     "authority_analysis_required",
     "authority_session_required_result",
     "validate_analysis_bundle_v5",
     "validate_authority_analysis_bundle",
+    "validate_checkpoint_receipt",
 ]
