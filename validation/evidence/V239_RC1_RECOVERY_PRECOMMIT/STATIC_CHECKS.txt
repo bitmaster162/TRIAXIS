@@ -1,0 +1,5 @@
+COMPILEALL: PASS
+GIT_DIFF_CHECK: PASS
+SECRET_SCAN: PASS
+SECRET_SCAN_SCOPE: 6 candidate product/spec/release/test files.
+TRIGGER_REPRODUCIBILITY: PASS — RESULTS.jsonl and SUMMARY.json byte-identical across two process invocations.

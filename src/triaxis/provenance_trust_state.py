@@ -234,6 +234,114 @@ class ProvenanceTrustStateGuard:
         self._checkpoint: ProvenanceTrustCheckpoint | None = None
         self._lock = RLock()
 
+    @classmethod
+    def from_checkpoint(
+        cls,
+        *,
+        authority_roots: Sequence[Mapping[str, Any]],
+        checkpoint_receipt: Mapping[str, Any],
+        trust_envelope: Mapping[str, Any],
+        expected_checkpoint_sha256: str,
+    ) -> "ProvenanceTrustStateGuard":
+        """Restore one authenticated checkpoint under an external head anchor.
+
+        The receipt self-digest is only tamper evidence.  Restart continuity
+        additionally requires the exact signed envelope and a host-controlled
+        expected-head digest stored outside this process.  No state is exposed
+        until every receipt, envelope, root, time and identity binding passes.
+        """
+
+        guard = cls(authority_roots=authority_roots)
+
+        try:
+            receipt_value = materialize_json(checkpoint_receipt)
+        except Exception as exc:
+            raise TrustSnapshotStateError(
+                "invalid_checkpoint_receipt_materialization",
+                f"checkpoint receipt could not be materialized: {type(exc).__name__}",
+            ) from exc
+        receipt_result = validate_checkpoint_receipt(receipt_value)
+        if receipt_result.get("status") != "PASS":
+            errors = receipt_result.get("errors")
+            first = errors[0] if isinstance(errors, list) and errors else {}
+            code = str(first.get("code", "invalid_checkpoint_receipt"))
+            message = str(first.get("message", "checkpoint receipt invalid"))
+            raise TrustSnapshotStateError(code, message)
+        if not isinstance(receipt_value, dict):  # guarded by validator; type narrowing
+            raise TrustSnapshotStateError(
+                "invalid_checkpoint_receipt_type",
+                "checkpoint receipt must be an object",
+            )
+
+        if (
+            not isinstance(expected_checkpoint_sha256, str)
+            or re.fullmatch(r"[0-9a-f]{64}", expected_checkpoint_sha256) is None
+        ):
+            raise TrustSnapshotStateError(
+                "invalid_checkpoint_restore_head",
+                "expected checkpoint head must be 64 lowercase hexadecimal characters",
+            )
+        if receipt_value["checkpoint_sha256"] != expected_checkpoint_sha256:
+            raise TrustSnapshotStateError(
+                "checkpoint_restore_head_mismatch",
+                "checkpoint receipt does not match the host-controlled expected head",
+            )
+
+        authenticated = guard.authenticate_envelope(trust_envelope)
+        envelope = authenticated.envelope
+        snapshot = authenticated.snapshot
+        root_digest = _root_digest(authenticated.authority_root)
+
+        exact_pairs = (
+            ("sequence", envelope.get("sequence")),
+            ("envelope_sha256", envelope.get("envelope_sha256")),
+            ("snapshot_sha256", envelope.get("snapshot_sha256")),
+            ("previous_envelope_sha256", envelope.get("previous_envelope_sha256")),
+            ("issued_at", envelope.get("issued_at")),
+            ("evaluation_tick", snapshot.get("evaluation_tick")),
+            ("authority_id", envelope.get("authority_id")),
+            ("key_id", envelope.get("key_id")),
+            ("authority_root_sha256", root_digest),
+        )
+        for field, expected_value in exact_pairs:
+            if receipt_value.get(field) != expected_value:
+                raise TrustSnapshotStateError(
+                    "checkpoint_restore_envelope_mismatch",
+                    f"checkpoint receipt field {field} does not match the signed envelope",
+                )
+
+        evaluation_tick = int(receipt_value["evaluation_tick"])
+        if evaluation_tick < int(envelope["issued_at"]):
+            raise TrustSnapshotStateError(
+                "checkpoint_restore_envelope_mismatch",
+                "checkpoint evaluation time precedes envelope issuance",
+            )
+        if evaluation_tick > int(envelope["valid_until"]):
+            raise TrustSnapshotStateError(
+                "checkpoint_restore_envelope_mismatch",
+                "checkpoint evaluation time exceeds envelope validity",
+            )
+
+        restored = ProvenanceTrustCheckpoint(
+            sequence=int(receipt_value["sequence"]),
+            envelope_sha256=str(receipt_value["envelope_sha256"]),
+            snapshot_sha256=str(receipt_value["snapshot_sha256"]),
+            previous_envelope_sha256=receipt_value["previous_envelope_sha256"],
+            issued_at=int(receipt_value["issued_at"]),
+            evaluation_tick=evaluation_tick,
+            authority_id=str(receipt_value["authority_id"]),
+            key_id=str(receipt_value["key_id"]),
+            authority_root_sha256=str(receipt_value["authority_root_sha256"]),
+        )
+        if restored.as_dict() != receipt_value:
+            raise TrustSnapshotStateError(
+                "checkpoint_restore_receipt_mismatch",
+                "restored checkpoint does not reproduce the exact public receipt",
+            )
+        with guard._lock:
+            guard._checkpoint = restored
+        return guard
+
     @property
     def checkpoint(self) -> ProvenanceTrustCheckpoint | None:
         with self._lock:
