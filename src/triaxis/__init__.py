@@ -101,3 +101,13 @@ __all__ += [
     "validate_authority_analysis_bundle",
     "validate_checkpoint_receipt",
 ]
+
+from .checkpoint_store import (
+    CheckpointStoreError,
+    SQLiteCheckpointStore,
+)
+
+__all__ += [
+    "CheckpointStoreError",
+    "SQLiteCheckpointStore",
+]

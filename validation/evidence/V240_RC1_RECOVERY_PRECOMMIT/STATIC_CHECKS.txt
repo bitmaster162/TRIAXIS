@@ -1,0 +1,5 @@
+COMPILEALL: PASS
+GIT_DIFF_CHECK: PASS
+SECRET_SCAN: PASS
+RESOURCE_WARNING_GATE: PASS — full suite executed with ResourceWarning promoted to error.
+TRIGGER_REPRODUCIBILITY: PASS — RESULTS and SUMMARY byte-identical across two invocations.
