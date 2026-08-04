@@ -54,3 +54,38 @@ __all__ = [
     "validate_scenario_v1",
     "validate_scenario_v2",
 ]
+
+# Recovered authority-analysis surface imported from the partial v2.34 snapshot.
+from .analysis_v5 import (
+    ANALYSIS_BUNDLE_CONTRACT_ID,
+    validate_analysis_bundle as validate_analysis_bundle_v5,
+)
+from .authority_analysis import (
+    AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID,
+    AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID,
+    AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID,
+    AuthorityAnalysisSession,
+    authority_analysis_required,
+    authority_session_required_result,
+    validate_authority_analysis_bundle,
+)
+from .provenance_trust_state import (
+    ProvenanceTrustCheckpoint,
+    ProvenanceTrustStateGuard,
+    TrustSnapshotStateError,
+)
+
+__all__ += [
+    "ANALYSIS_BUNDLE_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_V1_CONTRACT_ID",
+    "AUTHORITY_ANALYSIS_SESSION_V2_CONTRACT_ID",
+    "AuthorityAnalysisSession",
+    "ProvenanceTrustCheckpoint",
+    "ProvenanceTrustStateGuard",
+    "TrustSnapshotStateError",
+    "authority_analysis_required",
+    "authority_session_required_result",
+    "validate_analysis_bundle_v5",
+    "validate_authority_analysis_bundle",
+]
