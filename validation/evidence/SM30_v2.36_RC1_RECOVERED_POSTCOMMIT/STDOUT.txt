@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "10d0db544692431e2cfd152922eaac2f27c3f0f3",
+  "candidate_tree": "0ffafd760e8424c2f639961208f015ee23492d3f",
+  "case_count": 9,
+  "fail_count": 5,
+  "pass_count": 4,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_SUBJECT_MATERIALIZATION_TRIGGER_v3.0_RECOVERY",
+  "rows_sha256": "3450bb756bc1aa55aaa968d7c62b63d7522d0631ce36146079dd8f6e04d8d917",
+  "status": "FAIL"
+}
