@@ -1,0 +1,12 @@
+{
+  "candidate_commit": "fc364c61a8d7f8483b29fbb5bb82be3b80be7b29",
+  "candidate_tree": "303a85faae969cf48fbd1b4f1c45c537fb1e59b7",
+  "case_count": 9,
+  "fail_count": 5,
+  "pass_count": 4,
+  "positive_control_count": 4,
+  "positive_control_pass_count": 4,
+  "protocol_id": "TRIAXIS_AUTHORITY_SNAPSHOT_FRESHNESS_TRIGGER_v2.8_RECOVERY",
+  "rows_sha256": "11eedcd27f8f47190d10753ee3418541b6caad013eea7531b612e9f47342b0e4",
+  "status": "FAIL"
+}
