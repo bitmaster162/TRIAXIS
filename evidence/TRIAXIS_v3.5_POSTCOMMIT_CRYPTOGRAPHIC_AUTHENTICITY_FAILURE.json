@@ -1,0 +1,46 @@
+{
+  "case_count": 6,
+  "contract_id": "TRIAXIS_CRYPTOGRAPHIC_ISSUER_AUTHENTICITY_TRIGGER_RESULT_v1",
+  "material_failure_count": 5,
+  "rows": [
+    {
+      "case_id": "FORGED_ASSURANCE_ISSUER",
+      "expected": "DENY",
+      "observed": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "FORGED_STATE_ADAPTER",
+      "expected": "DENY",
+      "observed": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "FORGED_APPROVAL_PRINCIPALS",
+      "expected": "DENY",
+      "observed": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "FORGED_POLICY_ISSUER",
+      "expected": "DENY",
+      "observed": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "FORGED_GATE_TOKEN",
+      "expected": "REJECT",
+      "observed": "PREPARED",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "DIGEST_INTEGRITY_POSITIVE_CONTROL",
+      "expected": "ALLOW_IN_V35_MODEL",
+      "observed": "ALLOW",
+      "positive_control": true,
+      "status": "PASS"
+    }
+  ],
+  "status": "FAIL",
+  "target": "TRIAXIS-v3.5-RC2-OPERATIONAL-ASSURANCE"
+}

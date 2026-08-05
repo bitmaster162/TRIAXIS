@@ -1,0 +1,10 @@
+{
+  "contract_id": "TRIAXIS_GIT_BASELINE_GATE_v1",
+  "baseline_tag": "TRIAXIS-v3.5-RC2-OPERATIONAL-ASSURANCE",
+  "baseline_commit": "760512161b43354a19ecbd981e3e391dd147eb60",
+  "baseline_tree": "444485eaaf0c99ab391b42cb4d8de97585bde6eb",
+  "baseline_src_tree": "09188da51ebee18b3a987ba9b799de4f33756369",
+  "worktree_clean_before_change": true,
+  "new_evidence_class": "CRYPTOGRAPHIC_ISSUER_AUTHENTICITY",
+  "status": "PASS"
+}
