@@ -4,9 +4,9 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v3.7-RC1 Monotonic Trust Registry**; Release Candidate, not production-qualified.
+Current candidate: **TRIAXIS v3.8-RC1 External Registry Anchor**; Release Candidate, not production-qualified.
 
-## TRIAXIS v3.7 cryptographic operational assurance
+## TRIAXIS v3.8 cryptographic operational assurance
 
 The research-integrated branch now includes executable reference primitives for:
 
@@ -18,6 +18,7 @@ The research-integrated branch now includes executable reference primitives for:
 - Ed25519-authenticated assurance, state, policy, approvals and gate tokens;
 - purpose-bound public-key trust registry with validity and revocation;
 - root-signed monotonic registry snapshots with durable rollback/fork rejection;
+- separately signed external head witness for whole-local-database rollback detection;
 - equal-budget project-falsification benchmarking.
 
 Run the complete test suite:
@@ -31,6 +32,7 @@ Run the cryptographic authenticity closure trigger:
 ```bash
 PYTHONPATH=src:. python validation/TRIAXIS_CRYPTOGRAPHIC_ISSUER_AUTHENTICITY_TRIGGER_v2.py
 PYTHONPATH=src:. python validation/TRIAXIS_TRUST_REGISTRY_ROLLBACK_TRIGGER_v2.py
+PYTHONPATH=src:. python validation/TRIAXIS_WHOLE_REGISTRY_DATABASE_ROLLBACK_TRIGGER_v2.py
 ```
 
 Generate the legacy digest-only end-to-end example:
@@ -45,4 +47,4 @@ Score a benchmark result file:
 PYTHONPATH=src:. python tools/triaxis_fail_bench.py benchmark/results_template.jsonl
 ```
 
-The package is not a production gateway. KMS/HSM custody, an external whole-database anti-rollback anchor, complete mediation, trusted time and independent empirical validation remain integration requirements.
+The package is not a production gateway. KMS/HSM custody, challenge-bound anchor freshness, complete mediation, trusted time and independent empirical validation remain integration requirements.

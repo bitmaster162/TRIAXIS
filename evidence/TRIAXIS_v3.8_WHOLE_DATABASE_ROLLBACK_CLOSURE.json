@@ -1,0 +1,22 @@
+{
+  "case_count": 2,
+  "contract_id": "TRIAXIS_WHOLE_REGISTRY_DATABASE_ROLLBACK_TRIGGER_RESULT_v2",
+  "pass_count": 2,
+  "rows": [
+    {
+      "case_id": "CURRENT_HEAD_MATCHES_EXTERNAL_WITNESS",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "RESTORED_OLD_DATABASE_VS_CURRENT_EXTERNAL_WITNESS",
+      "expected": "local_registry_rollback",
+      "observed": "local_registry_rollback",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.8-RC1-EXTERNAL-REGISTRY-ANCHOR"
+}

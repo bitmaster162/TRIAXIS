@@ -53,7 +53,8 @@
           "POLICY_BUNDLE",
           "AUTHORIZATION_TOKEN",
           "EXECUTION_RECEIPT",
-          "TRUST_REGISTRY_SNAPSHOT"
+          "TRUST_REGISTRY_SNAPSHOT",
+          "TRUST_REGISTRY_ANCHOR"
         ]
       }
     },
