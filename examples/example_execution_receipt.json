@@ -1,0 +1,10 @@
+{
+  "completed_at": 7,
+  "contract_id": "TRIAXIS_EXECUTION_RECEIPT_v1",
+  "effect_id": "effect:example",
+  "nonce": "nonce:example",
+  "outcome_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "receipt_sha256": "2bbc7d5b8d4d4f9ab8bb84aac0ec78abe73e43373769a3945372663ab7cda0c2",
+  "resolution": "DIRECT",
+  "token_sha256": "3ceab16da8a844ee5d4e64decb44985ecddb1da4214eee787b72effd7afebc91"
+}

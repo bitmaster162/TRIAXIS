@@ -1,0 +1,13 @@
+{
+  "adapter_id": "git-adapter:example",
+  "attestation_level": "AUTHENTICATED",
+  "contract_id": "TRIAXIS_AUTHENTICATED_STATE_WITNESS_v1",
+  "object_id": "repo:triaxis",
+  "observed_at": 5,
+  "state_id": "state:triaxis",
+  "state_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "subject_id": "subject:triaxis",
+  "valid_until": 20,
+  "version": 1,
+  "witness_sha256": "28accb4d645658940c57578e9ec841ed6c569c1cb3abd6fb3a0fd0078c808c61"
+}

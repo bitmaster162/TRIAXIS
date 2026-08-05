@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_policy_bundle_v1.schema.json",
+  "title": "TRIAXIS Policy Bundle v1",
+  "type": "object",
+  "required": ["contract_id", "policy_id", "subject_id", "issuer_id", "sequence", "minimum_accepted_sequence", "state", "effective_from", "valid_until", "allowed_capabilities", "allowed_tools", "allowed_targets", "max_risk_class", "required_approval_types", "supersedes_policy_sha256", "policy_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_POLICY_BUNDLE_v1"},
+    "policy_id": {"type": "string", "minLength": 1},
+    "subject_id": {"type": "string", "minLength": 1},
+    "issuer_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "minimum_accepted_sequence": {"type": "integer", "minimum": 1},
+    "state": {"enum": ["DRAFT", "SHADOW", "ACTIVE", "DEPRECATED", "REVOKED"]},
+    "effective_from": {"type": ["integer", "null"], "minimum": 0},
+    "valid_until": {"type": ["integer", "null"], "minimum": 0},
+    "allowed_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "allowed_tools": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "allowed_targets": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "max_risk_class": {"enum": ["R0", "R1", "R2", "R3", "R4"]},
+    "required_approval_types": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "supersedes_policy_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

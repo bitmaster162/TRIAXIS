@@ -1,0 +1,54 @@
+{
+  "claims": [
+    {
+      "claim_id": "C1",
+      "claim_kind": "STATE_FACT",
+      "claim_sha256": "dc0481933c9dfeb65d71f819c77857466de9e5bcb6f5ed5c18f8c58ba27345e6",
+      "contract_id": "TRIAXIS_CLAIM_RECORD_v1",
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ],
+      "load_bearing": true,
+      "required_attestation": "AUTHENTICATED",
+      "required_independent_groups": 2,
+      "requires_authoritative_adapter": true,
+      "subject_id": "subject:triaxis"
+    }
+  ],
+  "contract_id": "TRIAXIS_EVIDENCE_PACKAGE_v1",
+  "evaluation_tick": 6,
+  "package_sha256": "3254227a04f27a1138a18d9cf4a7202c8b9c23077dc8384358d5e2f807d178b8",
+  "sources": [
+    {
+      "attestation_level": "AUTHENTICATED",
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contract_id": "TRIAXIS_SOURCE_RECORD_v1",
+      "observed_at": 5,
+      "polarity": "SUPPORTS",
+      "publisher_id": "adapter:git",
+      "source_group": "git",
+      "source_id": "E1",
+      "source_sha256": "60339173e3571f972a6012fb041d93b90653c62185678d6fd9edd32a34da25ef",
+      "source_type": "AUTHORITATIVE_ADAPTER",
+      "subject_id": "subject:triaxis",
+      "upstream_ids": [],
+      "valid_until": 20
+    },
+    {
+      "attestation_level": "AUTHENTICATED",
+      "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "contract_id": "TRIAXIS_SOURCE_RECORD_v1",
+      "observed_at": 5,
+      "polarity": "SUPPORTS",
+      "publisher_id": "adapter:tests",
+      "source_group": "tests",
+      "source_id": "E2",
+      "source_sha256": "0d770724ad1628a496d3524b11235a25348c46a168bebbfef42b8d9db683e75b",
+      "source_type": "TEST_ARTIFACT",
+      "subject_id": "subject:triaxis",
+      "upstream_ids": [],
+      "valid_until": 20
+    }
+  ]
+}

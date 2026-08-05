@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_fail_bench_row_v1.schema.json",
+  "title": "TRIAXIS FAIL BENCH row v1",
+  "type": "object",
+  "required": ["case_id", "variant", "vector", "expected_outcome", "actual_outcome", "defect_present", "defect_detected", "high_confidence", "latency_ms", "token_cost", "human_review_seconds", "legitimate_value", "harm_cost", "false_denial_cost", "escalation_cost", "operational_cost"],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "variant": {"type": "string", "minLength": 1},
+    "vector": {"type": "string", "minLength": 1},
+    "expected_outcome": {"enum": ["ALLOW", "DENY", "ESCALATE"]},
+    "actual_outcome": {"enum": ["ALLOW", "DENY", "ESCALATE"]},
+    "defect_present": {"type": "boolean"},
+    "defect_detected": {"type": "boolean"},
+    "high_confidence": {"type": "boolean"},
+    "latency_ms": {"type": "number", "minimum": 0},
+    "token_cost": {"type": "number", "minimum": 0},
+    "human_review_seconds": {"type": "number", "minimum": 0},
+    "legitimate_value": {"type": "number", "minimum": 0},
+    "harm_cost": {"type": "number", "minimum": 0},
+    "false_denial_cost": {"type": "number", "minimum": 0},
+    "escalation_cost": {"type": "number", "minimum": 0},
+    "operational_cost": {"type": "number", "minimum": 0}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,24 @@
+{
+  "claim_results": [
+    {
+      "authoritative_adapter_satisfied": true,
+      "claim_id": "C1",
+      "fresh_contradiction_count": 0,
+      "fresh_support_count": 2,
+      "independent_cluster_count": 2,
+      "load_bearing": true,
+      "required_independent_groups": 2,
+      "status": "VERIFIED",
+      "subject_id": "subject:triaxis"
+    }
+  ],
+  "contract_id": "TRIAXIS_EVIDENCE_REPORT_v1",
+  "correlation_cluster": {
+    "E1": "E1",
+    "E2": "E2"
+  },
+  "evaluation_tick": 6,
+  "load_bearing_failure_ids": [],
+  "package_sha256": "3254227a04f27a1138a18d9cf4a7202c8b9c23077dc8384358d5e2f807d178b8",
+  "report_sha256": "7e1eca82bfc2c463d0e8ab20e2cbb0f0911d9a3b610a8b0b2d1181198ac7768d"
+}

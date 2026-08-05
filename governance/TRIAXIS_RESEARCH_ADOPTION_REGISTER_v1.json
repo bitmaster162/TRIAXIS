@@ -1,0 +1,53 @@
+{
+  "contract_id": "TRIAXIS_RESEARCH_ADOPTION_REGISTER_v1",
+  "source_boundary": {
+    "research_sources": [
+      "TRIAXIS_AI_Governance_Research_RU.docx",
+      "TRIAXIS Red Team Architecture Research.docx",
+      "Red-Team Research TRIAXIS.docx"
+    ],
+    "restricted_context_source": "MASTER_SYSTEM_DOSSIER_AND_GEMINI_MEMORY_2026.md.docx",
+    "restricted_source_policy": "NOT_INCLUDED_IN_PUBLIC_OR_RELEASE_EVIDENCE; ONLY_ABSTRACT_COMPONENT_MAPPING_USED"
+  },
+  "must_adopt": [
+    "explicit_and_versioned_specifications",
+    "epistemic_assurance_authority_plane_separation",
+    "verifier_first_refinement",
+    "claim_evidence_defeater_graph",
+    "independent_retrieval_and_source_correlation",
+    "measurable_falsification_contract",
+    "per_request_least_privilege",
+    "policy_as_code",
+    "subject_payload_state_time_binding",
+    "single_use_authorization",
+    "durable_execution_receipts",
+    "human_approval_for_irreversible_actions",
+    "equal_budget_ablation_and_project_falsification"
+  ],
+  "should_adopt": [
+    "heterogeneous_model_families",
+    "blind_artifact_review",
+    "trajectory_observability",
+    "simulation_and_replay",
+    "calibration_by_task_and_model_version",
+    "risk_adaptive_role_router",
+    "production_incident_to_regression_loop",
+    "policy_shadow_rollout_and_emergency_revocation"
+  ],
+  "experimental": [
+    "angel_as_over_refusal_corrector",
+    "tri_alectic_synthesis_as_outcome_improver",
+    "uncertainty_budget_from_model_disagreement",
+    "multi_model_research_court",
+    "open_interoperable_decision_assurance_receipt"
+  ],
+  "reject_or_disable": [
+    "majority_vote_as_truth",
+    "same_model_role_names_as_independence",
+    "synthesizer_execution_authority",
+    "full_context_adversarial_review_for_high_risk_cases",
+    "text_only_falsifier_when_executable_verifier_exists",
+    "universal_latency_or_accuracy_claims_without_calibration",
+    "novelty_claim_without_formal_prior_art_review"
+  ]
+}

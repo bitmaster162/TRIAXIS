@@ -1,0 +1,24 @@
+{
+  "allowed_capabilities": [
+    "WRITE"
+  ],
+  "allowed_targets": [
+    "repo:triaxis"
+  ],
+  "allowed_tools": [
+    "git"
+  ],
+  "contract_id": "TRIAXIS_POLICY_BUNDLE_v1",
+  "effective_from": 1,
+  "issuer_id": "policy-engine:example",
+  "max_risk_class": "R2",
+  "minimum_accepted_sequence": 1,
+  "policy_id": "policy:example",
+  "policy_sha256": "f65caac30abcf64e7bac4d987dac30ef6d43b60864031c1fd77937729b0241ed",
+  "required_approval_types": [],
+  "sequence": 1,
+  "state": "ACTIVE",
+  "subject_id": "subject:triaxis",
+  "supersedes_policy_sha256": null,
+  "valid_until": 20
+}

@@ -151,3 +151,66 @@ __all__ += [
     "ASSURANCE_CASE_V2_CONTRACT_ID",
     "validate_assurance_case_v2",
 ]
+
+# TRIAXIS v3.2 operational assurance surface.
+from .evidence_broker import (
+    CLAIM_RECORD_CONTRACT_ID,
+    EVIDENCE_PACKAGE_CONTRACT_ID,
+    EVIDENCE_REPORT_CONTRACT_ID,
+    SOURCE_RECORD_CONTRACT_ID,
+    validate_evidence_package,
+)
+from .policy_lifecycle import (
+    POLICY_BUNDLE_CONTRACT_ID,
+    POLICY_DECISION_CONTRACT_ID,
+    PolicyRegistry,
+    PolicyRegistryError,
+    evaluate_policy,
+    validate_policy_bundle,
+)
+from .action_assurance import (
+    ACTION_ENVELOPE_CONTRACT_ID,
+    APPROVAL_CONTRACT_ID,
+    AUTHORIZATION_TOKEN_CONTRACT_ID,
+    EXECUTION_RECEIPT_CONTRACT_ID,
+    STATE_WITNESS_CONTRACT_ID,
+    ExecutionLedgerError,
+    SQLiteExecutionLedger,
+    action_scope_sha256,
+    authorize_action,
+    validate_action_envelope,
+    validate_authorization_token,
+    validate_state_witness,
+)
+from .assurance_router import ASSURANCE_PLAN_CONTRACT_ID, select_assurance_plan
+from .fail_bench import compare_full_to_mvt, score_rows as score_fail_bench_rows
+
+__all__ += [
+    "ACTION_ENVELOPE_CONTRACT_ID",
+    "APPROVAL_CONTRACT_ID",
+    "ASSURANCE_PLAN_CONTRACT_ID",
+    "AUTHORIZATION_TOKEN_CONTRACT_ID",
+    "CLAIM_RECORD_CONTRACT_ID",
+    "EVIDENCE_PACKAGE_CONTRACT_ID",
+    "EVIDENCE_REPORT_CONTRACT_ID",
+    "EXECUTION_RECEIPT_CONTRACT_ID",
+    "POLICY_BUNDLE_CONTRACT_ID",
+    "POLICY_DECISION_CONTRACT_ID",
+    "SOURCE_RECORD_CONTRACT_ID",
+    "STATE_WITNESS_CONTRACT_ID",
+    "ExecutionLedgerError",
+    "PolicyRegistry",
+    "PolicyRegistryError",
+    "SQLiteExecutionLedger",
+    "action_scope_sha256",
+    "authorize_action",
+    "compare_full_to_mvt",
+    "evaluate_policy",
+    "score_fail_bench_rows",
+    "select_assurance_plan",
+    "validate_action_envelope",
+    "validate_authorization_token",
+    "validate_evidence_package",
+    "validate_policy_bundle",
+    "validate_state_witness",
+]
