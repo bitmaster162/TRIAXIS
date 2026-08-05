@@ -1,0 +1,29 @@
+{
+  "case_count": 2,
+  "classification": "DECLARED_EXTERNAL_BOUNDARIES",
+  "contract_id": "TRIAXIS_V390_POSTCOMMIT_EXTERNAL_BOUNDARY_RESULT_v1",
+  "exact_tag_test_count": 233,
+  "exact_tag_test_status": "PASS",
+  "logic_defect_within_claimed_scope": false,
+  "open_boundary_count": 2,
+  "product_commit": "fa2b2ca47f530b13be8da5b44d8227d2ce2aefd6",
+  "product_tree": "8f818bd6714fa7815704c9786e16ae1767d618b3",
+  "rows": [
+    {
+      "case_id": "WHOLE_CHALLENGE_LEDGER_ROLLBACK",
+      "claimed_v3_9_guarantee": false,
+      "expected_boundary": "external monotonic verifier state required",
+      "observed": "REPLAY_ACCEPTED_AFTER_LEDGER_ROLLBACK",
+      "status": "OPEN_BOUNDARY_CONFIRMED"
+    },
+    {
+      "case_id": "SINGLE_ANCHOR_SPLIT_VIEW_EQUIVOCATION",
+      "claimed_v3_9_guarantee": false,
+      "expected_boundary": "threshold witnesses or transparency/gossip required",
+      "observed": "view_a_sequence_1+view_b_sequence_2",
+      "status": "OPEN_BOUNDARY_CONFIRMED"
+    }
+  ],
+  "status": "PASS_WITH_CONDITIONS",
+  "target": "TRIAXIS-v3.9-RC1-CHALLENGE-BOUND-ANCHOR"
+}
