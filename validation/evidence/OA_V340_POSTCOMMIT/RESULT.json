@@ -1,0 +1,47 @@
+{
+  "candidate_commit": "1ec7eafbdfff5a25bd7256c49d90917be673a922",
+  "candidate_tree": "00733c5cc03e08fcfacf63bd1d9a401e791f0c35",
+  "case_count": 4,
+  "fail_count": 3,
+  "pass_count": 1,
+  "protocol_id": "TRIAXIS_V340_POSTCOMMIT_EFFECTIVE_EXPIRY_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_outcome": "PASS",
+      "case_id": "OA35-P01",
+      "description": "Token remains valid while every source remains current",
+      "exception": null,
+      "expected_outcome": "PASS",
+      "pass": true,
+      "positive_control": true
+    },
+    {
+      "actual_outcome": "PASS",
+      "case_id": "OA35-N01",
+      "description": "Token must expire with the policy bundle",
+      "exception": null,
+      "expected_outcome": "BLOCK",
+      "pass": false,
+      "positive_control": false
+    },
+    {
+      "actual_outcome": "PASS",
+      "case_id": "OA35-N02",
+      "description": "Token must expire with the assurance attestation",
+      "exception": null,
+      "expected_outcome": "BLOCK",
+      "pass": false,
+      "positive_control": false
+    },
+    {
+      "actual_outcome": "PASS",
+      "case_id": "OA35-N03",
+      "description": "Token must expire with the authenticated state witness",
+      "exception": null,
+      "expected_outcome": "BLOCK",
+      "pass": false,
+      "positive_control": false
+    }
+  ],
+  "status": "FAIL"
+}

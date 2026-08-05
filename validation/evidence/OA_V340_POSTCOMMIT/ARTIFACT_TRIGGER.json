@@ -1,0 +1,69 @@
+{
+  "case_count": 6,
+  "fail_count": 0,
+  "pass_count": 6,
+  "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA33-P01",
+      "description": "Trusted PASS attestation bound to the exact decision/evidence pair preserves ALLOW",
+      "exception": null,
+      "expected_outcome": "ALLOW",
+      "pass": true,
+      "positive_control": true,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA33-N01",
+      "description": "Decision digest substitution fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA33-N02",
+      "description": "Evidence digest substitution fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA33-N03",
+      "description": "Untrusted assurance issuer fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA33-N04",
+      "description": "Trusted issuer in the wrong trust domain fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA33-N05",
+      "description": "Missing external trust registry fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
+    }
+  ],
+  "status": "PASS"
+}
