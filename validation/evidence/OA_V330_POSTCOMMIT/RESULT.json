@@ -1,0 +1,47 @@
+{
+  "candidate_commit": "07e8b1371df806792c48b5ac6a3b89a681d92ef8",
+  "candidate_tree": "bbacc5531db957bda96bb217aefd3ee459cf2919",
+  "case_count": 4,
+  "fail_count": 3,
+  "pass_count": 1,
+  "protocol_id": "TRIAXIS_V330_POSTCOMMIT_ASSURED_ACTION_SCOPE_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA34-P01",
+      "description": "Exact attested action positive control",
+      "exception": null,
+      "expected_outcome": "ALLOW",
+      "pass": true,
+      "positive_control": true
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA34-N01",
+      "description": "PASS attestation must not be reusable for another payload",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA34-N02",
+      "description": "PASS attestation must not be reusable for another allowed tool and target",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA34-N03",
+      "description": "Set-only issuer registry must not erase trust-domain binding",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false
+    }
+  ],
+  "status": "FAIL"
+}
