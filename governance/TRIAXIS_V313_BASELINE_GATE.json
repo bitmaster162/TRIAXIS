@@ -1,0 +1,14 @@
+{
+  "contract_id": "TRIAXIS_BASELINE_GATE_v1",
+  "target_version": "TRIAXIS v3.13 Policy Head Authority Quorum",
+  "baseline_tag": "TRIAXIS-v3.12-RC1-EXTERNAL-POLICY-HEAD-AUTHORITY",
+  "baseline_commit": "b0a1030f4e956cf1adbb704283a28dfb93c4ec98",
+  "baseline_tree": "a61647530c024663ae4ed040516e8bd9e0d980ae",
+  "baseline_src_tree": "797b29c6f102e19784ac5508dae244e03b48c9f3",
+  "baseline_tests": {"count": 268, "status": "PASS"},
+  "postcommit_evidence": "evidence/TRIAXIS_v3.12_POSTCOMMIT_SINGLE_POLICY_HEAD_BOUNDARY.json",
+  "scope": "Distinct policy-head authority quorum with operator-pinned configuration digest.",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
