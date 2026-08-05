@@ -1,0 +1,29 @@
+{
+  "case_count": 3,
+  "contract_id": "TRIAXIS_WHOLE_REGISTRY_DATABASE_ROLLBACK_TRIGGER_RESULT_v1",
+  "material_failure_count": 2,
+  "rows": [
+    {
+      "case_id": "CURRENT_DATABASE_BLOCKS_REVOKED_KEY",
+      "expected": "BLOCK",
+      "observed": "BLOCK",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "WHOLE_DATABASE_ROLLBACK_RESURRECTS_KEY",
+      "expected": "BLOCK",
+      "observed": "PASS",
+      "restored_sequence": 1,
+      "status": "FAIL"
+    },
+    {
+      "case_id": "NO_EXTERNAL_HEAD_WITNESS",
+      "expected": "EXTERNAL_ANCHOR_REQUIRED",
+      "observed": "LOCAL_DB_IS_ITS_OWN_AUTHORITY",
+      "status": "FAIL"
+    }
+  ],
+  "status": "FAIL",
+  "target": "TRIAXIS-v3.7-RC1-MONOTONIC-TRUST-REGISTRY"
+}
