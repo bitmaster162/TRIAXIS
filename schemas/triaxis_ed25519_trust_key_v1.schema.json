@@ -54,7 +54,9 @@
           "AUTHORIZATION_TOKEN",
           "EXECUTION_RECEIPT",
           "TRUST_REGISTRY_SNAPSHOT",
-          "TRUST_REGISTRY_ANCHOR"
+          "TRUST_REGISTRY_ANCHOR",
+          "ANCHOR_QUORUM_POLICY",
+          "POLICY_HEAD_AUTHORITY"
         ]
       }
     },

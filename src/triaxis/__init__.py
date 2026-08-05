@@ -229,6 +229,7 @@ from .crypto_trust import (
     PURPOSE_AUTHORIZATION_TOKEN,
     PURPOSE_EXECUTION_RECEIPT,
     PURPOSE_POLICY_BUNDLE,
+    PURPOSE_POLICY_HEAD_AUTHORITY,
     PURPOSE_STATE_WITNESS,
     SIGNED_CONTRACT_ENVELOPE_ID,
     TRUST_KEY_RECORD_CONTRACT_ID,
@@ -252,6 +253,7 @@ __all__ += [
     "PURPOSE_AUTHORIZATION_TOKEN",
     "PURPOSE_EXECUTION_RECEIPT",
     "PURPOSE_POLICY_BUNDLE",
+    "PURPOSE_POLICY_HEAD_AUTHORITY",
     "PURPOSE_STATE_WITNESS",
     "SIGNED_CONTRACT_ENVELOPE_ID",
     "TRUST_KEY_RECORD_CONTRACT_ID",
@@ -344,3 +346,26 @@ __all__ += [
     "validate_policy_bound_quorum_witness",
     "validate_quorum_member_witness",
 ]
+
+
+# TRIAXIS v3.12 external policy-head freshness authority.
+from .policy_head_authority import (
+    POLICY_HEAD_RESPONSE_CONTRACT_ID,
+    PolicyHeadAuthorityError,
+    SQLitePolicyHeadAuthorityService,
+    load_policy_with_external_head,
+    make_policy_head_response,
+    validate_policy_head_response,
+)
+
+__all__ += [
+    "POLICY_HEAD_RESPONSE_CONTRACT_ID",
+    "PolicyHeadAuthorityError",
+    "SQLitePolicyHeadAuthorityService",
+    "load_policy_with_external_head",
+    "make_policy_head_response",
+    "validate_policy_head_response",
+]
+
+from .policy_head_http import PolicyHeadHTTPApplication, build_http_server
+__all__ += ["PolicyHeadHTTPApplication", "build_http_server"]

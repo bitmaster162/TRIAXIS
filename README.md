@@ -4,9 +4,9 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v3.11-RC1 Authenticated Quorum Policy**; Release Candidate, not production-qualified.
+Current candidate: **TRIAXIS v3.12-RC1 External Policy Head Authority**; Release Candidate, not production-qualified.
 
-## TRIAXIS v3.11 cryptographic operational assurance
+## TRIAXIS v3.12 external policy-head assurance
 
 The research-integrated branch now includes executable reference primitives for:
 
@@ -22,6 +22,7 @@ The research-integrated branch now includes executable reference primitives for:
 - challenge-bound single-use anchor freshness for witness replay resistance;
 - ephemeral verifier epochs and distinct-anchor quorum validation;
 - root-signed monotonic quorum policy with exact policy-bound witnesses;
+- external challenge-bound Policy Head Authority for whole-local-policy-store rollback detection;
 - equal-budget project-falsification benchmarking.
 
 Run the complete test suite:
@@ -39,6 +40,7 @@ PYTHONPATH=src:. python validation/TRIAXIS_WHOLE_REGISTRY_DATABASE_ROLLBACK_TRIG
 PYTHONPATH=src:. python validation/TRIAXIS_EXTERNAL_ANCHOR_REPLAY_TRIGGER_v2.py
 PYTHONPATH=src:. python validation/TRIAXIS_QUORUM_AND_VERIFIER_EPOCH_TRIGGER_v1.py
 PYTHONPATH=src:. python validation/TRIAXIS_AUTHENTICATED_QUORUM_POLICY_TRIGGER_v1.py
+PYTHONPATH=src:. python validation/TRIAXIS_EXTERNAL_POLICY_HEAD_AUTHORITY_TRIGGER_v1.py
 ```
 
 Generate the legacy digest-only end-to-end example:
@@ -53,4 +55,4 @@ Score a benchmark result file:
 PYTHONPATH=src:. python tools/triaxis_fail_bench.py benchmark/results_template.jsonl
 ```
 
-The package is not a production gateway. KMS/HSM custody, whole-policy-store anti-rollback, threshold-compromise resistance, complete mediation, trusted time and independent empirical validation remain integration requirements.
+The package is not a production gateway. v3.12 detects rollback of the local policy store only while an independently operated external Policy Head Authority remains current. KMS/HSM custody, authority-side anti-rollback, multi-authority consistency, complete mediation, trusted time and independent empirical validation remain integration requirements.

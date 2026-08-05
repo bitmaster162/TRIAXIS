@@ -1,0 +1,51 @@
+{
+  "case_count": 6,
+  "contract_id": "TRIAXIS_EXTERNAL_POLICY_HEAD_AUTHORITY_TRIGGER_RESULT_v1",
+  "pass_count": 6,
+  "rows": [
+    {
+      "case_id": "EXACT_CURRENT_POLICY_HEAD",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "WHOLE_LOCAL_POLICY_DB_ROLLBACK",
+      "expected": "local_policy_rollback",
+      "observed": "local_policy_rollback",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SAME_VERSION_POLICY_FORK",
+      "expected": "local_policy_fork",
+      "observed": "local_policy_fork",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "FORGED_POLICY_HEAD_SIGNATURE",
+      "expected": "invalid_policy_head_signature",
+      "observed": "invalid_policy_head_signature",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "CHALLENGE_BOUND_RESPONSE_REPLAY",
+      "expected": "policy_head_challenge_mismatch",
+      "observed": "policy_head_challenge_mismatch",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "OPERATOR_MINIMUM_POLICY_FLOOR",
+      "expected": "minimum_policy_version_not_met",
+      "observed": "minimum_policy_version_not_met",
+      "positive_control": false,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.12-RC1-EXTERNAL-POLICY-HEAD-AUTHORITY"
+}

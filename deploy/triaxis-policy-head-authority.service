@@ -1,0 +1,25 @@
+[Unit]
+Description=TRIAXIS External Policy Head Authority (reference)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=triaxis-policy-head
+Group=triaxis-policy-head
+WorkingDirectory=/opt/triaxis
+EnvironmentFile=/etc/triaxis-policy-head/service.env
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_policy_head_authority.py
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/triaxis-policy-head
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

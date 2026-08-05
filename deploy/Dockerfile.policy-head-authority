@@ -1,0 +1,9 @@
+FROM python:3.13-slim
+RUN useradd --system --create-home --uid 10001 triaxis
+WORKDIR /app
+COPY src /app/src
+COPY tools/run_policy_head_authority.py /app/tools/run_policy_head_authority.py
+ENV PYTHONPATH=/app/src
+USER triaxis
+EXPOSE 8787
+ENTRYPOINT ["python", "/app/tools/run_policy_head_authority.py"]
