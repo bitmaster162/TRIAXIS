@@ -1,0 +1,28 @@
+{
+  "case_count": 3,
+  "contract_id": "TRIAXIS_TRUST_REGISTRY_ROLLBACK_TRIGGER_RESULT_v1",
+  "material_failure_count": 2,
+  "rows": [
+    {
+      "case_id": "CURRENT_REGISTRY_REVOKES_KEY",
+      "expected": "BLOCK",
+      "observed": "BLOCK",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "ROLLED_BACK_REGISTRY_RESURRECTS_KEY",
+      "expected": "BLOCK",
+      "observed": "PASS",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "REGISTRY_HAS_NO_SEQUENCE_OR_PARENT_ANCHOR",
+      "expected": "MONOTONIC_REGISTRY_REQUIRED",
+      "observed": "ARBITRARY_REGISTRY_ACCEPTED",
+      "status": "FAIL"
+    }
+  ],
+  "status": "FAIL",
+  "target": "TRIAXIS-v3.6-RC1-CRYPTOGRAPHIC-AUTHENTICITY"
+}
