@@ -6,6 +6,7 @@ from pathlib import Path
 
 from triaxis.action_assurance import (
     ACTION_ENVELOPE_CONTRACT_ID,
+    ASSURANCE_ATTESTATION_CONTRACT_ID,
     STATE_WITNESS_CONTRACT_ID,
     SQLiteExecutionLedger,
     action_scope_sha256,
@@ -114,12 +115,32 @@ def main() -> int:
         },
         "witness_sha256",
     )
+    decision_case_sha256 = "d" * 64
+    assurance_attestation = seal_contract(
+        {
+            "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
+            "attestation_id": "attestation:example",
+            "issuer_id": "assurance-compiler:example",
+            "trust_domain": "assurance-domain:example",
+            "subject_id": "subject:triaxis",
+            "decision_case_sha256": decision_case_sha256,
+            "evidence_report_sha256": evidence_report["report_sha256"],
+            "assurance_status": "PASS",
+            "synthesis_decision": "ACCEPT_WITH_CONTROLS",
+            "attestation_level": "AUTHENTICATED",
+            "issued_at": 6,
+            "valid_until": 10,
+            "attestation_sha256": "",
+        },
+        "attestation_sha256",
+    )
     action = {
         "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
         "principal_id": "human:example",
         "intent_id": "intent:example",
-        "decision_case_sha256": "d" * 64,
+        "decision_case_sha256": decision_case_sha256,
         "evidence_report_sha256": evidence_report["report_sha256"],
+        "assurance_attestation": assurance_attestation,
         "subject_id": "subject:triaxis",
         "object_id": "repo:triaxis",
         "capability": "WRITE",
@@ -139,7 +160,13 @@ def main() -> int:
     }
     action["scope_sha256"] = action_scope_sha256(action)
     action = seal_contract(action, "action_sha256")
-    token = authorize_action(action, policy, 6, "gate:example")
+    token = authorize_action(
+        action,
+        policy,
+        6,
+        "gate:example",
+        {"assurance-compiler:example": "assurance-domain:example"},
+    )
 
     ledger_path = ROOT / "example_execution_ledger.sqlite3"
     ledger_path.unlink(missing_ok=True)
@@ -150,6 +177,7 @@ def main() -> int:
     dump("example_evidence_package.json", evidence_package)
     dump("example_evidence_report.json", evidence_report)
     dump("example_policy.json", policy)
+    dump("example_assurance_attestation.json", assurance_attestation)
     dump("example_state_witness.json", state)
     dump("example_action_envelope.json", action)
     dump("example_authorization_token.json", token)

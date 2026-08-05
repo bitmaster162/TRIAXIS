@@ -8,6 +8,7 @@ from pathlib import Path
 from triaxis.action_assurance import (
     ACTION_ENVELOPE_CONTRACT_ID,
     APPROVAL_CONTRACT_ID,
+    ASSURANCE_ATTESTATION_CONTRACT_ID,
     STATE_WITNESS_CONTRACT_ID,
     ExecutionLedgerError,
     SQLiteExecutionLedger,
@@ -19,6 +20,40 @@ from triaxis.action_assurance import (
 )
 from triaxis.policy_lifecycle import POLICY_BUNDLE_CONTRACT_ID, seal_policy
 
+
+
+TRUSTED_ASSURANCE = {"assurance-compiler:1": "assurance-domain:1"}
+
+
+def assurance_attestation(
+    decision_digest: str = "b" * 64,
+    evidence_digest: str = "c" * 64,
+    subject: str = "subject:1",
+    issuer: str = "assurance-compiler:1",
+    trust_domain: str = "assurance-domain:1",
+    assurance_status: str = "PASS",
+    synthesis_decision: str = "ACCEPT",
+    issued_at: int = 5,
+    valid_until: int = 15,
+):
+    return seal_contract(
+        {
+            "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
+            "attestation_id": "attestation:1",
+            "issuer_id": issuer,
+            "trust_domain": trust_domain,
+            "subject_id": subject,
+            "decision_case_sha256": decision_digest,
+            "evidence_report_sha256": evidence_digest,
+            "assurance_status": assurance_status,
+            "synthesis_decision": synthesis_decision,
+            "attestation_level": "AUTHENTICATED",
+            "issued_at": issued_at,
+            "valid_until": valid_until,
+            "attestation_sha256": "",
+        },
+        "attestation_sha256",
+    )
 
 def state(version: int = 7, digest_char: str = "a", subject: str = "subject:1", object_id: str = "repo:triaxis"):
     return seal_contract(
@@ -104,6 +139,12 @@ def action(risk: str = "R2", approvals_spec=None, nonce: str = "nonce:1", witnes
         "action_sha256": "",
     }
     value.update(updates)
+    if "assurance_attestation" not in updates:
+        value["assurance_attestation"] = assurance_attestation(
+            decision_digest=value["decision_case_sha256"],
+            evidence_digest=value["evidence_report_sha256"],
+            subject=value["subject_id"],
+        )
     value["scope_sha256"] = action_scope_sha256(value)
     if approvals_spec:
         value["approvals"] = [
@@ -117,7 +158,7 @@ class ActionAssuranceTests(unittest.TestCase):
     def test_valid_r2_action_authorizes(self):
         a = action()
         self.assertEqual(validate_action_envelope(a, 6)["status"], "PASS")
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         self.assertEqual(token["outcome"], "ALLOW", token)
         self.assertEqual(validate_authorization_token(token, 6)["status"], "PASS")
 
@@ -143,18 +184,18 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_expired_action_denies(self):
         a = action(expires_at=6)
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         self.assertEqual(token["outcome"], "DENY")
 
     def test_policy_denies_wrong_tool(self):
         a = action(tool_id="shell")
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         self.assertEqual(token["outcome"], "DENY")
         self.assertIn("tool_allowed", {item["code"] for item in token["errors"]})
 
     def test_r3_requires_two_trust_domains(self):
         one = action(risk="R3", approvals_spec=[("A1", "domain:one", "OPERATOR")])
-        self.assertEqual(authorize_action(one, policy(), 6, "gate:1")["outcome"], "DENY")
+        self.assertEqual(authorize_action(one, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "DENY")
         two = action(
             risk="R3",
             approvals_spec=[
@@ -162,7 +203,7 @@ class ActionAssuranceTests(unittest.TestCase):
                 ("A2", "domain:two", "SECURITY"),
             ],
         )
-        self.assertEqual(authorize_action(two, policy(), 6, "gate:1")["outcome"], "ALLOW")
+        self.assertEqual(authorize_action(two, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "ALLOW")
 
     def test_r4_requires_human_approval(self):
         no_human = action(
@@ -172,7 +213,7 @@ class ActionAssuranceTests(unittest.TestCase):
                 ("A2", "domain:two", "SECURITY"),
             ],
         )
-        self.assertEqual(authorize_action(no_human, policy(), 6, "gate:1")["outcome"], "DENY")
+        self.assertEqual(authorize_action(no_human, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "DENY")
         with_human = action(
             risk="R4",
             approvals_spec=[
@@ -180,7 +221,7 @@ class ActionAssuranceTests(unittest.TestCase):
                 ("A2", "domain:two", "SECURITY"),
             ],
         )
-        self.assertEqual(authorize_action(with_human, policy(), 6, "gate:1")["outcome"], "ALLOW")
+        self.assertEqual(authorize_action(with_human, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "ALLOW")
 
     def test_approval_scope_substitution_blocks(self):
         a = action(risk="R3", approvals_spec=[("A1", "d1", "OPERATOR"), ("A2", "d2", "SECURITY")])
@@ -191,9 +232,45 @@ class ActionAssuranceTests(unittest.TestCase):
         result = validate_action_envelope(a, 6)
         self.assertIn("approval_scope_mismatch", {item["code"] for item in result["errors"]})
 
+    def test_decision_digest_requires_exact_assurance_binding(self):
+        a = action(decision_case_sha256="0" * 64, assurance_attestation=assurance_attestation())
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "DENY")
+        self.assertIn("assurance_decision_mismatch", {item["code"] for item in token["errors"]})
+
+    def test_evidence_digest_requires_exact_assurance_binding(self):
+        a = action(evidence_report_sha256="0" * 64, assurance_attestation=assurance_attestation())
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "DENY")
+        self.assertIn("assurance_evidence_mismatch", {item["code"] for item in token["errors"]})
+
+    def test_untrusted_assurance_issuer_denies(self):
+        a = action(assurance_attestation=assurance_attestation(issuer="attacker:1", trust_domain="attacker"))
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "DENY")
+        self.assertIn("untrusted_assurance_issuer", {item["code"] for item in token["errors"]})
+
+    def test_wrong_trust_domain_denies(self):
+        a = action(assurance_attestation=assurance_attestation(trust_domain="wrong-domain"))
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "DENY")
+        self.assertIn("untrusted_assurance_issuer", {item["code"] for item in token["errors"]})
+
+    def test_non_pass_or_expired_attestation_denies(self):
+        blocked = action(assurance_attestation=assurance_attestation(assurance_status="BLOCK"))
+        expired = action(assurance_attestation=assurance_attestation(valid_until=6), nonce="nonce:expired")
+        self.assertEqual(authorize_action(blocked, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "DENY")
+        self.assertEqual(authorize_action(expired, policy(), 6, "gate:1", TRUSTED_ASSURANCE)["outcome"], "DENY")
+
+    def test_synthesizer_cannot_authorize_reject(self):
+        a = action(assurance_attestation=assurance_attestation(synthesis_decision="REJECT"))
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "DENY")
+        self.assertIn("invalid_synthesis_decision", {item["code"] for item in token["errors"]})
+
     def test_ledger_prepare_complete_and_exact_retry(self):
         a = action()
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
                 first = ledger.prepare(token, a["state_witness"], 6)
@@ -206,9 +283,9 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_nonce_replay_conflict(self):
         a1 = action(nonce="same")
-        t1 = authorize_action(a1, policy(), 6, "gate:1")
+        t1 = authorize_action(a1, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         a2 = action(nonce="same", payload_sha256="e" * 64)
-        t2 = authorize_action(a2, policy(), 6, "gate:1")
+        t2 = authorize_action(a2, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
                 ledger.prepare(t1, a1["state_witness"], 6)
@@ -218,7 +295,7 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_state_change_since_authorization_blocks_prepare(self):
         a = action()
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         changed = state(version=8, digest_char="e")
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
@@ -228,7 +305,7 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_unknown_outcome_can_reconcile_complete(self):
         a = action()
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
                 ledger.prepare(token, a["state_witness"], 6)
@@ -240,7 +317,7 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_unknown_outcome_can_reconcile_no_effect(self):
         a = action()
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
                 ledger.prepare(token, a["state_witness"], 6)
@@ -250,7 +327,7 @@ class ActionAssuranceTests(unittest.TestCase):
 
     def test_completion_conflict_blocks(self):
         a = action()
-        token = authorize_action(a, policy(), 6, "gate:1")
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
         with tempfile.TemporaryDirectory() as td:
             with SQLiteExecutionLedger(Path(td) / "ledger.sqlite3") as ledger:
                 ledger.prepare(token, a["state_witness"], 6)

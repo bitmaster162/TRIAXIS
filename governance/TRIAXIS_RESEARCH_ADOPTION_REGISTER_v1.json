@@ -22,7 +22,8 @@
     "single_use_authorization",
     "durable_execution_receipts",
     "human_approval_for_irreversible_actions",
-    "equal_budget_ablation_and_project_falsification"
+    "equal_budget_ablation_and_project_falsification",
+    "trusted_assurance_pass_attestation_for_exact_decision_and_evidence_subject"
   ],
   "should_adopt": [
     "heterogeneous_model_families",

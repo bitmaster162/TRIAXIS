@@ -1,4 +1,4 @@
-"""TRIAXIS v3.2 action assurance envelope and durable execution ledger.
+"""TRIAXIS v3.3 action assurance envelope, PASS attestation and durable ledger.
 
 This module is a deterministic boundary around probabilistic reasoning.  It
 binds a decision/evidence case to one exact capability, tool, target, payload,
@@ -18,7 +18,8 @@ from typing import Any
 from .integrity import materialize_json, seal_mapping, verify_sealed_mapping
 from .policy_lifecycle import POLICY_BUNDLE_CONTRACT_ID, evaluate_policy, validate_policy_bundle
 
-ACTION_ENVELOPE_CONTRACT_ID = "TRIAXIS_ACTION_ASSURANCE_ENVELOPE_v1"
+ACTION_ENVELOPE_CONTRACT_ID = "TRIAXIS_ACTION_ASSURANCE_ENVELOPE_v2"
+ASSURANCE_ATTESTATION_CONTRACT_ID = "TRIAXIS_ASSURANCE_PASS_ATTESTATION_v1"
 STATE_WITNESS_CONTRACT_ID = "TRIAXIS_AUTHENTICATED_STATE_WITNESS_v1"
 APPROVAL_CONTRACT_ID = "TRIAXIS_ACTION_APPROVAL_v1"
 AUTHORIZATION_TOKEN_CONTRACT_ID = "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v1"
@@ -26,6 +27,8 @@ EXECUTION_RECEIPT_CONTRACT_ID = "TRIAXIS_EXECUTION_RECEIPT_v1"
 
 RISK_CLASSES = ("R0", "R1", "R2", "R3", "R4")
 STATE_ATTESTATIONS = frozenset({"AUTHENTICATED", "HARDWARE_ROOTED"})
+ASSURANCE_ATTESTATION_LEVELS = frozenset({"AUTHENTICATED", "HARDWARE_ROOTED"})
+ASSURANCE_DECISIONS = frozenset({"ACCEPT", "ACCEPT_WITH_CONTROLS"})
 TOKEN_OUTCOMES = frozenset({"ALLOW", "DENY"})
 LEDGER_STATES = frozenset({"PREPARED", "COMPLETED", "UNKNOWN", "RECONCILED_DENY", "RECONCILED_COMPLETE"})
 
@@ -84,6 +87,77 @@ def validate_state_witness(value: Any, evaluation_tick: int | None = None) -> di
     return {"status": "PASS" if not errors else "BLOCK", "errors": errors, "witness": witness}
 
 
+def validate_assurance_attestation(
+    value: Any,
+    evaluation_tick: int,
+    *,
+    expected_subject_id: str | None = None,
+    expected_decision_case_sha256: str | None = None,
+    expected_evidence_report_sha256: str | None = None,
+) -> dict[str, Any]:
+    """Validate a PASS attestation for one exact assurance subject and artifact pair.
+
+    The canonical digest proves integrity, not issuer authenticity. Issuer trust is
+    checked separately by :func:`authorize_action`, where the caller supplies an
+    out-of-band trusted issuer registry.
+    """
+
+    errors: list[dict[str, str]] = []
+    attestation = _sealed(
+        value,
+        ASSURANCE_ATTESTATION_CONTRACT_ID,
+        "attestation_sha256",
+        "action.assurance_attestation",
+        errors,
+    )
+    if attestation is None:
+        return {"status": "BLOCK", "errors": errors}
+    for field in ("attestation_id", "issuer_id", "trust_domain", "subject_id"):
+        if not isinstance(attestation.get(field), str) or not attestation.get(field):
+            errors.append(_error("missing_required", f"action.assurance_attestation.{field}", f"{field} required"))
+    for field in ("decision_case_sha256", "evidence_report_sha256"):
+        if not _is_sha256(attestation.get(field)):
+            errors.append(_error("invalid_digest", f"action.assurance_attestation.{field}", "lowercase SHA-256 required"))
+    if attestation.get("assurance_status") != "PASS":
+        errors.append(_error("assurance_not_pass", "action.assurance_attestation.assurance_status", "PASS required"))
+    if attestation.get("synthesis_decision") not in ASSURANCE_DECISIONS:
+        errors.append(_error("invalid_synthesis_decision", "action.assurance_attestation.synthesis_decision", "ACCEPT or ACCEPT_WITH_CONTROLS required"))
+    if attestation.get("attestation_level") not in ASSURANCE_ATTESTATION_LEVELS:
+        errors.append(_error("invalid_assurance_attestation", "action.assurance_attestation.attestation_level", "authenticated attestation required"))
+    issued_at = attestation.get("issued_at")
+    valid_until = attestation.get("valid_until")
+    if type(issued_at) is not int or issued_at < 0:
+        errors.append(_error("invalid_assurance_time", "action.assurance_attestation.issued_at", "integer >= 0 required"))
+    if type(valid_until) is not int or valid_until < 0:
+        errors.append(_error("invalid_assurance_time", "action.assurance_attestation.valid_until", "integer >= 0 required"))
+    elif type(issued_at) is int and valid_until <= issued_at:
+        errors.append(_error("invalid_assurance_window", "action.assurance_attestation.valid_until", "must be after issued_at"))
+    if type(issued_at) is int and issued_at > evaluation_tick:
+        errors.append(_error("future_assurance_attestation", "action.assurance_attestation.issued_at", "attestation from the future"))
+    if type(valid_until) is int and evaluation_tick >= valid_until:
+        errors.append(_error("stale_assurance_attestation", "action.assurance_attestation.valid_until", "attestation expired"))
+    if expected_subject_id is not None and attestation.get("subject_id") != expected_subject_id:
+        errors.append(_error("assurance_subject_mismatch", "action.assurance_attestation.subject_id", "subject mismatch"))
+    if expected_decision_case_sha256 is not None and attestation.get("decision_case_sha256") != expected_decision_case_sha256:
+        errors.append(_error("assurance_decision_mismatch", "action.assurance_attestation.decision_case_sha256", "decision case mismatch"))
+    if expected_evidence_report_sha256 is not None and attestation.get("evidence_report_sha256") != expected_evidence_report_sha256:
+        errors.append(_error("assurance_evidence_mismatch", "action.assurance_attestation.evidence_report_sha256", "evidence report mismatch"))
+    return {"status": "PASS" if not errors else "BLOCK", "errors": errors, "attestation": attestation}
+
+
+def _trusted_assurance_issuer(
+    attestation: Mapping[str, Any],
+    trusted_issuers: Mapping[str, str] | set[str] | frozenset[str] | None,
+) -> bool:
+    if trusted_issuers is None:
+        return False
+    issuer_id = attestation.get("issuer_id")
+    trust_domain = attestation.get("trust_domain")
+    if isinstance(trusted_issuers, Mapping):
+        return issuer_id in trusted_issuers and trusted_issuers.get(issuer_id) == trust_domain
+    return isinstance(issuer_id, str) and issuer_id in trusted_issuers
+
+
 def _validate_approval(value: Any, index: int, evaluation_tick: int, expected_scope_sha256: str) -> tuple[dict[str, Any] | None, list[dict[str, str]]]:
     errors: list[dict[str, str]] = []
     path = f"action.approvals[{index}]"
@@ -114,6 +188,11 @@ def action_scope_sha256(value: Mapping[str, Any]) -> str:
         "intent_id": value.get("intent_id"),
         "decision_case_sha256": value.get("decision_case_sha256"),
         "evidence_report_sha256": value.get("evidence_report_sha256"),
+        "assurance_attestation_sha256": (
+            value.get("assurance_attestation", {}).get("attestation_sha256")
+            if isinstance(value.get("assurance_attestation"), Mapping)
+            else None
+        ),
         "subject_id": value.get("subject_id"),
         "object_id": value.get("object_id"),
         "capability": value.get("capability"),
@@ -165,6 +244,17 @@ def validate_action_envelope(value: Any, evaluation_tick: int) -> dict[str, Any]
     for field in ("decision_case_sha256", "evidence_report_sha256", "payload_sha256"):
         if not _is_sha256(action.get(field)):
             errors.append(_error("invalid_digest", f"action.{field}", "lowercase SHA-256 required"))
+
+    assurance_result = validate_assurance_attestation(
+        action.get("assurance_attestation"),
+        evaluation_tick,
+        expected_subject_id=action.get("subject_id") if isinstance(action.get("subject_id"), str) else None,
+        expected_decision_case_sha256=action.get("decision_case_sha256") if _is_sha256(action.get("decision_case_sha256")) else None,
+        expected_evidence_report_sha256=action.get("evidence_report_sha256") if _is_sha256(action.get("evidence_report_sha256")) else None,
+    )
+    errors.extend(assurance_result["errors"])
+    assurance_attestation = assurance_result.get("attestation")
+
     if type(action.get("policy_sequence")) is not int or action.get("policy_sequence", -1) < 1:
         errors.append(_error("invalid_policy_sequence", "action.policy_sequence", "integer >= 1 required"))
     if action.get("risk_class") not in RISK_CLASSES:
@@ -214,11 +304,18 @@ def validate_action_envelope(value: Any, evaluation_tick: int) -> dict[str, Any]
         "errors": errors,
         "action": action,
         "state_witness": witness,
+        "assurance_attestation": assurance_attestation,
         "approvals": approvals,
     }
 
 
-def authorize_action(action_value: Mapping[str, Any], policy_value: Mapping[str, Any], evaluation_tick: int, issuer_id: str) -> dict[str, Any]:
+def authorize_action(
+    action_value: Mapping[str, Any],
+    policy_value: Mapping[str, Any],
+    evaluation_tick: int,
+    issuer_id: str,
+    trusted_assurance_issuers: Mapping[str, str] | set[str] | frozenset[str] | None = None,
+) -> dict[str, Any]:
     """Produce an exact, single-use authorization token or a sealed DENY token."""
 
     action_result = validate_action_envelope(action_value, evaluation_tick)
@@ -227,7 +324,11 @@ def authorize_action(action_value: Mapping[str, Any], policy_value: Mapping[str,
     action = action_result.get("action")
     policy = policy_result.get("policy")
     policy_decision: dict[str, Any] | None = None
-    if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
+    assurance_attestation = action_result.get("assurance_attestation")
+    if action_result["status"] == "PASS" and assurance_attestation is not None:
+        if not _trusted_assurance_issuer(assurance_attestation, trusted_assurance_issuers):
+            errors.append(_error("untrusted_assurance_issuer", "action.assurance_attestation.issuer_id", "issuer/trust-domain not in external trust registry"))
+    if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
         approval_types = sorted({str(item.get("approval_type")) for item in action_result["approvals"]})
         policy_request = {
             "policy_id": action["policy_id"],
@@ -262,6 +363,16 @@ def authorize_action(action_value: Mapping[str, Any], policy_value: Mapping[str,
         "scope_sha256": action.get("scope_sha256") if action else None,
         "decision_case_sha256": action.get("decision_case_sha256") if action else None,
         "evidence_report_sha256": action.get("evidence_report_sha256") if action else None,
+        "assurance_attestation_sha256": (
+            assurance_attestation.get("attestation_sha256")
+            if isinstance(assurance_attestation, Mapping)
+            else None
+        ),
+        "assurance_issuer_id": (
+            assurance_attestation.get("issuer_id")
+            if isinstance(assurance_attestation, Mapping)
+            else None
+        ),
         "subject_id": action.get("subject_id") if action else None,
         "object_id": action.get("object_id") if action else None,
         "capability": action.get("capability") if action else None,
@@ -306,6 +417,7 @@ def validate_authorization_token(value: Any, evaluation_tick: int, require_allow
         "scope_sha256",
         "decision_case_sha256",
         "evidence_report_sha256",
+        "assurance_attestation_sha256",
         "payload_sha256",
         "policy_sha256",
         "policy_decision_sha256",
@@ -313,7 +425,7 @@ def validate_authorization_token(value: Any, evaluation_tick: int, require_allow
     ):
         if not _is_sha256(token.get(field)):
             errors.append(_error("invalid_digest", f"token.{field}", "lowercase SHA-256 required"))
-    for field in ("issuer_id", "subject_id", "object_id", "capability", "tool_id", "execution_target", "policy_id", "nonce"):
+    for field in ("issuer_id", "assurance_issuer_id", "subject_id", "object_id", "capability", "tool_id", "execution_target", "policy_id", "nonce"):
         if not isinstance(token.get(field), str) or not token.get(field):
             errors.append(_error("missing_required", f"token.{field}", f"{field} required"))
     if type(token.get("policy_sequence")) is not int or token.get("policy_sequence", -1) < 1:
@@ -543,6 +655,7 @@ class SQLiteExecutionLedger:
 __all__ = [
     "ACTION_ENVELOPE_CONTRACT_ID",
     "APPROVAL_CONTRACT_ID",
+    "ASSURANCE_ATTESTATION_CONTRACT_ID",
     "AUTHORIZATION_TOKEN_CONTRACT_ID",
     "EXECUTION_RECEIPT_CONTRACT_ID",
     "STATE_WITNESS_CONTRACT_ID",
@@ -552,6 +665,7 @@ __all__ = [
     "authorize_action",
     "seal_contract",
     "validate_action_envelope",
+    "validate_assurance_attestation",
     "validate_authorization_token",
     "validate_state_witness",
 ]

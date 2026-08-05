@@ -1,0 +1,15 @@
+{
+  "assurance_status": "PASS",
+  "attestation_id": "attestation:example",
+  "attestation_level": "AUTHENTICATED",
+  "attestation_sha256": "61ea797704d7abfb6f3e73f45a27523e3ba23373862ca1c306c4469b9825d2f4",
+  "contract_id": "TRIAXIS_ASSURANCE_PASS_ATTESTATION_v1",
+  "decision_case_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "evidence_report_sha256": "7e1eca82bfc2c463d0e8ab20e2cbb0f0911d9a3b610a8b0b2d1181198ac7768d",
+  "issued_at": 6,
+  "issuer_id": "assurance-compiler:example",
+  "subject_id": "subject:triaxis",
+  "synthesis_decision": "ACCEPT_WITH_CONTROLS",
+  "trust_domain": "assurance-domain:example",
+  "valid_until": 10
+}

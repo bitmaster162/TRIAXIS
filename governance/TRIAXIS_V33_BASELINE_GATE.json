@@ -1,0 +1,9 @@
+{
+  "contract_id": "TRIAXIS_GIT_BASELINE_GATE_v1",
+  "status": "PASS",
+  "baseline_commit": "3d47e6eb388755ca991b6b85fe107935e3535490",
+  "baseline_tree": "e53e0cc202e945424f44d446f67d4df7d54bd210",
+  "baseline_meaning": "v3.2 product plus immutable post-commit failure evidence",
+  "implementation_permission": "ALLOW_FROM_EXACT_BASELINE",
+  "external_execution_permission": "DENY"
+}

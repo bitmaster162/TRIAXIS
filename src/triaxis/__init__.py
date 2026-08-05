@@ -152,7 +152,7 @@ __all__ += [
     "validate_assurance_case_v2",
 ]
 
-# TRIAXIS v3.2 operational assurance surface.
+# TRIAXIS v3.3 operational assurance surface (v3.2 core + assurance attestation).
 from .evidence_broker import (
     CLAIM_RECORD_CONTRACT_ID,
     EVIDENCE_PACKAGE_CONTRACT_ID,
@@ -171,6 +171,7 @@ from .policy_lifecycle import (
 from .action_assurance import (
     ACTION_ENVELOPE_CONTRACT_ID,
     APPROVAL_CONTRACT_ID,
+    ASSURANCE_ATTESTATION_CONTRACT_ID,
     AUTHORIZATION_TOKEN_CONTRACT_ID,
     EXECUTION_RECEIPT_CONTRACT_ID,
     STATE_WITNESS_CONTRACT_ID,
@@ -179,6 +180,7 @@ from .action_assurance import (
     action_scope_sha256,
     authorize_action,
     validate_action_envelope,
+    validate_assurance_attestation,
     validate_authorization_token,
     validate_state_witness,
 )
@@ -188,6 +190,7 @@ from .fail_bench import compare_full_to_mvt, score_rows as score_fail_bench_rows
 __all__ += [
     "ACTION_ENVELOPE_CONTRACT_ID",
     "APPROVAL_CONTRACT_ID",
+    "ASSURANCE_ATTESTATION_CONTRACT_ID",
     "ASSURANCE_PLAN_CONTRACT_ID",
     "AUTHORIZATION_TOKEN_CONTRACT_ID",
     "CLAIM_RECORD_CONTRACT_ID",
@@ -209,6 +212,7 @@ __all__ += [
     "score_fail_bench_rows",
     "select_assurance_plan",
     "validate_action_envelope",
+    "validate_assurance_attestation",
     "validate_authorization_token",
     "validate_evidence_package",
     "validate_policy_bundle",
