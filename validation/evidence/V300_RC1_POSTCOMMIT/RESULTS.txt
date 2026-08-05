@@ -1,0 +1,70 @@
+[
+  {
+    "case": "duplicate_primary",
+    "expected": "BLOCK",
+    "observed": "BLOCK",
+    "conformant": true,
+    "reason": "BLOCKED_BY_ASSURANCE_CONTRACT",
+    "codes": [
+      "duplicate_branch_id",
+      "duplicate_claim_id"
+    ]
+  },
+  {
+    "case": "independent_review_reuses_primary_evidence",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "falsification_has_no_test_evidence_binding",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "devil_not_blind_to_primary",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "malformed_action_payload_digest",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "stale_load_bearing_evidence",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "load_bearing_unverified_assumption",
+    "expected": "ESCALATE",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  },
+  {
+    "case": "all_evidence_same_correlation_group",
+    "expected": "BLOCK",
+    "observed": "PASS",
+    "conformant": false,
+    "reason": "ASSURANCE_CASE_VALID",
+    "codes": []
+  }
+]
+PASS 1 FAIL 7
