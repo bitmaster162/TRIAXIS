@@ -1,0 +1,59 @@
+{
+  "candidate_commit": "1daa9b342be36c16b77e7e7b29d75ed6e8398fd7",
+  "candidate_tree": "af26508be20bc9c4590e495dd5e6a9a41813678d",
+  "case_count": 4,
+  "fail_count": 3,
+  "pass_count": 1,
+  "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_POSTCOMMIT_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_outcome": "ALLOW",
+      "candidate_commit": "1daa9b342be36c16b77e7e7b29d75ed6e8398fd7",
+      "candidate_tree": "af26508be20bc9c4590e495dd5e6a9a41813678d",
+      "case_id": "OA-P01",
+      "description": "A structurally valid action remains an authorization positive control",
+      "exception": null,
+      "expected_outcome": "ALLOW",
+      "pass": true,
+      "positive_control": true,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_POSTCOMMIT_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "candidate_commit": "1daa9b342be36c16b77e7e7b29d75ed6e8398fd7",
+      "candidate_tree": "af26508be20bc9c4590e495dd5e6a9a41813678d",
+      "case_id": "OA-N01",
+      "description": "An arbitrary decision digest without a trusted PASS attestation must not authorize",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_POSTCOMMIT_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "candidate_commit": "1daa9b342be36c16b77e7e7b29d75ed6e8398fd7",
+      "candidate_tree": "af26508be20bc9c4590e495dd5e6a9a41813678d",
+      "case_id": "OA-N02",
+      "description": "An arbitrary evidence-report digest without a trusted PASS attestation must not authorize",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_POSTCOMMIT_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "ALLOW",
+      "candidate_commit": "1daa9b342be36c16b77e7e7b29d75ed6e8398fd7",
+      "candidate_tree": "af26508be20bc9c4590e495dd5e6a9a41813678d",
+      "case_id": "OA-N03",
+      "description": "Two unrelated but well-formed digests must not be laundered as an assurance chain",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": false,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_OPERATIONAL_ASSURANCE_POSTCOMMIT_TRIGGER_v1"
+    }
+  ],
+  "status": "FAIL"
+}
