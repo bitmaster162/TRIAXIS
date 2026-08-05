@@ -281,17 +281,27 @@ __all__ += [
 
 # TRIAXIS v3.8 external registry head witness.
 from .trust_registry_anchor import (
+    SQLiteAnchorChallengeLedger,
+    TRUST_REGISTRY_CHALLENGE_WITNESS_CONTRACT_ID,
     TRUST_REGISTRY_HEAD_WITNESS_CONTRACT_ID,
     TrustRegistryAnchorError,
+    load_registry_with_challenge_bound_anchor,
     load_registry_with_external_anchor,
+    make_challenge_bound_head_witness,
     make_trust_registry_head_witness,
+    validate_challenge_bound_head_witness,
     validate_trust_registry_head_witness,
 )
 
 __all__ += [
+    "SQLiteAnchorChallengeLedger",
+    "TRUST_REGISTRY_CHALLENGE_WITNESS_CONTRACT_ID",
     "TRUST_REGISTRY_HEAD_WITNESS_CONTRACT_ID",
     "TrustRegistryAnchorError",
+    "load_registry_with_challenge_bound_anchor",
     "load_registry_with_external_anchor",
+    "make_challenge_bound_head_witness",
     "make_trust_registry_head_witness",
+    "validate_challenge_bound_head_witness",
     "validate_trust_registry_head_witness",
 ]

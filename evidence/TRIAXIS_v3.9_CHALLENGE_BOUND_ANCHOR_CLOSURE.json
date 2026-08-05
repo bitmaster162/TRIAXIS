@@ -1,0 +1,46 @@
+{
+  "baseline_commit": "d10376b4f4ed2f4370ce62e9be55c14139c23ae6",
+  "case_count": 5,
+  "contract_id": "TRIAXIS_EXTERNAL_ANCHOR_REPLAY_TRIGGER_RESULT_v2",
+  "failure_evidence_commit": "f157fa1",
+  "implementation_status": "CLOSURE_PRECOMMIT_PASS",
+  "pass_count": 5,
+  "precommit_test_count": 233,
+  "precommit_test_status": "PASS",
+  "rows": [
+    {
+      "case_id": "FRESH_CHALLENGE_CURRENT_HEAD",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SAME_WITNESS_AND_CHALLENGE_REPLAY",
+      "expected": "challenge_replay",
+      "observed": "challenge_replay",
+      "status": "PASS"
+    },
+    {
+      "case_id": "OLD_WITNESS_VS_NEW_CHALLENGE",
+      "expected": "anchor_challenge_mismatch",
+      "observed": "anchor_challenge_mismatch",
+      "status": "PASS"
+    },
+    {
+      "case_id": "ROLLED_BACK_DB_PLUS_OLD_WITNESS_VS_FRESH_CHALLENGE",
+      "expected": "anchor_challenge_mismatch",
+      "observed": "anchor_challenge_mismatch",
+      "status": "PASS"
+    },
+    {
+      "case_id": "FORGED_RESPONSE_DOES_NOT_BURN_CHALLENGE",
+      "expected": "invalid_external_anchor_signature_then_PASS",
+      "observed": "invalid_external_anchor_signature_then_PASS",
+      "positive_control": true,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.9-RC1-CHALLENGE-BOUND-ANCHOR"
+}
