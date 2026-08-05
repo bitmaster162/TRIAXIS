@@ -1,0 +1,28 @@
+{
+  "case_count": 3,
+  "contract_id": "TRIAXIS_EXTERNAL_ANCHOR_REPLAY_TRIGGER_RESULT_v1",
+  "material_failure_count": 2,
+  "rows": [
+    {
+      "case_id": "CURRENT_DATABASE_WITH_CURRENT_WITNESS",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "ROLLED_BACK_DATABASE_PLUS_REPLAYED_OLD_WITNESS",
+      "expected": "BLOCK",
+      "observed": "PASS",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "WITNESS_NOT_BOUND_TO_FRESH_VERIFIER_CHALLENGE",
+      "expected": "CHALLENGE_BINDING_REQUIRED",
+      "observed": "TIMESTAMP_ONLY",
+      "status": "FAIL"
+    }
+  ],
+  "status": "FAIL",
+  "target": "TRIAXIS-v3.8-RC1-EXTERNAL-REGISTRY-ANCHOR"
+}
