@@ -305,3 +305,22 @@ __all__ += [
     "validate_challenge_bound_head_witness",
     "validate_trust_registry_head_witness",
 ]
+
+# TRIAXIS v3.10 verifier epoch and distinct-anchor quorum.
+from .trust_registry_quorum import (
+    SQLiteEpochChallengeLedger,
+    TRUST_REGISTRY_QUORUM_MEMBER_WITNESS_CONTRACT_ID,
+    VerifierFreshnessSession,
+    load_registry_with_quorum_anchors,
+    make_quorum_member_witness,
+    validate_quorum_member_witness,
+)
+
+__all__ += [
+    "SQLiteEpochChallengeLedger",
+    "TRUST_REGISTRY_QUORUM_MEMBER_WITNESS_CONTRACT_ID",
+    "VerifierFreshnessSession",
+    "load_registry_with_quorum_anchors",
+    "make_quorum_member_witness",
+    "validate_quorum_member_witness",
+]

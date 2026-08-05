@@ -1,0 +1,44 @@
+{
+  "baseline_product_commit": "fa2b2ca47f530b13be8da5b44d8227d2ce2aefd6",
+  "boundary_evidence_commit": "291caade933ed8245fe878b4b50c8e9e9e10873a",
+  "case_count": 5,
+  "contract_id": "TRIAXIS_QUORUM_AND_VERIFIER_EPOCH_TRIGGER_RESULT_v1",
+  "implementation_status": "CLOSURE_PRECOMMIT_PASS",
+  "pass_count": 5,
+  "rows": [
+    {
+      "case_id": "TWO_DISTINCT_ANCHORS_CURRENT_HEAD",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SINGLE_ANCHOR_BELOW_THRESHOLD",
+      "expected": "anchor_quorum_not_met",
+      "observed": "anchor_quorum_not_met",
+      "status": "PASS"
+    },
+    {
+      "case_id": "ONE_STALE_TWO_CURRENT",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "TWO_CONFLICTING_QUORUMS",
+      "expected": "multiple_anchor_quorums",
+      "observed": "multiple_anchor_quorums",
+      "status": "PASS"
+    },
+    {
+      "case_id": "RESTORED_LEDGER_OLD_VERIFIER_EPOCH",
+      "expected": "challenge_epoch_mismatch",
+      "observed": "challenge_epoch_mismatch",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.10-RC1-QUORUM-ANCHOR"
+}
