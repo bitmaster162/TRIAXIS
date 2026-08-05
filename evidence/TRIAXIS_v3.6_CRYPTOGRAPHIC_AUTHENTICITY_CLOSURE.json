@@ -1,0 +1,58 @@
+{
+  "case_count": 7,
+  "contract_id": "TRIAXIS_CRYPTOGRAPHIC_ISSUER_AUTHENTICITY_TRIGGER_RESULT_v2",
+  "pass_count": 7,
+  "rows": [
+    {
+      "case_id": "AUTHENTICATED_POSITIVE_CONTROL",
+      "expected": "ALLOW",
+      "observed": "ALLOW",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "FORGED_ASSURANCE_PRIVATE_KEY",
+      "expected": "DENY",
+      "observed": "DENY",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "UNSIGNED_STATE_WITNESS",
+      "expected": "DENY",
+      "observed": "DENY",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "FORGED_GATE_PRIVATE_KEY",
+      "expected": "DENY",
+      "observed": "DENY",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "REVOKED_KEY",
+      "expected": "BLOCK",
+      "observed": "BLOCK",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "FORGED_AUTHORIZATION_TOKEN",
+      "expected": "REJECTED",
+      "observed": "REJECTED",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SIGNED_ENVELOPE_TAMPER",
+      "expected": "BLOCK",
+      "observed": "BLOCK",
+      "positive_control": false,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.6-RC1-CRYPTOGRAPHIC-AUTHENTICITY"
+}

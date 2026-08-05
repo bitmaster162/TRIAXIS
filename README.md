@@ -4,9 +4,9 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v2.10-RC2** — RS4 53/53, SI4 37/37, CS3 21/21, unit/regression 47/47; Release Candidate, not Production-qualified.
+Current candidate: **TRIAXIS v3.6-RC1 Cryptographic Authenticity**; Release Candidate, not production-qualified.
 
-## TRIAXIS v3.2 operational assurance
+## TRIAXIS v3.6 cryptographic operational assurance
 
 The research-integrated branch now includes executable reference primitives for:
 
@@ -15,6 +15,8 @@ The research-integrated branch now includes executable reference primitives for:
 - risk-adaptive assurance routing;
 - exact action/payload/state/policy binding;
 - single-use authorization and durable execution reconciliation;
+- Ed25519-authenticated assurance, state, policy, approvals and gate tokens;
+- purpose-bound public-key trust registry with validity and revocation;
 - equal-budget project-falsification benchmarking.
 
 Run the complete test suite:
@@ -23,7 +25,13 @@ Run the complete test suite:
 PYTHONPATH=src:. python -m unittest discover -s tests -v
 ```
 
-Generate the end-to-end non-production example:
+Run the cryptographic authenticity closure trigger:
+
+```bash
+PYTHONPATH=src:. python validation/TRIAXIS_CRYPTOGRAPHIC_ISSUER_AUTHENTICITY_TRIGGER_v2.py
+```
+
+Generate the legacy digest-only end-to-end example:
 
 ```bash
 PYTHONPATH=src:. python examples/build_operational_assurance_example.py
@@ -35,4 +43,4 @@ Score a benchmark result file:
 PYTHONPATH=src:. python tools/triaxis_fail_bench.py benchmark/results_template.jsonl
 ```
 
-The package is not a production gateway. Complete mediation, external identity/KMS, trusted time and independent empirical validation remain integration requirements.
+The package is not a production gateway. KMS/HSM custody, monotonic trust-registry epochs, complete mediation, trusted time and independent empirical validation remain integration requirements.

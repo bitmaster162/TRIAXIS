@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_signed_contract_envelope_v1.schema.json",
+  "title": "TRIAXIS Signed Contract Envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "purpose", "algorithm", "key_id", "signer_id",
+    "trust_domain", "issued_at", "valid_until", "inner_contract_id",
+    "inner_digest_field", "inner_digest", "inner_contract",
+    "envelope_sha256", "signature_b64"
+  ],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_SIGNED_CONTRACT_ENVELOPE_v1"},
+    "purpose": {
+      "enum": [
+        "ASSURANCE_ATTESTATION", "STATE_WITNESS", "ACTION_APPROVAL",
+        "POLICY_BUNDLE", "AUTHORIZATION_TOKEN", "EXECUTION_RECEIPT"
+      ]
+    },
+    "algorithm": {"const": "Ed25519"},
+    "key_id": {"type": "string", "minLength": 1},
+    "signer_id": {"type": "string", "minLength": 1},
+    "trust_domain": {"type": "string", "minLength": 1},
+    "issued_at": {"type": "integer", "minimum": 0},
+    "valid_until": {"type": "integer", "minimum": 0},
+    "inner_contract_id": {"type": "string", "minLength": 1},
+    "inner_digest_field": {"type": "string", "minLength": 1},
+    "inner_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "inner_contract": {"type": "object"},
+    "envelope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "signature_b64": {"type": "string", "minLength": 88, "maxLength": 88}
+  }
+}

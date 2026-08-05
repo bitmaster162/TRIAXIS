@@ -220,3 +220,44 @@ __all__ += [
     "validate_policy_bundle",
     "validate_state_witness",
 ]
+
+# TRIAXIS v3.6 cryptographic authenticity boundary.
+from .crypto_trust import (
+    PURPOSE_ACTION_APPROVAL,
+    PURPOSE_ASSURANCE_ATTESTATION,
+    PURPOSE_AUTHORIZATION_TOKEN,
+    PURPOSE_EXECUTION_RECEIPT,
+    PURPOSE_POLICY_BUNDLE,
+    PURPOSE_STATE_WITNESS,
+    SIGNED_CONTRACT_ENVELOPE_ID,
+    TRUST_KEY_RECORD_CONTRACT_ID,
+    TrustKeyRegistry,
+    generate_ed25519_keypair,
+    make_trust_key_record,
+    sign_contract_envelope,
+    verify_contract_envelope,
+)
+from .authenticated_action_assurance import (
+    AuthenticatedSQLiteExecutionLedger,
+    authorize_authenticated_action,
+    validate_authenticated_authorization,
+)
+
+__all__ += [
+    "AuthenticatedSQLiteExecutionLedger",
+    "PURPOSE_ACTION_APPROVAL",
+    "PURPOSE_ASSURANCE_ATTESTATION",
+    "PURPOSE_AUTHORIZATION_TOKEN",
+    "PURPOSE_EXECUTION_RECEIPT",
+    "PURPOSE_POLICY_BUNDLE",
+    "PURPOSE_STATE_WITNESS",
+    "SIGNED_CONTRACT_ENVELOPE_ID",
+    "TRUST_KEY_RECORD_CONTRACT_ID",
+    "TrustKeyRegistry",
+    "authorize_authenticated_action",
+    "generate_ed25519_keypair",
+    "make_trust_key_record",
+    "sign_contract_envelope",
+    "validate_authenticated_authorization",
+    "verify_contract_envelope",
+]
