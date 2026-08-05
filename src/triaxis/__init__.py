@@ -261,3 +261,20 @@ __all__ += [
     "validate_authenticated_authorization",
     "verify_contract_envelope",
 ]
+
+# TRIAXIS v3.7 monotonic root-signed trust registry.
+from .trust_registry_state import (
+    SQLiteTrustRegistryStore,
+    TRUST_REGISTRY_SNAPSHOT_CONTRACT_ID,
+    TrustRegistryStateError,
+    make_trust_registry_snapshot,
+    validate_trust_registry_snapshot,
+)
+
+__all__ += [
+    "SQLiteTrustRegistryStore",
+    "TRUST_REGISTRY_SNAPSHOT_CONTRACT_ID",
+    "TrustRegistryStateError",
+    "make_trust_registry_snapshot",
+    "validate_trust_registry_snapshot",
+]

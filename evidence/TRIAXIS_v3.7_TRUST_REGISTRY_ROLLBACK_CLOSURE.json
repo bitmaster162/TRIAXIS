@@ -1,0 +1,34 @@
+{
+  "case_count": 4,
+  "contract_id": "TRIAXIS_TRUST_REGISTRY_ROLLBACK_TRIGGER_RESULT_v2",
+  "pass_count": 4,
+  "rows": [
+    {
+      "case_id": "REVOCATION_HEAD_BLOCKS_OLD_KEY",
+      "expected": "BLOCK",
+      "observed": "BLOCK",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "OLD_SNAPSHOT_REINSTALL",
+      "expected": "registry_rollback",
+      "observed": "registry_rollback",
+      "status": "PASS"
+    },
+    {
+      "case_id": "SEQUENCE_ADVANCES_EXACTLY",
+      "expected": 2,
+      "observed": 2,
+      "status": "PASS"
+    },
+    {
+      "case_id": "RESTART_PRESERVES_HEAD",
+      "expected": "sequence=2;rollback=blocked",
+      "observed": "sequence=2;rollback=registry_rollback",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.7-RC1-MONOTONIC-TRUST-REGISTRY"
+}
