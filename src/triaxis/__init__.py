@@ -369,3 +369,18 @@ __all__ += [
 
 from .policy_head_http import PolicyHeadHTTPApplication, build_http_server
 __all__ += ["PolicyHeadHTTPApplication", "build_http_server"]
+
+
+# TRIAXIS v3.13 distinct Policy Head Authority quorum.
+from .policy_head_quorum import (
+    POLICY_HEAD_QUORUM_CONFIG_CONTRACT_ID,
+    load_policy_with_external_head_quorum,
+    make_policy_head_quorum_config,
+    validate_policy_head_quorum_config,
+)
+__all__ += [
+    "POLICY_HEAD_QUORUM_CONFIG_CONTRACT_ID",
+    "load_policy_with_external_head_quorum",
+    "make_policy_head_quorum_config",
+    "validate_policy_head_quorum_config",
+]

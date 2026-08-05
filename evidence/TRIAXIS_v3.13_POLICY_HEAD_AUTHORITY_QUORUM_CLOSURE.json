@@ -1,0 +1,44 @@
+{
+  "case_count": 5,
+  "contract_id": "TRIAXIS_POLICY_HEAD_AUTHORITY_QUORUM_TRIGGER_RESULT_v1",
+  "pass_count": 5,
+  "rows": [
+    {
+      "case_id": "TWO_OF_THREE_CURRENT_HEAD",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "ONE_ROLLED_BACK_AUTHORITY",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SPLIT_VIEW_NO_THRESHOLD",
+      "expected": "policy_head_quorum_not_met",
+      "observed": "policy_head_quorum_not_met",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "PINNED_CONFIG_DOWNGRADE",
+      "expected": "policy_head_quorum_config_substitution",
+      "observed": "policy_head_quorum_config_substitution",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "SINGLE_SIGNER_EQUIVOCATION",
+      "expected": "policy_head_signer_equivocation",
+      "observed": "policy_head_signer_equivocation",
+      "positive_control": false,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.13-RC1-POLICY-HEAD-AUTHORITY-QUORUM"
+}
