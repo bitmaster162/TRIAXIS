@@ -1,0 +1,32 @@
+{
+  "case_count": 3,
+  "contract_id": "TRIAXIS_V310_POSTCOMMIT_QUORUM_POLICY_SUBSTITUTION_RESULT_v1",
+  "exact_tag_test_count": 244,
+  "exact_tag_test_status": "PASS",
+  "material_failure_count": 2,
+  "product_commit": "20c61fa9959300083892a3ffb157f0496e2f75d4",
+  "product_tree": "208239837b3b512123ab07d810d6c414ce636c5f",
+  "rows": [
+    {
+      "case_id": "INTENDED_THREE_OF_THREE_POLICY",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "CALLER_LOWERS_THRESHOLD_3_TO_2",
+      "expected": "BLOCK_UNDER_AUTHENTICATED_POLICY",
+      "observed": "PASS",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "CALLER_SUBSTITUTES_AUTHORITY_SET",
+      "expected": "BLOCK_UNDER_AUTHENTICATED_POLICY",
+      "observed": "PASS",
+      "status": "FAIL"
+    }
+  ],
+  "status": "FAIL",
+  "target": "TRIAXIS-v3.10-RC1-QUORUM-ANCHOR"
+}
