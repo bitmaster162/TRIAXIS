@@ -1,0 +1,10 @@
+{
+  "version": "TRIAXIS v3.1-RC2 Research-Integrated",
+  "status": "PASS_WITH_CONDITIONS",
+  "product_logic_commit": "e2e40ae6ebab03dc2ea568845deb0a948eeb3cf2",
+  "product_logic_tree": "33fb77a73978369f3b182245d8d3d865e41afd7e",
+  "tests": 128,
+  "production_qualified": false,
+  "independent_certification": false,
+  "external_execution_permission": false
+}
