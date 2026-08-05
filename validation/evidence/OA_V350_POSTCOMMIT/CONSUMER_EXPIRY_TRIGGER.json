@@ -1,0 +1,75 @@
+{
+  "case_count": 5,
+  "fail_count": 0,
+  "pass_count": 5,
+  "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+  "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_expiry": 20,
+      "actual_status": "PREPARED",
+      "case_id": "OA35-PC-P01",
+      "description": "Current token remains consumable by execution ledger",
+      "exception": null,
+      "expected_expiry": 20,
+      "expected_status": "PREPARED",
+      "pass": true,
+      "positive_control": true,
+      "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+      "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "invalid_authorization_token",
+      "case_id": "OA35-PC-N01",
+      "description": "Ledger rejects token after policy basis expires",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "invalid_authorization_token",
+      "pass": true,
+      "positive_control": false,
+      "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+      "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "invalid_authorization_token",
+      "case_id": "OA35-PC-N02",
+      "description": "Ledger rejects token after action request expires",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "invalid_authorization_token",
+      "pass": true,
+      "positive_control": false,
+      "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+      "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "PASS",
+      "case_id": "OA35-PC-N03",
+      "description": "Token expiry equals minimum across policy, assurance, state, action and approvals",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "PASS",
+      "pass": true,
+      "positive_control": false,
+      "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+      "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 20,
+      "actual_status": "BLOCK",
+      "case_id": "OA35-PC-N04",
+      "description": "Consumer rejects expiry-source tampering under original token digest",
+      "exception": null,
+      "expected_expiry": 20,
+      "expected_status": "BLOCK",
+      "pass": true,
+      "positive_control": false,
+      "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+      "protocol_id": "TRIAXIS_V350_POSTCOMMIT_CONSUMER_EXPIRY_TRIGGER_v1"
+    }
+  ],
+  "status": "PASS"
+}

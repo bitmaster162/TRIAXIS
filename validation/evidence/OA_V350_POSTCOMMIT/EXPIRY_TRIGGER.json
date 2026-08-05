@@ -1,0 +1,69 @@
+{
+  "case_count": 5,
+  "fail_count": 0,
+  "pass_count": 5,
+  "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_expiry": 20,
+      "actual_status": "PASS",
+      "case_id": "OA35-P01",
+      "description": "All trust sources remain current",
+      "exception": null,
+      "expected_expiry": 20,
+      "expected_status": "PASS",
+      "pass": true,
+      "positive_control": true,
+      "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "BLOCK",
+      "case_id": "OA35-N01",
+      "description": "Policy expiry caps token",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "BLOCK",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "BLOCK",
+      "case_id": "OA35-N02",
+      "description": "Assurance expiry caps token",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "BLOCK",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "BLOCK",
+      "case_id": "OA35-N03",
+      "description": "State expiry caps token",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "BLOCK",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1"
+    },
+    {
+      "actual_expiry": 7,
+      "actual_status": "BLOCK",
+      "case_id": "OA35-N04",
+      "description": "Approval expiry caps token",
+      "exception": null,
+      "expected_expiry": 7,
+      "expected_status": "BLOCK",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_EFFECTIVE_AUTHORIZATION_EXPIRY_TRIGGER_v1"
+    }
+  ],
+  "status": "PASS"
+}

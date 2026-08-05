@@ -1,0 +1,26 @@
+{
+  "contract": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "release": "TRIAXIS v3.5-RC2 Operational Assurance",
+  "release_tag": "TRIAXIS-v3.5-RC2-OPERATIONAL-ASSURANCE",
+  "release_commit_resolution": "resolve annotated tag target",
+  "product_commit": "ee1dae92cdb93c02bc5f46405bd79a85fbacea7f",
+  "product_tree": "75779a120e4ec91463bfefaa4aa22876a8b52807",
+  "product_src_tree": "09188da51ebee18b3a987ba9b799de4f33756369",
+  "validation_only": true,
+  "expected_rc2_src_tree": "09188da51ebee18b3a987ba9b799de4f33756369",
+  "unit_tests": {"passed": 191, "failed": 0},
+  "protocol_cases": {
+    "assurance_artifact": {"passed": 6, "failed": 0},
+    "exact_action_scope": {"passed": 5, "failed": 0},
+    "effective_expiry": {"passed": 5, "failed": 0},
+    "postcommit_consumer_expiry": {"passed": 5, "failed": 0}
+  },
+  "schema_validation": "PASS_OFFLINE_LOCAL_REGISTRY",
+  "analysis_status": "PASS_WITH_CONDITIONS",
+  "production_qualified": false,
+  "independent_certification": false,
+  "external_execution_permission": "NOT_IMPLIED",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
