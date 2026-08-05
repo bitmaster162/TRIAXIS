@@ -141,3 +141,13 @@ __all__ += [
     "ASSURANCE_CASE_CONTRACT_ID",
     "validate_assurance_case",
 ]
+
+from .assurance_v2 import (
+    ASSURANCE_CASE_CONTRACT_ID as ASSURANCE_CASE_V2_CONTRACT_ID,
+    validate_assurance_case as validate_assurance_case_v2,
+)
+
+__all__ += [
+    "ASSURANCE_CASE_V2_CONTRACT_ID",
+    "validate_assurance_case_v2",
+]
