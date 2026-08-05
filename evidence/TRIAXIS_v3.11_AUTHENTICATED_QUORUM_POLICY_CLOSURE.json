@@ -1,0 +1,43 @@
+{
+  "baseline_product_commit": "20c61fa9959300083892a3ffb157f0496e2f75d4",
+  "case_count": 5,
+  "contract_id": "TRIAXIS_AUTHENTICATED_QUORUM_POLICY_TRIGGER_RESULT_v1",
+  "failure_evidence_commit": "acd0f9e61e6fc84ecfcce8dbb6db4f13dbb230b0",
+  "implementation_status": "CLOSURE_PRECOMMIT_PASS",
+  "pass_count": 5,
+  "rows": [
+    {
+      "case_id": "SIGNED_POLICY_EXACT_QUORUM",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "THRESHOLD_DOWNGRADE_ATTEMPT",
+      "expected": "anchor_quorum_not_met",
+      "observed": "anchor_quorum_not_met",
+      "status": "PASS"
+    },
+    {
+      "case_id": "AUTHORITY_SET_SUBSTITUTION",
+      "expected": "anchor_quorum_not_met",
+      "observed": "anchor_quorum_not_met",
+      "status": "PASS"
+    },
+    {
+      "case_id": "POLICY_DIGEST_SUBSTITUTION",
+      "expected": "anchor_quorum_not_met",
+      "observed": "anchor_quorum_not_met",
+      "status": "PASS"
+    },
+    {
+      "case_id": "LOCAL_POLICY_ROLLBACK",
+      "expected": "quorum_policy_rollback",
+      "observed": "quorum_policy_rollback",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.11-RC1-AUTHENTICATED-QUORUM-POLICY"
+}

@@ -224,6 +224,7 @@ __all__ += [
 # TRIAXIS v3.6 cryptographic authenticity boundary.
 from .crypto_trust import (
     PURPOSE_ACTION_APPROVAL,
+    PURPOSE_ANCHOR_QUORUM_POLICY,
     PURPOSE_ASSURANCE_ATTESTATION,
     PURPOSE_AUTHORIZATION_TOKEN,
     PURPOSE_EXECUTION_RECEIPT,
@@ -246,6 +247,7 @@ from .authenticated_action_assurance import (
 __all__ += [
     "AuthenticatedSQLiteExecutionLedger",
     "PURPOSE_ACTION_APPROVAL",
+    "PURPOSE_ANCHOR_QUORUM_POLICY",
     "PURPOSE_ASSURANCE_ATTESTATION",
     "PURPOSE_AUTHORIZATION_TOKEN",
     "PURPOSE_EXECUTION_RECEIPT",
@@ -309,18 +311,36 @@ __all__ += [
 # TRIAXIS v3.10 verifier epoch and distinct-anchor quorum.
 from .trust_registry_quorum import (
     SQLiteEpochChallengeLedger,
+    TRUST_REGISTRY_POLICY_BOUND_QUORUM_WITNESS_CONTRACT_ID,
     TRUST_REGISTRY_QUORUM_MEMBER_WITNESS_CONTRACT_ID,
     VerifierFreshnessSession,
+    load_registry_with_managed_quorum_policy,
     load_registry_with_quorum_anchors,
+    make_policy_bound_quorum_witness,
     make_quorum_member_witness,
+    validate_policy_bound_quorum_witness,
     validate_quorum_member_witness,
+)
+from .anchor_quorum_policy import (
+    ANCHOR_QUORUM_POLICY_CONTRACT_ID,
+    SQLiteAnchorQuorumPolicyStore,
+    make_anchor_quorum_policy,
+    validate_anchor_quorum_policy,
 )
 
 __all__ += [
+    "ANCHOR_QUORUM_POLICY_CONTRACT_ID",
+    "SQLiteAnchorQuorumPolicyStore",
     "SQLiteEpochChallengeLedger",
+    "TRUST_REGISTRY_POLICY_BOUND_QUORUM_WITNESS_CONTRACT_ID",
     "TRUST_REGISTRY_QUORUM_MEMBER_WITNESS_CONTRACT_ID",
     "VerifierFreshnessSession",
+    "load_registry_with_managed_quorum_policy",
     "load_registry_with_quorum_anchors",
+    "make_anchor_quorum_policy",
+    "make_policy_bound_quorum_witness",
     "make_quorum_member_witness",
+    "validate_anchor_quorum_policy",
+    "validate_policy_bound_quorum_witness",
     "validate_quorum_member_witness",
 ]

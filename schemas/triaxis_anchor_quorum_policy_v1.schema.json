@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_anchor_quorum_policy_v1.schema.json",
+  "title": "TRIAXIS Anchor Quorum Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "policy_id", "policy_version", "previous_policy_sha256",
+    "registry_id", "anchor_set_id", "threshold", "authorities",
+    "valid_from", "valid_until", "policy_sha256"
+  ],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_ANCHOR_QUORUM_POLICY_v1"},
+    "policy_id": {"type": "string", "minLength": 1},
+    "policy_version": {"type": "integer", "minimum": 1},
+    "previous_policy_sha256": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      ]
+    },
+    "registry_id": {"type": "string", "minLength": 1},
+    "anchor_set_id": {"type": "string", "minLength": 1},
+    "threshold": {"type": "integer", "minimum": 2},
+    "authorities": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["anchor_id", "signer_id", "key_id", "trust_domain"],
+        "properties": {
+          "anchor_id": {"type": "string", "minLength": 1},
+          "signer_id": {"type": "string", "minLength": 1},
+          "key_id": {"type": "string", "minLength": 1},
+          "trust_domain": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "valid_from": {"type": "integer", "minimum": 0},
+    "valid_until": {"type": "integer", "minimum": 0},
+    "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
