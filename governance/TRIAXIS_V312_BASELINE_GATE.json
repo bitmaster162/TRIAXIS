@@ -1,0 +1,17 @@
+{
+  "contract_id": "TRIAXIS_BASELINE_GATE_v1",
+  "target_version": "TRIAXIS v3.12 Policy Head Authority",
+  "baseline_tag": "TRIAXIS-v3.11-RC2-AUTHENTICATED-QUORUM-POLICY",
+  "baseline_commit": "7b26acca3da307aac173c97464cadfa348a55eff",
+  "baseline_tree": "b7c73a93dc65ae5d7d01dc2ff1906be90d509a9a",
+  "git_bundle_sha256": "c4c5af605b10dd8191dbcf0689079ac00208302713adb7cd1840f0dfd25b06e9",
+  "baseline_tests": {
+    "framework": "python unittest",
+    "count": 252,
+    "status": "PASS"
+  },
+  "scope": "External Policy Head Authority reference implementation; no deployment permission.",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
