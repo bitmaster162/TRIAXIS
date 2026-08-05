@@ -1,0 +1,19 @@
+{
+  "contract_id": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "version": "TRIAXIS v3.13-RC2 Policy Head Authority Quorum",
+  "classification": "validation-only",
+  "rc1_product_commit": "8f8ced978a9a175d1abdea3b9b4ec083a82f9745",
+  "rc1_product_tree": "bb11bdefce6b062034442866246893ec638645a1",
+  "rc1_src_tree": "005b634ea61b21eba672fbafb9d8b33b8fa89ed7",
+  "tests": {"count": 276, "status": "PASS"},
+  "protocols": {
+    "external_policy_head_authority": {"count": 6, "status": "PASS"},
+    "policy_head_authority_quorum": {"count": 5, "status": "PASS"}
+  },
+  "terminal_boundary": "PHYSICAL_MULTI_ADMIN_DEPLOYMENT_PLUS_INDEPENDENT_MINIMUM_POLICY_HEAD_OR_TRANSPARENCY_GOSSIP",
+  "production_qualified": false,
+  "independent_certification": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}

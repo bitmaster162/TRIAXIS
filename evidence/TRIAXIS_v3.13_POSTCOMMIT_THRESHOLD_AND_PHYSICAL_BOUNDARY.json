@@ -1,0 +1,30 @@
+{
+  "contract_id": "TRIAXIS_V313_POSTCOMMIT_THRESHOLD_AND_PHYSICAL_BOUNDARY_v1",
+  "required_next_control": "PHYSICAL_MULTI_ADMIN_DEPLOYMENT_PLUS_INDEPENDENT_MINIMUM_POLICY_HEAD_OR_TRANSPARENCY_GOSSIP",
+  "rows": [
+    {
+      "accepted_policy_version": 2,
+      "boundary_confirmed": true,
+      "case_id": "THRESHOLD_ROLLBACK_WITH_STALE_OPERATOR_FLOOR",
+      "expected_boundary": "PASS",
+      "observed": "PASS",
+      "true_unseen_policy_version": 3
+    },
+    {
+      "case_id": "UPDATED_OPERATOR_FLOOR_BLOCKS_THRESHOLD_ROLLBACK",
+      "expected": "minimum_policy_version_not_met",
+      "observed": "minimum_policy_version_not_met",
+      "status": "PASS"
+    },
+    {
+      "boundary_confirmed": true,
+      "case_id": "DECLARED_DOMAINS_DO_NOT_PROVE_PHYSICAL_INDEPENDENCE",
+      "declared_domains": 3,
+      "expected_boundary": "PASS",
+      "observed": "PASS",
+      "physical_processes_in_fixture": 1
+    }
+  ],
+  "status": "BOUNDARY_CONFIRMED",
+  "target_commit": "8f8ced978a9a175d1abdea3b9b4ec083a82f9745"
+}
