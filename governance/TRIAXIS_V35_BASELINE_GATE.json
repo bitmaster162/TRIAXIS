@@ -1,0 +1,15 @@
+{
+  "contract": "TRIAXIS_GIT_BASELINE_GATE_v1",
+  "project": "TRIAXIS",
+  "target_version": "v3.5-RC1-EFFECTIVE-EXPIRY",
+  "baseline_commit": "9d589ffc083e6663f552f22eef36f4afc978308e",
+  "baseline_tree": "8616593b3c9105ac022c15747f831c27d4958f46",
+  "baseline_tag": "TRIAXIS-v3.4-RC1-EXACT-ACTION-BINDING plus frozen postcommit evidence",
+  "required_failure_evidence_commit": "9d589ffc083e6663f552f22eef36f4afc978308e",
+  "working_tree_state_before_product_commit": "EXPECTED_MODIFICATIONS_FOR_V3_5_ONLY",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY",
+  "status": "PASS",
+  "verified_at_utc": "2026-08-05T14:03:28+00:00"
+}

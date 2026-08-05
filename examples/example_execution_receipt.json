@@ -4,7 +4,7 @@
   "effect_id": "effect:example",
   "nonce": "nonce:example",
   "outcome_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-  "receipt_sha256": "a09c7be49923642e6faf0c1aefa64ec442d5378dd6ba3e8a3f5a3a552662f728",
+  "receipt_sha256": "c4b2bea60e67253548742552ca07726ebe4fac2ec80ddcb1a6bc2240e258d46c",
   "resolution": "DIRECT",
-  "token_sha256": "7515487d37ce19f0da19ea0ee53ebfe51e819f13b5bb14ede1bca0b4adfd4539"
+  "token_sha256": "b48e1ff8af068e8f089d7aea4412a80eda16970bf7cf0101feb50720e16aad4d"
 }

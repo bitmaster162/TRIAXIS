@@ -25,7 +25,8 @@
     "equal_budget_ablation_and_project_falsification",
     "trusted_assurance_pass_attestation_for_exact_decision_and_evidence_subject",
     "exact_assured_action_request_binding",
-    "issuer_to_trust_domain_registry_without_set_fallback"
+    "issuer_to_trust_domain_registry_without_set_fallback",
+    "authorization_effective_expiry_as_intersection_of_all_source_lifetimes"
   ],
   "should_adopt": [
     "heterogeneous_model_families",

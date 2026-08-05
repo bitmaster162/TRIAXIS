@@ -1,4 +1,4 @@
-"""TRIAXIS v3.4 exact-action assurance attestation and durable execution ledger.
+"""TRIAXIS v3.5 effective-expiry action assurance and durable execution ledger.
 
 This module is a deterministic boundary around probabilistic reasoning.  It
 binds a decision/evidence case to one exact capability, tool, target, payload,
@@ -22,7 +22,7 @@ ACTION_ENVELOPE_CONTRACT_ID = "TRIAXIS_ACTION_ASSURANCE_ENVELOPE_v3"
 ASSURANCE_ATTESTATION_CONTRACT_ID = "TRIAXIS_ASSURANCE_PASS_ATTESTATION_v2"
 STATE_WITNESS_CONTRACT_ID = "TRIAXIS_AUTHENTICATED_STATE_WITNESS_v1"
 APPROVAL_CONTRACT_ID = "TRIAXIS_ACTION_APPROVAL_v1"
-AUTHORIZATION_TOKEN_CONTRACT_ID = "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v2"
+AUTHORIZATION_TOKEN_CONTRACT_ID = "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v3"
 EXECUTION_RECEIPT_CONTRACT_ID = "TRIAXIS_EXECUTION_RECEIPT_v1"
 
 RISK_CLASSES = ("R0", "R1", "R2", "R3", "R4")
@@ -401,6 +401,33 @@ def authorize_action(
             errors.append(_error("human_approval_required", "action.approvals", "R4 requires HUMAN approval"))
 
     outcome = "ALLOW" if not errors and action and policy and policy_decision else "DENY"
+
+    expiry_sources = {
+        "action_expires_at": action.get("expires_at") if action else None,
+        "policy_valid_until": policy.get("valid_until") if policy else None,
+        "assurance_valid_until": (
+            assurance_attestation.get("valid_until")
+            if isinstance(assurance_attestation, Mapping)
+            else None
+        ),
+        "state_valid_until": (
+            action.get("state_witness", {}).get("valid_until")
+            if action and isinstance(action.get("state_witness"), Mapping)
+            else None
+        ),
+        "approval_expires_at": sorted(
+            item.get("expires_at")
+            for item in action_result.get("approvals", [])
+            if type(item.get("expires_at")) is int
+        ),
+    }
+    expiry_candidates = [
+        value
+        for key, value in expiry_sources.items()
+        if key != "approval_expires_at" and type(value) is int
+    ] + list(expiry_sources["approval_expires_at"])
+    effective_expires_at = min(expiry_candidates) if expiry_candidates else evaluation_tick
+
     token = {
         "contract_id": AUTHORIZATION_TOKEN_CONTRACT_ID,
         "issuer_id": issuer_id,
@@ -443,7 +470,8 @@ def authorize_action(
         "risk_class": action.get("risk_class") if action else None,
         "nonce": action.get("nonce") if action else None,
         "issued_at": evaluation_tick,
-        "expires_at": action.get("expires_at") if action else evaluation_tick,
+        "expires_at": effective_expires_at,
+        "expiry_sources": expiry_sources,
         "errors": errors,
         "token_sha256": "",
     }
@@ -487,6 +515,25 @@ def validate_authorization_token(value: Any, evaluation_tick: int, require_allow
         errors.append(_error("invalid_expiry", "token.expires_at", "integer >= 0 required"))
     elif evaluation_tick >= expires_at:
         errors.append(_error("expired_token", "token.expires_at", "authorization expired"))
+
+    expiry_sources = token.get("expiry_sources")
+    if not isinstance(expiry_sources, Mapping):
+        errors.append(_error("invalid_expiry_sources", "token.expiry_sources", "mapping required"))
+    else:
+        candidates: list[int] = []
+        for field in ("action_expires_at", "policy_valid_until", "assurance_valid_until", "state_valid_until"):
+            source_value = expiry_sources.get(field)
+            if source_value is not None and (type(source_value) is not int or source_value < 0):
+                errors.append(_error("invalid_expiry_source", f"token.expiry_sources.{field}", "integer >= 0 or null required"))
+            elif type(source_value) is int:
+                candidates.append(source_value)
+        approval_expiries = expiry_sources.get("approval_expires_at")
+        if not isinstance(approval_expiries, list) or not all(type(item) is int and item >= 0 for item in approval_expiries):
+            errors.append(_error("invalid_expiry_source", "token.expiry_sources.approval_expires_at", "integer array required"))
+        else:
+            candidates.extend(approval_expiries)
+        if candidates and type(expires_at) is int and expires_at != min(candidates):
+            errors.append(_error("effective_expiry_mismatch", "token.expires_at", "must equal earliest source expiry"))
     return {"status": "PASS" if not errors else "BLOCK", "errors": errors, "token": token}
 
 

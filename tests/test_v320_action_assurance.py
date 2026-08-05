@@ -100,7 +100,7 @@ def policy(max_risk: str = "R4", required_approvals=None):
     )
 
 
-def approval(approval_id: str, scope: str, trust_domain: str, approval_type: str = "OPERATOR"):
+def approval(approval_id: str, scope: str, trust_domain: str, approval_type: str = "OPERATOR", expires_at: int = 15):
     return seal_contract(
         {
             "contract_id": APPROVAL_CONTRACT_ID,
@@ -110,7 +110,7 @@ def approval(approval_id: str, scope: str, trust_domain: str, approval_type: str
             "approval_type": approval_type,
             "scope_sha256": scope,
             "issued_at": 5,
-            "expires_at": 15,
+            "expires_at": expires_at,
             "approval_sha256": "",
         },
         "approval_sha256",
@@ -174,8 +174,14 @@ def action(
     value["scope_sha256"] = action_scope_sha256(value)
     if approvals_spec:
         value["approvals"] = [
-            approval(aid, value["scope_sha256"], domain, atype)
-            for aid, domain, atype in approvals_spec
+            approval(
+                spec[0],
+                value["scope_sha256"],
+                spec[1],
+                spec[2],
+                spec[3] if len(spec) > 3 else 15,
+            )
+            for spec in approvals_spec
         ]
     return seal_contract(value, "action_sha256")
 
@@ -322,6 +328,44 @@ class ActionAssuranceTests(unittest.TestCase):
         token = authorize_action(a, policy(), 6, "gate:1", {"assurance-compiler:1"})
         self.assertEqual(token["outcome"], "DENY")
         self.assertIn("untrusted_assurance_issuer", {item["code"] for item in token["errors"]})
+
+    def test_token_effective_expiry_is_earliest_source(self):
+        a = action(expires_at=19)
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        # The default assurance attestation expires at 15, earlier than action/policy/state.
+        self.assertEqual(token["expires_at"], 15)
+        self.assertEqual(validate_authorization_token(token, 14)["status"], "PASS")
+        self.assertEqual(validate_authorization_token(token, 15)["status"], "BLOCK")
+
+    def test_policy_expiry_caps_token(self):
+        p = policy()
+        p["valid_until"] = 8
+        p = seal_policy(p)
+        a = action(policy_sha256=p["policy_sha256"], expires_at=19)
+        # Rebind attestation to the action containing the exact policy digest.
+        a = action(policy_sha256=p["policy_sha256"], expires_at=19)
+        token = authorize_action(a, p, 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "ALLOW", token)
+        self.assertEqual(token["expires_at"], 8)
+        self.assertEqual(validate_authorization_token(token, 8)["status"], "BLOCK")
+
+    def test_state_and_approval_expiry_cap_token(self):
+        short_state = state()
+        short_state["valid_until"] = 9
+        short_state = seal_contract(short_state, "witness_sha256")
+        a = action(
+            risk="R3",
+            witness=short_state,
+            expires_at=19,
+            approvals_spec=[
+                ("A1", "domain:one", "OPERATOR", 10),
+                ("A2", "domain:two", "SECURITY", 7),
+            ],
+        )
+        token = authorize_action(a, policy(), 6, "gate:1", TRUSTED_ASSURANCE)
+        self.assertEqual(token["outcome"], "ALLOW", token)
+        self.assertEqual(token["expires_at"], 7)
+        self.assertEqual(validate_authorization_token(token, 7)["status"], "BLOCK")
 
     def test_ledger_prepare_complete_and_exact_retry(self):
         a = action()

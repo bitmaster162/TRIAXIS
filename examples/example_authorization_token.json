@@ -4,12 +4,19 @@
   "assurance_issuer_id": "assurance-compiler:example",
   "assured_action_request_sha256": "2273a28dd42ba18c4d5236606b30631d11d9a3888a65bee8044cd72f2c71b78c",
   "capability": "WRITE",
-  "contract_id": "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v2",
+  "contract_id": "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v3",
   "decision_case_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
   "errors": [],
   "evidence_report_sha256": "7e1eca82bfc2c463d0e8ab20e2cbb0f0911d9a3b610a8b0b2d1181198ac7768d",
   "execution_target": "repo:triaxis",
   "expires_at": 10,
+  "expiry_sources": {
+    "action_expires_at": 10,
+    "approval_expires_at": [],
+    "assurance_valid_until": 10,
+    "policy_valid_until": 20,
+    "state_valid_until": 20
+  },
   "issued_at": 6,
   "issuer_id": "gate:example",
   "nonce": "nonce:example",
@@ -25,6 +32,6 @@
   "state_version": 1,
   "state_witness_sha256": "28accb4d645658940c57578e9ec841ed6c569c1cb3abd6fb3a0fd0078c808c61",
   "subject_id": "subject:triaxis",
-  "token_sha256": "7515487d37ce19f0da19ea0ee53ebfe51e819f13b5bb14ede1bca0b4adfd4539",
+  "token_sha256": "b48e1ff8af068e8f089d7aea4412a80eda16970bf7cf0101feb50720e16aad4d",
   "tool_id": "git"
 }
