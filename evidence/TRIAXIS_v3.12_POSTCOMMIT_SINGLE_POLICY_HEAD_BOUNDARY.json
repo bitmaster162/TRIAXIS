@@ -1,0 +1,32 @@
+{
+  "contract_id": "TRIAXIS_V312_POSTCOMMIT_SINGLE_POLICY_HEAD_BOUNDARY_v1",
+  "required_next_control": "DISTINCT_POLICY_HEAD_AUTHORITY_QUORUM_OR_INDEPENDENT_OPERATOR_PIN",
+  "rows": [
+    {
+      "boundary_confirmed": true,
+      "case_id": "CLIENT_AND_SINGLE_AUTHORITY_ROLLBACK",
+      "expected_boundary": "PASS",
+      "observed": "PASS"
+    },
+    {
+      "case_id": "OPERATOR_FLOOR_MITIGATES_DUAL_ROLLBACK",
+      "expected": "minimum_policy_version_not_met",
+      "observed": "minimum_policy_version_not_met",
+      "status": "PASS"
+    },
+    {
+      "boundary_confirmed": true,
+      "case_id": "SINGLE_AUTHORITY_EQUIVOCATION_WITH_COMPROMISED_KEY",
+      "expected_boundary": [
+        "PASS",
+        "PASS"
+      ],
+      "observed": [
+        "PASS",
+        "PASS"
+      ]
+    }
+  ],
+  "status": "BOUNDARY_CONFIRMED",
+  "target_commit": "b0a1030f4e956cf1adbb704283a28dfb93c4ec98"
+}
