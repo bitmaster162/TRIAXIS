@@ -131,3 +131,13 @@ __all__ += [
     "checkpoint_scope_schema_document",
     "verify_checkpoint_scope_envelope",
 ]
+
+from .assurance_v1 import (
+    ASSURANCE_CASE_CONTRACT_ID,
+    validate_assurance_case,
+)
+
+__all__ += [
+    "ASSURANCE_CASE_CONTRACT_ID",
+    "validate_assurance_case",
+]

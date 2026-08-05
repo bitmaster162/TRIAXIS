@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_decision_assurance_case_v1.schema.json",
+  "title": "TRIAXIS Decision Assurance Case v1",
+  "type": "object",
+  "required": ["contract_id", "control_profile", "intake", "branches", "evidence", "defeaters", "falsification", "synthesis", "gate_request", "case_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_DECISION_ASSURANCE_CASE_v1"},
+    "control_profile": {"enum": ["A0", "A1", "A2", "A3"]},
+    "intake": {"type": "object"},
+    "branches": {"type": "array", "minItems": 1},
+    "evidence": {"type": "array"},
+    "defeaters": {"type": "array"},
+    "falsification": {"type": "object"},
+    "synthesis": {"type": "object"},
+    "gate_request": {"type": "object"},
+    "case_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
