@@ -1,0 +1,37 @@
+{
+  "case_count": 3,
+  "classification": "DECLARED_EXTERNAL_MONOTONICITY_BOUNDARY",
+  "contract_id": "TRIAXIS_V311_POSTCOMMIT_WHOLE_POLICY_DB_ROLLBACK_RESULT_v1",
+  "exact_tag_test_count": 252,
+  "exact_tag_test_status": "PASS",
+  "logic_defect_within_claimed_scope": false,
+  "open_boundary_count": 2,
+  "product_commit": "e9cd0b114f3e9e3687475daa4bb08147c0434d4e",
+  "product_src_tree": "dddd96a972693f82e8cb4a9b0b4eb8b21331a4db",
+  "product_tree": "58be0fa183a55653a3420974598c7cea7084fcc0",
+  "rows": [
+    {
+      "case_id": "CURRENT_POLICY_HEAD_VERSION_2",
+      "expected": 2,
+      "observed": 2,
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "RESTORED_WHOLE_POLICY_DATABASE",
+      "claimed_v3_11_guarantee": false,
+      "expected_boundary": "external minimum policy version or policy-head witness required",
+      "observed_policy_version": 1,
+      "status": "OPEN_BOUNDARY_CONFIRMED"
+    },
+    {
+      "case_id": "ROLLED_BACK_POLICY_REDUCES_THRESHOLD_3_TO_2",
+      "claimed_v3_11_guarantee": false,
+      "expected_boundary": "external policy anti-rollback required",
+      "observed": "PASS_UNDER_RESTORED_POLICY_V1",
+      "status": "OPEN_BOUNDARY_CONFIRMED"
+    }
+  ],
+  "status": "PASS_WITH_CONDITIONS",
+  "target": "TRIAXIS-v3.11-RC1-AUTHENTICATED-QUORUM-POLICY"
+}
