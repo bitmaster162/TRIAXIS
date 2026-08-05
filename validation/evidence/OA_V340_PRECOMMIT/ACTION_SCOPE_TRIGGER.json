@@ -1,0 +1,59 @@
+{
+  "case_count": 5,
+  "fail_count": 0,
+  "pass_count": 5,
+  "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1",
+  "rows": [
+    {
+      "actual_outcome": "ALLOW",
+      "case_id": "OA34-P01",
+      "description": "Exact assured action remains allowed",
+      "exception": null,
+      "expected_outcome": "ALLOW",
+      "pass": true,
+      "positive_control": true,
+      "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA34-N01",
+      "description": "PASS attestation cannot be replayed over another payload",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA34-N02",
+      "description": "PASS attestation cannot be replayed over another allowed tool/target",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA34-N03",
+      "description": "Set-only issuer registry cannot erase trust-domain binding",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+    },
+    {
+      "actual_outcome": "DENY",
+      "case_id": "OA34-N04",
+      "description": "Issuer mapped to wrong trust domain fails closed",
+      "exception": null,
+      "expected_outcome": "DENY",
+      "pass": true,
+      "positive_control": false,
+      "protocol_id": "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+    }
+  ],
+  "status": "PASS"
+}

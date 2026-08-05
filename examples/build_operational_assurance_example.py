@@ -10,6 +10,7 @@ from triaxis.action_assurance import (
     STATE_WITNESS_CONTRACT_ID,
     SQLiteExecutionLedger,
     action_scope_sha256,
+    assured_action_request_sha256,
     authorize_action,
     seal_contract,
 )
@@ -116,6 +117,32 @@ def main() -> int:
         "witness_sha256",
     )
     decision_case_sha256 = "d" * 64
+    action = {
+        "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
+        "principal_id": "human:example",
+        "intent_id": "intent:example",
+        "decision_case_sha256": decision_case_sha256,
+        "evidence_report_sha256": evidence_report["report_sha256"],
+        "subject_id": "subject:triaxis",
+        "object_id": "repo:triaxis",
+        "capability": "WRITE",
+        "tool_id": "git",
+        "execution_target": "repo:triaxis",
+        "payload_sha256": "e" * 64,
+        "policy_id": "policy:example",
+        "policy_sequence": 1,
+        "policy_sha256": policy["policy_sha256"],
+        "state_witness": state,
+        "risk_class": "R2",
+        "nonce": "nonce:example",
+        "issued_at": 6,
+        "expires_at": 10,
+        "approvals": [],
+        "assured_action_request_sha256": "",
+        "scope_sha256": "",
+        "action_sha256": "",
+    }
+    action["assured_action_request_sha256"] = assured_action_request_sha256(action)
     assurance_attestation = seal_contract(
         {
             "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
@@ -125,6 +152,7 @@ def main() -> int:
             "subject_id": "subject:triaxis",
             "decision_case_sha256": decision_case_sha256,
             "evidence_report_sha256": evidence_report["report_sha256"],
+            "assured_action_request_sha256": action["assured_action_request_sha256"],
             "assurance_status": "PASS",
             "synthesis_decision": "ACCEPT_WITH_CONTROLS",
             "attestation_level": "AUTHENTICATED",
@@ -134,30 +162,7 @@ def main() -> int:
         },
         "attestation_sha256",
     )
-    action = {
-        "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
-        "principal_id": "human:example",
-        "intent_id": "intent:example",
-        "decision_case_sha256": decision_case_sha256,
-        "evidence_report_sha256": evidence_report["report_sha256"],
-        "assurance_attestation": assurance_attestation,
-        "subject_id": "subject:triaxis",
-        "object_id": "repo:triaxis",
-        "capability": "WRITE",
-        "tool_id": "git",
-        "execution_target": "repo:triaxis",
-        "payload_sha256": "e" * 64,
-        "policy_id": "policy:example",
-        "policy_sequence": 1,
-        "state_witness": state,
-        "risk_class": "R2",
-        "nonce": "nonce:example",
-        "issued_at": 6,
-        "expires_at": 10,
-        "approvals": [],
-        "scope_sha256": "",
-        "action_sha256": "",
-    }
+    action["assurance_attestation"] = assurance_attestation
     action["scope_sha256"] = action_scope_sha256(action)
     action = seal_contract(action, "action_sha256")
     token = authorize_action(

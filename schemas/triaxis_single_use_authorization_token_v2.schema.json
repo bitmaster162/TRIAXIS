@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_single_use_authorization_token_v2.schema.json",
+  "title": "TRIAXIS Single-Use Authorization Token v2",
+  "type": "object",
+  "required": [
+    "contract_id", "issuer_id", "outcome", "action_sha256", "scope_sha256",
+    "decision_case_sha256", "evidence_report_sha256", "assured_action_request_sha256",
+    "assurance_attestation_sha256", "assurance_issuer_id", "subject_id", "object_id",
+    "capability", "tool_id", "execution_target", "payload_sha256", "policy_id",
+    "policy_sequence", "policy_sha256", "policy_decision_sha256",
+    "state_witness_sha256", "state_version", "risk_class", "nonce", "issued_at",
+    "expires_at", "errors", "token_sha256"
+  ],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v2"},
+    "outcome": {"enum": ["ALLOW", "DENY"]},
+    "assured_action_request_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "token_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -1,4 +1,4 @@
-"""Regression trigger for assurance passage and exact artifact binding."""
+"""Closure trigger for exact assured-action binding and strict trust registries."""
 from __future__ import annotations
 
 import json
@@ -15,17 +15,17 @@ from triaxis.action_assurance import (
 )
 from triaxis.policy_lifecycle import POLICY_BUNDLE_CONTRACT_ID, seal_policy
 
-PROTOCOL_ID = "TRIAXIS_OPERATIONAL_ASSURANCE_ATTESTATION_TRIGGER_v1"
-TRUSTED_ASSURANCE = {"assurance-compiler:1": "assurance-domain:1"}
+PROTOCOL_ID = "TRIAXIS_ASSURED_ACTION_SCOPE_TRIGGER_v1"
+TRUSTED = {"assurance:1": "domain:1"}
 
 
-def state() -> dict[str, Any]:
+def state(object_id: str = "repo:1") -> dict[str, Any]:
     return seal_contract(
         {
             "contract_id": STATE_WITNESS_CONTRACT_ID,
-            "state_id": "state:1",
+            "state_id": f"state:{object_id}",
             "subject_id": "subject:1",
-            "object_id": "repo:1",
+            "object_id": object_id,
             "adapter_id": "adapter:1",
             "version": 1,
             "state_sha256": "a" * 64,
@@ -44,15 +44,15 @@ def policy() -> dict[str, Any]:
             "contract_id": POLICY_BUNDLE_CONTRACT_ID,
             "policy_id": "policy:1",
             "subject_id": "subject:1",
-            "issuer_id": "policy-engine:1",
+            "issuer_id": "policy:issuer",
             "sequence": 1,
             "minimum_accepted_sequence": 1,
             "state": "ACTIVE",
             "effective_from": 1,
             "valid_until": 20,
             "allowed_capabilities": ["WRITE"],
-            "allowed_tools": ["git"],
-            "allowed_targets": ["repo:1"],
+            "allowed_tools": ["git", "shell"],
+            "allowed_targets": ["repo:1", "repo:2"],
             "max_risk_class": "R2",
             "required_approval_types": [],
             "supersedes_policy_sha256": None,
@@ -61,29 +61,30 @@ def policy() -> dict[str, Any]:
     )
 
 
-def action(
-    decision_digest: str,
-    evidence_digest: str,
-    nonce: str,
+def build_action(
     *,
-    attestation_overrides: dict[str, Any] | None = None,
+    nonce: str,
+    payload_sha256: str = "d" * 64,
+    tool_id: str = "git",
+    target: str = "repo:1",
+    reused_attestation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     value = {
         "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
         "principal_id": "human:1",
         "intent_id": "intent:1",
-        "decision_case_sha256": decision_digest,
-        "evidence_report_sha256": evidence_digest,
+        "decision_case_sha256": "b" * 64,
+        "evidence_report_sha256": "c" * 64,
         "subject_id": "subject:1",
-        "object_id": "repo:1",
+        "object_id": target,
         "capability": "WRITE",
-        "tool_id": "git",
-        "execution_target": "repo:1",
-        "payload_sha256": "d" * 64,
+        "tool_id": tool_id,
+        "execution_target": target,
+        "payload_sha256": payload_sha256,
         "policy_id": "policy:1",
         "policy_sequence": 1,
         "policy_sha256": policy()["policy_sha256"],
-        "state_witness": state(),
+        "state_witness": state(target),
         "risk_class": "R2",
         "nonce": nonce,
         "issued_at": 5,
@@ -94,34 +95,38 @@ def action(
         "action_sha256": "",
     }
     value["assured_action_request_sha256"] = assured_action_request_sha256(value)
-    attestation = {
-        "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
-        "attestation_id": "attestation:1",
-        "issuer_id": "assurance-compiler:1",
-        "trust_domain": "assurance-domain:1",
-        "subject_id": "subject:1",
-        "decision_case_sha256": decision_digest,
-        "evidence_report_sha256": evidence_digest,
-        "assured_action_request_sha256": value["assured_action_request_sha256"],
-        "assurance_status": "PASS",
-        "synthesis_decision": "ACCEPT",
-        "attestation_level": "AUTHENTICATED",
-        "issued_at": 5,
-        "valid_until": 15,
-        "attestation_sha256": "",
-    }
-    if attestation_overrides:
-        attestation.update(attestation_overrides)
-    value["assurance_attestation"] = seal_contract(attestation, "attestation_sha256")
+    if reused_attestation is None:
+        attestation = seal_contract(
+            {
+                "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
+                "attestation_id": "attestation:1",
+                "issuer_id": "assurance:1",
+                "trust_domain": "domain:1",
+                "subject_id": "subject:1",
+                "decision_case_sha256": "b" * 64,
+                "evidence_report_sha256": "c" * 64,
+                "assured_action_request_sha256": value["assured_action_request_sha256"],
+                "assurance_status": "PASS",
+                "synthesis_decision": "ACCEPT",
+                "attestation_level": "AUTHENTICATED",
+                "issued_at": 5,
+                "valid_until": 15,
+                "attestation_sha256": "",
+            },
+            "attestation_sha256",
+        )
+    else:
+        attestation = reused_attestation
+    value["assurance_attestation"] = attestation
     value["scope_sha256"] = action_scope_sha256(value)
     return seal_contract(value, "action_sha256")
 
 
-def outcome(value: dict[str, Any], trusted=TRUSTED_ASSURANCE) -> str:
+def outcome(value: dict[str, Any], trusted: Any = TRUSTED) -> str:
     return authorize_action(value, policy(), 6, "gate:1", trusted)["outcome"]
 
 
-def row(case_id: str, description: str, fn: Callable[[], str], expected: str, positive: bool) -> dict[str, Any]:
+def row(case_id: str, description: str, fn: Callable[[], str], expected: str, positive: bool = False) -> dict[str, Any]:
     try:
         actual = fn()
         exception = None
@@ -141,48 +146,33 @@ def row(case_id: str, description: str, fn: Callable[[], str], expected: str, po
 
 
 def run_trigger() -> dict[str, Any]:
+    original = build_action(nonce="original")
+    attestation = original["assurance_attestation"]
     rows = [
+        row("OA34-P01", "Exact assured action remains allowed", lambda: outcome(original), "ALLOW", True),
         row(
-            "OA33-P01",
-            "Trusted PASS attestation bound to the exact decision/evidence pair preserves ALLOW",
-            lambda: outcome(action("b" * 64, "c" * 64, "positive")),
-            "ALLOW",
-            True,
+            "OA34-N01",
+            "PASS attestation cannot be replayed over another payload",
+            lambda: outcome(build_action(nonce="payload", payload_sha256="e" * 64, reused_attestation=attestation)),
+            "DENY",
         ),
         row(
-            "OA33-N01",
-            "Decision digest substitution fails closed",
-            lambda: outcome(action("0" * 64, "c" * 64, "decision-substitution", attestation_overrides={"decision_case_sha256": "b" * 64})),
+            "OA34-N02",
+            "PASS attestation cannot be replayed over another allowed tool/target",
+            lambda: outcome(build_action(nonce="route", tool_id="shell", target="repo:2", reused_attestation=attestation)),
             "DENY",
-            False,
         ),
         row(
-            "OA33-N02",
-            "Evidence digest substitution fails closed",
-            lambda: outcome(action("b" * 64, "0" * 64, "evidence-substitution", attestation_overrides={"evidence_report_sha256": "c" * 64})),
+            "OA34-N03",
+            "Set-only issuer registry cannot erase trust-domain binding",
+            lambda: outcome(original, {"assurance:1"}),
             "DENY",
-            False,
         ),
         row(
-            "OA33-N03",
-            "Untrusted assurance issuer fails closed",
-            lambda: outcome(action("b" * 64, "c" * 64, "issuer-substitution", attestation_overrides={"issuer_id": "attacker:1", "trust_domain": "attacker"})),
+            "OA34-N04",
+            "Issuer mapped to wrong trust domain fails closed",
+            lambda: outcome(original, {"assurance:1": "wrong-domain"}),
             "DENY",
-            False,
-        ),
-        row(
-            "OA33-N04",
-            "Trusted issuer in the wrong trust domain fails closed",
-            lambda: outcome(action("b" * 64, "c" * 64, "domain-substitution", attestation_overrides={"trust_domain": "wrong-domain"})),
-            "DENY",
-            False,
-        ),
-        row(
-            "OA33-N05",
-            "Missing external trust registry fails closed",
-            lambda: outcome(action("b" * 64, "c" * 64, "missing-registry"), None),
-            "DENY",
-            False,
         ),
     ]
     return {

@@ -152,7 +152,7 @@ __all__ += [
     "validate_assurance_case_v2",
 ]
 
-# TRIAXIS v3.3 operational assurance surface (v3.2 core + assurance attestation).
+# TRIAXIS v3.4 operational assurance surface (exact assured-action binding).
 from .evidence_broker import (
     CLAIM_RECORD_CONTRACT_ID,
     EVIDENCE_PACKAGE_CONTRACT_ID,
@@ -178,6 +178,7 @@ from .action_assurance import (
     ExecutionLedgerError,
     SQLiteExecutionLedger,
     action_scope_sha256,
+    assured_action_request_sha256,
     authorize_action,
     validate_action_envelope,
     validate_assurance_attestation,
@@ -206,6 +207,7 @@ __all__ += [
     "PolicyRegistryError",
     "SQLiteExecutionLedger",
     "action_scope_sha256",
+    "assured_action_request_sha256",
     "authorize_action",
     "compare_full_to_mvt",
     "evaluate_policy",
