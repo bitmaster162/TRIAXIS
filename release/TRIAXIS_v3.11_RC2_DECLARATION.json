@@ -1,0 +1,29 @@
+{
+  "contract": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "release": "TRIAXIS v3.11-RC2 Authenticated Quorum Policy",
+  "release_tag": "TRIAXIS-v3.11-RC2-AUTHENTICATED-QUORUM-POLICY",
+  "release_commit_resolution": "resolve annotated tag target",
+  "product_commit": "e9cd0b114f3e9e3687475daa4bb08147c0434d4e",
+  "product_tree": "58be0fa183a55653a3420974598c7cea7084fcc0",
+  "product_src_tree": "dddd96a972693f82e8cb4a9b0b4eb8b21331a4db",
+  "validation_only": true,
+  "expected_rc2_src_tree": "dddd96a972693f82e8cb4a9b0b4eb8b21331a4db",
+  "unit_tests": {"passed": 252, "failed": 0},
+  "protocol_cases": {
+    "challenge_bound_anchor": {"passed": 5, "failed": 0},
+    "verifier_epoch_and_quorum": {"passed": 5, "failed": 0},
+    "authenticated_quorum_policy": {"passed": 5, "failed": 0}
+  },
+  "postcommit_boundary": {
+    "whole_policy_database_rollback": "OPEN_BOUNDARY_CONFIRMED",
+    "logic_defect_within_claimed_scope": false
+  },
+  "schema_validation": {"passed": 18, "failed": 0},
+  "analysis_status": "PASS_WITH_CONDITIONS",
+  "production_qualified": false,
+  "independent_certification": false,
+  "external_execution_permission": "NOT_IMPLIED",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
