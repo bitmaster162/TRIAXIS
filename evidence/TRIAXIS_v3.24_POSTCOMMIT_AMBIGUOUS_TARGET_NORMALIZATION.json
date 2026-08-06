@@ -1,0 +1,55 @@
+{
+  "candidate_commit": "201675031f7b66b06061c0a884a0121f16941d24",
+  "candidate_tree": "b98e7507e9cd9b9adc530a9ec898c187650f8541",
+  "case_count": 6,
+  "fail_count": 5,
+  "finding": "literal target prefix matching accepts ambiguous encoded/traversal targets",
+  "pass_count": 1,
+  "protocol_id": "TRIAXIS_v3.24_POSTCOMMIT_AMBIGUOUS_TARGET_NORMALIZATION",
+  "rows": [
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-P01",
+      "expected_decision": "ALLOW",
+      "pass": true,
+      "target": "https://repo.example/safe/readme.md"
+    },
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-N01",
+      "expected_decision": "BLOCK",
+      "pass": false,
+      "target": "https://repo.example/safe/%2e%2e/admin"
+    },
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-N02",
+      "expected_decision": "BLOCK",
+      "pass": false,
+      "target": "https://repo.example/safe/%2F..%2Fadmin"
+    },
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-N03",
+      "expected_decision": "BLOCK",
+      "pass": false,
+      "target": "https://repo.example/safe/..\\admin"
+    },
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-N04",
+      "expected_decision": "BLOCK",
+      "pass": false,
+      "target": "https://repo.example/safe/%ZZ/admin"
+    },
+    {
+      "actual_decision": "ALLOW",
+      "case_id": "TN-N05",
+      "expected_decision": "BLOCK",
+      "pass": false,
+      "target": "https://repo.example/safe/%252e%252e/admin"
+    }
+  ],
+  "rows_sha256": "c184f48f405b900c213d9342e68b1370587a1955360ede84ba00061eb1222816",
+  "status": "FAIL_EXPECTED"
+}
