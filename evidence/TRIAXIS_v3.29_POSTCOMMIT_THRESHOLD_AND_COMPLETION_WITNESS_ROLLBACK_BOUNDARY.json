@@ -1,0 +1,53 @@
+{
+  "authority_granted": false,
+  "claim": "A current 2-of-3 execution-head quorum detects local ledger rollback and a current external completion witness blocks provider-state rollback. Coordinated rollback or compromise of a threshold of head authorities together with the completion witness and provider state can recreate a valid old quorum and revive the same completed stable effect.",
+  "exact_subject_commit": "0b727ebe5e18adc553b6c08954061d5925314086",
+  "exact_subject_tag": "TRIAXIS-v3.29-RC1-EXECUTION-HEAD-QUORUM-COMPLETION-WITNESS",
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.29_POSTCOMMIT_THRESHOLD_AND_COMPLETION_WITNESS_ROLLBACK_BOUNDARY",
+  "required_next_control": [
+    "independently administered completion-witness quorum across separate rollback domains",
+    "provider-native immutable idempotency keyed by stable effect_id",
+    "external append-only or WORM completion receipts anchored outside the quorum operators",
+    "monotonic KMS/HSM or hardware-backed anti-rollback counters",
+    "public transparency or independent auditor checkpoint for execution and completion heads"
+  ],
+  "rows": [
+    {
+      "case_id": "V329RB01_CURRENT_ALL_DOMAINS_BLOCK_COMPLETED_EFFECT",
+      "head_quorum_status": "PASS",
+      "ledger_state": "COMPLETED",
+      "provider_external_effect_permitted": false,
+      "same_effect_id": true,
+      "status": "PASS",
+      "witness_external_effect_permitted": false,
+      "witness_final_state": "COMPLETED",
+      "witness_reserved_before_provider": true
+    },
+    {
+      "case_id": "V329RB02_CURRENT_QUORUM_AND_WITNESS_BLOCK_LOCAL_PROVIDER_ROLLBACK",
+      "completion_witness_external_effect_permitted": false,
+      "current_completion_witness_state": "COMPLETED",
+      "head_quorum_block_code": "execution_ledger_rollback_or_fork_detected",
+      "new_dispatch_id": true,
+      "rolled_back_provider_external_effect_permitted": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V329RB03_THRESHOLD_AND_COMPLETION_WITNESS_ROLLBACK_REVIVES_EFFECT",
+      "current_minority_authority_rejected_fork": true,
+      "duplicate_effect_risk": true,
+      "expected_secure_result": "BLOCK_OR_INDEPENDENT_IMMUTABLE_COMPLETION_PROOF",
+      "new_dispatch_id": true,
+      "quorum_after_status": "PASS",
+      "quorum_before_status": "PASS",
+      "rolled_back_completion_witness_external_effect_permitted": true,
+      "rolled_back_majority_anchor_pass_count": 2,
+      "rolled_back_provider_external_effect_permitted": true,
+      "same_effect_id": true,
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "7484baaef7e444d0d144738d062fb342d08cd64b7e26673c27425fedf1c15e08",
+  "status": "BOUNDARY_CONFIRMED"
+}
