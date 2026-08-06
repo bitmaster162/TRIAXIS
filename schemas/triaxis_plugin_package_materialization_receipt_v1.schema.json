@@ -1,0 +1,108 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_plugin_package_materialization_receipt_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_PLUGIN_PACKAGE_MATERIALIZATION_RECEIPT_v1"
+    },
+    "errors": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "materializer_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "observed_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "observed_components": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "component_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "component_type": {
+            "enum": [
+              "SKILL",
+              "COMMAND",
+              "AGENT",
+              "HOOK",
+              "ASSET"
+            ]
+          },
+          "content_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "logical_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "component_type",
+          "component_id",
+          "logical_path",
+          "content_sha256",
+          "size_bytes"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "plugin_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "plugin_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "BLOCK"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "plugin_manifest_sha256",
+    "plugin_id",
+    "source_sha256",
+    "materializer_id",
+    "observed_at_tick",
+    "observed_components",
+    "status",
+    "errors",
+    "receipt_sha256"
+  ],
+  "title": "TRIAXIS Plugin Package Materialization Receipt v1",
+  "type": "object"
+}

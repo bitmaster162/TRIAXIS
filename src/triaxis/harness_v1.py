@@ -31,8 +31,9 @@ CONTEXT_MANIFEST_CONTRACT_ID = "TRIAXIS_CONTEXT_DISCLOSURE_MANIFEST_v1"
 CONTEXT_MATERIALIZATION_RECEIPT_CONTRACT_ID = "TRIAXIS_CONTEXT_MATERIALIZATION_RECEIPT_v1"
 SKILL_CONTRACT_ID = "TRIAXIS_SKILL_CAPABILITY_CONTRACT_v1"
 SKILL_INVOCATION_CONTRACT_ID = "TRIAXIS_SKILL_INVOCATION_v1"
-PLUGIN_MANIFEST_CONTRACT_ID = "TRIAXIS_PLUGIN_MANIFEST_v1"
-PLUGIN_TRUST_RECEIPT_CONTRACT_ID = "TRIAXIS_PLUGIN_TRUST_RECEIPT_v1"
+PLUGIN_MANIFEST_CONTRACT_ID = "TRIAXIS_PLUGIN_MANIFEST_v2"
+PLUGIN_PACKAGE_RECEIPT_CONTRACT_ID = "TRIAXIS_PLUGIN_PACKAGE_MATERIALIZATION_RECEIPT_v1"
+PLUGIN_TRUST_RECEIPT_CONTRACT_ID = "TRIAXIS_PLUGIN_TRUST_RECEIPT_v2"
 HOOK_RESULT_CONTRACT_ID = "TRIAXIS_HOOK_RESULT_v1"
 HOOK_PIPELINE_RECEIPT_CONTRACT_ID = "TRIAXIS_HOOK_PIPELINE_RECEIPT_v1"
 SUBAGENT_CONTRACT_ID = "TRIAXIS_BOUNDED_SUBAGENT_v1"
@@ -681,13 +682,125 @@ class PluginRegistryError(RuntimeError):
         self.code = code
 
 
-class PluginRegistry:
-    """Trust-before-activation plugin catalog.
+PLUGIN_COMPONENT_TYPES = frozenset({"SKILL", "COMMAND", "AGENT", "HOOK", "ASSET"})
 
-    Plugin manifests are data only.  Loading executable plugin code is outside
-    this reference module; the registry returns an activation receipt that a
-    host may use only after digest pinning and capability checks.
-    """
+
+def normalize_plugin_components(value: Any) -> list[dict[str, Any]]:
+    if not isinstance(value, list) or not value:
+        raise ValueError("plugin.components must be a non-empty array")
+    rows: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    seen_paths: set[str] = set()
+    for index, raw in enumerate(value):
+        if not isinstance(raw, Mapping):
+            raise ValueError(f"plugin.components[{index}] must be object")
+        component_type = raw.get("component_type")
+        component_id = raw.get("component_id")
+        logical_path = raw.get("logical_path")
+        content_sha256 = raw.get("content_sha256")
+        size_bytes = raw.get("size_bytes")
+        if component_type not in PLUGIN_COMPONENT_TYPES:
+            raise ValueError(f"unknown component type at {index}")
+        if not isinstance(component_id, str) or not component_id:
+            raise ValueError(f"component_id required at {index}")
+        if component_id in seen_ids:
+            raise ValueError("duplicate component_id")
+        seen_ids.add(component_id)
+        logical_path = normalize_logical_path(logical_path)
+        if logical_path in seen_paths:
+            raise ValueError("duplicate component path")
+        seen_paths.add(logical_path)
+        if not _is_sha256(content_sha256):
+            raise ValueError(f"component digest required at {index}")
+        if type(size_bytes) is not int or size_bytes < 0:
+            raise ValueError(f"component size required at {index}")
+        rows.append({
+            "component_type": component_type,
+            "component_id": component_id,
+            "logical_path": logical_path,
+            "content_sha256": content_sha256,
+            "size_bytes": size_bytes,
+        })
+    return sorted(rows, key=lambda row: (row["component_type"], row["component_id"], row["logical_path"]))
+
+
+def plugin_source_root(components: Any) -> str:
+    return canonical_sha256(normalize_plugin_components(components))
+
+
+def materialize_plugin_package_receipt(
+    manifest_value: Mapping[str, Any],
+    component_bytes: Mapping[str, bytes],
+    *,
+    materializer_id: str,
+    observed_at_tick: int,
+) -> dict[str, Any]:
+    errors: list[dict[str, str]] = []
+    manifest = _validate_sealed(
+        manifest_value,
+        contract_id=PLUGIN_MANIFEST_CONTRACT_ID,
+        digest_field="manifest_sha256",
+        path="plugin",
+        errors=errors,
+    )
+    if not isinstance(materializer_id, str) or not materializer_id:
+        errors.append(_error("invalid_materializer", "materializer_id", "non-empty identity required"))
+    if type(observed_at_tick) is not int or observed_at_tick < 0:
+        errors.append(_error("invalid_observed_at", "observed_at_tick", "integer >= 0 required"))
+    if not isinstance(component_bytes, Mapping):
+        errors.append(_error("invalid_component_bytes", "component_bytes", "mapping required"))
+        component_bytes = {}
+    expected: list[dict[str, Any]] = []
+    try:
+        expected = normalize_plugin_components((manifest or {}).get("components"))
+    except ValueError as exc:
+        errors.append(_error("invalid_components", "plugin.components", str(exc)))
+    expected_by_id = {row["component_id"]: row for row in expected}
+    supplied_ids = set(component_bytes)
+    missing = set(expected_by_id) - supplied_ids
+    extra = supplied_ids - set(expected_by_id)
+    if missing:
+        errors.append(_error("missing_plugin_components", "component_bytes", str(sorted(missing))))
+    if extra:
+        errors.append(_error("unexpected_plugin_components", "component_bytes", str(sorted(extra))))
+    observed: list[dict[str, Any]] = []
+    for component_id in sorted(set(expected_by_id) & supplied_ids):
+        raw = component_bytes[component_id]
+        if not isinstance(raw, (bytes, bytearray)):
+            errors.append(_error("invalid_component_content", f"component_bytes.{component_id}", "bytes required"))
+            continue
+        raw_bytes = bytes(raw)
+        row = expected_by_id[component_id]
+        observed_row = {
+            **row,
+            "content_sha256": hashlib.sha256(raw_bytes).hexdigest(),
+            "size_bytes": len(raw_bytes),
+        }
+        if observed_row["content_sha256"] != row["content_sha256"]:
+            errors.append(_error("plugin_component_digest_mismatch", f"component_bytes.{component_id}", "loaded bytes differ from manifest"))
+        if observed_row["size_bytes"] != row["size_bytes"]:
+            errors.append(_error("plugin_component_size_mismatch", f"component_bytes.{component_id}", "loaded byte length differs from manifest"))
+        observed.append(observed_row)
+    observed_source_sha256 = canonical_sha256(sorted(observed, key=lambda row: (row["component_type"], row["component_id"], row["logical_path"]))) if observed else None
+    if manifest is not None and observed_source_sha256 != manifest.get("source_sha256"):
+        errors.append(_error("plugin_source_root_mismatch", "plugin.source_sha256", f"observed {observed_source_sha256}"))
+    receipt = {
+        "contract_id": PLUGIN_PACKAGE_RECEIPT_CONTRACT_ID,
+        "plugin_manifest_sha256": (manifest or {}).get("manifest_sha256"),
+        "plugin_id": (manifest or {}).get("plugin_id"),
+        "source_sha256": observed_source_sha256,
+        "materializer_id": materializer_id,
+        "observed_at_tick": observed_at_tick,
+        "observed_components": observed,
+        "status": "PASS" if not errors else "BLOCK",
+        "errors": errors,
+        "receipt_sha256": "",
+    }
+    return seal_mapping(receipt, "receipt_sha256")
+
+
+class PluginRegistry:
+    """Trust-before-activation catalog with exact component materialization."""
 
     def __init__(self, trusted_digests: Iterable[str]) -> None:
         self.trusted_digests = set(trusted_digests)
@@ -699,6 +812,11 @@ class PluginRegistry:
         if not isinstance(body, dict):
             raise TypeError("plugin manifest must be object")
         body.setdefault("contract_id", PLUGIN_MANIFEST_CONTRACT_ID)
+        components = normalize_plugin_components(body.get("components"))
+        body["components"] = components
+        computed_root = canonical_sha256(components)
+        if body.get("source_sha256") in {None, ""}:
+            body["source_sha256"] = computed_root
         body.setdefault("manifest_sha256", "")
         return seal_mapping(body, "manifest_sha256")
 
@@ -707,6 +825,8 @@ class PluginRegistry:
         value: Mapping[str, Any],
         *,
         session_authority: Mapping[str, Any],
+        package_receipt: Mapping[str, Any] | None = None,
+        evaluation_tick: int | None = None,
     ) -> dict[str, Any]:
         errors: list[dict[str, str]] = []
         manifest = _validate_sealed(
@@ -721,14 +841,62 @@ class PluginRegistry:
         for field in ("plugin_id", "version", "source_sha256"):
             if not isinstance(manifest.get(field), str) or not manifest.get(field):
                 errors.append(_error("missing_required", f"plugin.{field}", f"{field} required"))
-        if not _is_sha256(manifest.get("source_sha256")):
-            errors.append(_error("invalid_source_digest", "plugin.source_sha256", "SHA-256 required"))
         for field in ("skills", "commands", "agents", "hooks", "mcp_servers", "requested_capabilities"):
             _string_set(manifest.get(field), f"plugin.{field}", errors)
+        try:
+            components = normalize_plugin_components(manifest.get("components"))
+        except ValueError as exc:
+            components = []
+            errors.append(_error("invalid_components", "plugin.components", str(exc)))
+        if components and canonical_sha256(components) != manifest.get("source_sha256"):
+            errors.append(_error("invalid_source_root", "plugin.source_sha256", "must equal canonical component root"))
+        declared = {
+            "SKILL": set(manifest.get("skills", [])),
+            "COMMAND": set(manifest.get("commands", [])),
+            "AGENT": set(manifest.get("agents", [])),
+            "HOOK": set(manifest.get("hooks", [])),
+        }
+        materialized_inventory: dict[str, set[str]] = {key: set() for key in declared}
+        for row in components:
+            if row["component_type"] in materialized_inventory:
+                materialized_inventory[row["component_type"]].add(row["component_id"])
+        for kind, names in declared.items():
+            if materialized_inventory[kind] != names:
+                errors.append(_error("plugin_inventory_mismatch", f"plugin.{kind.lower()}", f"declared {sorted(names)}, components {sorted(materialized_inventory[kind])}"))
         if manifest.get("permission_mode") == "bypassPermissions":
             errors.append(_error("permission_bypass_forbidden", "plugin.permission_mode", "bypassPermissions forbidden"))
         if manifest.get("source_sha256") not in self.trusted_digests:
-            errors.append(_error("plugin_not_pinned", "plugin.source_sha256", "operator-pinned digest required"))
+            errors.append(_error("plugin_not_pinned", "plugin.source_sha256", "operator-pinned component root required"))
+        package = None
+        if package_receipt is None:
+            errors.append(_error("plugin_package_receipt_required", "package_receipt", "exact loaded components required"))
+        else:
+            package = _validate_sealed(
+                package_receipt,
+                contract_id=PLUGIN_PACKAGE_RECEIPT_CONTRACT_ID,
+                digest_field="receipt_sha256",
+                path="package_receipt",
+                errors=errors,
+            )
+            if package is not None:
+                if package.get("status") != "PASS":
+                    errors.append(_error("plugin_package_blocked", "package_receipt.status", str(package.get("status"))))
+                if package.get("plugin_manifest_sha256") != manifest.get("manifest_sha256"):
+                    errors.append(_error("plugin_package_manifest_mismatch", "package_receipt.plugin_manifest_sha256", "wrong manifest"))
+                if package.get("source_sha256") != manifest.get("source_sha256"):
+                    errors.append(_error("plugin_package_source_mismatch", "package_receipt.source_sha256", "wrong component root"))
+                if evaluation_tick is not None:
+                    observed_at = package.get("observed_at_tick")
+                    if type(observed_at) is not int or observed_at < 0 or observed_at > evaluation_tick:
+                        errors.append(_error("invalid_plugin_materialization_time", "package_receipt.observed_at_tick", "must not be in the future"))
+                observed_components = package.get("observed_components")
+                try:
+                    normalized_observed = normalize_plugin_components(observed_components)
+                except ValueError as exc:
+                    normalized_observed = []
+                    errors.append(_error("invalid_observed_components", "package_receipt.observed_components", str(exc)))
+                if normalized_observed != components:
+                    errors.append(_error("plugin_component_set_mismatch", "package_receipt.observed_components", "must match exact manifest components"))
         authority = _normalized_authority(session_authority)
         requested_capabilities = set(manifest.get("requested_capabilities", []))
         requested_mcp = set(manifest.get("mcp_servers", []))
@@ -742,13 +910,11 @@ class PluginRegistry:
             "plugin_id": manifest.get("plugin_id"),
             "plugin_manifest_sha256": manifest.get("manifest_sha256"),
             "source_sha256": manifest.get("source_sha256"),
+            "package_receipt_sha256": package.get("receipt_sha256") if package else None,
             "status": status,
             "effective_capabilities": sorted(requested_capabilities & set(authority["capabilities"])),
             "effective_mcp_servers": sorted(requested_mcp & set(authority["mcp_servers"])),
-            "component_inventory": {
-                field: list(manifest.get(field, []))
-                for field in ("skills", "commands", "agents", "hooks", "mcp_servers")
-            },
+            "component_inventory": components,
             "errors": errors,
             "receipt_sha256": "",
         }

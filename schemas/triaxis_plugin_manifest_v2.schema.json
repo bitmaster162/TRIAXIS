@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_plugin_manifest_v2.schema.json",
+  "title": "TRIAXIS Plugin Manifest v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id", "plugin_id", "version", "source_sha256", "components", "skills", "commands", "agents", "hooks", "mcp_servers", "requested_capabilities", "permission_mode", "manifest_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_PLUGIN_MANIFEST_v2"},
+    "plugin_id": {"type": "string", "minLength": 1},
+    "version": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "components": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["component_type", "component_id", "logical_path", "content_sha256", "size_bytes"],
+        "properties": {
+          "component_type": {"enum": ["SKILL", "COMMAND", "AGENT", "HOOK", "ASSET"]},
+          "component_id": {"type": "string", "minLength": 1},
+          "logical_path": {"type": "string", "minLength": 1},
+          "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size_bytes": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "skills": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "commands": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "agents": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "hooks": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "mcp_servers": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "requested_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "permission_mode": {"type": "string", "minLength": 1},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

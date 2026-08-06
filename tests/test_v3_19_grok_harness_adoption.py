@@ -24,6 +24,7 @@ from triaxis.harness_v1 import (
     make_acp_style_message,
     make_headless_event,
     materialize_context_receipt,
+    materialize_plugin_package_receipt,
     normalize_logical_path,
     resolve_harness_config,
     seal_hook_result,
@@ -41,6 +42,8 @@ E = "e" * 64
 F = "f" * 64
 CONTEXT_BYTES = b"TRIAXIS context fixture\n"
 CONTEXT_SHA = hashlib.sha256(CONTEXT_BYTES).hexdigest()
+PLUGIN_SKILL_BYTES = b"plugin skill fixture\n"
+PLUGIN_HOOK_BYTES = b"plugin hook fixture\n"
 
 
 def authority(**overrides):
@@ -123,6 +126,47 @@ def context_materialization_receipt(*, raw: bytes = CONTEXT_BYTES, tick: int = 6
         materializer_id="materializer:test",
         observed_at_tick=tick,
     )
+
+
+def make_plugin_manifest(*, plugin_id="plugin:review", permission_mode="default", include_hook=True):
+    components = [
+        {
+            "component_type": "SKILL",
+            "component_id": "skill:review",
+            "logical_path": "skills/review.md",
+            "content_sha256": hashlib.sha256(PLUGIN_SKILL_BYTES).hexdigest(),
+            "size_bytes": len(PLUGIN_SKILL_BYTES),
+        }
+    ]
+    hooks = []
+    component_bytes = {"skill:review": PLUGIN_SKILL_BYTES}
+    if include_hook:
+        components.append({
+            "component_type": "HOOK",
+            "component_id": "PRE_TOOL",
+            "logical_path": "hooks/pre_tool.py",
+            "content_sha256": hashlib.sha256(PLUGIN_HOOK_BYTES).hexdigest(),
+            "size_bytes": len(PLUGIN_HOOK_BYTES),
+        })
+        hooks = ["PRE_TOOL"]
+        component_bytes["PRE_TOOL"] = PLUGIN_HOOK_BYTES
+    manifest = PluginRegistry.seal_manifest({
+        "plugin_id": plugin_id,
+        "version": "1.0.0",
+        "source_sha256": "",
+        "components": components,
+        "skills": ["skill:review"],
+        "commands": [],
+        "agents": [],
+        "hooks": hooks,
+        "mcp_servers": ["docs"],
+        "requested_capabilities": ["read"],
+        "permission_mode": permission_mode,
+    })
+    receipt = materialize_plugin_package_receipt(
+        manifest, component_bytes, materializer_id="plugin-materializer:test", observed_at_tick=5
+    )
+    return manifest, receipt, component_bytes
 
 
 def pre_tool_hook(auth=None):
@@ -264,51 +308,48 @@ class SkillPluginHookTests(unittest.TestCase):
         with self.assertRaises(SkillRegistryError):
             registry.register(v1)
 
-    def test_plugin_requires_digest_pin_and_cannot_bypass_permissions(self):
-        registry = PluginRegistry([D])
-        good = registry.seal_manifest(
-            {
-                "plugin_id": "plugin:review",
-                "version": "1.0.0",
-                "source_sha256": D,
-                "skills": ["skill:review"],
-                "commands": ["review"],
-                "agents": ["reviewer"],
-                "hooks": ["PRE_TOOL"],
-                "mcp_servers": ["docs"],
-                "requested_capabilities": ["read"],
-                "permission_mode": "default",
-            }
-        )
-        receipt = registry.inspect_and_activate(good, session_authority=authority())
+    def test_plugin_requires_package_materialization_and_cannot_bypass_permissions(self):
+        good, package, _ = make_plugin_manifest()
+        registry = PluginRegistry([good["source_sha256"]])
+        receipt = registry.inspect_and_activate(good, session_authority=authority(), package_receipt=package, evaluation_tick=6)
         self.assertEqual(receipt["status"], "ACTIVE")
         self.assertEqual(registry.installed(), ["plugin:review"])
 
-        bad = dict(good)
-        bad["plugin_id"] = "plugin:bypass"
-        bad["permission_mode"] = "bypassPermissions"
-        bad["manifest_sha256"] = ""
-        bad = registry.seal_manifest(bad)
-        receipt = registry.inspect_and_activate(bad, session_authority=authority())
+        missing = PluginRegistry([good["source_sha256"]]).inspect_and_activate(good, session_authority=authority())
+        self.assertEqual(missing["status"], "QUARANTINED")
+
+        bad, bad_package, _ = make_plugin_manifest(plugin_id="plugin:bypass", permission_mode="bypassPermissions")
+        registry = PluginRegistry([bad["source_sha256"]])
+        receipt = registry.inspect_and_activate(bad, session_authority=authority(), package_receipt=bad_package, evaluation_tick=6)
         self.assertEqual(receipt["status"], "QUARANTINED")
 
-    def test_unpinned_plugin_is_quarantined(self):
-        registry = PluginRegistry([D])
-        manifest = registry.seal_manifest(
-            {
-                "plugin_id": "plugin:unknown",
-                "version": "1",
-                "source_sha256": E,
-                "skills": [],
-                "commands": [],
-                "agents": [],
-                "hooks": [],
-                "mcp_servers": [],
-                "requested_capabilities": [],
-                "permission_mode": "default",
-            }
+    def test_changed_or_missing_plugin_component_is_quarantined(self):
+        manifest, _, component_bytes = make_plugin_manifest()
+        changed = dict(component_bytes)
+        changed["skill:review"] = b"substituted plugin skill\n"
+        changed_receipt = materialize_plugin_package_receipt(
+            manifest, changed, materializer_id="plugin-materializer:test", observed_at_tick=5
         )
-        self.assertEqual(registry.inspect_and_activate(manifest, session_authority=authority())["status"], "QUARANTINED")
+        self.assertEqual(changed_receipt["status"], "BLOCK")
+        registry = PluginRegistry([manifest["source_sha256"]])
+        result = registry.inspect_and_activate(
+            manifest, session_authority=authority(), package_receipt=changed_receipt, evaluation_tick=6
+        )
+        self.assertEqual(result["status"], "QUARANTINED")
+
+        missing_bytes = {"skill:review": PLUGIN_SKILL_BYTES}
+        missing_receipt = materialize_plugin_package_receipt(
+            manifest, missing_bytes, materializer_id="plugin-materializer:test", observed_at_tick=5
+        )
+        self.assertEqual(missing_receipt["status"], "BLOCK")
+
+    def test_unpinned_plugin_is_quarantined(self):
+        manifest, package, _ = make_plugin_manifest(plugin_id="plugin:unknown")
+        registry = PluginRegistry([E])
+        self.assertEqual(
+            registry.inspect_and_activate(manifest, session_authority=authority(), package_receipt=package, evaluation_tick=6)["status"],
+            "QUARANTINED",
+        )
 
     def test_hooks_can_narrow_but_never_widen_authority(self):
         before = authority()

@@ -1,0 +1,74 @@
+{
+  "contract_id": "TRIAXIS_v3.21_PLUGIN_PACKAGE_CLOSURE_v1",
+  "failed": 0,
+  "passed": 5,
+  "result_sha256": "ba88fec9b39419f78d37a8f440932d8d5989d6b4bd0af20ca8c1537eb087b706",
+  "rows": [
+    {
+      "case_id": "PP01_MISSING_RECEIPT",
+      "observed": {
+        "errors": [
+          {
+            "code": "plugin_package_receipt_required",
+            "message": "exact loaded components required",
+            "path": "package_receipt"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "PP02_CHANGED_COMPONENT",
+      "observed": {
+        "activation": "QUARANTINED",
+        "package": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "PP03_MISSING_COMPONENT",
+      "observed": {
+        "errors": [
+          {
+            "code": "missing_plugin_components",
+            "message": "['PRE_TOOL']",
+            "path": "component_bytes"
+          },
+          {
+            "code": "plugin_source_root_mismatch",
+            "message": "observed 2a9be1d3e3840b82043083d84b1b399616c0ec990c3847774839e2abec1b7959",
+            "path": "plugin.source_sha256"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "PP04_EXACT_PACKAGE_ACTIVE",
+      "observed": {
+        "activation": "ACTIVE",
+        "package": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "PP05_DECLARED_INVENTORY_MISMATCH",
+      "observed": {
+        "errors": [
+          {
+            "code": "plugin_inventory_mismatch",
+            "message": "declared ['skill:p'], components ['different']",
+            "path": "plugin.skill"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "a9da319274ce904880db4727b61584197c4318af6055178683c96e8c28744f41",
+  "status": "PASS",
+  "total": 5
+}

@@ -6,7 +6,7 @@ import unittest
 
 from jsonschema import Draft202012Validator
 
-from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest, context_materialization_receipt
+from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest, context_materialization_receipt, make_plugin_manifest
 from triaxis.harness_v1 import (
     PluginRegistry,
     SkillRegistry,
@@ -53,22 +53,9 @@ class HarnessSchemaTests(unittest.TestCase):
         )
         self.validate("triaxis_skill_capability_contract_v1.schema.json", skill)
 
-        plugins = PluginRegistry([D])
-        plugin = plugins.seal_manifest(
-            {
-                "plugin_id": "plugin:review",
-                "version": "1.0.0",
-                "source_sha256": D,
-                "skills": ["skill:review"],
-                "commands": ["review"],
-                "agents": ["reviewer"],
-                "hooks": ["PRE_TOOL"],
-                "mcp_servers": ["docs"],
-                "requested_capabilities": ["read"],
-                "permission_mode": "default",
-            }
-        )
-        self.validate("triaxis_plugin_manifest_v1.schema.json", plugin)
+        plugin, plugin_package, _ = make_plugin_manifest()
+        self.validate("triaxis_plugin_manifest_v2.schema.json", plugin)
+        self.validate("triaxis_plugin_package_materialization_receipt_v1.schema.json", plugin_package)
 
         hook = seal_hook_result(
             {
