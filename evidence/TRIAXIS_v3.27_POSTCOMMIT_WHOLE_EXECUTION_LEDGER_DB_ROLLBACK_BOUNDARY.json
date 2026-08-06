@@ -1,0 +1,35 @@
+{
+  "claim": "A separately persisted execution ledger blocks rollback of the local queue, but cannot prove its own freshness after whole-ledger rollback.",
+  "exact_subject_commit": "06c2e2930a4ef8d922c170df28e4b2b0e0e85050",
+  "exact_subject_tag": "TRIAXIS-v3.27-RC1-EXTERNAL-EXECUTION-LEDGER",
+  "protocol_id": "TRIAXIS_v3.27_POSTCOMMIT_WHOLE_EXECUTION_LEDGER_DB_ROLLBACK_BOUNDARY",
+  "required_next_control": [
+    "independently persisted monotonic execution-ledger head with rollback-aware verifier or quorum",
+    "provider-side idempotency keyed by stable effect_id",
+    "or authoritative provider-side reconciliation before any retry"
+  ],
+  "rows": [
+    {
+      "case_id": "ELRB01_CURRENT_LEDGER_BLOCKS_DUPLICATE_EFFECT",
+      "current_state": "COMPLETED",
+      "expected": "BLOCK/COMPLETED",
+      "ledger_sequence": 3,
+      "observed": "BLOCK",
+      "status": "PASS"
+    },
+    {
+      "case_id": "ELRB02_WHOLE_LEDGER_ROLLBACK_REVIVES_COMPLETED_EFFECT",
+      "duplicate_effect_risk": true,
+      "expected_secure_result": "BLOCK_OR_EXTERNAL_HEAD_REJECTION",
+      "new_dispatch_id": true,
+      "observed": "PASS",
+      "pre_rollback_sequence": 3,
+      "restored_sequence_after_reserve": 1,
+      "restored_sequence_before_reserve": 0,
+      "same_effect_id": true,
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "8110672490cf21a6d4ddbf65d78267259b0b1f40753924d90863daadf3485a84",
+  "status": "BOUNDARY_CONFIRMED"
+}
