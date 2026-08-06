@@ -1,0 +1,28 @@
+{
+  "claim": "A local queue database cannot prove its own freshness after whole-file rollback.",
+  "exact_subject_commit": "f147b480e6e292fc418ad412e29e06131f745edf",
+  "exact_subject_tag": "TRIAXIS-v3.26-RC1-DURABLE-DISPATCH",
+  "protocol_id": "TRIAXIS_v3.26_POSTCOMMIT_WHOLE_QUEUE_DB_ROLLBACK_BOUNDARY",
+  "required_external_control": [
+    "external monotonic dispatch head",
+    "separately administered execution ledger",
+    "or authoritative external idempotency and reconciliation"
+  ],
+  "rows": [
+    {
+      "case_id": "QB01_DELIVERED_STATE_PREVENTS_REDISPATCH_WITHOUT_ROLLBACK",
+      "expected": "EMPTY",
+      "observed": "EMPTY",
+      "status": "PASS"
+    },
+    {
+      "case_id": "QB02_WHOLE_DB_ROLLBACK_REVIVES_DELIVERED_MUTATING_INPUT",
+      "duplicate_effect_risk": true,
+      "expected_secure_result": "BLOCK_OR_EXTERNAL_RECONCILIATION",
+      "observed": "PASS",
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "94bcab413f2e5eec0df34328f9f1c6d5609a952a210f3e1976977bd79caac5a7",
+  "status": "BOUNDARY_CONFIRMED"
+}
