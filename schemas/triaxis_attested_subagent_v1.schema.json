@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_attested_subagent_v1.schema.json",
+  "title": "TRIAXIS Attested Subagent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "base_subagent_sha256", "parent_session_id", "child_session_id",
+    "capability_mode", "effective_capabilities", "repository_manifest_sha256",
+    "sandbox_receipt_sha256", "sandbox_attestation_envelope_sha256",
+    "sandbox_attestation_sha256", "runtime_measurement_sha256", "observed_features",
+    "attestor_key_id", "attestor_id", "attestor_trust_domain", "status", "errors",
+    "attested_subagent_sha256"
+  ],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_ATTESTED_SUBAGENT_v1"},
+    "base_subagent_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "parent_session_id": {"type": ["string", "null"]},
+    "child_session_id": {"type": ["string", "null"]},
+    "capability_mode": {"type": ["string", "null"]},
+    "effective_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "repository_manifest_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "sandbox_receipt_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "sandbox_attestation_envelope_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "sandbox_attestation_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "runtime_measurement_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "observed_features": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "attestor_key_id": {"type": ["string", "null"]},
+    "attestor_id": {"type": ["string", "null"]},
+    "attestor_trust_domain": {"type": ["string", "null"]},
+    "status": {"enum": ["PASS", "BLOCK"]},
+    "errors": {"type": "array"},
+    "attested_subagent_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

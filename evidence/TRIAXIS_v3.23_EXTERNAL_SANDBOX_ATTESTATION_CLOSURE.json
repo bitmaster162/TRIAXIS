@@ -1,0 +1,14 @@
+{
+  "case_count": 6,
+  "cases": [
+    "valid_external_attestation",
+    "forged_signature_blocked",
+    "cross_receipt_reuse_blocked",
+    "revoked_key_blocked",
+    "trust_domain_blocked",
+    "required_features_and_exact_binding"
+  ],
+  "contract_id": "TRIAXIS_v3.23_EXTERNAL_SANDBOX_ATTESTATION_CLOSURE_v1",
+  "status": "PASS",
+  "test_output": "test_attestation_cannot_be_reused_for_another_receipt (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_attestation_cannot_be_reused_for_another_receipt) ... ok\ntest_canonical_resealing_cannot_replace_signature (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_canonical_resealing_cannot_replace_signature) ... ok\ntest_required_features_and_exact_envelope_binding (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_required_features_and_exact_envelope_binding) ... ok\ntest_revoked_key_and_wrong_trust_domain_are_blocked (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_revoked_key_and_wrong_trust_domain_are_blocked) ... ok\ntest_unsigned_or_forged_envelope_is_blocked (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_unsigned_or_forged_envelope_is_blocked) ... ok\ntest_valid_external_attestation_allows_exact_subagent (test_v3_23_external_sandbox_attestation.ExternalSandboxAttestationTests.test_valid_external_attestation_allows_exact_subagent) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.011s\n\nOK\n"
+}
