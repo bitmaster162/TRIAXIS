@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_policy_transparency_gossip_checkpoint_v1.schema.json",
+  "title": "TRIAXIS Policy Transparency Gossip Checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id","checkpoint_id","verifier_id","checkpoint_sequence","parent_checkpoint_sha256","store_id","gossip_sequence","pin_count","pins_root_sha256","gossip_state_sha256","issued_at","checkpoint_sha256"],
+  "properties": {
+    "contract_id": {"const":"TRIAXIS_POLICY_TRANSPARENCY_GOSSIP_CHECKPOINT_v1"},
+    "checkpoint_id": {"type":"string","minLength":1},
+    "verifier_id": {"type":"string","minLength":1},
+    "checkpoint_sequence": {"type":"integer","minimum":1},
+    "parent_checkpoint_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "store_id": {"type":"string","minLength":1},
+    "gossip_sequence": {"type":"integer","minimum":0},
+    "pin_count": {"type":"integer","minimum":0},
+    "pins_root_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "gossip_state_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "issued_at": {"type":"integer","minimum":0},
+    "checkpoint_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_policy_transparency_gossip_head_response_v1.schema.json",
+  "title": "TRIAXIS Policy Transparency Gossip Head Response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id","authority_id","service_id","store_id","verifier_id","verifier_epoch_sha256","challenge_sha256","requested_at","checkpoint_sequence","checkpoint_sha256","gossip_sequence","gossip_state_sha256","pins_root_sha256","issued_at","valid_until","response_sha256"],
+  "properties": {
+    "contract_id": {"const":"TRIAXIS_POLICY_TRANSPARENCY_GOSSIP_HEAD_RESPONSE_v1"},
+    "authority_id": {"type":"string","minLength":1},
+    "service_id": {"type":"string","minLength":1},
+    "store_id": {"type":"string","minLength":1},
+    "verifier_id": {"type":"string","minLength":1},
+    "verifier_epoch_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "challenge_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "requested_at": {"type":"integer","minimum":0},
+    "checkpoint_sequence": {"type":"integer","minimum":1},
+    "checkpoint_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "gossip_sequence": {"type":"integer","minimum":0},
+    "gossip_state_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "pins_root_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "issued_at": {"type":"integer","minimum":0},
+    "valid_until": {"type":"integer","minimum":0},
+    "response_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}

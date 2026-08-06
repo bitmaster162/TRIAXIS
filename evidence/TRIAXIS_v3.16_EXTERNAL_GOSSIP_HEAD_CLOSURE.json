@@ -1,0 +1,30 @@
+{
+  "case_count": 3,
+  "contract_id": "TRIAXIS_EXTERNAL_GOSSIP_HEAD_TRIGGER_RESULT_v1",
+  "pass_count": 3,
+  "rows": [
+    {
+      "case_id": "CURRENT_EXTERNAL_HEAD",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "WHOLE_LOCAL_GOSSIP_ROLLBACK",
+      "expected": "local_gossip_state_rollback_detected",
+      "observed": "local_gossip_state_rollback_detected",
+      "positive_control": false,
+      "status": "PASS"
+    },
+    {
+      "case_id": "EXACT_CHECKPOINT_RETRY",
+      "expected": "PASS",
+      "observed": "PASS",
+      "positive_control": true,
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.16-RC1-EXTERNAL-GOSSIP-HEAD"
+}

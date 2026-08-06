@@ -1,0 +1,11 @@
+{
+  "contract_id": "TRIAXIS_V316_BASELINE_GATE_v1",
+  "baseline_tag": "TRIAXIS-v3.15-RC2-POLICY-TRANSPARENCY-GOSSIP",
+  "baseline_commit": "f6ba345451c8ba06e4c1c4189ac2f5a552e4efa2",
+  "baseline_tree": "c3805ab261cb7fb612351f03db9733e40f842350",
+  "baseline_tests": 296,
+  "status": "PASS",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}

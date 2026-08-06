@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v3.12-RC1 External Policy Head Authority**; Release Candidate, not production-qualified.
+Current candidate: **TRIAXIS v3.16-RC1 External Policy Transparency Gossip Head**; Release Candidate, not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 
@@ -64,3 +64,7 @@ The v3.14 branch adds an independent challenge-bound transparency-witness quorum
 ## v3.15 Persistent Policy Transparency Gossip
 
 The v3.15 layer persists the highest verified floor per transparency witness and rejects cross-session rollback or same-version fork claims. See `release/TRIAXIS_CONTROL_STACK_v3.15_RC1_POLICY_TRANSPARENCY_GOSSIP.md`.
+
+## v3.16 External Policy Transparency Gossip Head
+
+The v3.16 layer exports the verifier gossip state into a signed monotonic checkpoint, stores it in an independently persisted external authority, and verifies a fresh challenge-bound head before trusting the local gossip database. See `release/TRIAXIS_CONTROL_STACK_v3.16_RC1_EXTERNAL_GOSSIP_HEAD.md`.

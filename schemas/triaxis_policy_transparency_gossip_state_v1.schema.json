@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_policy_transparency_gossip_state_v1.schema.json",
+  "title": "TRIAXIS Policy Transparency Gossip State v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id","store_id","gossip_sequence","pin_count","pins_root_sha256","state_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_POLICY_TRANSPARENCY_GOSSIP_STATE_v1"},
+    "store_id": {"type":"string","minLength":1},
+    "gossip_sequence": {"type":"integer","minimum":0},
+    "pin_count": {"type":"integer","minimum":0},
+    "pins_root_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "state_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}
