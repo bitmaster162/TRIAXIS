@@ -1,0 +1,177 @@
+{
+  "authority_granted": false,
+  "case_count": 33,
+  "fail_count": 0,
+  "pass_count": 33,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_EXECUTION_HEAD_QUORUM_AND_COMPLETION_WITNESS_CLOSURE_v3.29",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_config_substitution_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_current_quorum_detects_rolled_back_local_head",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_duplicate_authority_does_not_form_quorum",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_one_current_one_stale_one_unavailable_blocks",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_one_stale_authority_cannot_override_two_current",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_quorum_witness_can_be_signed_for_durable_handoff",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_same_signer_equivocation_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_signed_quorum_witness_rejects_pinned_config_substitution",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_threshold_requires_distinct_domains",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExecutionHeadQuorumTests.test_two_of_three_matching_authorities_accept",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_absent_reservation_permits_once_and_exact_replay_blocks",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_completed_witness_status_blocks_retry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_completion_witness_chain_rejects_parent_substitution",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_effect_id_payload_substitution_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_fresh_challenge_bound_absent_status_verifies_once",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_no_effect_allows_new_generation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_provider_outcome_receipt_is_payload_and_request_bound",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_provider_request_mismatch_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_provider_rollback_is_still_blocked_by_current_witness",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_signed_provider_completion_is_recorded_and_blocks_retry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_signed_witness_event_and_head_verify",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_tampered_provider_outcome_receipt_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.ExternalCompletionWitnessTests.test_unknown_can_be_reconciled_to_completed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.V329ComposedGuardAndHTTPTests.test_completion_witness_health_minimizes_secrets",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.V329ComposedGuardAndHTTPTests.test_completion_witness_http_requires_auth_for_mutation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.V329ComposedGuardAndHTTPTests.test_full_preflight_passes_only_with_ledger_quorum_provider_and_witness",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness.V329ComposedGuardAndHTTPTests.test_provider_http_exposes_authenticated_signed_outcome_receipt",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_execution_ledger_head_quorum_config_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_execution_ledger_head_quorum_witness_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_external_completion_witness_event_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_external_completion_witness_head_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_external_completion_witness_status_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_29_execution_head_quorum_and_completion_witness_schemas.V329SchemaTests.test_provider_outcome_receipt_schema",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "dcf3e947a6a85b5f2fab5e6c7e4064a2d5473953da8bf9b85c78277424463528",
+  "status": "PASS"
+}

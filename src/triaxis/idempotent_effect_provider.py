@@ -29,6 +29,7 @@ from .integrity import materialize_json, seal_mapping
 from .trust_registry_quorum import SQLiteEpochChallengeLedger
 
 PROVIDER_EFFECT_STATUS_CONTRACT_ID = "TRIAXIS_PROVIDER_EFFECT_STATUS_v1"
+PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID = "TRIAXIS_PROVIDER_OUTCOME_RECEIPT_v1"
 PROVIDER_EFFECT_STATES = frozenset({"ABSENT", "IN_FLIGHT", "UNKNOWN", "COMPLETED", "NO_EFFECT"})
 PROVIDER_BLOCKING_STATES = frozenset({"IN_FLIGHT", "UNKNOWN", "COMPLETED"})
 
@@ -490,6 +491,146 @@ class SQLiteIdempotentEffectProvider:
         )
 
 
+    def issue_outcome_receipt(
+        self,
+        *,
+        effect_id: str,
+        issued_at: int,
+        valid_until: int | None = None,
+    ) -> dict[str, Any]:
+        """Issue immutable signed evidence for a terminal or uncertain outcome.
+
+        The receipt is not challenge-bound because it is intended for durable
+        ingestion by an external completion witness.  It is still purpose-bound,
+        time-bounded, payload-bound and provider-request-bound.  It never grants
+        action authority.
+        """
+        if not _is_sha256(effect_id):
+            raise ProviderEffectError("invalid_effect_id", str(effect_id))
+        if type(issued_at) is not int or issued_at < 0:
+            raise ProviderEffectError("invalid_issued_at", str(issued_at))
+        current = self.get(effect_id)
+        if current is None:
+            raise ProviderEffectError("unknown_provider_effect", effect_id)
+        if current["state"] not in {"COMPLETED", "UNKNOWN", "NO_EFFECT"}:
+            raise ProviderEffectError("provider_outcome_not_receiptable", current["state"])
+        if issued_at < current["updated_at_tick"]:
+            raise ProviderEffectError(
+                "provider_receipt_predates_outcome",
+                f"issued={issued_at} updated={current['updated_at_tick']}",
+            )
+        if valid_until is None:
+            valid_until = issued_at + self.response_ttl
+        if type(valid_until) is not int or valid_until <= issued_at:
+            raise ProviderEffectError("invalid_response_window", str(valid_until))
+        receipt = seal_mapping(
+            {
+                "contract_id": PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID,
+                "provider_id": self.provider_id,
+                "service_id": self.service_id,
+                "effect_id": effect_id,
+                "payload_sha256": current["payload_sha256"],
+                "state": current["state"],
+                "generation": current["generation"],
+                "provider_request_id": current["provider_request_id"],
+                "provider_response_sha256": current["provider_response_sha256"],
+                "evidence_sha256": current["evidence_sha256"],
+                "outcome_at_tick": current["updated_at_tick"],
+                "issued_at": issued_at,
+                "valid_until": valid_until,
+                "receipt_sha256": "",
+            },
+            "receipt_sha256",
+        )
+        return sign_contract_envelope(
+            receipt,
+            digest_field="receipt_sha256",
+            purpose=PURPOSE_PROVIDER_EFFECT_RECEIPT,
+            key_id=self.key_id,
+            signer_id=self.signer_id,
+            trust_domain=self.trust_domain,
+            private_key_b64=self._private_key_b64,
+            issued_at=issued_at,
+            valid_until=valid_until,
+        )
+
+
+def verify_provider_outcome_receipt(
+    signed_receipt: Mapping[str, Any],
+    *,
+    registry: TrustKeyRegistry,
+    expected_provider_id: str,
+    expected_service_id: str,
+    expected_signer_id: str,
+    expected_trust_domain: str,
+    expected_effect_id: str,
+    expected_payload_sha256: str,
+    evaluation_tick: int,
+    allowed_states: Sequence[str] = ("COMPLETED", "UNKNOWN", "NO_EFFECT"),
+    max_receipt_age: int = 30,
+) -> dict[str, Any]:
+    allowed = set(allowed_states)
+    if not allowed or not allowed.issubset({"COMPLETED", "UNKNOWN", "NO_EFFECT"}):
+        raise ProviderEffectError("invalid_allowed_provider_outcome", str(tuple(allowed_states)))
+    if type(evaluation_tick) is not int or evaluation_tick < 0:
+        raise ProviderEffectError("invalid_evaluation_tick", str(evaluation_tick))
+    if type(max_receipt_age) is not int or max_receipt_age < 0:
+        raise ProviderEffectError("invalid_max_receipt_age", str(max_receipt_age))
+    verified = verify_contract_envelope(
+        signed_receipt,
+        registry=registry,
+        evaluation_tick=evaluation_tick,
+        expected_purpose=PURPOSE_PROVIDER_EFFECT_RECEIPT,
+        expected_digest_field="receipt_sha256",
+        expected_inner_contract_id=PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID,
+        expected_signer_id=expected_signer_id,
+        expected_trust_domain=expected_trust_domain,
+    )
+    if verified["status"] != "PASS":
+        raise ProviderEffectError("invalid_provider_outcome_signature", str(verified["errors"]))
+    receipt = verified["inner_contract"]
+    if not isinstance(receipt, dict):
+        raise ProviderEffectError("invalid_provider_outcome_receipt", "object required")
+    if receipt.get("provider_id") != expected_provider_id or receipt.get("service_id") != expected_service_id:
+        raise ProviderEffectError(
+            "provider_identity_mismatch",
+            f"{receipt.get('provider_id')}:{receipt.get('service_id')}",
+        )
+    if receipt.get("effect_id") != expected_effect_id:
+        raise ProviderEffectError("provider_effect_id_mismatch", str(receipt.get("effect_id")))
+    if receipt.get("payload_sha256") != expected_payload_sha256:
+        raise ProviderEffectError("provider_payload_mismatch", str(receipt.get("payload_sha256")))
+    if receipt.get("state") not in allowed:
+        raise ProviderEffectError("provider_outcome_not_allowed", str(receipt.get("state")))
+    if type(receipt.get("generation")) is not int or receipt["generation"] < 1:
+        raise ProviderEffectError("invalid_provider_generation", str(receipt.get("generation")))
+    if not isinstance(receipt.get("provider_request_id"), str) or not receipt["provider_request_id"]:
+        raise ProviderEffectError("invalid_provider_request_id", str(receipt.get("provider_request_id")))
+    if receipt["state"] == "COMPLETED" and not _is_sha256(receipt.get("provider_response_sha256")):
+        raise ProviderEffectError("provider_response_required", str(receipt.get("provider_response_sha256")))
+    if receipt["state"] != "COMPLETED" and receipt.get("provider_response_sha256") is not None and not _is_sha256(receipt.get("provider_response_sha256")):
+        raise ProviderEffectError("invalid_provider_response_sha256", str(receipt.get("provider_response_sha256")))
+    if not _is_sha256(receipt.get("evidence_sha256")):
+        raise ProviderEffectError("invalid_evidence_sha256", str(receipt.get("evidence_sha256")))
+    outcome_at = receipt.get("outcome_at_tick")
+    issued_at = receipt.get("issued_at")
+    valid_until = receipt.get("valid_until")
+    if type(outcome_at) is not int or outcome_at < 0:
+        raise ProviderEffectError("invalid_outcome_at_tick", str(outcome_at))
+    if type(issued_at) is not int or issued_at < outcome_at or issued_at > evaluation_tick:
+        raise ProviderEffectError("invalid_provider_receipt_time", str(issued_at))
+    if type(valid_until) is not int or valid_until <= issued_at:
+        raise ProviderEffectError("invalid_provider_receipt_window", str(valid_until))
+    if evaluation_tick - issued_at > max_receipt_age:
+        raise ProviderEffectError("provider_outcome_receipt_not_fresh", str(issued_at))
+    return {
+        "status": "PASS",
+        "provider_receipt": receipt,
+        "authority_granted": False,
+        "required_separate_authorization": True,
+    }
+
+
 def verify_provider_effect_status(
     signed_status: Mapping[str, Any],
     *,
@@ -559,7 +700,9 @@ __all__ = [
     "PROVIDER_BLOCKING_STATES",
     "PROVIDER_EFFECT_STATES",
     "PROVIDER_EFFECT_STATUS_CONTRACT_ID",
+    "PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID",
     "ProviderEffectError",
     "SQLiteIdempotentEffectProvider",
     "verify_provider_effect_status",
+    "verify_provider_outcome_receipt",
 ]

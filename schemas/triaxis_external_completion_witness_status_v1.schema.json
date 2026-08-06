@@ -1,0 +1,163 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_external_completion_witness_status_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS External Completion Witness Status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_EXTERNAL_COMPLETION_WITNESS_STATUS_v1"
+    },
+    "witness_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effect_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "provider_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "ABSENT",
+        "RESERVED",
+        "UNKNOWN",
+        "COMPLETED",
+        "NO_EFFECT"
+      ]
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "provider_request_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provider_receipt_sha256": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence_sha256": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "updated_at_tick": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "witness_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "witness_head_event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "witness_state_root_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "verifier_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verifier_epoch_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "challenge_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requested_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "issued_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "valid_until": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "contract_id",
+    "witness_id",
+    "authority_id",
+    "service_id",
+    "effect_id",
+    "payload_sha256",
+    "provider_id",
+    "provider_service_id",
+    "state",
+    "generation",
+    "provider_request_id",
+    "provider_receipt_sha256",
+    "evidence_sha256",
+    "updated_at_tick",
+    "witness_sequence",
+    "witness_head_event_sha256",
+    "witness_state_root_sha256",
+    "verifier_id",
+    "verifier_epoch_sha256",
+    "challenge_sha256",
+    "requested_at",
+    "issued_at",
+    "valid_until",
+    "status_sha256"
+  ]
+}

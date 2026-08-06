@@ -1,0 +1,36 @@
+[Unit]
+Description=TRIAXIS Execution-Ledger Head Authority %i
+After=network-online.target triaxis-execution-ledger.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=triaxis-execution-head
+Group=triaxis-execution-head
+WorkingDirectory=/opt/triaxis
+Environment=PYTHONPATH=/opt/triaxis/src:/opt/triaxis
+EnvironmentFile=/etc/triaxis/execution-ledger-head/%i.env
+Environment=TRIAXIS_ELH_PRIVATE_KEY_CREDENTIAL_NAME=private_key
+Environment=TRIAXIS_ELH_ADMIN_TOKEN_CREDENTIAL_NAME=admin_token
+LoadCredential=private_key:/etc/triaxis/execution-ledger-head/%i/private_key.b64
+LoadCredential=admin_token:/etc/triaxis/execution-ledger-head/%i/admin_token
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_execution_ledger_head_authority.py
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadOnlyPaths=/etc/triaxis/execution-ledger-public-keys.json
+ReadWritePaths=/var/lib/triaxis-execution-ledger-head/%i
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

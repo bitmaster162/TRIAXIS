@@ -1,0 +1,33 @@
+{
+  "authority_granted": false,
+  "case_count": 3,
+  "fail_count": 0,
+  "pass_count": 3,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.29_SERVICE_PROCESS_SMOKE",
+  "rows": [
+    {
+      "case_id": "V329SP01_THREE_HEAD_PROCESSES_FORM_2_OF_3_QUORUM",
+      "member_count": 3,
+      "process_count": 3,
+      "quorum_status": "PASS",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V329SP02_COMPLETION_WITNESS_PROCESS_HEALTH_MINIMIZES_SECRETS",
+      "contains_private": false,
+      "contains_token": false,
+      "http_status": 200,
+      "status": "PASS"
+    },
+    {
+      "accepted_status": 200,
+      "case_id": "V329SP03_COMPLETION_WITNESS_PROCESS_ENFORCES_MUTATION_AUTH",
+      "denied_status": 403,
+      "external_effect_permitted": true,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "511b5abf507085188c4fcdd8170f1b6e9c22fcc43f4dcfe1c9d7deb66aa4acdb",
+  "status": "PASS"
+}

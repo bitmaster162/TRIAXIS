@@ -1,0 +1,33 @@
+{
+  "authorities": [
+    {
+      "authority_id": "authority:execution-ledger-head:a",
+      "key_id": "key:execution-ledger-head:a",
+      "service_id": "service:execution-ledger-head:a",
+      "signer_id": "signer:execution-ledger-head:a",
+      "trust_domain": "triaxis:execution-ledger-head:a"
+    },
+    {
+      "authority_id": "authority:execution-ledger-head:b",
+      "key_id": "key:execution-ledger-head:b",
+      "service_id": "service:execution-ledger-head:b",
+      "signer_id": "signer:execution-ledger-head:b",
+      "trust_domain": "triaxis:execution-ledger-head:b"
+    },
+    {
+      "authority_id": "authority:execution-ledger-head:c",
+      "key_id": "key:execution-ledger-head:c",
+      "service_id": "service:execution-ledger-head:c",
+      "signer_id": "signer:execution-ledger-head:c",
+      "trust_domain": "triaxis:execution-ledger-head:c"
+    }
+  ],
+  "authority_set_id": "execution-ledger-head-authorities:primary",
+  "config_id": "execution-ledger-head-quorum:primary",
+  "contract_id": "TRIAXIS_EXECUTION_LEDGER_HEAD_QUORUM_CONFIG_v1",
+  "ledger_id": "ledger:primary",
+  "threshold": 2,
+  "valid_from": 0,
+  "valid_until": 4102444800,
+  "config_sha256": "REPLACE_WITH_CANONICAL_SEAL"
+}

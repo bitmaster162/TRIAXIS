@@ -1,0 +1,162 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_execution_ledger_head_quorum_witness_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Execution Ledger Head Quorum Witness v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_EXECUTION_LEDGER_HEAD_QUORUM_WITNESS_v1"
+    },
+    "config_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_set_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledger_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledger_authority_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ledger_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "ledger_head_event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "ledger_state_root_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_ledger_head_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "threshold": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "member_count": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "members": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "authority_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "service_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "key_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trust_domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "response_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "response_issued_at": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "response_valid_until": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "authority_accepted_at_tick": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "authority_id",
+          "service_id",
+          "signer_id",
+          "key_id",
+          "trust_domain",
+          "response_sha256",
+          "response_issued_at",
+          "response_valid_until",
+          "authority_accepted_at_tick"
+        ]
+      }
+    },
+    "verifier_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verifier_epoch_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "challenge_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requested_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evaluated_at": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "authority_granted": {
+      "const": false
+    },
+    "witness_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "contract_id",
+    "config_id",
+    "config_sha256",
+    "authority_set_id",
+    "ledger_id",
+    "ledger_authority_id",
+    "ledger_sequence",
+    "ledger_head_event_sha256",
+    "ledger_state_root_sha256",
+    "authority_ledger_head_sha256",
+    "threshold",
+    "member_count",
+    "members",
+    "verifier_id",
+    "verifier_epoch_sha256",
+    "challenge_sha256",
+    "requested_at",
+    "evaluated_at",
+    "authority_granted",
+    "witness_sha256"
+  ]
+}

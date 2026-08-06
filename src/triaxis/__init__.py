@@ -579,3 +579,62 @@ __all__ += [
     "verify_external_effect_guard_with_monotonic_head",
     "verify_provider_effect_status",
 ]
+
+# TRIAXIS v3.29 independent execution-head quorum and completion witness.
+from .execution_ledger_head_quorum import (
+    EXECUTION_LEDGER_HEAD_QUORUM_CONFIG_CONTRACT_ID,
+    EXECUTION_LEDGER_HEAD_QUORUM_WITNESS_CONTRACT_ID,
+    ExecutionLedgerHeadQuorumError,
+    make_execution_ledger_head_quorum_config,
+    reserve_with_external_head_quorum,
+    sign_execution_ledger_head_quorum_witness,
+    validate_execution_ledger_head_quorum_config,
+    verify_execution_ledger_head_quorum,
+    verify_execution_ledger_head_quorum_witness,
+    verify_external_effect_guard_with_head_quorum_and_completion_witness,
+)
+from .external_completion_witness import (
+    COMPLETION_WITNESS_EVENT_CONTRACT_ID,
+    COMPLETION_WITNESS_HEAD_CONTRACT_ID,
+    COMPLETION_WITNESS_STATUS_CONTRACT_ID,
+    CompletionWitnessError,
+    SQLiteExternalCompletionWitness,
+    verify_completion_witness_event,
+    verify_completion_witness_event_chain,
+    verify_completion_witness_head,
+    verify_external_completion_witness_status,
+)
+from .external_completion_witness_http import (
+    ExternalCompletionWitnessHTTPApplication,
+    build_external_completion_witness_http_server,
+)
+from .idempotent_effect_provider import (
+    PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID,
+    verify_provider_outcome_receipt,
+)
+
+__all__ += [
+    "COMPLETION_WITNESS_EVENT_CONTRACT_ID",
+    "COMPLETION_WITNESS_HEAD_CONTRACT_ID",
+    "COMPLETION_WITNESS_STATUS_CONTRACT_ID",
+    "CompletionWitnessError",
+    "EXECUTION_LEDGER_HEAD_QUORUM_CONFIG_CONTRACT_ID",
+    "EXECUTION_LEDGER_HEAD_QUORUM_WITNESS_CONTRACT_ID",
+    "ExecutionLedgerHeadQuorumError",
+    "ExternalCompletionWitnessHTTPApplication",
+    "PROVIDER_OUTCOME_RECEIPT_CONTRACT_ID",
+    "SQLiteExternalCompletionWitness",
+    "build_external_completion_witness_http_server",
+    "make_execution_ledger_head_quorum_config",
+    "reserve_with_external_head_quorum",
+    "sign_execution_ledger_head_quorum_witness",
+    "validate_execution_ledger_head_quorum_config",
+    "verify_completion_witness_event",
+    "verify_completion_witness_event_chain",
+    "verify_completion_witness_head",
+    "verify_execution_ledger_head_quorum",
+    "verify_execution_ledger_head_quorum_witness",
+    "verify_external_completion_witness_status",
+    "verify_external_effect_guard_with_head_quorum_and_completion_witness",
+    "verify_provider_outcome_receipt",
+]

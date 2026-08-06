@@ -1,0 +1,31 @@
+[Unit]
+Description=TRIAXIS External Completion Witness Reference
+After=network.target triaxis-idempotent-provider.service
+
+[Service]
+Type=simple
+User=triaxis-completion-witness
+Group=triaxis-completion-witness
+EnvironmentFile=/etc/triaxis/external-completion-witness.env
+LoadCredential=external-completion-witness-private-key:/etc/triaxis/credentials/external-completion-witness-private-key
+LoadCredential=external-completion-witness-client-token:/etc/triaxis/credentials/external-completion-witness-client-token
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_external_completion_witness.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadOnlyPaths=/etc/triaxis/provider-public-keys.json
+ReadWritePaths=/var/lib/triaxis-external-completion-witness
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
