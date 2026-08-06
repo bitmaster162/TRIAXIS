@@ -1,0 +1,45 @@
+{
+  "case_count": 7,
+  "fail_count": 0,
+  "pass_count": 7,
+  "protocol_id": "TRIAXIS_CANONICAL_TARGET_AUTHORIZATION_CLOSURE_v3.25",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_ambiguous_encoded_and_traversal_targets_fail_closed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_opaque_targets_remain_supported_with_boundary_matching",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_policy_prefix_itself_must_be_unambiguous",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_prefix_is_component_bounded_not_host_string_prefix",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_safe_url_is_canonicalized_and_allowed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization.TargetNormalizationTests.test_userinfo_fragment_and_invalid_port_are_denied",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_25_target_normalization_schemas.TargetNormalizationSchemaTests.test_reference_contracts",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "443a3e809d0413d4a6baa6061fc0313d8d2dde399ffefb143b3edcc4b52ad6ff",
+  "status": "PASS"
+}

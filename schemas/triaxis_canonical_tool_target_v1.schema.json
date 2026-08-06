@@ -1,0 +1,52 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_canonical_tool_target_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_target": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_CANONICAL_TOOL_TARGET_v1"
+    },
+    "kind": {
+      "enum": [
+        "URL",
+        "OPAQUE"
+      ]
+    },
+    "path": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "scheme": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "kind",
+    "scheme",
+    "authority",
+    "path",
+    "query",
+    "canonical_target",
+    "target_sha256"
+  ],
+  "title": "TRIAXIS Canonical Tool Target v1",
+  "type": "object"
+}

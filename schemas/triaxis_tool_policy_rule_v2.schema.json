@@ -1,0 +1,100 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_tool_policy_rule_v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "capabilities": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contract_id": {
+      "const": "TRIAXIS_TOOL_POLICY_RULE_v2"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "ASK_USER",
+        "DENY"
+      ]
+    },
+    "modes": {
+      "items": {
+        "enum": [
+          "PLAN",
+          "DEFAULT",
+          "AUTO_EDIT",
+          "HEADLESS"
+        ]
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "mutating": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "rule_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "rule_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_prefixes": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "tier": {
+      "enum": [
+        "DEFAULT",
+        "EXTENSION",
+        "PROJECT",
+        "USER",
+        "ADMIN"
+      ]
+    },
+    "tool_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "contract_id",
+    "rule_id",
+    "source_id",
+    "tier",
+    "priority",
+    "tool_ids",
+    "capabilities",
+    "modes",
+    "mutating",
+    "target_prefixes",
+    "decision",
+    "rule_sha256"
+  ],
+  "title": "TRIAXIS Tool Policy Rule v2",
+  "type": "object"
+}

@@ -43,7 +43,7 @@ class CrossHarnessSchemaTests(unittest.TestCase):
             "target_prefixes": ["workspace:"],
             "decision": "DENY",
         })
-        self.validate("triaxis_tool_policy_rule_v1.schema.json", rule)
+        self.validate("triaxis_tool_policy_rule_v2.schema.json", rule)
         decision = evaluate_tool_policy([rule], {
             "request_sha256": D,
             "tool_id": "shell",
@@ -51,7 +51,7 @@ class CrossHarnessSchemaTests(unittest.TestCase):
             "target": "workspace:triaxis",
             "mutating": True,
         }, mode="DEFAULT")
-        self.validate("triaxis_tool_policy_decision_v1.schema.json", decision)
+        self.validate("triaxis_tool_policy_decision_v2.schema.json", decision)
 
         delta = seal_one_shot_permission_delta({
             "grant_id": "grant:1", "request_sha256": D, "approval_sha256": E,

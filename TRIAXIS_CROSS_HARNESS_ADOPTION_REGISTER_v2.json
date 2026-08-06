@@ -1,53 +1,15 @@
 {
-  "register_id": "TRIAXIS_CROSS_HARNESS_ADOPTION_REGISTER_v2",
-  "snapshot_date": "2026-08-06",
-  "method": "clean-room architectural adaptation; no upstream source files copied",
-  "upstreams": [
-    {
-      "project": "xai-org/grok-build",
-      "snapshot": "a5589e958437d79e13db026eedcb1720bffd4063",
-      "adopted": ["bounded subagents", "worktree isolation", "skills/plugins/hooks", "resumable workflows", "headless event stream", "ACP-style session semantics", "context privacy manifest"],
-      "status": "ADOPTED_AND_HARDENED_IN_v3.19-v3.22"
-    },
-    {
-      "project": "google-gemini/gemini-cli",
-      "snapshot": "d5c9a97dc03758649da8a7b9b739c4c73b15910e",
-      "adopted": ["tiered allow/ask/deny policy", "extension non-grant rule", "headless ask fails closed", "tool visibility suppression", "one-run sandbox expansion"],
-      "status": "ADOPTED_IN_v3.24"
-    },
-    {
-      "project": "openai/codex",
-      "snapshot": "7a0e974e08c798d1e8d59d407aeb6e24db1313af",
-      "related_snapshots": ["bc8b25ea0219ad63f9f939ae0be0090dc6bdd9c9", "547080e4d690cdeea12f427a8d9c5165928821ed"],
-      "adopted": ["per-segment shell authorization", "one-shot additional permissions", "durable queued dispatch principle", "persisted live working-directory distinction", "fail-closed ambiguous target handling planned for v3.25"],
-      "status": "PARTIALLY_ADOPTED_IN_v3.24"
-    },
-    {
-      "project": "openai/openai-agents-python",
-      "snapshot": "19f6bde526ed4700664a844a8e1ce2be3713174c",
-      "related_snapshots": ["4a1773f405b2c516b774fbd8971d670f2801e61c"],
-      "adopted": ["pre/post tool guardrails", "recheck after approval", "filtered handoffs", "typed trace spans", "atomic session-state principle"],
-      "status": "ADOPTED_IN_v3.24"
-    },
-    {
-      "project": "langchain-ai/langgraph",
-      "snapshot": "658541c4960f329864a2523fc7d52427e8190bed",
-      "adopted": ["durable interrupt/resume", "thread/checkpoint identity", "CAS resume", "time-travel fork with ancestry", "persistent state store"],
-      "status": "ADOPTED_IN_v3.24"
-    },
-    {
-      "project": "OpenHands/OpenHands",
-      "snapshot": "56638693908b8ac83a2fa3bde6eb6c33aae37f4b",
-      "adopted": ["action-to-observation event binding", "client-server sandbox boundary", "explicit sandbox-provider trust distinction"],
-      "status": "ADOPTED_IN_v3.24"
-    },
-    {
-      "project": "Anthropic Claude Code",
-      "snapshot": "official documentation reviewed 2026-08-06",
-      "adopted": ["managed policy precedence", "deny-overrides-allow", "permission hooks as narrowing controls", "resume and bounded-turn concepts"],
-      "status": "DOCS_DERIVED_ADOPTION_IN_v3.24"
-    }
+  "invariants": [
+    "DISCOVERY_DOES_NOT_GRANT_AUTHORITY",
+    "EXTENSIONS_CANNOT_MINT_ALLOW",
+    "HEADLESS_ASK_FAILS_CLOSED",
+    "MUTATING_TOOL_RECHECKS_AFTER_APPROVAL",
+    "HANDOFF_CONTEXT_AND_AUTHORITY_ARE_EXPLICIT",
+    "INTERRUPT_RESUME_IS_CAS_AND_SINGLE_USE",
+    "ACTION_OBSERVATION_BINDING_IS_EXACT"
   ],
+  "method": "clean-room architectural adaptation; no upstream source files copied",
+  "register_id": "TRIAXIS_CROSS_HARNESS_ADOPTION_REGISTER_v2",
   "rejected": [
     "vendor authentication and billing transports",
     "vendor telemetry as a governance dependency",
@@ -57,13 +19,97 @@
     "same-process receipt treated as physical attestation",
     "complex shell programs covered by broad persistent approvals"
   ],
-  "invariants": [
-    "DISCOVERY_DOES_NOT_GRANT_AUTHORITY",
-    "EXTENSIONS_CANNOT_MINT_ALLOW",
-    "HEADLESS_ASK_FAILS_CLOSED",
-    "MUTATING_TOOL_RECHECKS_AFTER_APPROVAL",
-    "HANDOFF_CONTEXT_AND_AUTHORITY_ARE_EXPLICIT",
-    "INTERRUPT_RESUME_IS_CAS_AND_SINGLE_USE",
-    "ACTION_OBSERVATION_BINDING_IS_EXACT"
+  "snapshot_date": "2026-08-06",
+  "upstreams": [
+    {
+      "adopted": [
+        "bounded subagents",
+        "worktree isolation",
+        "skills/plugins/hooks",
+        "resumable workflows",
+        "headless event stream",
+        "ACP-style session semantics",
+        "context privacy manifest"
+      ],
+      "project": "xai-org/grok-build",
+      "snapshot": "a5589e958437d79e13db026eedcb1720bffd4063",
+      "status": "ADOPTED_AND_HARDENED_IN_v3.19-v3.22"
+    },
+    {
+      "adopted": [
+        "tiered allow/ask/deny policy",
+        "extension non-grant rule",
+        "headless ask fails closed",
+        "tool visibility suppression",
+        "one-run sandbox expansion"
+      ],
+      "project": "google-gemini/gemini-cli",
+      "snapshot": "d5c9a97dc03758649da8a7b9b739c4c73b15910e",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "per-segment shell authorization",
+        "one-shot additional permissions",
+        "durable queued dispatch principle",
+        "persisted live working-directory distinction",
+        "fail-closed ambiguous target handling"
+      ],
+      "project": "openai/codex",
+      "related_snapshots": [
+        "bc8b25ea0219ad63f9f939ae0be0090dc6bdd9c9",
+        "547080e4d690cdeea12f427a8d9c5165928821ed"
+      ],
+      "snapshot": "7a0e974e08c798d1e8d59d407aeb6e24db1313af",
+      "status": "ADOPTED_AND_HARDENED_IN_v3.24-v3.25"
+    },
+    {
+      "adopted": [
+        "pre/post tool guardrails",
+        "recheck after approval",
+        "filtered handoffs",
+        "typed trace spans",
+        "atomic session-state principle"
+      ],
+      "project": "openai/openai-agents-python",
+      "related_snapshots": [
+        "4a1773f405b2c516b774fbd8971d670f2801e61c"
+      ],
+      "snapshot": "19f6bde526ed4700664a844a8e1ce2be3713174c",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "durable interrupt/resume",
+        "thread/checkpoint identity",
+        "CAS resume",
+        "time-travel fork with ancestry",
+        "persistent state store"
+      ],
+      "project": "langchain-ai/langgraph",
+      "snapshot": "658541c4960f329864a2523fc7d52427e8190bed",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "action-to-observation event binding",
+        "client-server sandbox boundary",
+        "explicit sandbox-provider trust distinction"
+      ],
+      "project": "OpenHands/OpenHands",
+      "snapshot": "56638693908b8ac83a2fa3bde6eb6c33aae37f4b",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "managed policy precedence",
+        "deny-overrides-allow",
+        "permission hooks as narrowing controls",
+        "resume and bounded-turn concepts"
+      ],
+      "project": "Anthropic Claude Code",
+      "snapshot": "official documentation reviewed 2026-08-06",
+      "status": "DOCS_DERIVED_ADOPTION_IN_v3.24"
+    }
   ]
 }

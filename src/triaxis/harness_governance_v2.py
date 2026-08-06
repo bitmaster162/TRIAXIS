@@ -25,11 +25,13 @@ import re
 import shlex
 import sqlite3
 from typing import Any
+from urllib.parse import urlsplit
 
 from .integrity import canonical_sha256, materialize_json, seal_mapping, verify_sealed_mapping
 
-TOOL_POLICY_RULE_CONTRACT_ID = "TRIAXIS_TOOL_POLICY_RULE_v1"
-TOOL_POLICY_DECISION_CONTRACT_ID = "TRIAXIS_TOOL_POLICY_DECISION_v1"
+TOOL_POLICY_RULE_CONTRACT_ID = "TRIAXIS_TOOL_POLICY_RULE_v2"
+TOOL_POLICY_DECISION_CONTRACT_ID = "TRIAXIS_TOOL_POLICY_DECISION_v2"
+TARGET_IDENTITY_CONTRACT_ID = "TRIAXIS_CANONICAL_TOOL_TARGET_v1"
 PERMISSION_DELTA_CONTRACT_ID = "TRIAXIS_ONE_SHOT_PERMISSION_DELTA_v1"
 GUARDRAIL_RESULT_CONTRACT_ID = "TRIAXIS_TOOL_GUARDRAIL_RESULT_v1"
 GUARDRAIL_PIPELINE_CONTRACT_ID = "TRIAXIS_TOOL_GUARDRAIL_PIPELINE_v1"
@@ -55,6 +57,154 @@ def _error(code: str, path: str, message: str) -> dict[str, str]:
 
 def _is_sha256(value: Any) -> bool:
     return isinstance(value, str) and len(value) == 64 and all(ch in "0123456789abcdef" for ch in value)
+
+
+class TargetValidationError(ValueError):
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
+
+
+_PERCENT = re.compile(r"%([0-9A-Fa-f]{2})")
+_SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*$")
+_UNRESERVED = frozenset("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")
+_DANGEROUS_ENCODED = {0x2F, 0x5C, 0x25, 0x2E}
+
+
+def _normalize_percent_component(value: str, *, field: str) -> str:
+    if "\\" in value:
+        raise TargetValidationError("raw_backslash_denied", f"{field} contains backslash")
+    if any(ord(ch) < 0x20 or ord(ch) == 0x7F for ch in value):
+        raise TargetValidationError("target_control_character", f"{field} contains control character")
+    if any(ch.isspace() for ch in value):
+        raise TargetValidationError("target_whitespace_denied", f"{field} contains raw whitespace")
+    out: list[str] = []
+    index = 0
+    while index < len(value):
+        ch = value[index]
+        if ch != "%":
+            out.append(ch)
+            index += 1
+            continue
+        if index + 2 >= len(value) or not all(c in "0123456789abcdefABCDEF" for c in value[index + 1:index + 3]):
+            raise TargetValidationError("malformed_percent_encoding", f"{field} contains malformed percent encoding")
+        byte = int(value[index + 1:index + 3], 16)
+        if byte in _DANGEROUS_ENCODED:
+            raise TargetValidationError("encoded_separator_or_traversal_denied", f"{field} contains encoded separator, percent or dot")
+        if byte < 0x20 or byte == 0x7F:
+            raise TargetValidationError("encoded_control_character", f"{field} contains encoded control character")
+        decoded = chr(byte)
+        out.append(decoded if decoded in _UNRESERVED else f"%{byte:02X}")
+        index += 3
+    return "".join(out)
+
+
+def _reject_dot_segments(path: str) -> None:
+    if any(segment in {".", ".."} for segment in path.split("/")):
+        raise TargetValidationError("path_traversal_segment", "target contains dot traversal segment")
+
+
+def canonicalize_tool_target(value: str, *, prefix: bool = False) -> dict[str, Any]:
+    """Create a strict, provider-neutral target identity.
+
+    The function intentionally rejects ambiguous forms rather than relying on a
+    downstream proxy/runtime to decode them consistently. Policy prefixes may
+    not contain query or fragment components.
+    """
+
+    if not isinstance(value, str) or not value:
+        raise TargetValidationError("target_required", "target must be a non-empty string")
+    if len(value) > 4096:
+        raise TargetValidationError("target_too_long", "target exceeds 4096 bytes")
+    if "#" in value:
+        raise TargetValidationError("target_fragment_denied", "fragments are not authorization identity")
+
+    if "://" in value:
+        try:
+            parsed = urlsplit(value)
+            port = parsed.port
+        except ValueError as exc:
+            raise TargetValidationError("invalid_url_authority", str(exc)) from exc
+        scheme = parsed.scheme.lower()
+        if not _SCHEME.fullmatch(scheme):
+            raise TargetValidationError("invalid_target_scheme", scheme)
+        if parsed.username is not None or parsed.password is not None:
+            raise TargetValidationError("url_userinfo_denied", "userinfo is not allowed")
+        if not parsed.hostname:
+            raise TargetValidationError("url_host_required", "URL host required")
+        try:
+            host = parsed.hostname.encode("idna").decode("ascii").lower()
+        except UnicodeError as exc:
+            raise TargetValidationError("invalid_idna_host", str(exc)) from exc
+        if host.endswith("."):
+            host = host[:-1]
+        if not host:
+            raise TargetValidationError("url_host_required", "URL host required")
+        path = _normalize_percent_component(parsed.path or "/", field="path")
+        _reject_dot_segments(path)
+        query = _normalize_percent_component(parsed.query, field="query") if parsed.query else ""
+        if prefix and query:
+            raise TargetValidationError("policy_prefix_query_denied", "policy prefixes cannot include query")
+        default_port = (scheme == "https" and port == 443) or (scheme == "http" and port == 80)
+        authority = host if port is None or default_port else f"{host}:{port}"
+        canonical = f"{scheme}://{authority}{path}"
+        if query:
+            canonical += f"?{query}"
+        body = {
+            "contract_id": TARGET_IDENTITY_CONTRACT_ID,
+            "kind": "URL",
+            "scheme": scheme,
+            "authority": authority,
+            "path": path,
+            "query": query,
+            "canonical_target": canonical,
+            "target_sha256": "",
+        }
+        return seal_mapping(body, "target_sha256")
+
+    if ":" not in value:
+        raise TargetValidationError("opaque_target_scheme_required", "opaque target requires scheme prefix")
+    scheme, rest = value.split(":", 1)
+    scheme = scheme.lower()
+    if not _SCHEME.fullmatch(scheme):
+        raise TargetValidationError("invalid_target_scheme", scheme)
+    if "?" in rest and prefix:
+        raise TargetValidationError("policy_prefix_query_denied", "policy prefixes cannot include query")
+    normalized = _normalize_percent_component(rest, field="opaque_target")
+    path_part = normalized.split("?", 1)[0]
+    _reject_dot_segments(path_part)
+    canonical = f"{scheme}:{normalized}"
+    body = {
+        "contract_id": TARGET_IDENTITY_CONTRACT_ID,
+        "kind": "OPAQUE",
+        "scheme": scheme,
+        "authority": None,
+        "path": path_part,
+        "query": normalized.split("?", 1)[1] if "?" in normalized else "",
+        "canonical_target": canonical,
+        "target_sha256": "",
+    }
+    return seal_mapping(body, "target_sha256")
+
+
+def _target_prefix_matches(prefix_identity: Mapping[str, Any], target_identity: Mapping[str, Any]) -> bool:
+    if prefix_identity.get("kind") != target_identity.get("kind"):
+        return False
+    if prefix_identity.get("scheme") != target_identity.get("scheme"):
+        return False
+    if prefix_identity.get("authority") != target_identity.get("authority"):
+        return False
+    prefix_path = str(prefix_identity.get("path", ""))
+    target_path = str(target_identity.get("path", ""))
+    if prefix_identity.get("kind") == "URL":
+        if prefix_path.endswith("/"):
+            return target_path.startswith(prefix_path)
+        return target_path == prefix_path or target_path.startswith(prefix_path + "/")
+    if prefix_path == "":
+        return True
+    if prefix_path.endswith("/"):
+        return target_path.startswith(prefix_path)
+    return target_path == prefix_path or target_path.startswith(prefix_path + "/")
 
 
 def seal_tool_policy_rule(value: Mapping[str, Any]) -> dict[str, Any]:
@@ -93,13 +243,20 @@ def seal_tool_policy_rule(value: Mapping[str, Any]) -> dict[str, Any]:
     target_prefixes = body.get("target_prefixes", [])
     if not isinstance(target_prefixes, list) or not all(isinstance(x, str) and x for x in target_prefixes):
         raise ValueError("target_prefixes must be string array")
-    body["target_prefixes"] = sorted(set(target_prefixes))
+    body["target_prefixes"] = sorted({
+        canonicalize_tool_target(item, prefix=True)["canonical_target"] for item in target_prefixes
+    })
     body.setdefault("contract_id", TOOL_POLICY_RULE_CONTRACT_ID)
     body.setdefault("rule_sha256", "")
     return seal_mapping(body, "rule_sha256")
 
 
-def _rule_matches(rule: Mapping[str, Any], request: Mapping[str, Any], mode: str) -> bool:
+def _rule_matches(
+    rule: Mapping[str, Any],
+    request: Mapping[str, Any],
+    mode: str,
+    target_identity: Mapping[str, Any],
+) -> bool:
     if mode not in set(rule.get("modes", [])):
         return False
     tool_id = request.get("tool_id")
@@ -113,9 +270,10 @@ def _rule_matches(rule: Mapping[str, Any], request: Mapping[str, Any], mode: str
     if mutating is not None and request.get("mutating") is not mutating:
         return False
     prefixes = rule.get("target_prefixes", [])
-    target = request.get("target", "")
-    if prefixes and (not isinstance(target, str) or not any(target.startswith(p) for p in prefixes)):
-        return False
+    if prefixes:
+        identities = [canonicalize_tool_target(item, prefix=True) for item in prefixes]
+        if not any(_target_prefix_matches(identity, target_identity) for identity in identities):
+            return False
     return True
 
 
@@ -146,14 +304,24 @@ def evaluate_tool_policy(
     if type(request.get("mutating")) is not bool:
         raise TypeError("tool_request.mutating must be bool")
 
+    target_errors: list[str] = []
+    target_identity: dict[str, Any] | None = None
+    try:
+        target_identity = canonicalize_tool_target(request["target"])
+    except TargetValidationError as exc:
+        target_errors.append(exc.code)
+
     candidates: list[dict[str, Any]] = []
     for raw in rules:
         rule = materialize_json(raw)
         if not isinstance(rule, dict) or not verify_sealed_mapping(rule, "rule_sha256"):
             raise ValueError("invalid policy rule")
-        if _rule_matches(rule, request, mode):
+        if target_identity is not None and _rule_matches(rule, request, mode, target_identity):
             candidates.append(rule)
-    if not candidates:
+    if target_errors:
+        decision = "DENY"
+        selected = None
+    elif not candidates:
         decision = "ASK_USER" if mode != "HEADLESS" else "DENY"
         selected = None
     else:
@@ -181,6 +349,11 @@ def evaluate_tool_policy(
     body = {
         "contract_id": TOOL_POLICY_DECISION_CONTRACT_ID,
         "request_sha256": request["request_sha256"],
+        "original_target_sha256": canonical_sha256(request["target"]),
+        "canonical_target": None if target_identity is None else target_identity["canonical_target"],
+        "canonical_target_sha256": None if target_identity is None else target_identity["target_sha256"],
+        "target_validation_status": "PASS" if not target_errors else "BLOCK",
+        "target_validation_error_codes": sorted(target_errors),
         "mode": mode,
         "decision": decision,
         "selected_rule_sha256": None if selected is None else selected["rule_sha256"],
@@ -685,10 +858,13 @@ __all__ = [
     "PERMISSION_DELTA_CONTRACT_ID",
     "PermissionDeltaLedger",
     "SQLiteInterruptStore",
+    "TARGET_IDENTITY_CONTRACT_ID",
+    "TargetValidationError",
     "TOOL_POLICY_DECISION_CONTRACT_ID",
     "TOOL_POLICY_RULE_CONTRACT_ID",
     "TRACE_CHAIN_CONTRACT_ID",
     "TRACE_SPAN_CONTRACT_ID",
+    "canonicalize_tool_target",
     "evaluate_guardrail_pipeline",
     "evaluate_tool_policy",
     "make_filtered_handoff_context",

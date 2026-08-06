@@ -1,0 +1,117 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_tool_policy_decision_v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonical_target": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "canonical_target_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "contract_id": {
+      "const": "TRIAXIS_TOOL_POLICY_DECISION_v2"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "ASK_USER",
+        "DENY"
+      ]
+    },
+    "decision_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "matched_rule_sha256s": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "mode": {
+      "enum": [
+        "PLAN",
+        "DEFAULT",
+        "AUTO_EDIT",
+        "HEADLESS"
+      ]
+    },
+    "model_visibility": {
+      "enum": [
+        "VISIBLE",
+        "HIDDEN"
+      ]
+    },
+    "original_target_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "selected_rule_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "selected_rule_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "target_validation_error_codes": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "target_validation_status": {
+      "enum": [
+        "PASS",
+        "BLOCK"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "request_sha256",
+    "original_target_sha256",
+    "canonical_target",
+    "canonical_target_sha256",
+    "target_validation_status",
+    "target_validation_error_codes",
+    "mode",
+    "decision",
+    "selected_rule_sha256",
+    "selected_rule_id",
+    "matched_rule_sha256s",
+    "model_visibility",
+    "decision_sha256"
+  ],
+  "title": "TRIAXIS Tool Policy Decision v2",
+  "type": "object"
+}
