@@ -1,0 +1,163 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_completion_immutable_anchor_event_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Completion Immutable Anchor Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_IMMUTABLE_ANCHOR_EVENT_v1"
+    },
+    "anchor_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previous_event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "effect_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provider_request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "from_state": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "UNKNOWN",
+            "COMPLETED",
+            "NO_EFFECT"
+          ]
+        }
+      ]
+    },
+    "state": {
+      "enum": [
+        "UNKNOWN",
+        "COMPLETED",
+        "NO_EFFECT"
+      ]
+    },
+    "provider_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "provider_response_sha256": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "outcome_at_tick": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "object_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "object_key": {
+      "type": "string",
+      "pattern": "^objects/[0-9a-f]{2}/[0-9a-f]{64}\\.json$"
+    },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "object_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "retention_until_tick": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "legal_hold": {
+      "const": true
+    },
+    "anchored_at_tick": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "authority_granted": {
+      "const": false
+    },
+    "event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "contract_id",
+    "anchor_id",
+    "authority_id",
+    "service_id",
+    "provider_id",
+    "provider_service_id",
+    "sequence",
+    "previous_event_sha256",
+    "effect_id",
+    "payload_sha256",
+    "generation",
+    "provider_request_id",
+    "from_state",
+    "state",
+    "provider_receipt_sha256",
+    "provider_response_sha256",
+    "evidence_sha256",
+    "outcome_at_tick",
+    "object_id",
+    "object_key",
+    "content_sha256",
+    "object_receipt_sha256",
+    "retention_until_tick",
+    "legal_hold",
+    "anchored_at_tick",
+    "authority_granted",
+    "event_sha256"
+  ]
+}

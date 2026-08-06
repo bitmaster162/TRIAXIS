@@ -1,0 +1,31 @@
+[Unit]
+Description=TRIAXIS Completion Immutable Anchor Reference
+After=network.target triaxis-idempotent-provider.service
+
+[Service]
+Type=simple
+User=triaxis-immutable-anchor
+Group=triaxis-immutable-anchor
+EnvironmentFile=/etc/triaxis/completion-immutable-anchor.env
+LoadCredential=completion-immutable-anchor-private-key:/etc/triaxis/credentials/completion-immutable-anchor-private-key
+LoadCredential=completion-immutable-anchor-client-token:/etc/triaxis/credentials/completion-immutable-anchor-client-token
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_completion_immutable_anchor.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadOnlyPaths=/etc/triaxis/provider-public-keys.json
+ReadWritePaths=/var/lib/triaxis-completion-immutable-anchor
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

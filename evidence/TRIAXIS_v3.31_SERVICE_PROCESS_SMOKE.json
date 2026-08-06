@@ -1,0 +1,47 @@
+{
+  "authority_granted": false,
+  "case_count": 5,
+  "fail_count": 0,
+  "hardware_monotonicity": false,
+  "pass_count": 5,
+  "physical_worm_established": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.31_SERVICE_PROCESS_SMOKE",
+  "rows": [
+    {
+      "all_health_pass": true,
+      "case_id": "V331SP01_FOUR_EVIDENCE_PROCESSES_START_AND_MINIMIZE_SECRETS",
+      "process_count": 4,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V331SP02_ALL_CONFIGURED_COMPLETION_WITNESSES_REQUIRED_AND_PRESENT",
+      "responding_witness_count": 3,
+      "state": "ABSENT",
+      "status": "PASS"
+    },
+    {
+      "block_code": "completion_availability_witness_set_incomplete",
+      "case_id": "V331SP03_MISSING_CONFIGURED_WITNESS_FAILS_CLOSED",
+      "status": "PASS"
+    },
+    {
+      "accepted_status": 200,
+      "anchored_state": "COMPLETED",
+      "case_id": "V331SP04_IMMUTABLE_ANCHOR_AUTH_AND_CONTENT_ADDRESS_BINDING",
+      "denied_status": 403,
+      "object_digest_ok": true,
+      "status": "PASS"
+    },
+    {
+      "block_code": "immutable_anchor_state_blocks_retry",
+      "case_id": "V331SP05_SIGNED_HEAD_CHECKPOINT_AND_COMPLETED_STATUS_BLOCK",
+      "checkpoint_sequence": 1,
+      "head_verified": true,
+      "status": "PASS",
+      "status_http": 200
+    }
+  ],
+  "rows_sha256": "743c32b2b0f64498e64b0ca30dcfefe9f33317a5cbb0f4c0ee14aa9453faf692",
+  "status": "PASS"
+}

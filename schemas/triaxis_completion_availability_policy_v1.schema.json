@@ -1,0 +1,64 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_completion_availability_policy_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Completion Availability Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_AVAILABILITY_POLICY_v1"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "completion_quorum_config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "risk_class": {
+      "enum": [
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "availability_mode": {
+      "const": "ALL_CONFIGURED_REQUIRED"
+    },
+    "required_witness_count": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "max_missing": {
+      "const": 0
+    },
+    "require_blocking_minority_veto": {
+      "const": true
+    },
+    "valid_from": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "valid_until": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "contract_id",
+    "policy_id",
+    "completion_quorum_config_sha256",
+    "risk_class",
+    "availability_mode",
+    "required_witness_count",
+    "max_missing",
+    "require_blocking_minority_veto",
+    "valid_from",
+    "valid_until",
+    "policy_sha256"
+  ]
+}
