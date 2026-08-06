@@ -1,0 +1,68 @@
+{
+  "authority_granted": false,
+  "claim": "Availability-closed verification prevents omission of one current configured completion witness, and a current verifier checkpoint detects rollback of the logical immutable-anchor filesystem. Coordinated rollback of provider state, every completion witness, both completion anchors and the verifier checkpoint can still recreate a complete permissive old view and revive the same stable effect.",
+  "exact_subject_commit": "71d0e48bcce3436b498ca675bf5afa15398d7b39",
+  "exact_subject_tag": "TRIAXIS-v3.31-RC1-AVAILABILITY-CLOSED-COMPLETION-IMMUTABLE-ANCHOR",
+  "hardware_monotonicity": false,
+  "physical_worm_established": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.31_POSTCOMMIT_COORDINATED_COMPLETION_EVIDENCE_ROLLBACK_BOUNDARY",
+  "required_next_control": [
+    "provider-native durable idempotency keyed by stable effect_id",
+    "externally administered physical WORM or append-only completion receipts",
+    "checkpoint transparency quorum outside completion-evidence administrators",
+    "KMS/HSM or hardware-backed monotonic anti-rollback state",
+    "independent multi-host and multi-administrator fault domains",
+    "evidence that configured witness unavailability cannot be forged by the executor"
+  ],
+  "rows": [
+    {
+      "availability_block_code": "blocking_completion_witness_minority",
+      "case_id": "V331RB01_CURRENT_PROVIDER_FULL_AVAILABILITY_AND_BOTH_ANCHORS_BLOCK",
+      "execution_head_quorum_status": "PASS",
+      "immutable_anchor_block_code": "immutable_anchor_state_blocks_retry",
+      "immutable_checkpoint_sequence": 1,
+      "logical_anchor_block_code": "worm_anchor_state_blocks_retry",
+      "provider_external_effect_permitted": false,
+      "same_effect_id": true,
+      "status": "PASS"
+    },
+    {
+      "availability_block_code": "completion_availability_witness_set_incomplete",
+      "case_id": "V331RB02_AVAILABILITY_CLOSED_AND_CURRENT_IMMUTABLE_ANCHOR_BLOCK_PARTIAL_ROLLBACK",
+      "current_logical_anchor_state": "COMPLETED",
+      "current_required_witness_omitted": true,
+      "immutable_anchor_block_code": "immutable_anchor_state_blocks_retry",
+      "legacy_threshold_member_count": 2,
+      "legacy_threshold_state": "ABSENT",
+      "rolled_back_provider_external_effect_permitted": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V331RB03_CURRENT_CHECKPOINT_BLOCKS_IMMUTABLE_ANCHOR_ROLLBACK",
+      "checkpoint_block_code": "immutable_anchor_checkpoint_rollback",
+      "pinned_checkpoint_sequence": 1,
+      "rolled_back_anchor_sequence": 0,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V331RB04_COORDINATED_COMPLETION_EVIDENCE_AND_CHECKPOINT_ROLLBACK_REVIVES_EFFECT",
+      "current_execution_minority_rejected_fork": true,
+      "duplicate_effect_risk": true,
+      "execution_quorum_after_status": "PASS",
+      "execution_quorum_before_status": "PASS",
+      "expected_secure_result": "BLOCK_OR_EXTERNAL_NON_ROLLBACKABLE_COMPLETION_PROOF",
+      "new_dispatch_id": true,
+      "rolled_back_checkpoint_sequence": 0,
+      "rolled_back_full_availability_member_count": 3,
+      "rolled_back_full_availability_state": "ABSENT",
+      "rolled_back_immutable_anchor_state": "ABSENT",
+      "rolled_back_logical_anchor_state": "ABSENT",
+      "rolled_back_provider_external_effect_permitted": true,
+      "same_effect_id": true,
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "a7c3ccfe4527f6ac704976098d3c529673b32aa8e983bace5eb6e055be1b88fc",
+  "status": "BOUNDARY_CONFIRMED"
+}
