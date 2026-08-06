@@ -1,0 +1,14 @@
+{
+  "contract_id": "TRIAXIS_BASELINE_GATE_v1",
+  "target_version": "TRIAXIS v3.14-RC1 Policy Transparency Floor",
+  "baseline_tag": "TRIAXIS-v3.13-RC2-POLICY-HEAD-AUTHORITY-QUORUM",
+  "baseline_commit": "cc21e45644bb3828c362c8d6499546f0b30616ac",
+  "baseline_tree": "710abd68b21d465fec343ec260743b7965f89306",
+  "baseline_src_tree": "005b634ea61b21eba672fbafb9d8b33b8fa89ed7",
+  "baseline_tests": 276,
+  "baseline_status": "PASS",
+  "scope": "Independent policy-transparency floor quorum over an append-only signed policy history.",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
