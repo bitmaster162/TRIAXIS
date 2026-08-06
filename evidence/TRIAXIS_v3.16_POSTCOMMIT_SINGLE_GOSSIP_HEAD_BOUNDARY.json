@@ -1,0 +1,15 @@
+{
+  "contract_id": "TRIAXIS_v3.16_POSTCOMMIT_SINGLE_GOSSIP_HEAD_BOUNDARY_v1",
+  "finding": "Coordinated rollback of the local gossip database and the single external Gossip Head Authority to the same old checkpoint is accepted.",
+  "required_next_control": "OPERATOR_PINNED_DISTINCT_GOSSIP_HEAD_AUTHORITY_QUORUM_OR_PUBLIC_TRANSPARENCY_HEAD",
+  "rows": [
+    {
+      "case": "COORDINATED_LOCAL_AND_SINGLE_AUTHORITY_ROLLBACK",
+      "expected": "BLOCK",
+      "observed": "ACCEPTED_OLD_CHECKPOINT",
+      "status": "FAIL"
+    }
+  ],
+  "status": "BOUNDARY_CONFIRMED",
+  "target_commit": "695d6662745f3d314e2cdd12cd52d03320ca0743"
+}
