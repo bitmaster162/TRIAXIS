@@ -1,0 +1,78 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_provider_request_receipt_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_PROVIDER_REQUEST_RECEIPT_v1"
+    },
+    "ended_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "internal_request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "model_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provider_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provider_receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provider_request_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provider_request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provider_response_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "started_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "ERROR",
+        "CANCELLED"
+      ]
+    },
+    "trace_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "provider_id",
+    "model_id",
+    "provider_request_id",
+    "run_id",
+    "trace_id",
+    "internal_request_sha256",
+    "provider_request_sha256",
+    "provider_response_sha256",
+    "started_at_tick",
+    "ended_at_tick",
+    "status",
+    "provider_receipt_sha256"
+  ],
+  "title": "TRIAXIS Provider Request Receipt v1",
+  "type": "object"
+}

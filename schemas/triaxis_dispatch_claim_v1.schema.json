@@ -1,0 +1,50 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_dispatch_claim_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "claim_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_DISPATCH_CLAIM_v1"
+    },
+    "dispatch_id": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "lease_until_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "queue_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "queued_input_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "thread_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "queue_id",
+    "thread_id",
+    "queued_input_sha256",
+    "claim_id",
+    "dispatch_id",
+    "lease_until_tick",
+    "claim_sha256"
+  ],
+  "title": "TRIAXIS Dispatch Claim v1",
+  "type": "object"
+}

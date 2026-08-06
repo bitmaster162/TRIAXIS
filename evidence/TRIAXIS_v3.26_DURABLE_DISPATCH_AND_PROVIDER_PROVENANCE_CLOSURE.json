@@ -1,0 +1,60 @@
+{
+  "case_count": 10,
+  "fail_count": 0,
+  "pass_count": 10,
+  "protocol_id": "TRIAXIS_DURABLE_DISPATCH_AND_PROVIDER_PROVENANCE_CLOSURE_v3.26",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_claim_and_rank_mutations_are_cas_and_replay_safe",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_completed_reconciliation_does_not_redeliver",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_dispatch_only_when_idle_and_ack_after_persistence",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_event_log_is_atomic_and_digest_sealed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_expired_claim_requeues_but_expired_dispatch_becomes_unknown",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_failure_before_dispatch_requeues_but_post_dispatch_timeout_becomes_unknown",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_provider_request_id_is_provenance_not_authority",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_queue_persists_snapshots_and_fifo_across_reopen",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch.DurableDispatchTests.test_unknown_requires_exact_reconciliation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_26_durable_dispatch_schemas.DurableDispatchSchemaTests.test_reference_contracts",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "f17704ed7ff5c514158c29ecb79dda8e83b053aabd7016535b9d7496af2f2296",
+  "status": "PASS"
+}

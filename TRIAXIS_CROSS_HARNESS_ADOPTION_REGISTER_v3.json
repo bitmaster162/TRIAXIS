@@ -1,0 +1,157 @@
+{
+  "hardening_delta_v3_26": [
+    "mutating dispatch uses CLAIMED/DISPATCHING/UNKNOWN/DELIVERED instead of automatic retry",
+    "dispatch identity is deterministic and idempotency-bound",
+    "claim identifiers are globally single-use",
+    "expired dispatch leases enter UNKNOWN",
+    "NO_EFFECT or COMPLETED reconciliation is explicit and evidence-bound",
+    "provider request identifiers never mint execution authority"
+  ],
+  "invariants": [
+    "DISCOVERY_DOES_NOT_GRANT_AUTHORITY",
+    "EXTENSIONS_CANNOT_MINT_ALLOW",
+    "HEADLESS_ASK_FAILS_CLOSED",
+    "MUTATING_TOOL_RECHECKS_AFTER_APPROVAL",
+    "HANDOFF_CONTEXT_AND_AUTHORITY_ARE_EXPLICIT",
+    "INTERRUPT_RESUME_IS_CAS_AND_SINGLE_USE",
+    "ACTION_OBSERVATION_BINDING_IS_EXACT",
+    "PERSIST_BEFORE_DISPATCH",
+    "POST_DISPATCH_UNCERTAINTY_IS_UNKNOWN_NOT_RETRY",
+    "PROVIDER_REQUEST_ID_IS_PROVENANCE_NOT_AUTHORITY"
+  ],
+  "method": "clean-room architectural adaptation; no upstream source files copied",
+  "register_id": "TRIAXIS_CROSS_HARNESS_ADOPTION_REGISTER_v3",
+  "rejected": [
+    "vendor authentication and billing transports",
+    "vendor telemetry as a governance dependency",
+    "permission bypass modes",
+    "implicit context or authority inheritance",
+    "unbounded nested agents",
+    "same-process receipt treated as physical attestation",
+    "complex shell programs covered by broad persistent approvals"
+  ],
+  "scout_backlog": [
+    {
+      "decision": "EXPERIMENT_NEXT",
+      "mechanism": "unified media/image preprocessing budget",
+      "project": "openai/codex",
+      "snapshot": "0a0ebb85355113610dd3f7a3d8b36f68c33465fc"
+    },
+    {
+      "decision": "EXPERIMENT_NEXT",
+      "mechanism": "persisted workspace identity revalidated against live cwd",
+      "project": "openai/codex",
+      "snapshot": "547080e4d690cdeea12f427a8d9c5165928821ed"
+    },
+    {
+      "decision": "COMPARE_WITH_TRIAXIS_OUTBOX",
+      "mechanism": "synchronous durability barrier before advancing a superstep",
+      "project": "langchain-ai/langgraph",
+      "snapshot": "658541c4960f329864a2523fc7d52427e8190bed"
+    },
+    {
+      "decision": "EXPERIMENT_WITH_SECRET_HANDLE_BINDING",
+      "mechanism": "credential preservation across graph/canvas mutations",
+      "project": "OpenHands/OpenHands",
+      "snapshot": "bf2e37dcad66e0ce8e608034ba567cad5fd49ccd"
+    }
+  ],
+  "snapshot_date": "2026-08-06",
+  "upstreams": [
+    {
+      "adopted": [
+        "bounded subagents",
+        "worktree isolation",
+        "skills/plugins/hooks",
+        "resumable workflows",
+        "headless event stream",
+        "ACP-style session semantics",
+        "context privacy manifest"
+      ],
+      "project": "xai-org/grok-build",
+      "snapshot": "a5589e958437d79e13db026eedcb1720bffd4063",
+      "status": "ADOPTED_AND_HARDENED_IN_v3.19-v3.22"
+    },
+    {
+      "adopted": [
+        "tiered allow/ask/deny policy",
+        "extension non-grant rule",
+        "headless ask fails closed",
+        "tool visibility suppression",
+        "one-run sandbox expansion"
+      ],
+      "project": "google-gemini/gemini-cli",
+      "snapshot": "d5c9a97dc03758649da8a7b9b739c4c73b15910e",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "per-segment shell authorization",
+        "one-shot additional permissions",
+        "durable queued dispatch principle",
+        "persisted live working-directory distinction",
+        "fail-closed ambiguous target handling",
+        "persist-before-removal durable input queue",
+        "FIFO dispatch only after thread idle",
+        "attachment snapshot references before queue persistence"
+      ],
+      "project": "openai/codex",
+      "related_snapshots": [
+        "547080e4d690cdeea12f427a8d9c5165928821ed",
+        "bc8b25ea0219ad63f9f939ae0be0090dc6bdd9c9"
+      ],
+      "snapshot": "7a0e974e08c798d1e8d59d407aeb6e24db1313af",
+      "status": "ADOPTED_AND_HARDENED_IN_v3.24-v3.26"
+    },
+    {
+      "adopted": [
+        "pre/post tool guardrails",
+        "recheck after approval",
+        "filtered handoffs",
+        "typed trace spans",
+        "atomic session-state principle",
+        "provider request-id propagation as trace provenance",
+        "atomic session mutation principle"
+      ],
+      "project": "openai/openai-agents-python",
+      "related_snapshots": [
+        "4a1773f405b2c516b774fbd8971d670f2801e61c"
+      ],
+      "snapshot": "19f6bde526ed4700664a844a8e1ce2be3713174c",
+      "status": "ADOPTED_AND_HARDENED_IN_v3.24-v3.26"
+    },
+    {
+      "adopted": [
+        "durable interrupt/resume",
+        "thread/checkpoint identity",
+        "CAS resume",
+        "time-travel fork with ancestry",
+        "persistent state store"
+      ],
+      "project": "langchain-ai/langgraph",
+      "snapshot": "658541c4960f329864a2523fc7d52427e8190bed",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "action-to-observation event binding",
+        "client-server sandbox boundary",
+        "explicit sandbox-provider trust distinction"
+      ],
+      "project": "OpenHands/OpenHands",
+      "snapshot": "56638693908b8ac83a2fa3bde6eb6c33aae37f4b",
+      "status": "ADOPTED_IN_v3.24"
+    },
+    {
+      "adopted": [
+        "managed policy precedence",
+        "deny-overrides-allow",
+        "permission hooks as narrowing controls",
+        "resume and bounded-turn concepts"
+      ],
+      "project": "Anthropic Claude Code",
+      "snapshot": "official documentation reviewed 2026-08-06",
+      "status": "DOCS_DERIVED_ADOPTION_IN_v3.24"
+    }
+  ]
+}

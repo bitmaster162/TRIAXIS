@@ -1,0 +1,93 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_queued_input_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attachments": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "content_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "media_type": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "storage_ref": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "storage_ref",
+          "media_type",
+          "content_sha256",
+          "size_bytes"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "content_ref": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "content_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_QUEUED_INPUT_v1"
+    },
+    "created_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "queue_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "queued_input_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "risk_class": {
+      "enum": [
+        "READ_ONLY",
+        "MUTATING"
+      ]
+    },
+    "thread_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "queue_id",
+    "thread_id",
+    "content_ref",
+    "content_sha256",
+    "risk_class",
+    "created_at_tick",
+    "attachments",
+    "metadata",
+    "queued_input_sha256"
+  ],
+  "title": "TRIAXIS Queued Input v1",
+  "type": "object"
+}

@@ -1,0 +1,68 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_dispatch_transition_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_DISPATCH_TRANSITION_v1"
+    },
+    "created_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "details": {
+      "type": "object"
+    },
+    "from_state": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "QUEUED",
+            "CLAIMED",
+            "DISPATCHING",
+            "UNKNOWN",
+            "DELIVERED",
+            "CANCELLED"
+          ]
+        }
+      ]
+    },
+    "queue_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "to_state": {
+      "enum": [
+        "QUEUED",
+        "CLAIMED",
+        "DISPATCHING",
+        "UNKNOWN",
+        "DELIVERED",
+        "CANCELLED"
+      ]
+    },
+    "transition_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "queue_id",
+    "from_state",
+    "to_state",
+    "version",
+    "created_at_tick",
+    "details",
+    "transition_sha256"
+  ],
+  "title": "TRIAXIS Dispatch Transition v1",
+  "type": "object"
+}
