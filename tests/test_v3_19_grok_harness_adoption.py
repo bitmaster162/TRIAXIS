@@ -25,9 +25,12 @@ from triaxis.harness_v1 import (
     make_headless_event,
     materialize_context_receipt,
     materialize_plugin_package_receipt,
+    make_sandbox_provision_receipt,
     normalize_logical_path,
     resolve_harness_config,
     seal_hook_result,
+    seal_repository_manifest,
+    seal_sandbox_plan,
     seal_tool_request,
     seal_workflow_definition,
     validate_acp_style_message,
@@ -167,6 +170,63 @@ def make_plugin_manifest(*, plugin_id="plugin:review", permission_mode="default"
         manifest, component_bytes, materializer_id="plugin-materializer:test", observed_at_tick=5
     )
     return manifest, receipt, component_bytes
+
+
+def repository_manifest_for(child_session_id: str, worktree_ref: str, *, clean=True, writable=True, observed=4, expires=10):
+    return seal_repository_manifest({
+        "manifest_id": f"repo-manifest:{child_session_id}",
+        "session_id": child_session_id,
+        "observer_id": "repo-observer:test",
+        "observed_at_tick": observed,
+        "expires_at_tick": expires,
+        "repositories": [{
+            "repo_id": "repo:triaxis",
+            "root_logical_path": "workspace/triaxis",
+            "worktree_ref": worktree_ref,
+            "baseline_commit": "a" * 40,
+            "clean": clean,
+            "writable": writable,
+        }],
+    })
+
+
+def sandbox_bundle_for(child_session_id: str, *, profile="sandbox:read-exec", repository_manifest=None, capabilities=None, observed=5, expires=10):
+    capabilities = ["read", "execute"] if capabilities is None else capabilities
+    plan = seal_sandbox_plan({
+        "sandbox_id": f"sandbox:{child_session_id}",
+        "profile_id": profile,
+        "child_session_id": child_session_id,
+        "repository_manifest_sha256": None if repository_manifest is None else repository_manifest["manifest_sha256"],
+        "allowed_capabilities": capabilities,
+        "network_mode": "DENY",
+        "network_allowlist": [],
+        "read_paths": ["workspace/triaxis"],
+        "write_paths": ["workspace/triaxis"] if "write" in capabilities else [],
+        "env_allowlist": ["PATH"],
+        "budgets": {"cpu_seconds": 30, "memory_mb": 512, "wall_seconds": 60, "max_processes": 8},
+        "expires_at_tick": expires,
+    })
+    observed_state = {
+        "sandbox_id": plan["sandbox_id"],
+        "profile_id": plan["profile_id"],
+        "child_session_id": plan["child_session_id"],
+        "repository_manifest_sha256": plan["repository_manifest_sha256"],
+        "network_mode": plan["network_mode"],
+        "network_allowlist": plan["network_allowlist"],
+        "read_paths": plan["read_paths"],
+        "write_paths": plan["write_paths"],
+        "env_allowlist": plan["env_allowlist"],
+        "budgets": plan["budgets"],
+        "backend_id": "backend:local-reference",
+        "state_dir_id": f"state:{child_session_id}",
+        "pid_namespace_id": f"pidns:{child_session_id}",
+        "mount_namespace_id": f"mntns:{child_session_id}",
+        "network_namespace_id": f"netns:{child_session_id}",
+    }
+    receipt = make_sandbox_provision_receipt(
+        plan, observed_state, provisioner_id="sandbox-provisioner:test", observed_at_tick=observed
+    )
+    return plan, receipt
 
 
 def pre_tool_hook(auth=None):
@@ -410,20 +470,8 @@ class SubagentAndSessionTests(unittest.TestCase):
         self.assertEqual(contract["inherited_mcp_servers"], ["docs"])
         self.assertEqual(contract["depth"], 1)
 
-    def test_write_subagent_requires_worktree(self):
+    def test_write_subagent_requires_attested_worktree(self):
         blocked = build_subagent_contract(
-            self.parent(),
-            {
-                "child_session_id": "child:write",
-                "capability_mode": "read-write",
-                "requested_capabilities": ["read", "write"],
-                "isolation": "none",
-                "context_manifest_sha256": D,
-            },
-            config(),
-        )
-        self.assertEqual(blocked["status"], "BLOCK")
-        allowed = build_subagent_contract(
             self.parent(),
             {
                 "child_session_id": "child:write",
@@ -434,23 +482,29 @@ class SubagentAndSessionTests(unittest.TestCase):
                 "context_manifest_sha256": D,
             },
             config(),
+            evaluation_tick=6,
         )
-        self.assertEqual(allowed["status"], "PASS")
-
-    def test_execute_subagent_requires_approved_sandbox(self):
-        blocked = build_subagent_contract(
+        self.assertEqual(blocked["status"], "BLOCK")
+        repositories = repository_manifest_for("child:write", "worktree:child")
+        allowed = build_subagent_contract(
             self.parent(),
             {
-                "child_session_id": "child:exec",
-                "capability_mode": "execute",
-                "requested_capabilities": ["read", "execute"],
-                "isolation": "none",
+                "child_session_id": "child:write",
+                "capability_mode": "read-write",
+                "requested_capabilities": ["read", "write"],
+                "isolation": "worktree",
+                "worktree_ref": "worktree:child",
+                "repository_manifest_sha256": repositories["manifest_sha256"],
                 "context_manifest_sha256": D,
             },
             config(),
+            repository_manifest=repositories,
+            evaluation_tick=6,
         )
-        self.assertEqual(blocked["status"], "BLOCK")
-        allowed = build_subagent_contract(
+        self.assertEqual(allowed["status"], "PASS")
+
+    def test_execute_subagent_requires_provisioned_sandbox(self):
+        blocked = build_subagent_contract(
             self.parent(),
             {
                 "child_session_id": "child:exec",
@@ -461,6 +515,24 @@ class SubagentAndSessionTests(unittest.TestCase):
                 "context_manifest_sha256": D,
             },
             config(),
+            evaluation_tick=6,
+        )
+        self.assertEqual(blocked["status"], "BLOCK")
+        _, sandbox = sandbox_bundle_for("child:exec")
+        allowed = build_subagent_contract(
+            self.parent(),
+            {
+                "child_session_id": "child:exec",
+                "capability_mode": "execute",
+                "requested_capabilities": ["read", "execute"],
+                "isolation": "none",
+                "sandbox_profile": "sandbox:read-exec",
+                "sandbox_receipt_sha256": sandbox["receipt_sha256"],
+                "context_manifest_sha256": D,
+            },
+            config(),
+            sandbox_receipt=sandbox,
+            evaluation_tick=6,
         )
         self.assertEqual(allowed["status"], "PASS")
 

@@ -69,6 +69,13 @@
         "null"
       ]
     },
+    "repository_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "resume_from": {
       "type": [
         "string",
@@ -76,6 +83,13 @@
       ]
     },
     "sandbox_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sandbox_receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
       "type": [
         "string",
         "null"
@@ -112,6 +126,8 @@
     "isolation",
     "worktree_ref",
     "sandbox_profile",
+    "sandbox_receipt_sha256",
+    "repository_manifest_sha256",
     "background",
     "resume_from",
     "status",

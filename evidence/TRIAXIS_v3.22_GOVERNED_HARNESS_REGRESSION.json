@@ -1,0 +1,198 @@
+{
+  "contract_id": "TRIAXIS_v3.22_GOVERNED_HARNESS_REGRESSION_v1",
+  "failed": 0,
+  "passed": 13,
+  "result_sha256": "bf98b5faa29deb2b7a1713c40174f27cc455b246ef527feae44ef51af8debf14",
+  "rows": [
+    {
+      "case_id": "GH01",
+      "observed": {
+        "reason": "whole_repo_upload is not supported by TRIAXIS harness",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH02",
+      "observed": {
+        "rejected": [
+          {
+            "artifact_id": "file:env",
+            "logical_path": ".env",
+            "reasons": [
+              "DATA_CLASS_NOT_ALLOWED",
+              "EXPLICIT_GRANT_REQUIRED"
+            ]
+          },
+          {
+            "artifact_id": "repo:history",
+            "logical_path": "repo.bundle",
+            "reasons": [
+              "BULK_OR_HISTORICAL_SOURCE_DENIED",
+              "HISTORICAL_CONTENT_DENIED"
+            ]
+          }
+        ],
+        "selected": [
+          "file:allowed"
+        ],
+        "status": "PASS_WITH_OMISSIONS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH03",
+      "observed": {
+        "blocked": [
+          "../secret",
+          "src/**",
+          "/etc/passwd"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH04",
+      "observed": {
+        "errors": [
+          {
+            "code": "plugin_not_pinned",
+            "message": "operator-pinned component root required",
+            "path": "plugin.source_sha256"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH05",
+      "observed": {
+        "errors": [
+          {
+            "code": "permission_bypass_forbidden",
+            "message": "bypassPermissions forbidden",
+            "path": "plugin.permission_mode"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH06",
+      "observed": {
+        "errors": [
+          {
+            "code": "hook_authority_widening",
+            "message": "hooks may only narrow authority",
+            "path": "hooks[0].authority_after"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH07",
+      "observed": {
+        "errors": [
+          {
+            "code": "subagent_depth_limit",
+            "message": "maximum child depth is one",
+            "path": "parent.depth"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH08",
+      "observed": {
+        "errors": [
+          {
+            "code": "write_requires_worktree",
+            "message": "worktree required for write capability",
+            "path": "request.isolation"
+          },
+          {
+            "code": "worktree_ref_required",
+            "message": "non-empty worktree_ref required",
+            "path": "request.worktree_ref"
+          },
+          {
+            "code": "repository_manifest_required",
+            "message": "worktree operations require observed repository state",
+            "path": "repository_manifest"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH09",
+      "observed": {
+        "errors": [
+          {
+            "code": "execute_requires_sandbox",
+            "message": "operator-approved sandbox profile required",
+            "path": "request.sandbox_profile"
+          },
+          {
+            "code": "sandbox_receipt_required",
+            "message": "actual provision receipt required",
+            "path": "sandbox_receipt"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH10",
+      "observed": {
+        "errors": [
+          {
+            "code": "authorization_required",
+            "message": "side effect requires token",
+            "path": "authorization_token"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH11",
+      "observed": {
+        "code": "invalid_transition",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH12",
+      "observed": {
+        "reason": "unsupported ACP-style method",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH13",
+      "observed": {
+        "materialization_receipt_sha256": "1bae1dce1f77d9a6777290bef33eef0250a05f9090dd20238678bd4dbbb9b65d",
+        "outcome": "ALLOW",
+        "receipt_sha256": "1d60aa9c4d163754ec0096ba77f56e39c60f9247ad8cf9738e3accf48ef7d465"
+      },
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "f9504d14a9602ed6d5dd51fea43a8fd49de9a73fa5181871da6cd24d8408bef4",
+  "scope": "clean-room governed harness adaptation; not upstream code conformance",
+  "source_upstream": "xai-org/grok-build@a5589e958437d79e13db026eedcb1720bffd4063",
+  "status": "PASS",
+  "total": 13
+}

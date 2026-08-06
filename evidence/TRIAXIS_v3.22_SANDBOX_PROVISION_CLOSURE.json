@@ -1,0 +1,108 @@
+{
+  "contract_id": "TRIAXIS_v3.22_SANDBOX_PROVISION_CLOSURE_v1",
+  "failed": 0,
+  "passed": 7,
+  "result_sha256": "eccde18e4c85b8e82687d00c1683afe50d47cf09345a9fe662f29c714445261d",
+  "rows": [
+    {
+      "case_id": "SB01_WRITE_WITHOUT_REPO_RECEIPT",
+      "observed": {
+        "errors": [
+          {
+            "code": "repository_manifest_required",
+            "message": "worktree operations require observed repository state",
+            "path": "repository_manifest"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB02_WRONG_WORKTREE",
+      "observed": {
+        "errors": [
+          {
+            "code": "worktree_not_attested",
+            "message": "wt:w",
+            "path": "request.worktree_ref"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB03_STALE_REPOSITORY_MANIFEST",
+      "observed": {
+        "errors": [
+          {
+            "code": "repository_manifest_expired",
+            "message": "4",
+            "path": "repository_manifest.expires_at_tick"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB04_EXECUTE_WITHOUT_PROVISION_RECEIPT",
+      "observed": {
+        "errors": [
+          {
+            "code": "sandbox_receipt_required",
+            "message": "actual provision receipt required",
+            "path": "sandbox_receipt"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB05_OBSERVED_SANDBOX_MISMATCH",
+      "observed": {
+        "errors": [
+          {
+            "code": "sandbox_observation_mismatch",
+            "message": "does not match provision plan",
+            "path": "observed.network_mode"
+          },
+          {
+            "code": "sandbox_observation_mismatch",
+            "message": "does not match provision plan",
+            "path": "observed.network_allowlist"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB06_EXPIRED_SANDBOX_RECEIPT",
+      "observed": {
+        "errors": [
+          {
+            "code": "sandbox_receipt_expired",
+            "message": "4",
+            "path": "sandbox_receipt.expires_at_tick"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "SB07_VALID_ATTESTED_WRITE_EXECUTE",
+      "observed": {
+        "status": "PASS",
+        "subagent_sha256": "89277ad1d8f1cb973bbbc4a9a21cd2ba3c24c0be5bdb78e6f3f39788bf24e80b"
+      },
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "b548932cbf43a7744597c403e7630c557c331f2b0847676ce224a82c42f0fdc1",
+  "status": "PASS",
+  "total": 7
+}

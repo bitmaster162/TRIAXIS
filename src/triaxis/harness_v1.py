@@ -37,6 +37,9 @@ PLUGIN_TRUST_RECEIPT_CONTRACT_ID = "TRIAXIS_PLUGIN_TRUST_RECEIPT_v2"
 HOOK_RESULT_CONTRACT_ID = "TRIAXIS_HOOK_RESULT_v1"
 HOOK_PIPELINE_RECEIPT_CONTRACT_ID = "TRIAXIS_HOOK_PIPELINE_RECEIPT_v1"
 SUBAGENT_CONTRACT_ID = "TRIAXIS_BOUNDED_SUBAGENT_v1"
+REPOSITORY_MANIFEST_CONTRACT_ID = "TRIAXIS_REPOSITORY_MANIFEST_v1"
+SANDBOX_PLAN_CONTRACT_ID = "TRIAXIS_SANDBOX_PROVISION_PLAN_v1"
+SANDBOX_PROVISION_RECEIPT_CONTRACT_ID = "TRIAXIS_SANDBOX_PROVISION_RECEIPT_v1"
 SESSION_FORK_CONTRACT_ID = "TRIAXIS_SESSION_FORK_v1"
 TOOL_SPEC_CONTRACT_ID = "TRIAXIS_TOOL_SPEC_v1"
 TOOL_REQUEST_CONTRACT_ID = "TRIAXIS_TOOL_REQUEST_v1"
@@ -1014,10 +1017,202 @@ def resolve_mcp_inheritance(parent_servers: Sequence[str], rule: Mapping[str, An
     return sorted(result)
 
 
+def _is_git_object_id(value: Any) -> bool:
+    return isinstance(value, str) and len(value) in {40, 64} and all(ch in "0123456789abcdef" for ch in value)
+
+
+def seal_repository_manifest(value: Mapping[str, Any]) -> dict[str, Any]:
+    body = materialize_json(value)
+    if not isinstance(body, dict):
+        raise TypeError("repository manifest must be object")
+    repositories = body.get("repositories")
+    if not isinstance(repositories, list) or not repositories:
+        raise ValueError("repositories must be non-empty array")
+    normalized: list[dict[str, Any]] = []
+    seen_repo: set[str] = set()
+    seen_worktree: set[str] = set()
+    for index, raw in enumerate(repositories):
+        if not isinstance(raw, Mapping):
+            raise ValueError(f"repositories[{index}] must be object")
+        repo_id = raw.get("repo_id")
+        worktree_ref = raw.get("worktree_ref")
+        if not isinstance(repo_id, str) or not repo_id or repo_id in seen_repo:
+            raise ValueError("unique repo_id required")
+        if not isinstance(worktree_ref, str) or not worktree_ref or worktree_ref in seen_worktree:
+            raise ValueError("unique worktree_ref required")
+        seen_repo.add(repo_id); seen_worktree.add(worktree_ref)
+        baseline = raw.get("baseline_commit")
+        if not _is_git_object_id(baseline):
+            raise ValueError("baseline_commit must be 40/64 lowercase hex")
+        if type(raw.get("clean")) is not bool or type(raw.get("writable")) is not bool:
+            raise ValueError("clean and writable booleans required")
+        normalized.append({
+            "repo_id": repo_id,
+            "root_logical_path": normalize_logical_path(raw.get("root_logical_path")),
+            "worktree_ref": worktree_ref,
+            "baseline_commit": baseline,
+            "clean": raw["clean"],
+            "writable": raw["writable"],
+        })
+    body["repositories"] = sorted(normalized, key=lambda row: row["repo_id"])
+    for field in ("manifest_id", "session_id", "observer_id"):
+        if not isinstance(body.get(field), str) or not body.get(field):
+            raise ValueError(f"{field} required")
+    observed = body.get("observed_at_tick"); expires = body.get("expires_at_tick")
+    if type(observed) is not int or type(expires) is not int or observed < 0 or expires <= observed:
+        raise ValueError("valid observed/expires ticks required")
+    body.setdefault("contract_id", REPOSITORY_MANIFEST_CONTRACT_ID)
+    body.setdefault("manifest_sha256", "")
+    return seal_mapping(body, "manifest_sha256")
+
+
+def seal_sandbox_plan(value: Mapping[str, Any]) -> dict[str, Any]:
+    body = materialize_json(value)
+    if not isinstance(body, dict):
+        raise TypeError("sandbox plan must be object")
+    for field in ("sandbox_id", "profile_id", "child_session_id"):
+        if not isinstance(body.get(field), str) or not body.get(field):
+            raise ValueError(f"{field} required")
+    repo_sha = body.get("repository_manifest_sha256")
+    if repo_sha is not None and not _is_sha256(repo_sha):
+        raise ValueError("repository_manifest_sha256 must be SHA-256 or null")
+    capabilities = body.get("allowed_capabilities")
+    if not isinstance(capabilities, list) or not all(isinstance(x, str) and x for x in capabilities):
+        raise ValueError("allowed_capabilities must be string array")
+    body["allowed_capabilities"] = sorted(set(capabilities))
+    network_mode = body.get("network_mode")
+    if network_mode not in {"DENY", "ALLOWLIST"}:
+        raise ValueError("network_mode must be DENY or ALLOWLIST")
+    allowlist = body.get("network_allowlist", [])
+    if not isinstance(allowlist, list) or not all(isinstance(x, str) and x for x in allowlist):
+        raise ValueError("network_allowlist must be string array")
+    if network_mode == "DENY" and allowlist:
+        raise ValueError("DENY network mode cannot have allowlist")
+    if network_mode == "ALLOWLIST" and not allowlist:
+        raise ValueError("ALLOWLIST mode requires destinations")
+    body["network_allowlist"] = sorted(set(allowlist))
+    for field in ("read_paths", "write_paths"):
+        paths = body.get(field, [])
+        if not isinstance(paths, list):
+            raise ValueError(f"{field} must be array")
+        body[field] = sorted({normalize_logical_path(x) for x in paths})
+    env = body.get("env_allowlist", [])
+    if not isinstance(env, list) or not all(isinstance(x, str) and x for x in env):
+        raise ValueError("env_allowlist must be string array")
+    body["env_allowlist"] = sorted(set(env))
+    budgets = body.get("budgets")
+    if not isinstance(budgets, Mapping):
+        raise ValueError("budgets object required")
+    normalized_budgets: dict[str, int] = {}
+    for field in ("cpu_seconds", "memory_mb", "wall_seconds", "max_processes"):
+        item = budgets.get(field)
+        if type(item) is not int or item < 1:
+            raise ValueError(f"budgets.{field} integer >= 1 required")
+        normalized_budgets[field] = item
+    body["budgets"] = normalized_budgets
+    expires = body.get("expires_at_tick")
+    if type(expires) is not int or expires < 1:
+        raise ValueError("expires_at_tick integer >= 1 required")
+    body.setdefault("contract_id", SANDBOX_PLAN_CONTRACT_ID)
+    body.setdefault("plan_sha256", "")
+    return seal_mapping(body, "plan_sha256")
+
+
+def make_sandbox_provision_receipt(
+    plan_value: Mapping[str, Any],
+    observed: Mapping[str, Any],
+    *,
+    provisioner_id: str,
+    observed_at_tick: int,
+) -> dict[str, Any]:
+    errors: list[dict[str, str]] = []
+    plan = _validate_sealed(
+        plan_value, contract_id=SANDBOX_PLAN_CONTRACT_ID, digest_field="plan_sha256", path="plan", errors=errors
+    )
+    obs = _canonical_object(observed, "observed", errors) or {}
+    if not isinstance(provisioner_id, str) or not provisioner_id:
+        errors.append(_error("invalid_provisioner", "provisioner_id", "non-empty identity required"))
+    if type(observed_at_tick) is not int or observed_at_tick < 0:
+        errors.append(_error("invalid_observed_at", "observed_at_tick", "integer >= 0 required"))
+    exact_fields = (
+        "sandbox_id", "profile_id", "child_session_id", "repository_manifest_sha256",
+        "network_mode", "network_allowlist", "read_paths", "write_paths", "env_allowlist", "budgets",
+    )
+    for field in exact_fields:
+        if plan is not None and materialize_json(obs.get(field)) != materialize_json(plan.get(field)):
+            errors.append(_error("sandbox_observation_mismatch", f"observed.{field}", "does not match provision plan"))
+    for field in ("backend_id", "state_dir_id", "pid_namespace_id", "mount_namespace_id", "network_namespace_id"):
+        if not isinstance(obs.get(field), str) or not obs.get(field):
+            errors.append(_error("missing_sandbox_observation", f"observed.{field}", "non-empty value required"))
+    receipt = {
+        "contract_id": SANDBOX_PROVISION_RECEIPT_CONTRACT_ID,
+        "plan_sha256": (plan or {}).get("plan_sha256"),
+        "sandbox_id": (plan or {}).get("sandbox_id"),
+        "profile_id": (plan or {}).get("profile_id"),
+        "child_session_id": (plan or {}).get("child_session_id"),
+        "repository_manifest_sha256": (plan or {}).get("repository_manifest_sha256"),
+        "effective_capabilities": (plan or {}).get("allowed_capabilities", []),
+        "network_mode": (plan or {}).get("network_mode"),
+        "provisioner_id": provisioner_id,
+        "observed_at_tick": observed_at_tick,
+        "expires_at_tick": (plan or {}).get("expires_at_tick"),
+        "backend_id": obs.get("backend_id"),
+        "state_dir_id": obs.get("state_dir_id"),
+        "pid_namespace_id": obs.get("pid_namespace_id"),
+        "mount_namespace_id": obs.get("mount_namespace_id"),
+        "network_namespace_id": obs.get("network_namespace_id"),
+        "status": "PASS" if not errors else "BLOCK",
+        "errors": errors,
+        "receipt_sha256": "",
+    }
+    return seal_mapping(receipt, "receipt_sha256")
+
+
+def _validate_repository_manifest_for_child(
+    value: Mapping[str, Any] | None,
+    *,
+    child_session_id: str | None,
+    worktree_ref: str | None,
+    evaluation_tick: int | None,
+    errors: list[dict[str, str]],
+) -> dict[str, Any] | None:
+    if value is None:
+        errors.append(_error("repository_manifest_required", "repository_manifest", "worktree operations require observed repository state"))
+        return None
+    manifest = _validate_sealed(value, contract_id=REPOSITORY_MANIFEST_CONTRACT_ID, digest_field="manifest_sha256", path="repository_manifest", errors=errors)
+    if manifest is None:
+        return None
+    if manifest.get("session_id") != child_session_id:
+        errors.append(_error("repository_session_mismatch", "repository_manifest.session_id", str(child_session_id)))
+    observed = manifest.get("observed_at_tick"); expires = manifest.get("expires_at_tick")
+    if type(observed) is not int or type(expires) is not int or observed < 0 or expires <= observed:
+        errors.append(_error("invalid_repository_window", "repository_manifest", "invalid time window"))
+    if evaluation_tick is not None and (observed > evaluation_tick or evaluation_tick >= expires):
+        errors.append(_error("repository_manifest_expired", "repository_manifest.expires_at_tick", str(evaluation_tick)))
+    repos = manifest.get("repositories")
+    if not isinstance(repos, list):
+        errors.append(_error("invalid_repositories", "repository_manifest.repositories", "array required"))
+        repos = []
+    matches = [row for row in repos if isinstance(row, Mapping) and row.get("worktree_ref") == worktree_ref]
+    if len(matches) != 1:
+        errors.append(_error("worktree_not_attested", "request.worktree_ref", str(worktree_ref)))
+    else:
+        row = matches[0]
+        if row.get("clean") is not True or row.get("writable") is not True:
+            errors.append(_error("worktree_not_clean_writable", "repository_manifest.repositories", str(worktree_ref)))
+        if not _is_git_object_id(row.get("baseline_commit")):
+            errors.append(_error("invalid_worktree_baseline", "repository_manifest.repositories", str(worktree_ref)))
+    return manifest
+
+
 def build_subagent_contract(
     parent_session: Mapping[str, Any],
     request: Mapping[str, Any],
     effective_config: Mapping[str, Any],
+    *,
+    repository_manifest: Mapping[str, Any] | None = None,
+    sandbox_receipt: Mapping[str, Any] | None = None,
+    evaluation_tick: int | None = None,
 ) -> dict[str, Any]:
     errors: list[dict[str, str]] = []
     parent = _canonical_object(parent_session, "parent", errors)
@@ -1050,12 +1245,45 @@ def build_subagent_contract(
     isolation = req.get("isolation", "none")
     if isolation not in {"none", "worktree"}:
         errors.append(_error("invalid_isolation", "request.isolation", "none or worktree required"))
-    if mode in {"read-write", "all"} and isolation != "worktree":
+    write_mode = mode in {"read-write", "all"}
+    if write_mode and isolation != "worktree":
         errors.append(_error("write_requires_worktree", "request.isolation", "worktree required for write capability"))
+    child_id = req.get("child_session_id")
+    worktree_ref = req.get("worktree_ref") if isolation == "worktree" else None
+    repository = None
+    if write_mode:
+        if not isinstance(worktree_ref, str) or not worktree_ref:
+            errors.append(_error("worktree_ref_required", "request.worktree_ref", "non-empty worktree_ref required"))
+        repository = _validate_repository_manifest_for_child(
+            repository_manifest, child_session_id=child_id, worktree_ref=worktree_ref, evaluation_tick=evaluation_tick, errors=errors
+        )
+        if req.get("repository_manifest_sha256") != (repository or {}).get("manifest_sha256"):
+            errors.append(_error("repository_manifest_binding_mismatch", "request.repository_manifest_sha256", "request must bind exact manifest"))
     sandbox_profile = req.get("sandbox_profile")
+    sandbox = None
     if "execute" in CAPABILITY_MODES[mode]:
         if not isinstance(sandbox_profile, str) or sandbox_profile not in set(config.get("sandbox_profiles", [])):
             errors.append(_error("execute_requires_sandbox", "request.sandbox_profile", "operator-approved sandbox profile required"))
+        if sandbox_receipt is None:
+            errors.append(_error("sandbox_receipt_required", "sandbox_receipt", "actual provision receipt required"))
+        else:
+            sandbox = _validate_sealed(
+                sandbox_receipt, contract_id=SANDBOX_PROVISION_RECEIPT_CONTRACT_ID, digest_field="receipt_sha256", path="sandbox_receipt", errors=errors
+            )
+            if sandbox is not None:
+                if sandbox.get("status") != "PASS":
+                    errors.append(_error("sandbox_provision_blocked", "sandbox_receipt.status", str(sandbox.get("status"))))
+                if sandbox.get("profile_id") != sandbox_profile:
+                    errors.append(_error("sandbox_profile_mismatch", "sandbox_receipt.profile_id", str(sandbox_profile)))
+                if sandbox.get("child_session_id") != child_id:
+                    errors.append(_error("sandbox_session_mismatch", "sandbox_receipt.child_session_id", str(child_id)))
+                if req.get("sandbox_receipt_sha256") != sandbox.get("receipt_sha256"):
+                    errors.append(_error("sandbox_receipt_binding_mismatch", "request.sandbox_receipt_sha256", "request must bind exact receipt"))
+                if write_mode and sandbox.get("repository_manifest_sha256") != (repository or {}).get("manifest_sha256"):
+                    errors.append(_error("sandbox_repository_mismatch", "sandbox_receipt.repository_manifest_sha256", "wrong repository manifest"))
+                observed_at = sandbox.get("observed_at_tick"); expires_at = sandbox.get("expires_at_tick")
+                if evaluation_tick is not None and (type(observed_at) is not int or type(expires_at) is not int or observed_at > evaluation_tick or evaluation_tick >= expires_at):
+                    errors.append(_error("sandbox_receipt_expired", "sandbox_receipt.expires_at_tick", str(evaluation_tick)))
     parent_capabilities = set(parent.get("capabilities", []))
     requested_capabilities = set(req.get("requested_capabilities", []))
     if not requested_capabilities:
@@ -1063,6 +1291,8 @@ def build_subagent_contract(
     effective_capabilities = requested_capabilities & set(CAPABILITY_MODES[mode]) & parent_capabilities & set(config.get("capabilities", []))
     if requested_capabilities - effective_capabilities:
         errors.append(_error("subagent_capability_widening", "request.requested_capabilities", str(sorted(requested_capabilities - effective_capabilities))))
+    if sandbox is not None and not effective_capabilities.issubset(set(sandbox.get("effective_capabilities", []))):
+        errors.append(_error("sandbox_capability_mismatch", "sandbox_receipt.effective_capabilities", str(sorted(effective_capabilities))))
     try:
         inherited_mcp = resolve_mcp_inheritance(parent.get("mcp_servers", []), req.get("mcp_inheritance", {"mode": "all", "names": []}))
     except ValueError as exc:
@@ -1074,7 +1304,6 @@ def build_subagent_contract(
     context_manifest_sha256 = req.get("context_manifest_sha256")
     if not _is_sha256(context_manifest_sha256):
         errors.append(_error("missing_context_manifest", "request.context_manifest_sha256", "explicit context manifest required"))
-    child_id = req.get("child_session_id")
     if not isinstance(child_id, str) or not child_id:
         errors.append(_error("missing_child_id", "request.child_session_id", "child_session_id required"))
     contract = {
@@ -1089,8 +1318,10 @@ def build_subagent_contract(
         "inherited_mcp_servers": inherited_mcp,
         "context_manifest_sha256": context_manifest_sha256,
         "isolation": isolation,
-        "worktree_ref": req.get("worktree_ref") if isolation == "worktree" else None,
+        "worktree_ref": worktree_ref,
+        "repository_manifest_sha256": (repository or {}).get("manifest_sha256"),
         "sandbox_profile": sandbox_profile,
+        "sandbox_receipt_sha256": (sandbox or {}).get("receipt_sha256"),
         "background": req.get("background") is True,
         "resume_from": req.get("resume_from"),
         "status": "PASS" if not errors else "BLOCK",

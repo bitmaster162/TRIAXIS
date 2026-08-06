@@ -6,7 +6,7 @@ import unittest
 
 from jsonschema import Draft202012Validator
 
-from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest, context_materialization_receipt, make_plugin_manifest
+from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest, context_materialization_receipt, make_plugin_manifest, repository_manifest_for, sandbox_bundle_for
 from triaxis.harness_v1 import (
     PluginRegistry,
     SkillRegistry,
@@ -35,6 +35,11 @@ class HarnessSchemaTests(unittest.TestCase):
         self.validate("triaxis_context_disclosure_manifest_v1.schema.json", context_manifest())
         materialized = context_materialization_receipt()
         self.validate("triaxis_context_materialization_receipt_v1.schema.json", materialized)
+        repositories = repository_manifest_for("child:schema", "worktree:schema")
+        self.validate("triaxis_repository_manifest_v1.schema.json", repositories)
+        sandbox_plan, sandbox_receipt = sandbox_bundle_for("child:schema", repository_manifest=repositories, capabilities=["read", "write", "execute"])
+        self.validate("triaxis_sandbox_provision_plan_v1.schema.json", sandbox_plan)
+        self.validate("triaxis_sandbox_provision_receipt_v1.schema.json", sandbox_receipt)
 
         skills = SkillRegistry()
         skill = skills.seal_skill(

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_sandbox_provision_receipt_v1.schema.json",
+  "title": "TRIAXIS Sandbox Provision Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id", "plan_sha256", "sandbox_id", "profile_id", "child_session_id", "repository_manifest_sha256", "effective_capabilities", "network_mode", "provisioner_id", "observed_at_tick", "expires_at_tick", "backend_id", "state_dir_id", "pid_namespace_id", "mount_namespace_id", "network_namespace_id", "status", "errors", "receipt_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_SANDBOX_PROVISION_RECEIPT_v1"},
+    "plan_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sandbox_id": {"type": "string", "minLength": 1},
+    "profile_id": {"type": "string", "minLength": 1},
+    "child_session_id": {"type": "string", "minLength": 1},
+    "repository_manifest_sha256": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[0-9a-f]{64}$"}]},
+    "effective_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "network_mode": {"enum": ["DENY", "ALLOWLIST"]},
+    "provisioner_id": {"type": "string", "minLength": 1},
+    "observed_at_tick": {"type": "integer", "minimum": 0},
+    "expires_at_tick": {"type": "integer", "minimum": 1},
+    "backend_id": {"type": "string", "minLength": 1},
+    "state_dir_id": {"type": "string", "minLength": 1},
+    "pid_namespace_id": {"type": "string", "minLength": 1},
+    "mount_namespace_id": {"type": "string", "minLength": 1},
+    "network_namespace_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["PASS", "BLOCK"]},
+    "errors": {"type": "array", "items": {"type": "object"}},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
