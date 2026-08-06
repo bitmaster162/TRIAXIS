@@ -1,0 +1,17 @@
+{
+  "contract_id": "TRIAXIS_v3.19_POSTCOMMIT_CONTEXT_TOCTOU_v1",
+  "exact_product_commit": "766c69044a6e10df14b88b3bebad46ce0f329e24",
+  "result_sha256": "943c0b0dcd3343860d7c575d68702e429efcb158b7629b7d9d7b50ad79e952b3",
+  "rows": [
+    {
+      "broker_outcome_without_materialization_receipt": "ALLOW",
+      "case_id": "CTX_TOCTOU_01",
+      "manifest_expected_sha256": "324e0c94c599a9942cc5a296f42bd6f707add5c10611fb4dc0fd73f05260d522",
+      "materialized_observed_sha256": "f3688846ed24349bc2281fc57d42bc572cca8d5ebd3471982306be9d5a977821",
+      "required_fix": "bind exact materialized bytes to manifest and tool request before dispatch",
+      "vulnerability_reproduced": true
+    }
+  ],
+  "rows_sha256": "0ad29367ff97de3dcf8288e0fe97fc218ca34d60acd9974edd6dbc9118c840fb",
+  "status": "FAIL_EXPECTED"
+}
