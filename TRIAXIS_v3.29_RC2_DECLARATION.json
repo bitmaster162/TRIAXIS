@@ -1,0 +1,39 @@
+{
+  "administrative_independence": false,
+  "authority_granted": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "classification": "PASS_WITH_CONDITIONS",
+  "contract_id": "TRIAXIS_v3.29_RC2_DECLARATION",
+  "deploy_permission": "DENY",
+  "historical_tests": {
+    "pass": 448,
+    "total": 448
+  },
+  "independent_certification": false,
+  "physical_independence": false,
+  "post_evidence_source_tree": "d946ef6f60fac4dfe2f7e4bc546a4c2a0d990de0",
+  "post_product_evidence_commit": "1f01c81b88f629a556a0afcf4235276f31a6db6a",
+  "postcommit_boundary": {
+    "rows_sha256": "7484baaef7e444d0d144738d062fb342d08cd64b7e26673c27425fedf1c15e08",
+    "status": "BOUNDARY_CONFIRMED"
+  },
+  "production_qualified": false,
+  "rc1_product_commit": "0b727ebe5e18adc553b6c08954061d5925314086",
+  "rc1_product_tree": "a267bbd74c6f4a207d9317b459275f9fc4096dab",
+  "rc1_source_tree": "d946ef6f60fac4dfe2f7e4bc546a4c2a0d990de0",
+  "rc1_tag_object": "834e6cf765fffe1320fbc07a29fc54cba3fe26d1",
+  "real_provider_adapter": false,
+  "release_tag": "TRIAXIS-v3.29-RC2-EXECUTION-HEAD-QUORUM-COMPLETION-WITNESS",
+  "service_process_smoke": {
+    "pass": 3,
+    "rows_sha256": "511b5abf507085188c4fcdd8170f1b6e9c22fcc43f4dcfe1c9d7deb66aa4acdb",
+    "total": 3
+  },
+  "v329_closure": {
+    "pass": 33,
+    "rows_sha256": "dcf3e947a6a85b5f2fab5e6c7e4064a2d5473953da8bf9b85c78277424463528",
+    "total": 33
+  },
+  "validation_only": true
+}
