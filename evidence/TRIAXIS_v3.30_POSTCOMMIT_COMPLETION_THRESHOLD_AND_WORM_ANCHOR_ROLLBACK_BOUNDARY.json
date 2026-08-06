@@ -1,0 +1,64 @@
+{
+  "authority_granted": false,
+  "claim": "A current logical completion anchor blocks rollback of provider and a completion-witness threshold. A valid current blocking minority blocks a rolled-back anchor when included. Coordinated rollback of provider, both quorum thresholds and the logical anchor, combined with omission of the current completion minority, can recreate a permissive old view and revive the same completed stable effect.",
+  "exact_subject_commit": "9e98ede98bf561a050eddcd578dbf814ab7324ac",
+  "exact_subject_tag": "TRIAXIS-v3.30-RC1-COMPLETION-WITNESS-QUORUM-WORM-ANCHOR",
+  "physical_worm_established": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.30_POSTCOMMIT_COMPLETION_THRESHOLD_AND_WORM_ANCHOR_ROLLBACK_BOUNDARY",
+  "required_next_control": [
+    "physical append-only or WORM completion receipts outside all quorum administrators",
+    "provider-native immutable idempotency keyed by stable effect_id",
+    "independently administered transparency checkpoint for completion heads",
+    "KMS/HSM or hardware-backed monotonic anti-rollback state",
+    "availability policy that treats omitted configured blocking witnesses as non-permissive",
+    "real multi-host and multi-administrator rollback evidence"
+  ],
+  "rows": [
+    {
+      "anchor_block_code": "worm_anchor_state_blocks_retry",
+      "case_id": "V330RB01_CURRENT_PROVIDER_QUORUM_AND_ANCHOR_BLOCK_COMPLETED_EFFECT",
+      "completion_quorum_block_code": "blocking_completion_witness_minority",
+      "execution_head_quorum_status": "PASS",
+      "provider_external_effect_permitted": false,
+      "same_effect_id": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V330RB02_CURRENT_ANCHOR_BLOCKS_PROVIDER_AND_WITNESS_THRESHOLD_ROLLBACK",
+      "current_anchor_block_code": "worm_anchor_state_blocks_retry",
+      "current_completion_minority_omitted": true,
+      "rolled_back_provider_external_effect_permitted": true,
+      "rolled_back_threshold_member_count": 2,
+      "rolled_back_threshold_quorum_state": "ABSENT",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V330RB03_CURRENT_COMPLETION_MINORITY_VETOES_ROLLED_BACK_ANCHOR",
+      "completion_quorum_block_code": "blocking_completion_witness_minority",
+      "rolled_back_anchor_external_effect_permitted": true,
+      "rolled_back_anchor_state": "ABSENT",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V330RB04_THRESHOLD_AND_ANCHOR_ROLLBACK_WITH_OMITTED_MINORITIES_REVIVES_EFFECT",
+      "current_completion_minority_if_queried_block_code": "blocking_completion_witness_minority",
+      "current_completion_minority_omitted": true,
+      "current_execution_minority_rejected_fork": true,
+      "duplicate_effect_risk": true,
+      "execution_quorum_after_status": "PASS",
+      "execution_quorum_before_status": "PASS",
+      "expected_secure_result": "BLOCK_OR_INDEPENDENT_IMMUTABLE_EXTERNAL_COMPLETION_PROOF",
+      "new_dispatch_id": true,
+      "rolled_back_anchor_external_effect_permitted": true,
+      "rolled_back_anchor_state": "ABSENT",
+      "rolled_back_completion_quorum_member_count": 2,
+      "rolled_back_completion_quorum_state": "ABSENT",
+      "rolled_back_provider_external_effect_permitted": true,
+      "same_effect_id": true,
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "4e5276e61d58126d27ba5a6c911795a494c75889ddd4b6e130e06be7c6734800",
+  "status": "BOUNDARY_CONFIRMED"
+}
