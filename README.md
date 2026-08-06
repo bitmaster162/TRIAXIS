@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v3.18-RC1 Single-Host Multi-Process Conformance**; Release Candidate, not production-qualified.
+Current release: **TRIAXIS v3.18-RC2 Single-Host Multi-Process Conformance**; validation-only closure, not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 

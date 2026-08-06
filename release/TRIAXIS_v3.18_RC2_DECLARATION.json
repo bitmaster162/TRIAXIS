@@ -1,0 +1,18 @@
+{
+  "contract_id": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "version": "TRIAXIS v3.18-RC2 Single-Host Multi-Process Conformance",
+  "release_kind": "VALIDATION_ONLY",
+  "rc1_product_commit": "cfd376bdf40006e2958304f30c5617cb23e5f524",
+  "rc1_product_tree": "6d0a4a37786c03985f2cd95748e1ae541577ab43",
+  "rc1_source_tree": "1c5e4d0d3767add8c7b57a1d8975aab5cb553ddf",
+  "unit_tests": 315,
+  "multiprocess_conformance_cases": 9,
+  "postcommit_boundary": "SINGLE_HOST_SHARED_UID_COMPROMISE_CONFIRMED",
+  "claim_scope": "single-host multi-process loopback conformance only",
+  "production_qualified": false,
+  "physical_multi_admin_conformance": false,
+  "independent_certification": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}

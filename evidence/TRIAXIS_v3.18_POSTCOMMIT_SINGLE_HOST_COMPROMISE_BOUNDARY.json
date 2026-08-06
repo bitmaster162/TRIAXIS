@@ -1,0 +1,54 @@
+{
+  "all_authorities_share_one_uid": true,
+  "authority_pids": [
+    8976,
+    8986,
+    8996
+  ],
+  "authority_uids": [
+    0,
+    0,
+    0
+  ],
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "contract_id": "TRIAXIS_v3.18_POSTCOMMIT_SINGLE_HOST_COMPROMISE_BOUNDARY_v1",
+  "deploy_permission": "DENY",
+  "environment_observations": [
+    {
+      "admin_token_variable_name_visible": true,
+      "authority_id": "gossip-head-authority:a",
+      "private_key_variable_name_visible": true,
+      "secret_values_recorded": false
+    },
+    {
+      "admin_token_variable_name_visible": true,
+      "authority_id": "gossip-head-authority:b",
+      "private_key_variable_name_visible": true,
+      "secret_values_recorded": false
+    },
+    {
+      "admin_token_variable_name_visible": true,
+      "authority_id": "gossip-head-authority:c",
+      "private_key_variable_name_visible": true,
+      "secret_values_recorded": false
+    }
+  ],
+  "evidence_sha256": "a0cd65cf9654eab063e0894faf3dbe443a8cab484337fc821c4b823fbf7205b3",
+  "host_fingerprint_sha256": "59c574c51e41c5581a30cf8406912984c50008458181a1209a20a91d8194928f",
+  "parent_can_read_process_environment_names": true,
+  "parent_can_signal_all_authority_processes": true,
+  "parent_can_write_all_state_directories": true,
+  "parent_uid": 0,
+  "raw_secret_values_recorded": false,
+  "required_next_evidence": [
+    "three separately administered hosts or providers",
+    "separate KMS/HSM-backed authority keys",
+    "authenticated transport between verifier and authorities",
+    "independent state and backup domains",
+    "physical failure and compromise drills"
+  ],
+  "security_conclusion": "one compromise of the shared OS user/host can reach all three laboratory authority processes; single-host process separation is not physical or administrative independence",
+  "status": "BOUNDARY_CONFIRMED",
+  "subject_commit": "cfd376bdf40006e2958304f30c5617cb23e5f524"
+}
