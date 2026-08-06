@@ -388,6 +388,171 @@ class SQLitePolicyTransparencyWitnessService:
         return signed
 
 
+class SQLitePolicyTransparencyGossipStore:
+    """Persistent cross-session pinning of each verified witness's highest floor.
+
+    The store records only responses that have already passed cryptographic,
+    purpose, identity and contract validation.  A signer may advance to a higher
+    floor, repeat the exact same floor, or rotate the head-quorum configuration
+    while advancing.  It may not later claim a lower policy version or a
+    different digest for the same version.
+
+    This closes cross-session witness rollback for one verifier deployment.  A
+    whole-database rollback of this gossip store is an explicit external
+    persistence/gossip boundary.
+    """
+
+    def __init__(self, path: str | Path) -> None:
+        self.path = str(path)
+        self._conn = sqlite3.connect(self.path, isolation_level=None)
+        self._conn.execute("PRAGMA journal_mode=WAL")
+        self._conn.execute("PRAGMA synchronous=FULL")
+        self._conn.executescript(
+            """
+            CREATE TABLE IF NOT EXISTS transparency_witness_pins (
+                signer_id TEXT PRIMARY KEY,
+                witness_id TEXT NOT NULL,
+                log_id TEXT NOT NULL,
+                key_id TEXT NOT NULL,
+                trust_domain TEXT NOT NULL,
+                policy_id TEXT NOT NULL,
+                minimum_policy_version INTEGER NOT NULL,
+                minimum_policy_sha256 TEXT NOT NULL,
+                response_sha256 TEXT NOT NULL,
+                observed_at INTEGER NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS transparency_witness_pin_history (
+                event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                signer_id TEXT NOT NULL,
+                minimum_policy_version INTEGER NOT NULL,
+                minimum_policy_sha256 TEXT NOT NULL,
+                response_sha256 TEXT NOT NULL,
+                observed_at INTEGER NOT NULL,
+                UNIQUE(signer_id, minimum_policy_version, minimum_policy_sha256)
+            );
+            """
+        )
+
+    def close(self) -> None:
+        self._conn.close()
+
+    def __enter__(self) -> "SQLitePolicyTransparencyGossipStore":
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, traceback: Any) -> None:
+        self.close()
+
+    def head(self, signer_id: str) -> dict[str, Any] | None:
+        row = self._conn.execute(
+            "SELECT witness_id,log_id,key_id,trust_domain,policy_id,minimum_policy_version,"
+            "minimum_policy_sha256,response_sha256,observed_at "
+            "FROM transparency_witness_pins WHERE signer_id=?",
+            (signer_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return {
+            "signer_id": signer_id,
+            "witness_id": row[0],
+            "log_id": row[1],
+            "key_id": row[2],
+            "trust_domain": row[3],
+            "policy_id": row[4],
+            "minimum_policy_version": row[5],
+            "minimum_policy_sha256": row[6],
+            "response_sha256": row[7],
+            "observed_at": row[8],
+        }
+
+    def observe(
+        self,
+        *,
+        signer_id: str,
+        key_id: str,
+        trust_domain: str,
+        response: Mapping[str, Any],
+        evaluation_tick: int,
+    ) -> dict[str, Any]:
+        validated = validate_policy_transparency_floor_response(response, evaluation_tick)
+        if validated["status"] != "PASS":
+            raise PolicyHeadAuthorityError("invalid_transparency_gossip_response", str(validated["errors"]))
+        item = validated["response"]
+        identity = {
+            "witness_id": item["witness_id"],
+            "log_id": item["log_id"],
+            "key_id": key_id,
+            "trust_domain": trust_domain,
+            "policy_id": item["policy_id"],
+        }
+        self._conn.execute("BEGIN IMMEDIATE")
+        try:
+            current = self.head(signer_id)
+            if current is not None:
+                for field, expected in identity.items():
+                    if current[field] != expected:
+                        raise PolicyHeadAuthorityError(
+                            "transparency_witness_identity_change",
+                            f"signer={signer_id} field={field}",
+                        )
+                observed_version = item["minimum_policy_version"]
+                current_version = current["minimum_policy_version"]
+                if observed_version < current_version:
+                    raise PolicyHeadAuthorityError(
+                        "transparency_witness_rollback_detected",
+                        f"signer={signer_id} observed={observed_version} pinned={current_version}",
+                    )
+                if observed_version == current_version:
+                    if item["minimum_policy_sha256"] != current["minimum_policy_sha256"]:
+                        raise PolicyHeadAuthorityError(
+                            "transparency_witness_fork_detected",
+                            f"signer={signer_id} version={observed_version}",
+                        )
+                    self._conn.execute("COMMIT")
+                    return current
+            self._conn.execute(
+                "INSERT OR IGNORE INTO transparency_witness_pin_history("
+                "signer_id,minimum_policy_version,minimum_policy_sha256,response_sha256,observed_at"
+                ") VALUES(?,?,?,?,?)",
+                (
+                    signer_id,
+                    item["minimum_policy_version"],
+                    item["minimum_policy_sha256"],
+                    item["response_sha256"],
+                    evaluation_tick,
+                ),
+            )
+            self._conn.execute(
+                "INSERT INTO transparency_witness_pins("
+                "signer_id,witness_id,log_id,key_id,trust_domain,policy_id,minimum_policy_version,"
+                "minimum_policy_sha256,response_sha256,observed_at"
+                ") VALUES(?,?,?,?,?,?,?,?,?,?) "
+                "ON CONFLICT(signer_id) DO UPDATE SET "
+                "minimum_policy_version=excluded.minimum_policy_version,"
+                "minimum_policy_sha256=excluded.minimum_policy_sha256,"
+                "response_sha256=excluded.response_sha256,observed_at=excluded.observed_at",
+                (
+                    signer_id,
+                    identity["witness_id"],
+                    identity["log_id"],
+                    identity["key_id"],
+                    identity["trust_domain"],
+                    identity["policy_id"],
+                    item["minimum_policy_version"],
+                    item["minimum_policy_sha256"],
+                    item["response_sha256"],
+                    evaluation_tick,
+                ),
+            )
+            self._conn.execute("COMMIT")
+            result = self.head(signer_id)
+            assert result is not None
+            return result
+        except Exception:
+            if self._conn.in_transaction:
+                self._conn.execute("ROLLBACK")
+            raise
+
+
 def enforce_policy_transparency_floor_quorum(
     policy_store: SQLiteAnchorQuorumPolicyStore,
     signed_responses: Sequence[Mapping[str, Any]],
@@ -400,6 +565,7 @@ def enforce_policy_transparency_floor_quorum(
     expected_challenge: str,
     evaluation_tick: int,
     max_response_age: int = 5,
+    gossip_store: SQLitePolicyTransparencyGossipStore | None = None,
 ) -> dict[str, Any]:
     if not _is_sha256(expected_floor_config_sha256):
         raise PolicyHeadAuthorityError("invalid_expected_floor_config_digest", str(expected_floor_config_sha256))
@@ -476,6 +642,14 @@ def enforce_policy_transparency_floor_quorum(
         if evaluation_tick - response["issued_at"] > max_response_age:
             invalid_rows.append({"index": index, "reason": "response_too_old", "signer_id": signer.signer_id})
             continue
+        if gossip_store is not None:
+            gossip_store.observe(
+                signer_id=signer.signer_id,
+                key_id=signer.key_id,
+                trust_domain=signer.trust_domain,
+                response=response,
+                evaluation_tick=evaluation_tick,
+            )
         statement = (
             response["policy_id"],
             response["minimum_policy_version"],
@@ -556,11 +730,42 @@ def enforce_policy_transparency_floor_quorum(
     }
 
 
+def enforce_policy_transparency_floor_quorum_with_gossip(
+    policy_store: SQLiteAnchorQuorumPolicyStore,
+    signed_responses: Sequence[Mapping[str, Any]],
+    *,
+    gossip_store: SQLitePolicyTransparencyGossipStore,
+    witness_registry: TrustKeyRegistry,
+    floor_quorum_config: Mapping[str, Any],
+    expected_floor_config_sha256: str,
+    expected_policy_head_quorum_config_sha256: str,
+    challenge_ledger: SQLiteEpochChallengeLedger,
+    expected_challenge: str,
+    evaluation_tick: int,
+    max_response_age: int = 5,
+) -> dict[str, Any]:
+    return enforce_policy_transparency_floor_quorum(
+        policy_store,
+        signed_responses,
+        witness_registry=witness_registry,
+        floor_quorum_config=floor_quorum_config,
+        expected_floor_config_sha256=expected_floor_config_sha256,
+        expected_policy_head_quorum_config_sha256=expected_policy_head_quorum_config_sha256,
+        challenge_ledger=challenge_ledger,
+        expected_challenge=expected_challenge,
+        evaluation_tick=evaluation_tick,
+        max_response_age=max_response_age,
+        gossip_store=gossip_store,
+    )
+
+
 __all__ = [
     "POLICY_TRANSPARENCY_FLOOR_QUORUM_CONFIG_CONTRACT_ID",
     "POLICY_TRANSPARENCY_FLOOR_RESPONSE_CONTRACT_ID",
     "SQLitePolicyTransparencyWitnessService",
+    "SQLitePolicyTransparencyGossipStore",
     "enforce_policy_transparency_floor_quorum",
+    "enforce_policy_transparency_floor_quorum_with_gossip",
     "make_policy_transparency_floor_quorum_config",
     "make_policy_transparency_floor_response",
     "validate_policy_transparency_floor_quorum_config",
