@@ -1,0 +1,17 @@
+{
+  "contract_id": "TRIAXIS_v3.20_POSTCOMMIT_PLUGIN_COMPONENT_TOCTOU_v1",
+  "exact_product_commit": "9628dfee0d850224021d790795dd68ab028d133f",
+  "result_sha256": "0feeee31ac5cf3f1c4d23dea8670f50e0c9bb3b1945785b15894e56a8a901ea9",
+  "rows": [
+    {
+      "activation_without_package_materialization": "ACTIVE",
+      "approved_source_sha256": "05d8092cfd0f86818af14eb6d00c564e086e5e3faa54eef33131e007f9348d06",
+      "case_id": "PLUGIN_TOCTOU_01",
+      "observed_component_sha256": "152f3c435077aa693e526b98ed90f099d1f3470db8c0c549d7216746cb25aea9",
+      "required_fix": "bind every loaded component byte sequence to a materialized package receipt and exact manifest",
+      "vulnerability_reproduced": true
+    }
+  ],
+  "rows_sha256": "9e995dc0c19d891298baa16281b8aaac96f4bcd49eea9b4ae4ffa99bbc05c459",
+  "status": "FAIL_EXPECTED"
+}
