@@ -56,3 +56,7 @@ PYTHONPATH=src:. python tools/triaxis_fail_bench.py benchmark/results_template.j
 ```
 
 The package is not a production gateway. v3.12 detects rollback of the local policy store only while an independently operated external Policy Head Authority remains current. KMS/HSM custody, authority-side anti-rollback, multi-authority consistency, complete mediation, trusted time and independent empirical validation remain integration requirements.
+
+## v3.14 Policy Transparency Floor
+
+The v3.14 branch adds an independent challenge-bound transparency-witness quorum that enforces a minimum policy version/digest against the verified local signed history. See `release/TRIAXIS_CONTROL_STACK_v3.14_RC1_POLICY_TRANSPARENCY_FLOOR.md`.

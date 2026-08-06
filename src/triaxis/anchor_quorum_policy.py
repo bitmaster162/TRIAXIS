@@ -277,6 +277,74 @@ class SQLiteAnchorQuorumPolicyStore:
             raise TrustRegistryAnchorError("quorum_policy_head_mismatch", policy["policy_sha256"])
         return policy
 
+    def load_version(self, policy_version: int) -> dict[str, Any]:
+        """Load and verify one historical policy at its installation time.
+
+        Historical policies may be expired at the current wall-clock tick.  The
+        relevant verification point for an append-only history is the time at
+        which the signed policy was accepted into the store.
+        """
+        if type(policy_version) is not int or policy_version < 1:
+            raise TrustRegistryAnchorError("invalid_policy_version", str(policy_version))
+        row = self._conn.execute(
+            "SELECT signed_policy_json,installed_at FROM anchor_quorum_policy_history WHERE policy_version=?",
+            (policy_version,),
+        ).fetchone()
+        if row is None:
+            raise TrustRegistryAnchorError("quorum_policy_history_missing", str(policy_version))
+        signed = json.loads(row[0])
+        verified = self._verify_signed(signed, int(row[1]))
+        policy = verified["policy"]
+        if policy["policy_version"] != policy_version:
+            raise TrustRegistryAnchorError("quorum_policy_history_version_mismatch", str(policy_version))
+        return policy
+
+    def verify_history(self) -> dict[str, Any]:
+        """Verify the complete signed parent-linked history through the head."""
+        head = self.head()
+        if head is None:
+            raise TrustRegistryAnchorError("quorum_policy_missing", self.policy_id)
+        rows = self._conn.execute(
+            "SELECT policy_version,policy_sha256,signed_policy_json,installed_at "
+            "FROM anchor_quorum_policy_history ORDER BY policy_version"
+        ).fetchall()
+        if not rows:
+            raise TrustRegistryAnchorError("quorum_policy_history_missing", self.policy_id)
+        previous_digest: str | None = None
+        expected_version = 1
+        for row in rows:
+            version, digest, signed_json, installed_at = row
+            if version != expected_version:
+                raise TrustRegistryAnchorError("quorum_policy_history_gap", f"expected={expected_version} observed={version}")
+            verified = self._verify_signed(json.loads(signed_json), int(installed_at))
+            policy = verified["policy"]
+            if policy["policy_version"] != version or policy["policy_sha256"] != digest:
+                raise TrustRegistryAnchorError("quorum_policy_history_row_mismatch", str(version))
+            if policy["previous_policy_sha256"] != previous_digest:
+                raise TrustRegistryAnchorError("quorum_policy_history_parent_mismatch", str(version))
+            previous_digest = digest
+            expected_version += 1
+        last_version, last_digest = rows[-1][0], rows[-1][1]
+        if last_version != head["policy_version"] or last_digest != head["policy_sha256"]:
+            raise TrustRegistryAnchorError("quorum_policy_history_head_mismatch", str(head))
+        return {
+            "policy_id": self.policy_id,
+            "policy_version": last_version,
+            "policy_sha256": last_digest,
+            "history_length": len(rows),
+        }
+
+    def contains_policy(self, policy_version: int, policy_sha256: str) -> bool:
+        """Return true only when the verified history contains the exact policy."""
+        if not _is_sha256(policy_sha256):
+            return False
+        try:
+            self.verify_history()
+            policy = self.load_version(policy_version)
+        except TrustRegistryAnchorError:
+            return False
+        return policy["policy_sha256"] == policy_sha256
+
 
 __all__ = [
     "ANCHOR_QUORUM_POLICY_CONTRACT_ID",
