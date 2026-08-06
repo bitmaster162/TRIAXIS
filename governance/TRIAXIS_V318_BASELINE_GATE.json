@@ -1,0 +1,13 @@
+{
+  "contract_id": "TRIAXIS_GIT_BASELINE_GATE_v1",
+  "version": "v3.18-single-host-conformance",
+  "baseline_tag": "TRIAXIS-v3.17-RC2-EXTERNAL-GOSSIP-HEAD-QUORUM",
+  "baseline_commit": "0a3ac03c52b32085cfd7afd201aabdf016ef5166",
+  "baseline_tree": "39e1bbff11a324403f8c35f4e1d8488ca5cb0f30",
+  "baseline_unit_tests": 312,
+  "baseline_status": "PASS",
+  "scope": "single-host multi-process deployment and fault-injection conformance harness; does not claim physical or administrative independence",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
