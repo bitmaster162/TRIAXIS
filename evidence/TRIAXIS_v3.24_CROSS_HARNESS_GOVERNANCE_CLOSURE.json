@@ -1,0 +1,80 @@
+{
+  "case_count": 14,
+  "fail_count": 0,
+  "pass_count": 14,
+  "protocol_id": "TRIAXIS_CROSS_HARNESS_GOVERNANCE_CLOSURE_v3.24",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.EscalationTests.test_permission_delta_is_single_use_and_exact_bound",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.EscalationTests.test_shell_segments_are_evaluated_independently",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.GuardrailTests.test_missing_recheck_and_tripwire_block",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.GuardrailTests.test_mutating_tool_is_checked_before_and_after_approval_and_after_output",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.GuardrailTests.test_post_guardrail_can_rewrite_output",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.HandoffAndDurabilityTests.test_handoff_filters_context_and_never_inherits_authority_implicitly",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.HandoffAndDurabilityTests.test_interrupt_resume_is_durable_single_use_and_cas_guarded",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.HandoffAndDurabilityTests.test_time_travel_fork_preserves_parent_ancestry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.PolicyEngineTests.test_admin_deny_overrides_user_allow_and_hides_global_tool",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.PolicyEngineTests.test_extension_cannot_grant_allow_and_headless_ask_fails_closed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.PolicyEngineTests.test_policy_matching_is_scoped",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.TraceAndEventTests.test_action_observation_stream_requires_exact_correlation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_governance.TraceAndEventTests.test_trace_chain_is_parented_redacted_and_hash_chained",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_24_cross_harness_schemas.CrossHarnessSchemaTests.test_v324_reference_contracts",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "52b9fc338903a2402c35ad4e65f16228385d2b15609094d2dabae6e86cca632a",
+  "status": "PASS"
+}

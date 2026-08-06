@@ -1,0 +1,54 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_action_observation_event_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_event_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contract_id": {
+      "const": "TRIAXIS_ACTION_OBSERVATION_EVENT_v1"
+    },
+    "correlation_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "event_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "ACTION",
+        "OBSERVATION"
+      ]
+    },
+    "payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "kind",
+    "event_id",
+    "run_id",
+    "correlation_id",
+    "action_event_id",
+    "payload_sha256",
+    "event_sha256"
+  ],
+  "title": "TRIAXIS Action Observation Event v1",
+  "type": "object"
+}

@@ -1,0 +1,73 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_filtered_handoff_context_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_artifact_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "authority_checkpoint_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_FILTERED_HANDOFF_CONTEXT_v1"
+    },
+    "destination_agent_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "handoff_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "implicit_authority_inheritance": {
+      "const": false
+    },
+    "implicit_context_inheritance": {
+      "const": false
+    },
+    "include_tool_history": {
+      "type": "boolean"
+    },
+    "source_context_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_session_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "summary_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "source_session_id",
+    "destination_agent_id",
+    "source_context_manifest_sha256",
+    "allowed_artifact_ids",
+    "summary_sha256",
+    "include_tool_history",
+    "authority_checkpoint_sha256",
+    "implicit_context_inheritance",
+    "implicit_authority_inheritance",
+    "handoff_sha256"
+  ],
+  "title": "TRIAXIS Filtered Handoff Context v1",
+  "type": "object"
+}

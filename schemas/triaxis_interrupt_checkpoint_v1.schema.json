@@ -1,0 +1,80 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_interrupt_checkpoint_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "checkpoint_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "checkpoint_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_INTERRUPT_CHECKPOINT_v1"
+    },
+    "created_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "interrupt_payload": {
+      "type": "object"
+    },
+    "parent_checkpoint_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resume_value_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "resumed_at": {
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "run_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "WAITING",
+        "RESUMED"
+      ]
+    },
+    "thread_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "checkpoint_id",
+    "thread_id",
+    "run_id",
+    "parent_checkpoint_id",
+    "state_sha256",
+    "status",
+    "version",
+    "interrupt_payload",
+    "created_at",
+    "resumed_at",
+    "checkpoint_sha256"
+  ],
+  "title": "TRIAXIS Interrupt Checkpoint v1",
+  "type": "object"
+}

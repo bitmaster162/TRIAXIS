@@ -1,0 +1,103 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_tool_guardrail_pipeline_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "approval_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "contract_id": {
+      "const": "TRIAXIS_TOOL_GUARDRAIL_PIPELINE_v1"
+    },
+    "effective_output_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "errors": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "execution_output_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "mutating": {
+      "type": "boolean"
+    },
+    "pipeline_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "post_execution_result_sha256s": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "pre_approval_result_sha256s": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "pre_execution_result_sha256s": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "BLOCK"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "request_sha256",
+    "approval_sha256",
+    "mutating",
+    "pre_approval_result_sha256s",
+    "pre_execution_result_sha256s",
+    "post_execution_result_sha256s",
+    "execution_output_sha256",
+    "effective_output_sha256",
+    "status",
+    "errors",
+    "pipeline_sha256"
+  ],
+  "title": "TRIAXIS Tool Guardrail Pipeline v1",
+  "type": "object"
+}

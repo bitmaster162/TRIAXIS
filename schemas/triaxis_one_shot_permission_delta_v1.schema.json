@@ -1,0 +1,81 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_one_shot_permission_delta_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "additional_read_paths": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "additional_write_paths": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "approval_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_ONE_SHOT_PERMISSION_DELTA_v1"
+    },
+    "delta_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "expires_at_tick": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "grant_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "issued_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "network_destinations": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "nonce": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "scope": {
+      "const": "ONCE"
+    }
+  },
+  "required": [
+    "contract_id",
+    "grant_id",
+    "request_sha256",
+    "approval_sha256",
+    "nonce",
+    "scope",
+    "additional_read_paths",
+    "additional_write_paths",
+    "network_destinations",
+    "issued_at_tick",
+    "expires_at_tick",
+    "delta_sha256"
+  ],
+  "title": "TRIAXIS One-Shot Permission Delta v1",
+  "type": "object"
+}

@@ -1,0 +1,95 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_trace_span_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attributes": {
+      "type": "object"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_TRACE_SPAN_v1"
+    },
+    "ended_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "parent_span_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "previous_span_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "redacted_fields": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "span_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "span_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "span_type": {
+      "enum": [
+        "RUN",
+        "TURN",
+        "MODEL",
+        "TOOL",
+        "HANDOFF",
+        "GUARDRAIL",
+        "INTERRUPT",
+        "CUSTOM"
+      ]
+    },
+    "started_at_tick": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "status": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "trace_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "trace_id",
+    "span_id",
+    "parent_span_id",
+    "previous_span_sha256",
+    "span_type",
+    "name",
+    "started_at_tick",
+    "ended_at_tick",
+    "status",
+    "attributes",
+    "redacted_fields",
+    "span_sha256"
+  ],
+  "title": "TRIAXIS Trace Span v1",
+  "type": "object"
+}

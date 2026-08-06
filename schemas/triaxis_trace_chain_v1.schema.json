@@ -1,0 +1,49 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_trace_chain_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_TRACE_CHAIN_v1"
+    },
+    "errors": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "span_sha256s": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "BLOCK"
+      ]
+    },
+    "trace_chain_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "trace_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "trace_id",
+    "span_sha256s",
+    "status",
+    "errors",
+    "trace_chain_sha256"
+  ],
+  "title": "TRIAXIS Trace Chain v1",
+  "type": "object"
+}
