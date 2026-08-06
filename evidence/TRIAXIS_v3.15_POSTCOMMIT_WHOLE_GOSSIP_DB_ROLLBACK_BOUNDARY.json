@@ -1,0 +1,20 @@
+{
+  "contract_id": "TRIAXIS_v3.15_POSTCOMMIT_WHOLE_GOSSIP_DB_ROLLBACK_BOUNDARY_v1",
+  "finding": "Restoring the entire verifier gossip database erases learned witness pins and permits a lower floor again.",
+  "required_next_control": "REMOTE_GOSSIP_REPLICATION_OR_SIGNED_EXTERNAL_GOSSIP_HEAD_OR_TRUSTED_MONOTONIC_STATE",
+  "rows": [
+    {
+      "case": "CURRENT_GOSSIP_PINS_V3",
+      "observed": 3,
+      "status": "PASS"
+    },
+    {
+      "case": "WHOLE_GOSSIP_DB_ROLLBACK",
+      "expected": "BLOCK",
+      "observed": "ACCEPTED_V2",
+      "status": "FAIL"
+    }
+  ],
+  "status": "BOUNDARY_CONFIRMED",
+  "target_commit": "685046b7817a511daba87984490cbec2dceab982"
+}

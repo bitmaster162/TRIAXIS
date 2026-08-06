@@ -1,0 +1,19 @@
+{
+  "contract_id": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "version": "TRIAXIS v3.15-RC2 Policy Transparency Gossip",
+  "classification": "validation-only release candidate",
+  "rc1_product_commit": "685046b7817a511daba87984490cbec2dceab982",
+  "rc1_product_tree": "cb943dc563c333a9709f1ecb7d192e3f5fa44cf7",
+  "rc1_src_tree": "6c2e743fe193399d68c24b4ee7694672a732ee3a",
+  "logic_changed_after_rc1": false,
+  "tests": {"count": 296, "status": "PASS"},
+  "v3_14_protocol": {"count": 5, "status": "PASS"},
+  "v3_15_protocol": {"count": 4, "status": "PASS"},
+  "terminal_boundary": "WHOLE_GOSSIP_DATABASE_ROLLBACK",
+  "required_next_control": "REMOTE_GOSSIP_REPLICATION_OR_SIGNED_EXTERNAL_GOSSIP_HEAD_OR_TRUSTED_MONOTONIC_STATE",
+  "production_qualified": false,
+  "independent_certification": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}
