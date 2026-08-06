@@ -1,0 +1,21 @@
+{
+  "contract_id": "TRIAXIS_v3.17_POSTCOMMIT_THRESHOLD_AND_PHYSICAL_BOUNDARY_v1",
+  "finding": "A threshold of coordinated rolled-back or compromised Gossip Head Authorities can form a valid stale quorum; declared trust-domain labels do not prove physical or administrative independence.",
+  "required_next_control": "PHYSICAL_MULTI_ADMIN_DEPLOYMENT_PLUS_INDEPENDENT_MINIMUM_GOSSIP_CHECKPOINT_OR_PUBLIC_TRANSPARENCY_GOSSIP",
+  "rows": [
+    {
+      "case": "TWO_OF_THREE_COORDINATED_STALE_AUTHORITIES",
+      "expected": "BLOCK",
+      "observed": "ACCEPTED_OLD_CHECKPOINT",
+      "status": "FAIL"
+    },
+    {
+      "case": "DECLARED_TRUST_DOMAIN_IS_NOT_PHYSICAL_PROOF",
+      "expected": "EXTERNAL_CONFORMANCE_REQUIRED",
+      "observed": "NOT_PROVABLE_IN_LOCAL_REFERENCE",
+      "status": "PASS"
+    }
+  ],
+  "status": "BOUNDARY_CONFIRMED",
+  "target_commit": "806ceae7a539e904564ee3bedf6543840bb380dc"
+}

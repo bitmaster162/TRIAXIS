@@ -1,0 +1,14 @@
+{
+  "contract_id":"TRIAXIS_v3.17_RC2_DECLARATION_v1",
+  "release":"TRIAXIS v3.17-RC2 External Gossip Head Authority Quorum",
+  "product_commit":"806ceae7a539e904564ee3bedf6543840bb380dc",
+  "validation_only":true,
+  "logic_changed_after_rc1":false,
+  "analysis_status":"PASS_WITH_CONDITIONS",
+  "production_qualified":false,
+  "independent_certification":false,
+  "physical_multi_admin_conformance":false,
+  "can_trade":false,
+  "capital_permission":"DENY",
+  "deploy_permission":"DENY"
+}
