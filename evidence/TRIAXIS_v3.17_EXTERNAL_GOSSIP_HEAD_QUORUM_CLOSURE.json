@@ -1,0 +1,21 @@
+{
+  "case_count": 2,
+  "contract_id": "TRIAXIS_EXTERNAL_GOSSIP_HEAD_QUORUM_TRIGGER_RESULT_v1",
+  "pass_count": 2,
+  "rows": [
+    {
+      "case_id": "ONE_STALE_TWO_CURRENT",
+      "expected": "PASS",
+      "observed": "PASS",
+      "status": "PASS"
+    },
+    {
+      "case_id": "SPLIT_WITHOUT_THRESHOLD",
+      "expected": "gossip_head_authority_quorum_not_met",
+      "observed": "gossip_head_authority_quorum_not_met",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "target": "TRIAXIS-v3.17-RC1-EXTERNAL-GOSSIP-HEAD-QUORUM"
+}

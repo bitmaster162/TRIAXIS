@@ -1,0 +1,12 @@
+{
+  "contract_id":"TRIAXIS_V317_BASELINE_GATE_v1",
+  "baseline_tag":"TRIAXIS-v3.16-RC1-EXTERNAL-GOSSIP-HEAD",
+  "baseline_commit":"695d6662745f3d314e2cdd12cd52d03320ca0743",
+  "baseline_tree":"11b2834d9a3c67356f0c82bf86570a049d3c833d",
+  "baseline_tests":304,
+  "postcommit_boundary_evidence":"evidence/TRIAXIS_v3.16_POSTCOMMIT_SINGLE_GOSSIP_HEAD_BOUNDARY.json",
+  "status":"PASS",
+  "can_trade":false,
+  "capital_permission":"DENY",
+  "deploy_permission":"DENY"
+}
