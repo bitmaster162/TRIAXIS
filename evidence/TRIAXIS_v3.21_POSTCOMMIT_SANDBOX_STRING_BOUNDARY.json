@@ -1,0 +1,18 @@
+{
+  "contract_id": "TRIAXIS_v3.21_POSTCOMMIT_SANDBOX_STRING_BOUNDARY_v1",
+  "exact_product_commit": "d18cfc21944a289ae27cad8588e0d85598a01420",
+  "result_sha256": "15dc4df0384b1701a3cda3c84ba73194415da921c80cb23a87331cf7ed816820",
+  "rows": [
+    {
+      "actual_sandbox_receipt": false,
+      "actual_worktree_receipt": false,
+      "case_id": "SANDBOX_STRING_01",
+      "execute_contract_status": "PASS",
+      "required_fix": "bind child contract to exact repository manifest and sandbox provision receipt",
+      "vulnerability_reproduced": true,
+      "write_contract_status": "PASS"
+    }
+  ],
+  "rows_sha256": "f3fccac629901bf43161952ba8480f4200a8bf9d0a9da4f36a288c0f2572bb1c",
+  "status": "FAIL_EXPECTED"
+}
