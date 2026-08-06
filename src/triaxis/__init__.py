@@ -230,6 +230,8 @@ from .crypto_trust import (
     PURPOSE_EXECUTION_RECEIPT,
     PURPOSE_EXECUTION_LEDGER_HEAD_AUTHORITY,
     PURPOSE_PROVIDER_EFFECT_RECEIPT,
+    PURPOSE_COMPLETION_WITNESS_QUORUM,
+    PURPOSE_COMPLETION_WORM_ANCHOR,
     PURPOSE_POLICY_BUNDLE,
     PURPOSE_POLICY_HEAD_AUTHORITY,
     PURPOSE_POLICY_TRANSPARENCY_WITNESS,
@@ -257,6 +259,8 @@ __all__ += [
     "PURPOSE_EXECUTION_RECEIPT",
     "PURPOSE_EXECUTION_LEDGER_HEAD_AUTHORITY",
     "PURPOSE_PROVIDER_EFFECT_RECEIPT",
+    "PURPOSE_COMPLETION_WITNESS_QUORUM",
+    "PURPOSE_COMPLETION_WORM_ANCHOR",
     "PURPOSE_POLICY_BUNDLE",
     "PURPOSE_POLICY_HEAD_AUTHORITY",
     "PURPOSE_POLICY_TRANSPARENCY_WITNESS",
@@ -637,4 +641,56 @@ __all__ += [
     "verify_external_completion_witness_status",
     "verify_external_effect_guard_with_head_quorum_and_completion_witness",
     "verify_provider_outcome_receipt",
+]
+
+
+# TRIAXIS v3.30 independent completion-witness quorum and logical WORM anchor.
+from .completion_witness_quorum import (
+    COMPLETION_WITNESS_QUORUM_CONFIG_CONTRACT_ID,
+    COMPLETION_WITNESS_QUORUM_WITNESS_CONTRACT_ID,
+    CompletionWitnessQuorumError,
+    make_completion_witness_quorum_config,
+    sign_completion_witness_quorum_witness,
+    validate_completion_witness_quorum_config,
+    verify_completion_witness_quorum,
+    verify_completion_witness_quorum_witness,
+    verify_external_effect_guard_with_completion_quorum_and_worm_anchor,
+)
+from .completion_worm_anchor import (
+    COMPLETION_WORM_ANCHOR_EVENT_CONTRACT_ID,
+    COMPLETION_WORM_ANCHOR_HEAD_CONTRACT_ID,
+    COMPLETION_WORM_ANCHOR_STATUS_CONTRACT_ID,
+    CompletionWORMAnchorError,
+    SQLiteCompletionWORMAnchor,
+    verify_completion_worm_anchor_event,
+    verify_completion_worm_anchor_event_chain,
+    verify_completion_worm_anchor_head,
+    verify_completion_worm_anchor_status,
+)
+from .completion_worm_anchor_http import (
+    CompletionWORMAnchorHTTPApplication,
+    build_completion_worm_anchor_http_server,
+)
+
+__all__ += [
+    "COMPLETION_WITNESS_QUORUM_CONFIG_CONTRACT_ID",
+    "COMPLETION_WITNESS_QUORUM_WITNESS_CONTRACT_ID",
+    "COMPLETION_WORM_ANCHOR_EVENT_CONTRACT_ID",
+    "COMPLETION_WORM_ANCHOR_HEAD_CONTRACT_ID",
+    "COMPLETION_WORM_ANCHOR_STATUS_CONTRACT_ID",
+    "CompletionWORMAnchorError",
+    "CompletionWORMAnchorHTTPApplication",
+    "CompletionWitnessQuorumError",
+    "SQLiteCompletionWORMAnchor",
+    "build_completion_worm_anchor_http_server",
+    "make_completion_witness_quorum_config",
+    "sign_completion_witness_quorum_witness",
+    "validate_completion_witness_quorum_config",
+    "verify_completion_witness_quorum",
+    "verify_completion_witness_quorum_witness",
+    "verify_completion_worm_anchor_event",
+    "verify_completion_worm_anchor_event_chain",
+    "verify_completion_worm_anchor_head",
+    "verify_completion_worm_anchor_status",
+    "verify_external_effect_guard_with_completion_quorum_and_worm_anchor",
 ]

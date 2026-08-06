@@ -1,0 +1,31 @@
+[Unit]
+Description=TRIAXIS Completion WORM Anchor Reference
+After=network.target triaxis-idempotent-provider.service
+
+[Service]
+Type=simple
+User=triaxis-completion-anchor
+Group=triaxis-completion-anchor
+EnvironmentFile=/etc/triaxis/completion-worm-anchor.env
+LoadCredential=completion-worm-anchor-private-key:/etc/triaxis/credentials/completion-worm-anchor-private-key
+LoadCredential=completion-worm-anchor-client-token:/etc/triaxis/credentials/completion-worm-anchor-client-token
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_completion_worm_anchor.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadOnlyPaths=/etc/triaxis/provider-public-keys.json
+ReadWritePaths=/var/lib/triaxis-completion-worm-anchor
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

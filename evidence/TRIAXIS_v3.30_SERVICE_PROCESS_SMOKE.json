@@ -1,0 +1,43 @@
+{
+  "authority_granted": false,
+  "case_count": 5,
+  "fail_count": 0,
+  "pass_count": 5,
+  "physical_worm_established": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.30_SERVICE_PROCESS_SMOKE",
+  "rows": [
+    {
+      "all_health_pass": true,
+      "case_id": "V330SP01_FOUR_EVIDENCE_PROCESSES_START_AND_MINIMIZE_SECRETS",
+      "process_count": 4,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V330SP02_THREE_COMPLETION_WITNESSES_FORM_2_OF_3_QUORUM",
+      "member_count": 3,
+      "quorum_state": "ABSENT",
+      "status": "PASS"
+    },
+    {
+      "accepted_status": 200,
+      "anchored_state": "COMPLETED",
+      "case_id": "V330SP03_WORM_ANCHOR_PROCESS_ENFORCES_MUTATION_AUTH",
+      "denied_status": 403,
+      "status": "PASS"
+    },
+    {
+      "block_code": "worm_anchor_state_blocks_retry",
+      "case_id": "V330SP04_CURRENT_WORM_ANCHOR_BLOCKS_COMPLETED_EFFECT",
+      "http_status": 200,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V330SP05_CONFIGURED_BLOCKING_MINORITY_VETOES_PROCESS_QUORUM",
+      "status": "PASS",
+      "veto_code": "blocking_completion_witness_minority"
+    }
+  ],
+  "rows_sha256": "eeb61fdd4918271972b6e3fb6629cd2339279922d914d93dce0e1f54e36a7e13",
+  "status": "PASS"
+}

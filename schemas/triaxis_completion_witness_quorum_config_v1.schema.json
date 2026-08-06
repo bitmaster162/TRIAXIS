@@ -1,0 +1,98 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_completion_witness_quorum_config_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Completion Witness Quorum Config v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_WITNESS_QUORUM_CONFIG_v1"
+    },
+    "config_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "witness_set_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "threshold": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "witnesses": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "witness_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authority_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "service_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "signer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "key_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trust_domain": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "witness_id",
+          "authority_id",
+          "service_id",
+          "signer_id",
+          "key_id",
+          "trust_domain"
+        ]
+      }
+    },
+    "valid_from": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "valid_until": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "contract_id",
+    "config_id",
+    "witness_set_id",
+    "provider_id",
+    "provider_service_id",
+    "threshold",
+    "witnesses",
+    "valid_from",
+    "valid_until",
+    "config_sha256"
+  ]
+}

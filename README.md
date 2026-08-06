@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current release: **TRIAXIS v3.28-RC2 Monotonic Execution Head and Provider Reconciliation**; RC2 is validation-only and not production-qualified.
+Current development release: **TRIAXIS v3.30-RC1 Completion-Witness Quorum and Logical WORM Anchor**; RC1 is an executable reference and is not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 
@@ -109,3 +109,16 @@ PYTHONPATH=src:. python validation/execution_ledger_head/run_v328_execution_head
 ```
 
 A v3.28 PASS does not grant action authority or establish production exactly-once execution. The included provider is a reference state machine, synchronization gaps fail closed, and coordinated rollback or compromise of the ledger, head authority, and provider store remains a post-product boundary.
+
+## v3.30 Completion-Witness Quorum and Logical WORM Anchor
+
+The v3.30 layer requires an operator-pinned threshold of distinct external completion witnesses and applies a blocking-minority veto when any valid configured witness reports `RESERVED`, `UNKNOWN` or `COMPLETED`. It also consumes signed provider outcomes into a separate signed logical append-only completion anchor with full-chain, head, state-root and fresh status verification.
+
+Run the exact closure and real-process smoke:
+
+```bash
+PYTHONPATH=src:. python validation/completion_witness_quorum_worm_anchor/run_v330_completion_witness_quorum_and_worm_anchor_closure.py
+PYTHONPATH=src:. python validation/completion_witness_quorum_worm_anchor/run_v330_service_process_smoke.py
+```
+
+The included SQLite anchor is not physical WORM storage. A v3.30 PASS does not establish physical independence or production exactly-once behavior under coordinated rollback of quorum thresholds and the anchor.

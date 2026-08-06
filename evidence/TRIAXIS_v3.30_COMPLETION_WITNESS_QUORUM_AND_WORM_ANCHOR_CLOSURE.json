@@ -1,0 +1,143 @@
+{
+  "authority_granted": false,
+  "case_count": 26,
+  "fail_count": 0,
+  "pass_count": 26,
+  "physical_worm_established": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_COMPLETION_WITNESS_QUORUM_AND_WORM_ANCHOR_CLOSURE_v3.30",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_absent_status_is_fresh_and_single_use",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_chain_parent_substitution_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_completed_receipt_is_anchored_and_blocks_retry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_event_chain_and_head_verify",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_exact_provider_outcome_replay_is_idempotent",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_http_requires_auth_for_ingest_and_minimizes_health",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_no_effect_opens_next_generation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_payload_substitution_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWORMAnchorTests.test_unknown_can_reconcile_to_completed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_absent_and_no_effect_do_not_launder_into_one_quorum",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_blocking_minority_vetoes_two_absent_votes",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_config_substitution_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_duplicate_response_does_not_add_vote",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_one_stale_response_is_ignored_when_two_current_match",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_signed_quorum_witness_verifies_against_pinned_config",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_signer_equivocation_is_blocked",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_threshold_requires_distinct_domains",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_two_of_three_absent_witnesses_accept",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330CompletionWitnessQuorumTests.test_unpinned_identity_cannot_form_quorum",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330ComposedGuardTests.test_current_worm_anchor_blocks_rolled_back_provider_and_witness_threshold",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor.V330ComposedGuardTests.test_full_preflight_requires_both_quorums_and_worm_anchor",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor_schemas.V330SchemaTests.test_completion_witness_quorum_config_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor_schemas.V330SchemaTests.test_completion_witness_quorum_witness_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor_schemas.V330SchemaTests.test_completion_worm_anchor_event_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor_schemas.V330SchemaTests.test_completion_worm_anchor_head_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_30_completion_witness_quorum_and_worm_anchor_schemas.V330SchemaTests.test_completion_worm_anchor_status_schema",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "32ebaf6247db3310329eee05c5727878c13102aac70d5df89c2c750fe120a0ec",
+  "status": "PASS"
+}
