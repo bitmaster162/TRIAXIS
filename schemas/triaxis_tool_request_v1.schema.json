@@ -14,6 +14,17 @@
       "type": "array",
       "uniqueItems": true
     },
+    "materialization_receipt_sha256": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
     "max_output_bytes": {
       "minimum": 0,
       "type": "integer"
@@ -42,6 +53,7 @@
     "input_artifact_ids",
     "payload_sha256",
     "max_output_bytes",
+    "materialization_receipt_sha256",
     "request_sha256"
   ],
   "title": "TRIAXIS Tool Request v1",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -22,6 +23,7 @@ from triaxis.harness_v1 import (
     inspect_harness,
     make_acp_style_message,
     make_headless_event,
+    materialize_context_receipt,
     normalize_logical_path,
     resolve_harness_config,
     seal_hook_result,
@@ -37,6 +39,8 @@ from triaxis.integrity import verify_sealed_mapping
 D = "d" * 64
 E = "e" * 64
 F = "f" * 64
+CONTEXT_BYTES = b"TRIAXIS context fixture\n"
+CONTEXT_SHA = hashlib.sha256(CONTEXT_BYTES).hexdigest()
 
 
 def authority(**overrides):
@@ -101,14 +105,23 @@ def context_manifest():
                     "artifact_id": "file:readme",
                     "logical_path": "README.md",
                     "source_kind": "FILE",
-                    "content_sha256": D,
-                    "size_bytes": 128,
+                    "content_sha256": CONTEXT_SHA,
+                    "size_bytes": len(CONTEXT_BYTES),
                     "data_class": "PUBLIC",
                     "explicit_grant": True,
                 }
             ],
         },
         config(),
+    )
+
+
+def context_materialization_receipt(*, raw: bytes = CONTEXT_BYTES, tick: int = 6):
+    return materialize_context_receipt(
+        context_manifest(),
+        {"file:readme": raw},
+        materializer_id="materializer:test",
+        observed_at_tick=tick,
     )
 
 
@@ -453,14 +466,16 @@ class SubagentAndSessionTests(unittest.TestCase):
 
 
 class ToolBrokerTests(unittest.TestCase):
-    def test_read_tool_is_confined_to_context_manifest(self):
+    def test_read_tool_is_confined_to_context_manifest_and_exact_bytes(self):
         broker = CapabilityBroker()
         broker.register(ToolSpec("read_file", "read", False, ("workspace:triaxis",), 1024, ("PUBLIC", "INTERNAL")))
+        materialized = context_materialization_receipt()
         request = seal_tool_request(
             {
                 "tool_id": "read_file",
                 "target": "workspace:triaxis",
                 "input_artifact_ids": ["file:readme"],
+                "materialization_receipt_sha256": materialized["receipt_sha256"],
                 "payload_sha256": E,
                 "max_output_bytes": 100,
             }
@@ -469,6 +484,7 @@ class ToolBrokerTests(unittest.TestCase):
             request,
             session_authority=authority(),
             context_manifest=context_manifest(),
+            materialization_receipt=materialized,
             hook_receipt=None,
             evaluation_tick=7,
         )
@@ -482,11 +498,35 @@ class ToolBrokerTests(unittest.TestCase):
                 bad,
                 session_authority=authority(),
                 context_manifest=context_manifest(),
+                materialization_receipt=materialized,
                 hook_receipt=None,
                 evaluation_tick=7,
             )["outcome"],
             "DENY",
         )
+
+    def test_materialization_receipt_is_required_and_digest_bound(self):
+        broker = CapabilityBroker()
+        broker.register(ToolSpec("read_file", "read", False, ("workspace:triaxis",), 1024, ("PUBLIC",)))
+        materialized = context_materialization_receipt()
+        request = seal_tool_request({
+            "tool_id": "read_file", "target": "workspace:triaxis",
+            "input_artifact_ids": ["file:readme"],
+            "materialization_receipt_sha256": materialized["receipt_sha256"],
+            "payload_sha256": E, "max_output_bytes": 100,
+        })
+        denied = broker.dispatch(
+            request, session_authority=authority(), context_manifest=context_manifest(),
+            hook_receipt=None, evaluation_tick=7,
+        )
+        self.assertEqual(denied["outcome"], "DENY")
+        wrong = context_materialization_receipt(raw=b"changed bytes\n")
+        self.assertEqual(wrong["status"], "BLOCK")
+        denied = broker.dispatch(
+            request, session_authority=authority(), context_manifest=context_manifest(),
+            materialization_receipt=wrong, hook_receipt=None, evaluation_tick=7,
+        )
+        self.assertEqual(denied["outcome"], "DENY")
 
     def test_side_effect_requires_exact_authorization_token(self):
         broker = CapabilityBroker()

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_context_materialization_receipt_v1.schema.json",
+  "title": "TRIAXIS Context Materialization Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id", "context_manifest_sha256", "materializer_id", "observed_at_tick", "observed_items", "status", "errors", "receipt_sha256"],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_CONTEXT_MATERIALIZATION_RECEIPT_v1"},
+    "context_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "materializer_id": {"type": "string", "minLength": 1},
+    "observed_at_tick": {"type": "integer", "minimum": 0},
+    "observed_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_id", "logical_path", "content_sha256", "size_bytes", "data_class"],
+        "properties": {
+          "artifact_id": {"type": "string", "minLength": 1},
+          "logical_path": {"type": "string", "minLength": 1},
+          "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size_bytes": {"type": "integer", "minimum": 0},
+          "data_class": {"enum": ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "SECRET"]}
+        }
+      }
+    },
+    "status": {"enum": ["PASS", "BLOCK"]},
+    "errors": {"type": "array", "items": {"type": "object"}},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

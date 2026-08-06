@@ -6,7 +6,7 @@ import unittest
 
 from jsonschema import Draft202012Validator
 
-from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest
+from tests.test_v3_19_grok_harness_adoption import authority, config, context_manifest, context_materialization_receipt
 from triaxis.harness_v1 import (
     PluginRegistry,
     SkillRegistry,
@@ -14,6 +14,7 @@ from triaxis.harness_v1 import (
     classify_harness_failure,
     make_acp_style_message,
     make_headless_event,
+    materialize_context_receipt,
     seal_hook_result,
     seal_tool_request,
     seal_workflow_definition,
@@ -32,6 +33,8 @@ class HarnessSchemaTests(unittest.TestCase):
         cfg = config()
         self.validate("triaxis_harness_config_v1.schema.json", cfg)
         self.validate("triaxis_context_disclosure_manifest_v1.schema.json", context_manifest())
+        materialized = context_materialization_receipt()
+        self.validate("triaxis_context_materialization_receipt_v1.schema.json", materialized)
 
         skills = SkillRegistry()
         skill = skills.seal_skill(
@@ -103,6 +106,7 @@ class HarnessSchemaTests(unittest.TestCase):
                 "tool_id": "read_file",
                 "target": "workspace:triaxis",
                 "input_artifact_ids": ["file:readme"],
+                "materialization_receipt_sha256": materialized["receipt_sha256"],
                 "payload_sha256": D,
                 "max_output_bytes": 100,
             }

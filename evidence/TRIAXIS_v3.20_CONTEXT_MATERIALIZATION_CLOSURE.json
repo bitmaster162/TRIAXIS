@@ -1,0 +1,80 @@
+{
+  "contract_id": "TRIAXIS_v3.20_CONTEXT_MATERIALIZATION_CLOSURE_v1",
+  "failed": 0,
+  "passed": 5,
+  "result_sha256": "c5b9c99ce666d0b64a897fafce7bf6da1d034c2d43c00fff91dc11e61a08a2cb",
+  "rows": [
+    {
+      "case_id": "CM01_CHANGED_BYTES_BLOCK",
+      "observed": {
+        "errors": [
+          {
+            "code": "materialized_digest_mismatch",
+            "message": "expected 874009709507be7cfc4886fec76cb2b8216499c974bc96452d22a5ee15b459c7, observed 19c12d31127ab82371f3381c5589c9804b6df5a178843511211d78cedfe93d90",
+            "path": "materialized_bytes.file:x"
+          },
+          {
+            "code": "materialized_size_mismatch",
+            "message": "expected 15, observed 23",
+            "path": "materialized_bytes.file:x"
+          }
+        ],
+        "status": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "CM02_MISSING_RECEIPT_DENY",
+      "observed": {
+        "errors": [
+          {
+            "code": "materialization_receipt_required",
+            "message": "exact loaded bytes must be attested",
+            "path": "materialization_receipt"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "CM03_EXACT_BYTES_ALLOW",
+      "observed": {
+        "outcome": "ALLOW",
+        "receipt_status": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "CM04_REQUEST_RECEIPT_BINDING",
+      "observed": {
+        "errors": [
+          {
+            "code": "request_materialization_mismatch",
+            "message": "request must bind exact receipt",
+            "path": "request.materialization_receipt_sha256"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "CM05_FUTURE_RECEIPT_DENY",
+      "observed": {
+        "errors": [
+          {
+            "code": "invalid_materialization_time",
+            "message": "must not be in the future",
+            "path": "materialization_receipt.observed_at_tick"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "70c46d507187c2543169b7de6fadb324664f1b840bb92ff61bf68f890124aeb6",
+  "status": "PASS",
+  "total": 5
+}

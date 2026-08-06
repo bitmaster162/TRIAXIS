@@ -17,6 +17,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 from copy import deepcopy
 from dataclasses import dataclass
+import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import sqlite3
@@ -27,6 +28,7 @@ from .integrity import canonical_sha256, materialize_json, seal_mapping, verify_
 
 HARNESS_CONFIG_CONTRACT_ID = "TRIAXIS_HARNESS_CONFIG_v1"
 CONTEXT_MANIFEST_CONTRACT_ID = "TRIAXIS_CONTEXT_DISCLOSURE_MANIFEST_v1"
+CONTEXT_MATERIALIZATION_RECEIPT_CONTRACT_ID = "TRIAXIS_CONTEXT_MATERIALIZATION_RECEIPT_v1"
 SKILL_CONTRACT_ID = "TRIAXIS_SKILL_CAPABILITY_CONTRACT_v1"
 SKILL_INVOCATION_CONTRACT_ID = "TRIAXIS_SKILL_INVOCATION_v1"
 PLUGIN_MANIFEST_CONTRACT_ID = "TRIAXIS_PLUGIN_MANIFEST_v1"
@@ -446,6 +448,83 @@ def assemble_context(request: Mapping[str, Any], effective_config: Mapping[str, 
         "manifest_sha256": "",
     }
     return seal_mapping(manifest, "manifest_sha256")
+
+
+def materialize_context_receipt(
+    manifest_value: Mapping[str, Any],
+    materialized_bytes: Mapping[str, bytes],
+    *,
+    materializer_id: str,
+    observed_at_tick: int,
+) -> dict[str, Any]:
+    """Hash exact bytes loaded for a previously approved context manifest.
+
+    The caller is the host-owned materializer.  The returned receipt contains no
+    raw content, only exact observed digests and sizes.  A tool must consume the
+    captured bytes represented by this receipt rather than re-reading a mutable
+    path after authorization.
+    """
+
+    errors: list[dict[str, str]] = []
+    manifest = _validate_sealed(
+        manifest_value,
+        contract_id=CONTEXT_MANIFEST_CONTRACT_ID,
+        digest_field="manifest_sha256",
+        path="context_manifest",
+        errors=errors,
+    )
+    if not isinstance(materializer_id, str) or not materializer_id:
+        errors.append(_error("invalid_materializer", "materializer_id", "non-empty identity required"))
+    if type(observed_at_tick) is not int or observed_at_tick < 0:
+        errors.append(_error("invalid_observed_at", "observed_at_tick", "integer >= 0 required"))
+    if not isinstance(materialized_bytes, Mapping):
+        errors.append(_error("invalid_materialized_bytes", "materialized_bytes", "mapping required"))
+        materialized_bytes = {}
+    selected = {
+        item.get("artifact_id"): item
+        for item in (manifest or {}).get("selected_items", [])
+        if isinstance(item, Mapping)
+    }
+    observed_items: list[dict[str, Any]] = []
+    for artifact_id in sorted(materialized_bytes):
+        raw = materialized_bytes[artifact_id]
+        if not isinstance(artifact_id, str) or not artifact_id:
+            errors.append(_error("invalid_artifact_id", "materialized_bytes", "non-empty string key required"))
+            continue
+        if not isinstance(raw, (bytes, bytearray)):
+            errors.append(_error("invalid_materialized_content", f"materialized_bytes.{artifact_id}", "bytes required"))
+            continue
+        item = selected.get(artifact_id)
+        if item is None:
+            errors.append(_error("artifact_not_in_manifest", f"materialized_bytes.{artifact_id}", "not selected by manifest"))
+            continue
+        raw_bytes = bytes(raw)
+        observed_sha256 = hashlib.sha256(raw_bytes).hexdigest()
+        observed_size = len(raw_bytes)
+        expected_sha256 = item.get("content_sha256")
+        expected_size = item.get("size_bytes")
+        if observed_sha256 != expected_sha256:
+            errors.append(_error("materialized_digest_mismatch", f"materialized_bytes.{artifact_id}", f"expected {expected_sha256}, observed {observed_sha256}"))
+        if observed_size != expected_size:
+            errors.append(_error("materialized_size_mismatch", f"materialized_bytes.{artifact_id}", f"expected {expected_size}, observed {observed_size}"))
+        observed_items.append({
+            "artifact_id": artifact_id,
+            "logical_path": item.get("logical_path"),
+            "content_sha256": observed_sha256,
+            "size_bytes": observed_size,
+            "data_class": item.get("data_class"),
+        })
+    receipt = {
+        "contract_id": CONTEXT_MATERIALIZATION_RECEIPT_CONTRACT_ID,
+        "context_manifest_sha256": (manifest or {}).get("manifest_sha256"),
+        "materializer_id": materializer_id,
+        "observed_at_tick": observed_at_tick,
+        "observed_items": observed_items,
+        "status": "PASS" if not errors else "BLOCK",
+        "errors": errors,
+        "receipt_sha256": "",
+    }
+    return seal_mapping(receipt, "receipt_sha256")
 
 
 def compact_context_manifest(
@@ -942,6 +1021,7 @@ class CapabilityBroker:
         hook_receipt: Mapping[str, Any] | None,
         evaluation_tick: int,
         authorization_token: Mapping[str, Any] | None = None,
+        materialization_receipt: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         errors: list[dict[str, str]] = []
         request = _validate_sealed(
@@ -986,6 +1066,41 @@ class CapabilityBroker:
             for artifact_id in set(requested_refs) & set(selected):
                 if selected[artifact_id].get("data_class") not in spec.accepted_data_classes:
                     errors.append(_error("tool_data_class_denied", "request.input_artifact_ids", artifact_id))
+            materialized = None
+            if requested_refs:
+                if materialization_receipt is None:
+                    errors.append(_error("materialization_receipt_required", "materialization_receipt", "exact loaded bytes must be attested"))
+                else:
+                    materialized = _validate_sealed(
+                        materialization_receipt,
+                        contract_id=CONTEXT_MATERIALIZATION_RECEIPT_CONTRACT_ID,
+                        digest_field="receipt_sha256",
+                        path="materialization_receipt",
+                        errors=errors,
+                    )
+                    if materialized is not None:
+                        if materialized.get("status") != "PASS":
+                            errors.append(_error("materialization_blocked", "materialization_receipt.status", str(materialized.get("status"))))
+                        if materialized.get("context_manifest_sha256") != manifest.get("manifest_sha256"):
+                            errors.append(_error("materialization_manifest_mismatch", "materialization_receipt.context_manifest_sha256", "wrong manifest"))
+                        if request.get("materialization_receipt_sha256") != materialized.get("receipt_sha256"):
+                            errors.append(_error("request_materialization_mismatch", "request.materialization_receipt_sha256", "request must bind exact receipt"))
+                        observed_tick = materialized.get("observed_at_tick")
+                        if type(observed_tick) is not int or observed_tick < 0 or observed_tick > evaluation_tick:
+                            errors.append(_error("invalid_materialization_time", "materialization_receipt.observed_at_tick", "must not be in the future"))
+                        observed = {
+                            item.get("artifact_id"): item
+                            for item in materialized.get("observed_items", [])
+                            if isinstance(item, Mapping)
+                        }
+                        unmaterialized = set(requested_refs) - set(observed)
+                        if unmaterialized:
+                            errors.append(_error("artifact_not_materialized", "request.input_artifact_ids", str(sorted(unmaterialized))))
+                        for artifact_id in set(requested_refs) & set(observed) & set(selected):
+                            if observed[artifact_id].get("content_sha256") != selected[artifact_id].get("content_sha256"):
+                                errors.append(_error("materialized_digest_mismatch", "materialization_receipt.observed_items", artifact_id))
+                            if observed[artifact_id].get("size_bytes") != selected[artifact_id].get("size_bytes"):
+                                errors.append(_error("materialized_size_mismatch", "materialization_receipt.observed_items", artifact_id))
             output_limit = request.get("max_output_bytes", spec.max_output_bytes)
             if type(output_limit) is not int or output_limit < 0 or output_limit > spec.max_output_bytes:
                 errors.append(_error("invalid_output_limit", "request.max_output_bytes", f"max {spec.max_output_bytes}"))
@@ -1016,6 +1131,7 @@ class CapabilityBroker:
             "tool_id": request.get("tool_id") if request else None,
             "target": request.get("target") if request else None,
             "context_manifest_sha256": manifest.get("manifest_sha256") if manifest else None,
+            "materialization_receipt_sha256": materialized.get("receipt_sha256") if 'materialized' in locals() and materialized else None,
             "outcome": "ALLOW" if not errors else "DENY",
             "side_effect": spec.side_effect if spec else None,
             "errors": errors,
@@ -1029,6 +1145,7 @@ def seal_tool_request(value: Mapping[str, Any]) -> dict[str, Any]:
     if not isinstance(body, dict):
         raise TypeError("tool request must be object")
     body.setdefault("contract_id", TOOL_REQUEST_CONTRACT_ID)
+    body.setdefault("materialization_receipt_sha256", None)
     body.setdefault("request_sha256", "")
     return seal_mapping(body, "request_sha256")
 
