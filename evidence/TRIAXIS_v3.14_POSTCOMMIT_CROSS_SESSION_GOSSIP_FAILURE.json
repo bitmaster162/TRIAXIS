@@ -1,0 +1,19 @@
+{
+  "contract_id": "TRIAXIS_v3.14_POSTCOMMIT_CROSS_SESSION_GOSSIP_BOUNDARY_v1",
+  "finding": "A witness can sign a higher floor in one verifier session and a lower floor in another; v3.14 has no persistent cross-session gossip pin.",
+  "rows": [
+    {
+      "case": "SESSION_A_ACCEPTS_V3",
+      "observed": 3,
+      "status": "PASS"
+    },
+    {
+      "case": "CROSS_SESSION_WITNESS_ROLLBACK",
+      "expected": "BLOCK",
+      "observed": "ACCEPTED_V2",
+      "status": "FAIL"
+    }
+  ],
+  "status": "FAIL_EXPECTED",
+  "target_commit": "46d32b588f5f026067fe2c94b9728f706b8c89d5"
+}
