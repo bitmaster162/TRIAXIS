@@ -1,0 +1,95 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_skill_capability_contract_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_tools": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contract_id": {
+      "const": "TRIAXIS_SKILL_CAPABILITY_CONTRACT_v1"
+    },
+    "default_isolation": {
+      "enum": [
+        "none",
+        "worktree"
+      ]
+    },
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "produced_outputs": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "requested_capabilities": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_inputs": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "skill_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "skill_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "supersedes_skill_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "version": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "skill_id",
+    "name",
+    "description",
+    "version",
+    "required_inputs",
+    "produced_outputs",
+    "requested_capabilities",
+    "allowed_tools",
+    "default_isolation",
+    "supersedes_skill_sha256",
+    "skill_sha256"
+  ],
+  "title": "TRIAXIS Skill Capability Contract v1",
+  "type": "object"
+}

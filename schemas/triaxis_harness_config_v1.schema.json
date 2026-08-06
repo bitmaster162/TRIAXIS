@@ -1,0 +1,129 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_harness_config_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "applied_layers": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "capabilities": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_HARNESS_CONFIG_v1"
+    },
+    "data_classes": {
+      "items": {
+        "enum": [
+          "PUBLIC",
+          "INTERNAL",
+          "CONFIDENTIAL",
+          "SECRET"
+        ]
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "max_context_bytes": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "max_rounds": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "max_subagents": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "max_workflow_fanout": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "mcp_servers": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "plugin_digests": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "requirement_sources": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "sandbox_profiles": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "targets": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "tools": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "whole_repo_upload": {
+      "const": false
+    }
+  },
+  "required": [
+    "contract_id",
+    "capabilities",
+    "tools",
+    "targets",
+    "data_classes",
+    "mcp_servers",
+    "max_context_bytes",
+    "max_subagents",
+    "max_workflow_fanout",
+    "max_rounds",
+    "whole_repo_upload",
+    "plugin_digests",
+    "sandbox_profiles",
+    "applied_layers",
+    "requirement_sources",
+    "config_sha256"
+  ],
+  "title": "TRIAXIS Harness Config v1",
+  "type": "object"
+}

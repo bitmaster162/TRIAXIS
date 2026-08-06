@@ -1,0 +1,96 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_plugin_manifest_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "agents": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "commands": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "contract_id": {
+      "const": "TRIAXIS_PLUGIN_MANIFEST_v1"
+    },
+    "hooks": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "mcp_servers": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "permission_mode": {
+      "not": {
+        "const": "bypassPermissions"
+      },
+      "type": "string"
+    },
+    "plugin_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "requested_capabilities": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "skills": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "plugin_id",
+    "version",
+    "source_sha256",
+    "skills",
+    "commands",
+    "agents",
+    "hooks",
+    "mcp_servers",
+    "requested_capabilities",
+    "permission_mode",
+    "manifest_sha256"
+  ],
+  "title": "TRIAXIS Plugin Manifest v1",
+  "type": "object"
+}

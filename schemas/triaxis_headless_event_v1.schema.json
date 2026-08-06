@@ -1,0 +1,58 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_headless_event_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_HEADLESS_EVENT_v1"
+    },
+    "event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "event_type": {
+      "enum": [
+        "SESSION_STARTED",
+        "CONTEXT_ASSEMBLED",
+        "PLAN_CREATED",
+        "PLAN_REVIEWED",
+        "DIFF_READY",
+        "APPROVAL_REQUIRED",
+        "TOOL_CALL_REQUESTED",
+        "TOOL_CALL_RESULT",
+        "SUBAGENT_STARTED",
+        "SUBAGENT_COMPLETED",
+        "WORKFLOW_PAUSED",
+        "WORKFLOW_RESUMED",
+        "TURN_COMPLETED",
+        "ERROR"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "seq": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "session_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "turn_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "session_id",
+    "turn_id",
+    "seq",
+    "event_type",
+    "payload",
+    "event_sha256"
+  ],
+  "title": "TRIAXIS Headless Event v1",
+  "type": "object"
+}

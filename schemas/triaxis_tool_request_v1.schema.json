@@ -1,0 +1,49 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_tool_request_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_TOOL_REQUEST_v1"
+    },
+    "input_artifact_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "max_output_bytes": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "target": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "tool_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "tool_id",
+    "target",
+    "input_artifact_ids",
+    "payload_sha256",
+    "max_output_bytes",
+    "request_sha256"
+  ],
+  "title": "TRIAXIS Tool Request v1",
+  "type": "object"
+}

@@ -1,0 +1,58 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_acp_style_message_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "compatibility_claim": {
+      "const": "REFERENCE_ONLY_NOT_ACP_CERTIFIED"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_ACP_STYLE_MESSAGE_v1"
+    },
+    "message_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "method": {
+      "enum": [
+        "initialize",
+        "session/new",
+        "session/prompt",
+        "session/cancel",
+        "session/fork",
+        "session/inspect",
+        "session/resume",
+        "session/close"
+      ]
+    },
+    "params": {
+      "type": "object"
+    },
+    "protocol_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "request_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "session_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "compatibility_claim",
+    "protocol_version",
+    "request_id",
+    "method",
+    "session_id",
+    "params",
+    "message_sha256"
+  ],
+  "title": "TRIAXIS ACP-style Message v1",
+  "type": "object"
+}

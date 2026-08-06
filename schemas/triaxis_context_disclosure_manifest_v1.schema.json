@@ -1,0 +1,152 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_context_disclosure_manifest_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "config_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_CONTEXT_DISCLOSURE_MANIFEST_v1"
+    },
+    "errors": {
+      "type": "array"
+    },
+    "git_history_disclosure": {
+      "const": false
+    },
+    "implicit_disclosure": {
+      "const": false
+    },
+    "manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "purpose": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "rejected_items": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "logical_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reasons": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "artifact_id",
+          "logical_path",
+          "reasons"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "selected_bytes": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "selected_items": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "content_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "data_class": {
+            "enum": [
+              "PUBLIC",
+              "INTERNAL",
+              "CONFIDENTIAL",
+              "SECRET"
+            ]
+          },
+          "logical_path": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "purpose": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "source_kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "artifact_id",
+          "logical_path",
+          "source_kind",
+          "content_sha256",
+          "size_bytes",
+          "data_class",
+          "purpose"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "session_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "PASS_WITH_OMISSIONS",
+        "BLOCK"
+      ]
+    },
+    "whole_repo_disclosure": {
+      "const": false
+    }
+  },
+  "required": [
+    "contract_id",
+    "session_id",
+    "purpose",
+    "config_sha256",
+    "selected_items",
+    "rejected_items",
+    "selected_bytes",
+    "whole_repo_disclosure",
+    "git_history_disclosure",
+    "implicit_disclosure",
+    "status",
+    "errors",
+    "manifest_sha256"
+  ],
+  "title": "TRIAXIS Context Disclosure Manifest v1",
+  "type": "object"
+}

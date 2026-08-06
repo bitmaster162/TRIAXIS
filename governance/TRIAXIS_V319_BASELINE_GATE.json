@@ -1,0 +1,13 @@
+{
+  "contract_id": "TRIAXIS_GIT_BASELINE_GATE_v1",
+  "baseline_tag": "TRIAXIS-v3.18-RC2-SINGLE-HOST-MULTIPROCESS-CONFORMANCE",
+  "baseline_commit": "c16f5699936aa68fd83d756558874957e219a84d",
+  "baseline_tree": "269cc48784de953ae1be03031811701758d27aa8",
+  "baseline_src_tree": "1c5e4d0d3767add8c7b57a1d8975aab5cb553ddf",
+  "baseline_tests": 315,
+  "baseline_status": "PASS",
+  "new_branch": "v3.19-grok-harness-adoption",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}

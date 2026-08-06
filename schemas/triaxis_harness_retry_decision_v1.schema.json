@@ -1,0 +1,61 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_harness_retry_decision_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempt": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "consumes_retry_budget": {
+      "type": "boolean"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_HARNESS_RETRY_DECISION_v1"
+    },
+    "decision_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "error_kind": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "http_status": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "max_attempts": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "outcome": {
+      "enum": [
+        "RETRY",
+        "BLOCK",
+        "COMPACT",
+        "HOLD",
+        "DENY"
+      ]
+    },
+    "reason": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "error_kind",
+    "http_status",
+    "attempt",
+    "max_attempts",
+    "outcome",
+    "reason",
+    "consumes_retry_budget",
+    "decision_sha256"
+  ],
+  "title": "TRIAXIS Harness Retry Decision v1",
+  "type": "object"
+}

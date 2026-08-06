@@ -1,0 +1,127 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_hook_result_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_after": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "data_classes": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "max_context_bytes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "max_rounds": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "max_subagents": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "max_workflow_fanout": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "mcp_servers": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "targets": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "tools": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "capabilities",
+        "tools",
+        "targets",
+        "data_classes",
+        "mcp_servers",
+        "max_context_bytes",
+        "max_subagents",
+        "max_workflow_fanout",
+        "max_rounds"
+      ],
+      "type": "object"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_HOOK_RESULT_v1"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "WARN",
+        "HOLD",
+        "DENY"
+      ]
+    },
+    "event": {
+      "enum": [
+        "PRE_CONTEXT",
+        "POST_CONTEXT",
+        "PRE_PLAN",
+        "POST_PLAN",
+        "PRE_TOOL",
+        "POST_TOOL",
+        "PRE_EXECUTE",
+        "POST_EXECUTE",
+        "ON_ERROR",
+        "ON_RECOVERY"
+      ]
+    },
+    "hook_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "hook_result_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "event",
+    "hook_id",
+    "decision",
+    "authority_after",
+    "reason",
+    "hook_result_sha256"
+  ],
+  "title": "TRIAXIS Hook Result v1",
+  "type": "object"
+}

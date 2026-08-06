@@ -1,0 +1,182 @@
+{
+  "contract_id": "TRIAXIS_v3.19_GROK_BUILD_ADOPTION_TRIGGER_v1",
+  "failed": 0,
+  "passed": 13,
+  "result_sha256": "5214ace4df97a436b091cc3aeef10a7ac539fe431d4cc697cd809b826149eb96",
+  "rows": [
+    {
+      "case_id": "GH01",
+      "observed": {
+        "reason": "whole_repo_upload is not supported by TRIAXIS harness",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH02",
+      "observed": {
+        "rejected": [
+          {
+            "artifact_id": "file:env",
+            "logical_path": ".env",
+            "reasons": [
+              "DATA_CLASS_NOT_ALLOWED",
+              "EXPLICIT_GRANT_REQUIRED"
+            ]
+          },
+          {
+            "artifact_id": "repo:history",
+            "logical_path": "repo.bundle",
+            "reasons": [
+              "BULK_OR_HISTORICAL_SOURCE_DENIED",
+              "HISTORICAL_CONTENT_DENIED"
+            ]
+          }
+        ],
+        "selected": [
+          "file:allowed"
+        ],
+        "status": "PASS_WITH_OMISSIONS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH03",
+      "observed": {
+        "blocked": [
+          "../secret",
+          "src/**",
+          "/etc/passwd"
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH04",
+      "observed": {
+        "errors": [
+          {
+            "code": "plugin_not_pinned",
+            "message": "operator-pinned digest required",
+            "path": "plugin.source_sha256"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH05",
+      "observed": {
+        "errors": [
+          {
+            "code": "permission_bypass_forbidden",
+            "message": "bypassPermissions forbidden",
+            "path": "plugin.permission_mode"
+          }
+        ],
+        "status": "QUARANTINED"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH06",
+      "observed": {
+        "errors": [
+          {
+            "code": "hook_authority_widening",
+            "message": "hooks may only narrow authority",
+            "path": "hooks[0].authority_after"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH07",
+      "observed": {
+        "errors": [
+          {
+            "code": "subagent_depth_limit",
+            "message": "maximum child depth is one",
+            "path": "parent.depth"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH08",
+      "observed": {
+        "errors": [
+          {
+            "code": "write_requires_worktree",
+            "message": "worktree required for write capability",
+            "path": "request.isolation"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH09",
+      "observed": {
+        "errors": [
+          {
+            "code": "execute_requires_sandbox",
+            "message": "operator-approved sandbox profile required",
+            "path": "request.sandbox_profile"
+          }
+        ],
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH10",
+      "observed": {
+        "errors": [
+          {
+            "code": "authorization_required",
+            "message": "side effect requires token",
+            "path": "authorization_token"
+          }
+        ],
+        "outcome": "DENY"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH11",
+      "observed": {
+        "code": "invalid_transition",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH12",
+      "observed": {
+        "reason": "unsupported ACP-style method",
+        "result": "BLOCK"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "GH13",
+      "observed": {
+        "outcome": "ALLOW",
+        "receipt_sha256": "d3013aca70d263b31b81358f1d7e9fa71f5af7b32d01e46eb6bc8a8d083315b7"
+      },
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "6dfaf7ce9c4e59eb5ea5aac36c34225bbc5a19ea825a463220a05d560171033b",
+  "scope": "clean-room governed harness adaptation; not upstream code conformance",
+  "source_upstream": "xai-org/grok-build@a5589e958437d79e13db026eedcb1720bffd4063",
+  "status": "PASS",
+  "total": 13
+}

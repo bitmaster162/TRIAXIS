@@ -1,0 +1,123 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_bounded_subagent_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "agent_type": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "background": {
+      "type": "boolean"
+    },
+    "capability_mode": {
+      "enum": [
+        "read-only",
+        "read-write",
+        "execute",
+        "all"
+      ]
+    },
+    "child_session_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "context_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_BOUNDED_SUBAGENT_v1"
+    },
+    "depth": {
+      "const": 1
+    },
+    "effective_capabilities": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "errors": {
+      "type": "array"
+    },
+    "inherited_mcp_servers": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "isolation": {
+      "enum": [
+        "none",
+        "worktree"
+      ]
+    },
+    "parent_session_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "persona_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resume_from": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sandbox_profile": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "BLOCK"
+      ]
+    },
+    "subagent_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "worktree_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "contract_id",
+    "parent_session_id",
+    "child_session_id",
+    "depth",
+    "agent_type",
+    "persona_id",
+    "capability_mode",
+    "effective_capabilities",
+    "inherited_mcp_servers",
+    "context_manifest_sha256",
+    "isolation",
+    "worktree_ref",
+    "sandbox_profile",
+    "background",
+    "resume_from",
+    "status",
+    "errors",
+    "subagent_sha256"
+  ],
+  "title": "TRIAXIS Bounded Subagent v1",
+  "type": "object"
+}

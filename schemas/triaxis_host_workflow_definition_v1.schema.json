@@ -1,0 +1,84 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_host_workflow_definition_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_HOST_WORKFLOW_DEFINITION_v1"
+    },
+    "max_rounds": {
+      "minimum": 1,
+      "type": "integer"
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "capability_mode": {
+            "enum": [
+              "read-only",
+              "read-write",
+              "execute",
+              "all"
+            ]
+          },
+          "depends_on": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "kind": {
+            "enum": [
+              "PLAN",
+              "REVIEW",
+              "DIFF",
+              "AUTHORIZE",
+              "EXECUTE",
+              "VERIFY",
+              "RECEIPT",
+              "RESEARCH"
+            ]
+          },
+          "step_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "step_id",
+          "kind",
+          "depends_on",
+          "capability_mode"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "workflow_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "workflow_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "workflow_id",
+    "name",
+    "max_rounds",
+    "steps",
+    "workflow_sha256"
+  ],
+  "title": "TRIAXIS Host Workflow Definition v1",
+  "type": "object"
+}

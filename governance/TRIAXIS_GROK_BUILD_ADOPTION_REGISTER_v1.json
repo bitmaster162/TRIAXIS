@@ -1,0 +1,92 @@
+{
+  "contract_id": "TRIAXIS_GROK_BUILD_ADOPTION_REGISTER_v1",
+  "recorded_at": "2026-08-06",
+  "upstream": {
+    "repository": "xai-org/grok-build",
+    "snapshot_commit": "a5589e958437d79e13db026eedcb1720bffd4063",
+    "source_revision": "4d6d11372ab8f73026a78c45a7b7e7b1310eb39f",
+    "license_observed": "Apache-2.0",
+    "code_vendored": false,
+    "dependency_added": false,
+    "adoption_mode": "clean-room architectural adaptation"
+  },
+  "adopted": [
+    {
+      "upstream_pattern": "agent loop with explicit context assembly and tool dispatch",
+      "triaxis_contract": "Context Disclosure Manifest + Capability Broker",
+      "hardening": "explicit per-artifact grants, digest references, data classes, budgets, and no whole-repository disclosure"
+    },
+    {
+      "upstream_pattern": "Plan / review / diff / execution workflow",
+      "triaxis_contract": "host-owned resumable workflow state machine",
+      "hardening": "mandatory AUTHORIZE phase, CAS transitions, durable event history, and token-bound execution"
+    },
+    {
+      "upstream_pattern": "skills, plugins and lifecycle hooks",
+      "triaxis_contract": "versioned capability contracts, digest-pinned plugins, sealed hook receipts",
+      "hardening": "components may narrow but never widen Authority Envelope"
+    },
+    {
+      "upstream_pattern": "bounded subagents and session forks",
+      "triaxis_contract": "flat depth-one subagents and explicit session-fork contracts",
+      "hardening": "worktree required for writes, approved sandbox required for execution, selective MCP inheritance, no implicit authority"
+    },
+    {
+      "upstream_pattern": "headless and ACP surfaces",
+      "triaxis_contract": "sequenced digest-bound headless events and ACP-style adapter",
+      "hardening": "reference-only interoperability claim; no direct tool execution via adapter"
+    },
+    {
+      "upstream_pattern": "resumable workflows and background task continuity",
+      "triaxis_contract": "SQLite host-owned workflow state",
+      "hardening": "bounded fanout/rounds, pause/resume, restart persistence, exact authorization before side effects"
+    },
+    {
+      "upstream_pattern": "sandbox metadata, permission paths and fail-closed controls",
+      "triaxis_contract": "managed safety ceilings and canonical logical paths",
+      "hardening": "project/runtime layers cannot override operator requirements; traversal and wildcard paths denied"
+    },
+    {
+      "upstream_pattern": "bounded retry and context compaction",
+      "triaxis_contract": "host-owned retry classifier and context compaction receipt",
+      "hardening": "auth failures HOLD, disk-full DENY, context overflow COMPACT, retry budget bounded"
+    }
+  ],
+  "rejected_or_deferred": [
+    {
+      "item": "xAI-specific authentication, billing and model transport",
+      "reason": "provider-specific and outside TRIAXIS model-neutral governance boundary"
+    },
+    {
+      "item": "TUI and dashboard implementation",
+      "reason": "presentation layer, not a governance invariant"
+    },
+    {
+      "item": "implicit workspace or whole-repository upload",
+      "reason": "violates explicit-context and data-minimization policy"
+    },
+    {
+      "item": "unbounded nested subagents",
+      "reason": "unbounded delegation and correlated failure risk"
+    },
+    {
+      "item": "permission bypass modes",
+      "reason": "incompatible with non-self-authorization and complete mediation"
+    },
+    {
+      "item": "claim of ACP certification",
+      "reason": "adapter has not completed external interoperability certification"
+    }
+  ],
+  "invariants": [
+    "DISCOVERY_NE_AUTHORITY",
+    "EXTENSION_NE_PERMISSION",
+    "PLANNING_NE_EXECUTION",
+    "CONTEXT_REQUIRES_EXPLICIT_GRANT",
+    "WHOLE_REPOSITORY_DISCLOSURE_DENIED",
+    "SIDE_EFFECT_REQUIRES_EXACT_AUTHORIZATION_TOKEN",
+    "SUBAGENT_AUTHORITY_SUBSET_OF_PARENT",
+    "WORKFLOW_STATE_OWNED_BY_HOST",
+    "PROTOCOL_COMPATIBILITY_CLAIMS_MUST_BE_EXPLICITLY_SCOPED"
+  ]
+}
