@@ -1,0 +1,8 @@
+FROM python:3.13-slim
+WORKDIR /opt/triaxis
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src ./src
+COPY tools/run_idempotent_effect_provider.py ./tools/run_idempotent_effect_provider.py
+ENV PYTHONPATH=/opt/triaxis/src:/opt/triaxis
+ENTRYPOINT ["python", "tools/run_idempotent_effect_provider.py"]

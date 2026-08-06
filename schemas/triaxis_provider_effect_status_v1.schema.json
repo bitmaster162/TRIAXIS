@@ -1,0 +1,43 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_provider_effect_status_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Provider Effect Status v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_PROVIDER_EFFECT_STATUS_v1"},
+    "provider_id": {"type": "string", "minLength": 1},
+    "service_id": {"type": "string", "minLength": 1},
+    "effect_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "state": {"enum": ["ABSENT", "IN_FLIGHT", "UNKNOWN", "COMPLETED", "NO_EFFECT"]},
+    "generation": {"type": "integer", "minimum": 0},
+    "provider_request_id": {"type": ["string", "null"], "minLength": 1},
+    "provider_response_sha256": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"type": "null"}
+      ]
+    },
+    "evidence_sha256": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"type": "null"}
+      ]
+    },
+    "updated_at_tick": {"type": ["integer", "null"], "minimum": 0},
+    "verifier_id": {"type": "string", "minLength": 1},
+    "verifier_epoch_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "challenge_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "requested_at": {"type": "integer", "minimum": 0},
+    "issued_at": {"type": "integer", "minimum": 0},
+    "valid_until": {"type": "integer", "minimum": 0},
+    "status_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "required": [
+    "contract_id", "provider_id", "service_id", "effect_id", "payload_sha256",
+    "state", "generation", "provider_request_id", "provider_response_sha256",
+    "evidence_sha256", "updated_at_tick", "verifier_id", "verifier_epoch_sha256",
+    "challenge_sha256", "requested_at", "issued_at", "valid_until", "status_sha256"
+  ]
+}

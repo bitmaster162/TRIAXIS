@@ -1,0 +1,29 @@
+[Unit]
+Description=TRIAXIS External Execution-Ledger Head Authority Reference
+After=network.target triaxis-execution-ledger.service
+
+[Service]
+Type=simple
+User=triaxis-ledger-head
+Group=triaxis-ledger-head
+EnvironmentFile=/etc/triaxis/execution-ledger-head.env
+LoadCredential=execution-ledger-head-private-key:/etc/triaxis/credentials/execution-ledger-head-private-key
+LoadCredential=execution-ledger-head-admin-token:/etc/triaxis/credentials/execution-ledger-head-admin-token
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_execution_ledger_head_authority.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadOnlyPaths=/etc/triaxis/execution-ledger-public-keys.json
+ReadWritePaths=/var/lib/triaxis-execution-ledger-head
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,120 @@
+{
+  "case_count": 22,
+  "fail_count": 0,
+  "pass_count": 22,
+  "protocol_id": "TRIAXIS_EXECUTION_HEAD_AND_PROVIDER_CLOSURE_v3.28",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ContractIdentityTests.test_contract_ids_are_frozen",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_authority_restart_preserves_monotonic_head",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_exact_head_replay_is_idempotent",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_external_head_detects_local_rollback",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_fresh_challenge_bound_head_verifies_once",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_genesis_and_contiguous_advance_are_accepted",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_guarded_reserve_blocks_before_recreating_rolled_back_effect",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_head_http_authenticates_install_and_minimizes_health",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_in_flight_effect_requires_current_anchored_head",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_rolled_back_ledger_cannot_overtake_with_a_fork",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_same_sequence_fork_is_rejected",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.ExecutionLedgerHeadAuthorityTests.test_stale_head_is_rejected",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_absent_signed_status_allows_first_attempt_once",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_completed_effect_is_idempotent_and_not_reexecuted",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_completed_signed_status_blocks_retry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_provider_http_authenticates_mutations_but_status_is_challenge_bound",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_provider_restart_preserves_completed_state",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_provider_still_blocks_after_ledger_and_head_authority_rollback",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_same_effect_with_different_payload_fails_closed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider.IdempotentProviderTests.test_unknown_blocks_until_authoritative_no_effect_reconciliation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider_schemas.V328SchemaTests.test_execution_ledger_head_response_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_28_execution_head_and_provider_schemas.V328SchemaTests.test_provider_effect_status_schema_for_absent_and_completed",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "905260b95aeb77a8d3cafdd00a087178ee8239927b884444af13d2725dc50222",
+  "status": "PASS"
+}

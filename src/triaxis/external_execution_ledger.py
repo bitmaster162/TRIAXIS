@@ -638,6 +638,21 @@ class SQLiteExternalExecutionLedger:
         ).fetchall()
         return [json.loads(row[0]) for row in rows]
 
+    def events_since(self, sequence: int) -> list[dict[str, Any]]:
+        """Return every globally ordered signed event after ``sequence``.
+
+        This is the contiguous advance material consumed by the v3.28 external
+        monotonic head authority.  The method is read-only and grants no action
+        authority.
+        """
+        if type(sequence) is not int or sequence < 0:
+            raise ExecutionLedgerError("invalid_event_sequence", str(sequence))
+        rows = self._conn.execute(
+            "SELECT signed_event_json FROM execution_events WHERE sequence>? ORDER BY sequence",
+            (sequence,),
+        ).fetchall()
+        return [json.loads(row[0]) for row in rows]
+
     def head(self, *, now_tick: int) -> dict[str, Any]:
         if type(now_tick) is not int or now_tick < 0:
             raise ExecutionLedgerError("invalid_now_tick", str(now_tick))

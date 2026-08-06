@@ -1,0 +1,28 @@
+[Unit]
+Description=TRIAXIS Reference Idempotent Effect Provider
+After=network.target triaxis-execution-ledger-head.service
+
+[Service]
+Type=simple
+User=triaxis-provider
+Group=triaxis-provider
+EnvironmentFile=/etc/triaxis/idempotent-provider.env
+LoadCredential=idempotent-provider-private-key:/etc/triaxis/credentials/idempotent-provider-private-key
+LoadCredential=idempotent-provider-client-token:/etc/triaxis/credentials/idempotent-provider-client-token
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_idempotent_effect_provider.py
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/triaxis-idempotent-provider
+
+[Install]
+WantedBy=multi-user.target

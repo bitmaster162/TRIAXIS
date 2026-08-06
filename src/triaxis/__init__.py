@@ -228,6 +228,8 @@ from .crypto_trust import (
     PURPOSE_ASSURANCE_ATTESTATION,
     PURPOSE_AUTHORIZATION_TOKEN,
     PURPOSE_EXECUTION_RECEIPT,
+    PURPOSE_EXECUTION_LEDGER_HEAD_AUTHORITY,
+    PURPOSE_PROVIDER_EFFECT_RECEIPT,
     PURPOSE_POLICY_BUNDLE,
     PURPOSE_POLICY_HEAD_AUTHORITY,
     PURPOSE_POLICY_TRANSPARENCY_WITNESS,
@@ -253,6 +255,8 @@ __all__ += [
     "PURPOSE_ASSURANCE_ATTESTATION",
     "PURPOSE_AUTHORIZATION_TOKEN",
     "PURPOSE_EXECUTION_RECEIPT",
+    "PURPOSE_EXECUTION_LEDGER_HEAD_AUTHORITY",
+    "PURPOSE_PROVIDER_EFFECT_RECEIPT",
     "PURPOSE_POLICY_BUNDLE",
     "PURPOSE_POLICY_HEAD_AUTHORITY",
     "PURPOSE_POLICY_TRANSPARENCY_WITNESS",
@@ -509,4 +513,69 @@ __all__ += [
     "validate_acp_style_message",
     "validate_headless_stream",
     "validate_workflow_definition",
+]
+
+# TRIAXIS v3.27 external execution ledger and v3.28 monotonic head/provider boundary.
+from .external_execution_ledger import (
+    EFFECT_ID_DOMAIN,
+    EXECUTION_INTENT_CONTRACT_ID,
+    EXECUTION_LEDGER_EVENT_CONTRACT_ID,
+    EXECUTION_LEDGER_HEAD_CONTRACT_ID,
+    ExecutionLedgerError as ExternalExecutionLedgerError,
+    SQLiteExternalExecutionLedger,
+    compute_effect_id,
+    seal_execution_intent,
+    validate_execution_intent,
+    verify_execution_ledger_receipt,
+    verify_external_effect_guard,
+)
+from .execution_ledger_head_authority import (
+    EXECUTION_LEDGER_HEAD_RESPONSE_CONTRACT_ID,
+    ExecutionLedgerHeadError,
+    SQLiteExecutionLedgerHeadAuthority,
+    reserve_with_external_head_guard,
+    verify_external_execution_ledger_head,
+    verify_external_effect_guard_with_monotonic_head,
+)
+from .execution_ledger_head_http import (
+    ExecutionLedgerHeadHTTPApplication,
+    build_execution_ledger_head_http_server,
+)
+from .idempotent_effect_provider import (
+    PROVIDER_EFFECT_STATUS_CONTRACT_ID,
+    ProviderEffectError,
+    SQLiteIdempotentEffectProvider,
+    verify_provider_effect_status,
+)
+from .idempotent_effect_provider_http import (
+    IdempotentEffectProviderHTTPApplication,
+    build_idempotent_effect_provider_http_server,
+)
+
+__all__ += [
+    "EFFECT_ID_DOMAIN",
+    "EXECUTION_INTENT_CONTRACT_ID",
+    "EXECUTION_LEDGER_EVENT_CONTRACT_ID",
+    "EXECUTION_LEDGER_HEAD_CONTRACT_ID",
+    "EXECUTION_LEDGER_HEAD_RESPONSE_CONTRACT_ID",
+    "ExecutionLedgerHeadError",
+    "ExecutionLedgerHeadHTTPApplication",
+    "ExternalExecutionLedgerError",
+    "IdempotentEffectProviderHTTPApplication",
+    "PROVIDER_EFFECT_STATUS_CONTRACT_ID",
+    "ProviderEffectError",
+    "SQLiteExecutionLedgerHeadAuthority",
+    "SQLiteExternalExecutionLedger",
+    "SQLiteIdempotentEffectProvider",
+    "build_execution_ledger_head_http_server",
+    "build_idempotent_effect_provider_http_server",
+    "compute_effect_id",
+    "reserve_with_external_head_guard",
+    "seal_execution_intent",
+    "validate_execution_intent",
+    "verify_execution_ledger_receipt",
+    "verify_external_execution_ledger_head",
+    "verify_external_effect_guard",
+    "verify_external_effect_guard_with_monotonic_head",
+    "verify_provider_effect_status",
 ]

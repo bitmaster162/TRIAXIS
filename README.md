@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current release: **TRIAXIS v3.27-RC1 External Execution Ledger**; executable reference, not production-qualified.
+Current release: **TRIAXIS v3.28-RC1 Monotonic Execution Head and Provider Reconciliation**; executable reference, not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 
@@ -97,3 +97,15 @@ PYTHONPATH=src:. python validation/execution_ledger/run_v327_external_execution_
 ```
 
 A v3.27 PASS proves only that rollback of the local queue database alone cannot replay an effect while this ledger remains current. It does not prove exactly-once execution under ledger rollback, ledger compromise, a newly generated origin identity, or a provider that lacks authoritative idempotency/reconciliation.
+
+## v3.28 Monotonic Execution Head and Provider Reconciliation
+
+The v3.28 layer anchors the signed execution-ledger chain in a separately persisted monotonic head authority and adds a provider-side idempotency/reconciliation reference keyed by the same stable `effect_id` and exact provider payload digest. A fresh single-use challenge proves that the local ledger head matches the externally remembered sequence, head-event digest, and state root. `IN_FLIGHT`, `UNKNOWN`, and `COMPLETED` provider states block replay; only authoritative `NO_EFFECT` reconciliation supports another generation.
+
+Run the exact closure:
+
+```bash
+PYTHONPATH=src:. python validation/execution_ledger_head/run_v328_execution_head_and_provider_closure.py
+```
+
+A v3.28 PASS does not grant action authority or establish production exactly-once execution. The included provider is a reference state machine, synchronization gaps fail closed, and coordinated rollback or compromise of the ledger, head authority, and provider store remains a post-product boundary.
