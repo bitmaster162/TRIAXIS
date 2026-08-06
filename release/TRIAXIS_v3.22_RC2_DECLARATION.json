@@ -1,0 +1,13 @@
+{
+  "contract_id": "TRIAXIS_RELEASE_DECLARATION_v1",
+  "version": "TRIAXIS v3.22-RC2 Governed Grok Harness Adoption",
+  "release_type": "validation-only",
+  "analysis_status": "PASS_WITH_CONDITIONS",
+  "production_qualified": false,
+  "acp_certified": false,
+  "upstream_code_vendored": false,
+  "external_sandbox_attestation": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY"
+}

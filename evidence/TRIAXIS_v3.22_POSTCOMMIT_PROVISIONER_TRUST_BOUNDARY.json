@@ -1,0 +1,24 @@
+{
+  "contract_id": "TRIAXIS_v3.22_POSTCOMMIT_PROVISIONER_TRUST_BOUNDARY_v1",
+  "exact_product_commit": "a7ee0e3c4b049c076515e17b84ab776ffa635aa6",
+  "result_sha256": "b78d356a9fc345cc871d0a9189422ac8136a9050b347a2f1fa9a20bdb61766f2",
+  "rows": [
+    {
+      "boundary_confirmed": true,
+      "case_id": "PROVISIONER_TRUST_01",
+      "child_status": "PASS",
+      "cryptographic_provisioner_signature": false,
+      "external_os_attestation": false,
+      "namespace_ids_self_asserted": true,
+      "receipt_status": "PASS",
+      "required_next_evidence": [
+        "purpose-bound provisioner signature",
+        "external key custody or KMS",
+        "OS/container attestation adapter",
+        "independent verifier of effective network/mount/process isolation"
+      ]
+    }
+  ],
+  "rows_sha256": "7aef3ed5cc6ff1f1d6a89558dc65df6d411f9c5f820ef6915de624b63b3d3e03",
+  "status": "BOUNDARY_CONFIRMED"
+}
