@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current development release: **TRIAXIS v3.30-RC1 Completion-Witness Quorum and Logical WORM Anchor**; RC1 is an executable reference and is not production-qualified.
+Current release: **TRIAXIS v3.30-RC2 Completion-Witness Quorum and Logical WORM Anchor**; RC2 is validation-only, classified `PASS_WITH_CONDITIONS`, and not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 

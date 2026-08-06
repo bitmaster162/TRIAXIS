@@ -1,0 +1,40 @@
+{
+  "administrative_independence": false,
+  "authority_granted": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "classification": "PASS_WITH_CONDITIONS",
+  "contract_id": "TRIAXIS_v3.30_RC2_DECLARATION",
+  "deploy_permission": "DENY",
+  "historical_tests": {
+    "pass": 474,
+    "total": 474
+  },
+  "independent_certification": false,
+  "physical_independence": false,
+  "physical_worm_established": false,
+  "post_evidence_source_tree": "57816a3be34f83d65dfd177143359ab49671ad7c",
+  "post_product_evidence_commit": "fe0d2c9275453553d66c4003a263c266b51b374b",
+  "postcommit_boundary": {
+    "rows_sha256": "4e5276e61d58126d27ba5a6c911795a494c75889ddd4b6e130e06be7c6734800",
+    "status": "BOUNDARY_CONFIRMED"
+  },
+  "production_qualified": false,
+  "rc1_product_commit": "9e98ede98bf561a050eddcd578dbf814ab7324ac",
+  "rc1_product_tree": "311a66e0beda000d9fa6739bd38ee17aa20bc4cf",
+  "rc1_source_tree": "57816a3be34f83d65dfd177143359ab49671ad7c",
+  "rc1_tag_object": "02c99863f07bd47f7abc3fee8e7f6fa84e2c19ad",
+  "real_provider_adapter": false,
+  "release_tag": "TRIAXIS-v3.30-RC2-COMPLETION-WITNESS-QUORUM-WORM-ANCHOR",
+  "service_process_smoke": {
+    "pass": 5,
+    "rows_sha256": "eeb61fdd4918271972b6e3fb6629cd2339279922d914d93dce0e1f54e36a7e13",
+    "total": 5
+  },
+  "v330_closure": {
+    "pass": 26,
+    "rows_sha256": "32ebaf6247db3310329eee05c5727878c13102aac70d5df89c2c750fe120a0ec",
+    "total": 26
+  },
+  "validation_only": true
+}
