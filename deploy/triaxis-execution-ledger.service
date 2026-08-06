@@ -1,0 +1,28 @@
+[Unit]
+Description=TRIAXIS External Execution Ledger Reference
+After=network.target
+
+[Service]
+Type=simple
+User=triaxis-ledger
+Group=triaxis-ledger
+EnvironmentFile=/etc/triaxis/execution-ledger.env
+WorkingDirectory=/opt/triaxis
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_execution_ledger_authority.py \
+  --host 127.0.0.1 \
+  --port 18873 \
+  --db /var/lib/triaxis-execution-ledger/ledger.sqlite \
+  --ledger-id ledger:primary \
+  --authority-id authority:ledger:primary \
+  --key-id key:ledger:primary \
+  --signer-id signer:ledger:primary \
+  --trust-domain triaxis:execution-ledger
+Restart=on-failure
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/triaxis-execution-ledger
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,80 @@
+{
+  "case_count": 14,
+  "fail_count": 0,
+  "pass_count": 14,
+  "protocol_id": "TRIAXIS_EXTERNAL_EXECUTION_LEDGER_CLOSURE_v3.27",
+  "rows": [
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_authorization_token_rotation_cannot_create_a_new_effect_id",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_completed_effect_blocks_new_claim_identity",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_effect_id_is_stable_and_excludes_attempt_and_dispatch",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_exact_transport_retries_are_idempotent_and_conflicts_block",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_http_boundary_authenticates_mutations_and_minimizes_health",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_ledger_id_cannot_be_rebound_to_existing_database",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_queue_database_rollback_is_blocked_by_fresh_external_ledger",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_reserve_start_and_guard_are_signed_but_not_action_authority",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_restart_preserves_monotonic_chain_and_signed_head",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_same_effect_id_with_changed_nonsemantic_metadata_is_fail_closed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_tampered_or_substituted_intent_fails_closed",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_two_connections_cannot_reserve_same_effect_concurrently",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger.ExternalExecutionLedgerTests.test_unknown_blocks_until_authoritative_no_effect_reconciliation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_27_external_execution_ledger_schemas.ExternalExecutionLedgerSchemaTests.test_reference_contracts",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "1a7cc1b20738f7ba7137551d568d6edc4041bcad5d5ce396c13db7a3d5dcf2ab",
+  "status": "PASS"
+}

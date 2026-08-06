@@ -1,0 +1,33 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_execution_intent_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Execution Intent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_EXECUTION_INTENT_v1"},
+    "queue_id": {"type": "string", "minLength": 1},
+    "queued_input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "action_envelope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authorization_token_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_target_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "risk_class": {"const": "MUTATING"},
+    "created_at_tick": {"type": "integer", "minimum": 0},
+    "effect_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "metadata": {"type": "object"},
+    "intent_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "required": [
+    "contract_id",
+    "queue_id",
+    "queued_input_sha256",
+    "action_envelope_sha256",
+    "authorization_token_sha256",
+    "canonical_target_sha256",
+    "risk_class",
+    "created_at_tick",
+    "effect_id",
+    "metadata",
+    "intent_sha256"
+  ]
+}

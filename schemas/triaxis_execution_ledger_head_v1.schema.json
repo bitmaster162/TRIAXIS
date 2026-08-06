@@ -1,0 +1,27 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_execution_ledger_head_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Execution Ledger Head v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_EXECUTION_LEDGER_HEAD_v1"},
+    "ledger_id": {"type": "string", "minLength": 1},
+    "authority_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 0},
+    "head_event_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "state_root_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "issued_at_tick": {"type": "integer", "minimum": 0},
+    "head_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "required": [
+    "contract_id",
+    "ledger_id",
+    "authority_id",
+    "sequence",
+    "head_event_sha256",
+    "state_root_sha256",
+    "issued_at_tick",
+    "head_sha256"
+  ]
+}

@@ -1,0 +1,8 @@
+FROM python:3.13-slim
+WORKDIR /opt/triaxis
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src ./src
+COPY tools/run_execution_ledger_authority.py ./tools/run_execution_ledger_authority.py
+ENV PYTHONPATH=/opt/triaxis/src
+ENTRYPOINT ["python", "tools/run_execution_ledger_authority.py"]

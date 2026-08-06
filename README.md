@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current release: **TRIAXIS v3.18-RC2 Single-Host Multi-Process Conformance**; validation-only closure, not production-qualified.
+Current release: **TRIAXIS v3.27-RC1 External Execution Ledger**; executable reference, not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 
@@ -84,3 +84,16 @@ Run the harness:
 PYTHONPATH=src:. python validation/deployment_conformance/run_v318_single_host_conformance.py \
   --output /tmp/triaxis-v318-conformance.json
 ```
+
+
+## v3.27 External Execution Ledger
+
+The v3.27 layer moves mutating-effect idempotency outside the rollback domain of the local dispatch queue. A stable `effect_id` binds the persisted queue item, exact action envelope, and canonical target while excluding volatile claim, dispatch, provider-request, and authorization-token identities. The separately persisted ledger issues Ed25519-signed monotonic receipts and blocks any new attempt while the effect is `RESERVED`, `IN_FLIGHT`, `UNKNOWN`, or `COMPLETED`.
+
+Run the exact closure:
+
+```bash
+PYTHONPATH=src:. python validation/execution_ledger/run_v327_external_execution_ledger_closure.py
+```
+
+A v3.27 PASS proves only that rollback of the local queue database alone cannot replay an effect while this ledger remains current. It does not prove exactly-once execution under ledger rollback, ledger compromise, a newly generated origin identity, or a provider that lacks authoritative idempotency/reconciliation.

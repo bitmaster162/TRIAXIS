@@ -1,0 +1,51 @@
+{
+  "$id": "https://triaxis.local/schemas/triaxis_execution_ledger_event_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TRIAXIS Execution Ledger Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_EXECUTION_LEDGER_EVENT_v1"},
+    "ledger_id": {"type": "string", "minLength": 1},
+    "authority_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "previous_event_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "effect_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "intent_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation": {"type": "integer", "minimum": 1},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "dispatch_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "from_state": {
+      "oneOf": [
+        {"type": "null"},
+        {"enum": ["RESERVED", "IN_FLIGHT", "UNKNOWN", "COMPLETED", "NO_EFFECT"]}
+      ]
+    },
+    "to_state": {"enum": ["RESERVED", "IN_FLIGHT", "UNKNOWN", "COMPLETED", "NO_EFFECT"]},
+    "evidence_sha256": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      ]
+    },
+    "issued_at_tick": {"type": "integer", "minimum": 0},
+    "event_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "required": [
+    "contract_id",
+    "ledger_id",
+    "authority_id",
+    "sequence",
+    "previous_event_sha256",
+    "effect_id",
+    "intent_sha256",
+    "generation",
+    "attempt_id",
+    "dispatch_id",
+    "from_state",
+    "to_state",
+    "evidence_sha256",
+    "issued_at_tick",
+    "event_sha256"
+  ]
+}
