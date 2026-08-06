@@ -1,0 +1,32 @@
+[Unit]
+Description=TRIAXIS Gossip Head Authority %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=triaxis
+Group=triaxis
+WorkingDirectory=/opt/triaxis
+Environment=PYTHONPATH=/opt/triaxis/src:/opt/triaxis
+LoadCredential=private_key:/etc/triaxis/gossip-head/%i/private_key.b64
+LoadCredential=admin_token:/etc/triaxis/gossip-head/%i/admin_token
+ExecStart=/usr/bin/python3 /opt/triaxis/tools/run_gossip_head_authority.py --config /etc/triaxis/gossip-head/%i/config.json
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/triaxis/gossip-head/%i
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

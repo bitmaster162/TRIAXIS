@@ -4,7 +4,7 @@ Versioned specification, deterministic governance-gate projection, and validatio
 
 Baseline imported from TRIAXIS v2.3-RC1. Generated archives, manifests, reports, and caches are excluded from Git and emitted under `dist/`.
 
-Current candidate: **TRIAXIS v3.17-RC1 External Gossip Head Authority Quorum**; Release Candidate, not production-qualified.
+Current candidate: **TRIAXIS v3.18-RC1 Single-Host Multi-Process Conformance**; Release Candidate, not production-qualified.
 
 ## TRIAXIS v3.12 external policy-head assurance
 
@@ -72,3 +72,15 @@ The v3.16 layer exports the verifier gossip state into a signed monotonic checkp
 ## v3.17 External Gossip Head Authority Quorum
 
 The v3.17 layer requires an operator-pinned threshold of distinct external gossip-head authorities to agree on the exact verifier checkpoint under one fresh challenge. See `release/TRIAXIS_CONTROL_STACK_v3.17_RC1_EXTERNAL_GOSSIP_HEAD_QUORUM.md`.
+
+
+## v3.18 Single-Host Multi-Process Conformance
+
+The v3.18 layer adds a standard-library HTTP boundary, credential-aware authority runner, systemd/Docker deployment references, and a fault-injection harness that starts three separate authority processes with separate keys, ports and SQLite state. The frozen conformance receipt covers process loss, stale state, split views and restart persistence. It explicitly does **not** claim physical or administrative independence.
+
+Run the harness:
+
+```bash
+PYTHONPATH=src:. python validation/deployment_conformance/run_v318_single_host_conformance.py \
+  --output /tmp/triaxis-v318-conformance.json
+```

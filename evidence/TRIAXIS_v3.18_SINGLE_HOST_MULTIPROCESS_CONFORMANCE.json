@@ -1,0 +1,117 @@
+{
+  "administrative_independence": false,
+  "authority_count": 3,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "cases": [
+    {
+      "case_id": "MP01_DISTINCT_PROCESS_BOUNDARIES",
+      "expected": "3 distinct values for each local boundary",
+      "observed": {
+        "authority_ids": 3,
+        "db_paths": 3,
+        "key_ids": 3,
+        "ports": 3,
+        "process_ids": 3,
+        "trust_domains": 3
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP02_ADMIN_INSTALL_AUTH",
+      "expected": "wrong bearer token is denied",
+      "observed": {
+        "error": "administrative_authorization_required"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP03_HEALTHY_2_OF_3_QUORUM",
+      "expected": "current checkpoint accepted",
+      "observed": {
+        "members": 3,
+        "outcome": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP04_ONE_PROCESS_UNAVAILABLE",
+      "expected": "2-of-3 remains available",
+      "observed": {
+        "members": 2,
+        "outcome": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP05_TWO_PROCESSES_UNAVAILABLE",
+      "expected": "one response cannot meet threshold",
+      "observed": {
+        "code": "gossip_head_authority_quorum_not_met",
+        "detail": "threshold=2 valid=1 invalid=0",
+        "outcome": "BLOCK",
+        "response_count": 1
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP06_ONE_STALE_AUTHORITY",
+      "expected": "two current authorities override one stale authority",
+      "observed": {
+        "members": 2,
+        "outcome": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP07_SPLIT_VIEW_WITHOUT_THRESHOLD",
+      "expected": "one current plus one stale is blocked",
+      "observed": {
+        "code": "gossip_head_authority_quorum_not_met",
+        "detail": "threshold=2 valid=2 invalid=0",
+        "outcome": "BLOCK",
+        "response_count": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP08_RESTART_PERSISTS_HEAD",
+      "expected": "same DB preserves current checkpoint across process restart",
+      "observed": {
+        "new_pid": 8701,
+        "old_pid": 8637,
+        "outcome": "PASS"
+      },
+      "status": "PASS"
+    },
+    {
+      "case_id": "MP09_HEALTH_SECRET_MINIMIZATION",
+      "expected": "health response excludes private key material",
+      "observed": "no private-key fields",
+      "status": "PASS"
+    }
+  ],
+  "claim_scope": "single-host multi-process loopback conformance only",
+  "conformance_level": "SINGLE_HOST_MULTIPROCESS",
+  "contract_id": "TRIAXIS_SINGLE_HOST_MULTIPROCESS_CONFORMANCE_v1",
+  "deploy_permission": "DENY",
+  "host": {
+    "parent_process_id": 8549,
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.41",
+    "python": "3.13.5"
+  },
+  "key_custody": "PROCESS_ENVIRONMENT_LAB_ONLY",
+  "limitations": [
+    "all authority processes executed under one OS host and one user",
+    "trust_domain labels are simulated and do not prove physical independence",
+    "private keys were process environment secrets, not KMS/HSM-backed",
+    "transport was loopback HTTP without mTLS",
+    "no cloud/provider/network/administrator independence is claimed",
+    "deploy_permission remained DENY; no user server was modified"
+  ],
+  "physical_independence": false,
+  "receipt_sha256": "ca7b7d01a0eef1f0b35e67f1a6c09ef65017b75ade2acaf5c6ac8ceb8acb8078",
+  "status": "PASS",
+  "threshold": 2,
+  "transport_authentication": "NONE_LOOPBACK_ONLY"
+}

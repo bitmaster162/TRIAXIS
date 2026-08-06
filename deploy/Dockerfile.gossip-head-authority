@@ -1,0 +1,10 @@
+FROM python:3.13-slim
+RUN useradd --system --create-home --uid 10001 triaxis
+WORKDIR /opt/triaxis
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src ./src
+COPY tools/run_gossip_head_authority.py ./tools/run_gossip_head_authority.py
+USER triaxis
+ENV PYTHONPATH=/opt/triaxis/src:/opt/triaxis
+ENTRYPOINT ["python", "/opt/triaxis/tools/run_gossip_head_authority.py"]

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triaxis.local/schemas/triaxis_single_host_multiprocess_conformance_v1.schema.json",
+  "title": "TRIAXIS Single-Host Multi-Process Conformance Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "status", "claim_scope", "conformance_level", "physical_independence",
+    "administrative_independence", "transport_authentication", "key_custody",
+    "host", "authority_count", "threshold",
+    "cases", "limitations", "can_trade", "capital_permission", "deploy_permission", "receipt_sha256"
+  ],
+  "properties": {
+    "contract_id": {"const": "TRIAXIS_SINGLE_HOST_MULTIPROCESS_CONFORMANCE_v1"},
+    "status": {"enum": ["PASS", "BLOCK"]},
+    "claim_scope": {"type": "string", "minLength": 1},
+    "conformance_level": {"const": "SINGLE_HOST_MULTIPROCESS"},
+    "physical_independence": {"const": false},
+    "administrative_independence": {"const": false},
+    "transport_authentication": {"const": "NONE_LOOPBACK_ONLY"},
+    "key_custody": {"const": "PROCESS_ENVIRONMENT_LAB_ONLY"},
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "python", "parent_process_id"],
+      "properties": {
+        "platform": {"type": "string"},
+        "python": {"type": "string"},
+        "parent_process_id": {"type": "integer", "minimum": 1}
+      }
+    },
+    "authority_count": {"const": 3},
+    "threshold": {"const": 2},
+    "cases": {
+      "type": "array",
+      "minItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "status", "expected", "observed"],
+        "properties": {
+          "case_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["PASS", "BLOCK"]},
+          "expected": {"type": "string"},
+          "observed": {}
+        }
+      }
+    },
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "can_trade": {"const": false},
+    "capital_permission": {"const": "DENY"},
+    "deploy_permission": {"const": "DENY"},
+    "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

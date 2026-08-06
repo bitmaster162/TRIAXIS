@@ -1,0 +1,54 @@
+services:
+  authority-a:
+    build:
+      context: ../..
+      dockerfile: deploy/Dockerfile.gossip-head-authority
+    command: ["--config", "/config/config.json"]
+    environment:
+      CREDENTIALS_DIRECTORY: /run/secrets
+    volumes:
+      - ./authority-a.config.json:/config/config.json:ro
+      - ${TRIAXIS_CHECKPOINT_REGISTRY:?set TRIAXIS_CHECKPOINT_REGISTRY}:/etc/triaxis/gossip-head/checkpoint-registry.json:ro
+      - ${TRIAXIS_AUTH_A_DATA:?set TRIAXIS_AUTH_A_DATA}:/var/lib/triaxis/gossip-head/a
+      - ${TRIAXIS_AUTH_A_SECRETS:?set TRIAXIS_AUTH_A_SECRETS}:/run/secrets:ro
+    ports: ["8811:8811"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+
+  authority-b:
+    build:
+      context: ../..
+      dockerfile: deploy/Dockerfile.gossip-head-authority
+    command: ["--config", "/config/config.json"]
+    environment:
+      CREDENTIALS_DIRECTORY: /run/secrets
+    volumes:
+      - ./authority-b.config.json:/config/config.json:ro
+      - ${TRIAXIS_CHECKPOINT_REGISTRY:?set TRIAXIS_CHECKPOINT_REGISTRY}:/etc/triaxis/gossip-head/checkpoint-registry.json:ro
+      - ${TRIAXIS_AUTH_B_DATA:?set TRIAXIS_AUTH_B_DATA}:/var/lib/triaxis/gossip-head/b
+      - ${TRIAXIS_AUTH_B_SECRETS:?set TRIAXIS_AUTH_B_SECRETS}:/run/secrets:ro
+    ports: ["8812:8812"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+
+  authority-c:
+    build:
+      context: ../..
+      dockerfile: deploy/Dockerfile.gossip-head-authority
+    command: ["--config", "/config/config.json"]
+    environment:
+      CREDENTIALS_DIRECTORY: /run/secrets
+    volumes:
+      - ./authority-c.config.json:/config/config.json:ro
+      - ${TRIAXIS_CHECKPOINT_REGISTRY:?set TRIAXIS_CHECKPOINT_REGISTRY}:/etc/triaxis/gossip-head/checkpoint-registry.json:ro
+      - ${TRIAXIS_AUTH_C_DATA:?set TRIAXIS_AUTH_C_DATA}:/var/lib/triaxis/gossip-head/c
+      - ${TRIAXIS_AUTH_C_SECRETS:?set TRIAXIS_AUTH_C_SECRETS}:/run/secrets:ro
+    ports: ["8813:8813"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]

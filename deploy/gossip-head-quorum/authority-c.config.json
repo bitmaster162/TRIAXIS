@@ -1,0 +1,16 @@
+{
+  "authority_id": "gossip-head-authority:c",
+  "service_id": "gossip-head-service:c",
+  "key_id": "key:gossip-head:c:1",
+  "signer_id": "gossip-head-signer:c",
+  "trust_domain": "REPLACE_WITH_PHYSICAL_DOMAIN_C",
+  "host": "0.0.0.0",
+  "port": 8813,
+  "db_path": "/var/lib/triaxis/gossip-head/c/authority.db",
+  "checkpoint_registry_path": "/etc/triaxis/gossip-head/checkpoint-registry.json",
+  "expected_checkpoint_signer_id": "REPLACE_WITH_CHECKPOINT_SIGNER_ID",
+  "expected_checkpoint_trust_domain": "REPLACE_WITH_CHECKPOINT_TRUST_DOMAIN",
+  "private_key_credential_name": "private_key",
+  "admin_token_credential_name": "admin_token",
+  "response_ttl": 15
+}
