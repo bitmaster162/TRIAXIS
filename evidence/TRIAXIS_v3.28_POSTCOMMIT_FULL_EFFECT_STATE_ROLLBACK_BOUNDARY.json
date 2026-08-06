@@ -1,0 +1,51 @@
+{
+  "claim": "A current external head detects execution-ledger rollback and a current provider idempotency record blocks rollback of the queue, ledger, and head authority; coordinated rollback of all effect-state domains revives the completed effect.",
+  "exact_subject_commit": "7d7e488185410d0cdadc2476c147ead062be0706",
+  "exact_subject_tag": "TRIAXIS-v3.28-RC1-MONOTONIC-EXECUTION-HEAD",
+  "protocol_id": "TRIAXIS_v3.28_POSTCOMMIT_FULL_EFFECT_STATE_ROLLBACK_BOUNDARY",
+  "required_next_control": [
+    "independently administered execution-head quorum across separate rollback and failure domains",
+    "real provider-native immutable idempotency keyed by stable effect_id",
+    "external append-only or WORM completion receipts",
+    "monotonic KMS/HSM or hardware-backed anti-rollback state",
+    "authoritative provider reconciliation that is not stored in the same rollback domain"
+  ],
+  "rows": [
+    {
+      "case_id": "V328RB01_CURRENT_LEDGER_HEAD_AND_PROVIDER_BLOCK_DUPLICATE",
+      "expected": "LEDGER_BLOCK_COMPLETED_AND_PROVIDER_DENY",
+      "ledger_observed": "BLOCK",
+      "ledger_state": "COMPLETED",
+      "provider_external_effect_permitted": false,
+      "provider_idempotent_replay": true,
+      "same_effect_id": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V328RB02_CURRENT_PROVIDER_BLOCKS_LEDGER_AND_HEAD_ROLLBACK",
+      "expected": "PROVIDER_COMPLETED_DENIES_DUPLICATE",
+      "new_dispatch_id": true,
+      "provider_external_effect_permitted": false,
+      "provider_idempotent_replay": true,
+      "provider_state": "COMPLETED",
+      "rolled_back_head_guard": "PASS",
+      "rolled_back_ledger_reservation": "PASS",
+      "same_effect_id": true,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V328RB03_FULL_EFFECT_STATE_ROLLBACK_REVIVES_COMPLETED_EFFECT",
+      "duplicate_effect_risk": true,
+      "expected_secure_result": "BLOCK_OR_INDEPENDENT_PROVIDER_PROOF",
+      "new_dispatch_id": true,
+      "provider_external_effect_permitted": true,
+      "rolled_back_head_guard": "PASS",
+      "rolled_back_ledger_reservation": "PASS",
+      "rolled_back_provider_state": "IN_FLIGHT",
+      "same_effect_id": true,
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "a5e8313d1dd0189b9e90275abd1e6146b7618ce18896f83c3c6d5259fa25e61a",
+  "status": "BOUNDARY_CONFIRMED"
+}
