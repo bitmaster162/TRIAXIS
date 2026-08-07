@@ -1,0 +1,7 @@
+Entry ID                : bd5f0502-d9cd-49fb-a402-107d4aeeebb0
+SPIFFE ID               : spiffe://triaxis.test/ns/research/sa/triaxis-harness
+Parent ID               : spiffe://triaxis.test/agent/local
+Revision                : 0
+X509-SVID TTL           : 120
+JWT-SVID TTL            : default
+Selector                : unix:uid:1000
