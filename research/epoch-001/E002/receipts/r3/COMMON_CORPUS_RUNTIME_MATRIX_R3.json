@@ -1,0 +1,39 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
+  "timestamp_utc": "2026-08-08T02:20:50Z",
+  "corpus_version": "v1.0",
+  "total_test_cases": 20,
+  "summary": {
+    "cedar_positive_pass": "4/4",
+    "cedar_negative_pass": "8/8",
+    "opa_positive_pass": "4/4",
+    "opa_negative_pass": "16/16",
+    "openfga_tc14_exact_corpus_pass": "1/1 (user:julia -> devops -> engineers -> viewer folder:engineering_docs)",
+    "process_errors": 0,
+    "engine_errors": 0
+  },
+  "canonical_policy_hashes": {
+    "cedar_policy_bytes_sha256": "527e1ec62303dd35fce58efae35a4e578ebd44cec5a7b710410f966da32909f1",
+    "opa_rego_bytes_sha256": "9fd4e839b3476d5284c4e0f3b142f4f04a999ed5a82c0434260364a4bd3852f2",
+    "stale_opa_hash_removed": "557aef92bb609b4db700a1209bca3b22cfca50c44acbdcbf2f7ebce085a21e42 (REMOVED)"
+  },
+  "engines": {
+    "cedar": {
+      "version": "cedar-policy-cli 4.12.0",
+      "executable": "/home/bit/.cargo/bin/cedar",
+      "policy_sha256": "527e1ec62303dd35fce58efae35a4e578ebd44cec5a7b710410f966da32909f1"
+    },
+    "opa": {
+      "version": "v1.19.0",
+      "executable": "/tmp/triaxis-e002-r2-bin/opa_v1.19.0",
+      "policy_sha256": "9fd4e839b3476d5284c4e0f3b142f4f04a999ed5a82c0434260364a4bd3852f2"
+    },
+    "openfga": {
+      "version": "v1.18.1",
+      "executable": "/tmp/triaxis-e002-r2-bin/openfga_v1.18.1",
+      "r3_tc14_store_id": "01KZETQKCWB8D5CXEX88VGS1FK",
+      "r3_tc14_model_id": "01KZETQKCZSR1FQT1ZZ3VJQJ7P",
+      "tc14_corrected_resource": "folder:engineering_docs"
+    }
+  }
+}

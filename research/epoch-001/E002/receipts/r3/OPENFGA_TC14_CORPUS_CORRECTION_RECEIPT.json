@@ -1,0 +1,29 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
+  "test_id": "TC14_NESTED_RELATIONSHIP",
+  "principal": "user:julia",
+  "resource": "folder:engineering_docs",
+  "relation": "viewer",
+  "relationship_chain": [
+    "user:julia --member--> group:devops",
+    "group:devops#member --member--> group:engineers",
+    "group:engineers#member --viewer--> folder:engineering_docs"
+  ],
+  "store_id": "01KZETQKCWB8D5CXEX88VGS1FK",
+  "authorization_model_id": "01KZETQKCZSR1FQT1ZZ3VJQJ7P",
+  "exact_check_request": {
+    "tuple_key": {
+      "user": "user:julia",
+      "relation": "viewer",
+      "object": "folder:engineering_docs"
+    },
+    "authorization_model_id": "01KZETQKCZSR1FQT1ZZ3VJQJ7P"
+  },
+  "raw_response": {
+    "allowed": true,
+    "resolution": ""
+  },
+  "expected_decision": "ALLOW",
+  "actual_decision": "ALLOW",
+  "status": "PASS"
+}

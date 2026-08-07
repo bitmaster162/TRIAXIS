@@ -1,0 +1,14 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
+  "timestamp_utc": "2026-08-07T19:20:51Z",
+  "target_endpoint": "http://127.0.0.1:8089/stores/test_store/check",
+  "transport_attempt_start": 1786130451.8841898,
+  "transport_attempt_end": 1786130451.884504,
+  "exception_captured": "<urlopen error [Errno 111] Connection refused>",
+  "failure_classification": "TRANSPORT/PDP_UNAVAILABLE",
+  "pep_fail_closed_input": "<urlopen error [Errno 111] Connection refused>",
+  "pep_evaluated_decision": "DENY",
+  "pep_evaluated_reason": "NO_VERIFIED_ALLOW / PEP_FAIL_CLOSED_CONVERTED_TO_DENY",
+  "engine_decision_claim": "NO_VERIFIED_ALLOW (Engine did not return DENY; PEP converted transport failure to DENY)",
+  "verdict": "PASS \u2014 Transport failure caught and fail-closed enforced at PEP."
+}

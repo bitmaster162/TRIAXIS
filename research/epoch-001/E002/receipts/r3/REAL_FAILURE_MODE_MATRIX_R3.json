@@ -1,0 +1,38 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
+  "timestamp_utc": "2026-08-08T02:20:50Z",
+  "principle": "NO VERIFIED ALLOW => NO EFFECT (PEP fail-closed conversion strictly distinguished from PDP engine denial)",
+  "failure_modes": [
+    {
+      "mode_id": "FM01_REAL_TRANSPORT_FAILURE",
+      "trigger": "Connection Refused on 127.0.0.1:8089",
+      "captured_exception": "<urlopen error [Errno 111] Connection refused>",
+      "classification": "TRANSPORT/PDP_UNAVAILABLE",
+      "pep_enforcement": "NO_VERIFIED_ALLOW / PEP_FAIL_CLOSED_CONVERTED_TO_DENY",
+      "distinct_from_engine_deny": true,
+      "live_execution_receipt": "REAL_PDP_UNAVAILABLE_RECEIPT_R3.json"
+    },
+    {
+      "mode_id": "FM02_POLICY_MODEL_UNAVAILABILITY",
+      "trigger": "Input attribute context.pdp_unreachable=true",
+      "classification": "POLICY_MODEL_OF_UNAVAILABILITY",
+      "pep_enforcement": "ENGINE_DECISION_DENY",
+      "distinct_from_engine_deny": false,
+      "note": "Reclassified in R3 as policy model of unavailability, NOT a network outage execution."
+    },
+    {
+      "mode_id": "FM03_HISTORICAL_PROCESS_ERROR",
+      "trigger": "Missing binary / command not found (exit code 127)",
+      "classification": "HISTORICAL_FAILED_EVIDENCE / PROCESS_ERROR",
+      "pep_enforcement": "HISTORICAL_INVALIDATED_R1_RECEIPT",
+      "distinct_from_engine_deny": true
+    },
+    {
+      "mode_id": "FM04_AUTHORIZATION_DENIAL",
+      "trigger": "Policy forbids or no permit rule matches",
+      "classification": "ENGINE_DECISION_DENY",
+      "pep_enforcement": "ENGINE_DECISION_DENY",
+      "distinct_from_engine_deny": false
+    }
+  ]
+}
