@@ -1,0 +1,228 @@
+{
+  "corpus_version": "1.0",
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R1",
+  "timestamp_utc": "2026-08-08T01:36:00Z",
+  "total_test_cases": 20,
+  "runtime_matrix": [
+    {
+      "test_id": "TC01_EXPLICIT_ALLOW",
+      "name": "Explicit Allow",
+      "expected_decision": "ALLOW",
+      "evaluations": {
+        "cedar": {"actual": "ALLOW", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "ALLOW", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "ALLOW", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "ALLOW", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC02_EXPLICIT_DENY",
+      "name": "Explicit Deny Overrides Allow",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC03_NO_MATCHING_POLICY",
+      "name": "No Matching Policy (Default Deny)",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC04_REVOKED_GRANT",
+      "name": "Revoked Delegation Grant",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC05_EXPIRED_GRANT",
+      "name": "Expired Delegation Grant",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Temporal TTL constraints not expressible in static OpenFGA tuple model without custom contextual tuples", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC06_WRONG_RESOURCE",
+      "name": "Wrong Resource Requested",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC07_WRONG_ACTION",
+      "name": "Wrong Action Requested",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC08_WRONG_HUMAN",
+      "name": "Compound Principal Mismatch — Wrong Human",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC09_WRONG_AGENT_INSTANCE",
+      "name": "Compound Principal Mismatch — Wrong Agent Instance",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC10_SAME_HUMAN_WRONG_TASK",
+      "name": "Compound Principal Mismatch — Wrong Task Scope",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC11_CONTEXTUAL_CONDITION_TRUE",
+      "name": "Contextual Policy Condition Met (Internal Network)",
+      "expected_decision": "ALLOW",
+      "evaluations": {
+        "cedar": {"actual": "ALLOW", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "ALLOW", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Environmental CIDR/network attributes require ABAC engine", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "ALLOW", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC12_CONTEXTUAL_CONDITION_FALSE",
+      "name": "Contextual Policy Condition Unmet (External Network)",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Environmental CIDR/network attributes require ABAC engine", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "name": "ReBAC Direct Membership (Group Auditor)",
+      "expected_decision": "ALLOW",
+      "evaluations": {
+        "cedar": {"actual": "ALLOW", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "ALLOW", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "ALLOW", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "ALLOW", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC14_NESTED_RELATIONSHIP",
+      "name": "ReBAC Nested Relationship (Subgroup -> Parent Group)",
+      "expected_decision": "ALLOW",
+      "evaluations": {
+        "cedar": {"actual": "ALLOW", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "ALLOW", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "ALLOW", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "ALLOW", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC15_REMOVED_RELATIONSHIP",
+      "name": "ReBAC Relationship Removed",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC16_STALE_POLICY_VERSION",
+      "name": "Stale Policy Version Requested",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Policy version metadata is external to ReBAC tuple store", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC17_POLICY_SUPERSEDED",
+      "name": "Policy Superseded by Governance Lifecycle",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Governance state is external to ReBAC tuple store", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC18_EMERGENCY_SUSPENSION",
+      "name": "Emergency System/Tenant Suspension",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "NOT_EXPRESSIBLE", "mismatch_reason": "Emergency lockdown state requires ABAC context condition", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC19_MALFORMED_REQUEST",
+      "name": "Malformed Request Payload",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    },
+    {
+      "test_id": "TC20_UNAVAILABLE_PDP",
+      "name": "PDP Service Unavailable / Network Error",
+      "expected_decision": "DENY",
+      "evaluations": {
+        "cedar": {"actual": "DENY", "runtime": "cedar-policy-cli v4.12.0", "executed": true, "classification": "PASS", "evidence_path": "CEDAR_REAL_RUNTIME_RECEIPT.json"},
+        "opa": {"actual": "DENY", "runtime": "opa v1.17.0", "executed": true, "classification": "PASS", "evidence_path": "OPA_REAL_RUNTIME_RECEIPT.json"},
+        "openfga": {"actual": "DENY", "runtime": "openfga v1.18.1", "executed": true, "classification": "PASS", "evidence_path": "OPENFGA_REAL_RUNTIME_RECEIPT.json"},
+        "authzen": {"actual": "DENY", "runtime": "AuthZEN 1.0 Spec Adapter", "executed": true, "classification": "PASS", "evidence_path": "AUTHZEN_EVIDENCE_CLASSIFICATION.md"}
+      }
+    }
+  ]
+}

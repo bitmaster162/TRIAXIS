@@ -1,0 +1,35 @@
+{
+  "engine": "OpenFGA",
+  "server_version": "v1.18.1",
+  "cli_version": "fga v0.6.5",
+  "real_execution": true,
+  "test_executions": [
+    {
+      "test_id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "user": "user:ian",
+      "relation": "member",
+      "object": "folder:audit_logs",
+      "actual_decision": "ALLOW",
+      "expected_decision": "ALLOW",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC14_NESTED_RELATIONSHIP",
+      "user": "user:julia",
+      "relation": "member",
+      "object": "folder:audit_logs",
+      "actual_decision": "ALLOW",
+      "expected_decision": "ALLOW",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC15_REMOVED_RELATIONSHIP",
+      "user": "user:karl",
+      "relation": "member",
+      "object": "folder:audit_logs",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    }
+  ]
+}

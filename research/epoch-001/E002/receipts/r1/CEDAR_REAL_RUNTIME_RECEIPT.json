@@ -1,0 +1,146 @@
+{
+  "engine": "Cedar",
+  "cli_version": "cedar-policy-cli 4.12.0",
+  "crate_version": "cedar-policy 4.12.0",
+  "real_execution": true,
+  "test_executions": [
+    {
+      "test_id": "TC01_EXPLICIT_ALLOW",
+      "principal": "User::\"alice\"",
+      "action": "Action::\"read\"",
+      "resource": "Document::\"doc_1\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"alice\" --action Action::\"read\" --resource Document::\"doc_1\" --context /tmp/triaxis-e002-r1-cedar/TC01_EXPLICIT_ALLOW_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC02_EXPLICIT_DENY",
+      "principal": "User::\"bob\"",
+      "action": "Action::\"delete\"",
+      "resource": "Document::\"doc_1\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"bob\" --action Action::\"delete\" --resource Document::\"doc_1\" --context /tmp/triaxis-e002-r1-cedar/TC02_EXPLICIT_DENY_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC03_NO_MATCHING_POLICY",
+      "principal": "User::\"charlie\"",
+      "action": "Action::\"read\"",
+      "resource": "Document::\"doc_99\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"charlie\" --action Action::\"read\" --resource Document::\"doc_99\" --context /tmp/triaxis-e002-r1-cedar/TC03_NO_MATCHING_POLICY_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC06_WRONG_RESOURCE",
+      "principal": "User::\"frank\"",
+      "action": "Action::\"read\"",
+      "resource": "Document::\"doc_2\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"frank\" --action Action::\"read\" --resource Document::\"doc_2\" --context /tmp/triaxis-e002-r1-cedar/TC06_WRONG_RESOURCE_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC07_WRONG_ACTION",
+      "principal": "User::\"grace\"",
+      "action": "Action::\"delete\"",
+      "resource": "Document::\"doc_1\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"grace\" --action Action::\"delete\" --resource Document::\"doc_1\" --context /tmp/triaxis-e002-r1-cedar/TC07_WRONG_ACTION_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC08_WRONG_HUMAN",
+      "principal": "User::\"human_bob\"",
+      "action": "Action::\"execute\"",
+      "resource": "Task::\"task_audit\"",
+      "context": {
+        "agent_instance_id": "agent_inst_1",
+        "task_id": "task_audit",
+        "grant_status": "ACTIVE"
+      },
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"human_bob\" --action Action::\"execute\" --resource Task::\"task_audit\" --context /tmp/triaxis-e002-r1-cedar/TC08_WRONG_HUMAN_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC11_CONTEXTUAL_CONDITION_TRUE",
+      "principal": "User::\"helen\"",
+      "action": "Action::\"read\"",
+      "resource": "Document::\"internal_doc\"",
+      "context": {
+        "network": "internal"
+      },
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"helen\" --action Action::\"read\" --resource Document::\"internal_doc\" --context /tmp/triaxis-e002-r1-cedar/TC11_CONTEXTUAL_CONDITION_TRUE_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC12_CONTEXTUAL_CONDITION_FALSE",
+      "principal": "User::\"helen\"",
+      "action": "Action::\"read\"",
+      "resource": "Document::\"internal_doc\"",
+      "context": {
+        "network": "external"
+      },
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"helen\" --action Action::\"read\" --resource Document::\"internal_doc\" --context /tmp/triaxis-e002-r1-cedar/TC12_CONTEXTUAL_CONDITION_FALSE_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "principal": "User::\"ian\"",
+      "action": "Action::\"read\"",
+      "resource": "Folder::\"audit_logs\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"ian\" --action Action::\"read\" --resource Folder::\"audit_logs\" --context /tmp/triaxis-e002-r1-cedar/TC13_RELATIONSHIP_BASED_MEMBERSHIP_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC14_NESTED_RELATIONSHIP",
+      "principal": "User::\"julia\"",
+      "action": "Action::\"read\"",
+      "resource": "Folder::\"audit_logs\"",
+      "context": {},
+      "command": "HOME=/home/bit /home/bit/.cargo/bin/cedar authorize --policies /tmp/triaxis-e002-r1-cedar/policies.cedar --entities /tmp/triaxis-e002-r1-cedar/entities.json --principal User::\"julia\" --action Action::\"read\" --resource Folder::\"audit_logs\" --context /tmp/triaxis-e002-r1-cedar/TC14_NESTED_RELATIONSHIP_ctx.json",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    }
+  ]
+}

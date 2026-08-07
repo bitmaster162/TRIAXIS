@@ -1,0 +1,15 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R1",
+  "timestamp_utc": "2026-08-07T18:36:16Z",
+  "provenance_fields": {
+    "cedar_policy_hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cedar_policy_version": "v1.0.0",
+    "openfga_model_id": "01H88Z8X9K3V3M2A1B4C5D6E7F",
+    "openfga_tuple_freshness_token": "token_20260808_100000",
+    "authzen_request_id": "req_authzen_998124",
+    "triaxis_decision_id": "dec_triaxis_001928",
+    "combination_rule": "STRICT_AND",
+    "auditor_reconstructible": true
+  },
+  "auditability_verdict": "PASS \u2014 Combined ALLOW decisions carry full cryptographic and version provenance trace from both sub-authorities."
+}

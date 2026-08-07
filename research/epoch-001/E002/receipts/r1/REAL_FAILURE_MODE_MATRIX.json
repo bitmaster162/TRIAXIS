@@ -1,0 +1,78 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R1",
+  "principle": "NO VERIFIED AUTHORITY => NO EFFECT PERMISSION",
+  "failure_modes": [
+    {
+      "mode_id": "FM01_PDP_PROCESS_UNAVAILABLE",
+      "description": "PDP process is crashed or not running",
+      "cedar_result": {"raw": "Process not found (exit code 127)", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Process not found (exit code 127)", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Server process terminated", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "HTTP endpoint unreachable", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM02_PDP_CONNECTION_REFUSED",
+      "description": "TCP/Unix socket connection refused",
+      "cedar_result": {"raw": "N/A (CLI in-process)", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Connection refused (ECONNREFUSED)", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Connection refused (127.0.0.1:8080)", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "Connection refused", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM03_REQUEST_TIMEOUT",
+      "description": "PDP RPC query exceeds timeout threshold (e.g. >2s)",
+      "cedar_result": {"raw": "CLI execution timeout", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "HTTP client timeout after 2000ms", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "gRPC deadline exceeded", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "HTTP 504 Gateway Timeout", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM04_MALFORMED_REQUEST_PAYLOAD",
+      "description": "JSON body is malformed or missing required schema fields",
+      "cedar_result": {"raw": "Parse error: expected object, got null", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Eval error: input undefined", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Invalid check request payload", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "HTTP 400 Bad Request", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM05_INVALID_POLICY_SYNTAX",
+      "description": "Policy file has syntax or type check errors",
+      "cedar_result": {"raw": "Cedar parse error at line 3", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Rego compilation error: undefined var", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Model validation error", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "PDP backend configuration error", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM06_MISSING_POLICY_OR_MODEL",
+      "description": "Policy file or model ID does not exist",
+      "cedar_result": {"raw": "File not found: policies.cedar", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Undefined decision path data.triaxis.authz.allow", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Model ID not found (404)", "classification": "ENGINE_ERROR", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "PDP policy route not found", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM07_STALE_POLICY_VERSION_SIMULATION",
+      "description": "Client requests deprecated policy version header",
+      "cedar_result": {"raw": "Policy version header mismatch in PEP", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Policy version header mismatch in PEP", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Model version mismatch", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "Version header validation failed", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM08_UNKNOWN_PRINCIPAL_OR_RESOURCE",
+      "description": "Principal or resource ID does not exist in store",
+      "cedar_result": {"raw": "No permit policy matched (default deny)", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "Default allow = false", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Check allowed: false (no tuple)", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "decision: false", "classification": "ENGINE_DECISION_DENY", "pep_outcome": "DENY"}
+    },
+    {
+      "mode_id": "FM09_MALFORMED_PROVIDER_RESPONSE",
+      "description": "PDP returns invalid or non-boolean JSON response",
+      "cedar_result": {"raw": "CLI output unparseable", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "opa_result": {"raw": "JSON decode error on OPA response", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "openfga_result": {"raw": "Invalid gRPC response structure", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"},
+      "authzen_result": {"raw": "Missing 'decision' field in JSON", "classification": "TRIAXIS_ADAPTER_CONVERTED_ERROR_TO_DENY", "pep_outcome": "DENY"}
+    }
+  ]
+}
