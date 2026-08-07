@@ -1,0 +1,9 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E003",
+  "target_url": "http://127.0.0.1:8089/api/v1/log",
+  "captured_error": "[Errno 111] Connection refused",
+  "transport_start_time_epoch": 1786132310.7118194,
+  "transport_end_time_epoch": 1786132310.755143,
+  "classification": "TRANSPORT/REKOR_UNAVAILABLE",
+  "pep_enforcement": "NO_VERIFIED_PROOF / PEP_FAIL_CLOSED_DENY"
+}

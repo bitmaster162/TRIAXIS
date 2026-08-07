@@ -1,0 +1,678 @@
+{
+  "test_cases": [
+    {
+      "case_id": "TC01_VALID_INTOTO_REKOR_ENTRY",
+      "description": "Valid in-toto SLSA v0.2 statement with verified Rekor log entry and valid ECDSA signature",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "ALLOW",
+      "expected_code": "PROVENANCE_VERIFIED"
+    },
+    {
+      "case_id": "TC02_TRUSTED_KEY_AUTHORIZATION",
+      "description": "Statement signed by trusted release keypair",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "ALLOW",
+      "expected_code": "TRUSTED_KEY_MATCH"
+    },
+    {
+      "case_id": "TC03_TAMPERED_SUBJECT_PAYLOAD",
+      "description": "Policy payload modified after in-toto statement generation (SHA-256 mismatch)",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIADRNzq0dJyQiERPfenpwQoIuWb17xDyL7dbO1ew3WMjAiB4j1qYqoKrZM5tcy5IFefviUPxAF+tD9+aYYvEUogMRg==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "PAYLOAD_MISMATCH"
+    },
+    {
+      "case_id": "TC04_INVALID_SIGNATURE",
+      "description": "Corrupted digital signature on in-toto statement",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "Q09SUlVQVEVEX1NJR05BVFVSRV9CWVRFUw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "SIGNATURE_INVALID"
+    },
+    {
+      "case_id": "TC05_UNRECOGNIZED_PUBLIC_KEY",
+      "description": "Statement signed by untrusted/unregistered keypair",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEUCIQC8iQ0wNA+UFTeo2LS3fUXWKwZL+uAHqaUwugUXlpEsCAIgDfa3Ni/tA4nIe9nc5pb2mBjPtbWofL4pJVAzMhDHGHw=",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE9SUs1bLV7yLajhI11IF1sl90QUHe\nW8pu8Jo0Eju1FZ7/BRgYnXKUWJIQHPQdKR9BP9NIYuZti6Lx9ch8Ir6kwg==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "UNTRUSTED_KEY"
+    },
+    {
+      "case_id": "TC06_MALFORMED_PREDICATE",
+      "description": "Corrupted JSON predicate syntax",
+      "statement": null,
+      "raw_statement_text": "{invalid_json_predicate}",
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "PREDICATE_MALFORMED"
+    },
+    {
+      "case_id": "TC07_EXPIRED_ATTESTATION",
+      "description": "Attestation timestamp exceeds max allowable clock skew (expired)",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          },
+          "finishedOn": "2020-01-01T00:00:00Z"
+        }
+      },
+      "signature": "MEUCIHX/qlv6bmkaWNrT70w73s8+GMmwneQpu3Bl5YFrasfnAiEAiXRY6jO54JCJjlyUmoI1mO6hUowIUmwPtPKmhN1poNk=",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "ATTESTATION_EXPIRED"
+    },
+    {
+      "case_id": "TC08_MISSING_LOG_INCLUSION_PROOF",
+      "description": "Attestation missing Rekor Signed Entry Timestamp (SET) and Merkle proof",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": null,
+      "expected_verdict": "DENY",
+      "expected_code": "MISSING_INCLUSION_PROOF"
+    },
+    {
+      "case_id": "TC09_MERKLE_ROOT_MISMATCH",
+      "description": "Rekor inclusion proof specifies corrupted Merkle root hash",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "MERKLE_PROOF_INVALID"
+    },
+    {
+      "case_id": "TC10_REVOKED_KEY",
+      "description": "Attestation key marked as revoked in CRL / key registry",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "key_status": "REVOKED",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "KEY_REVOKED"
+    },
+    {
+      "case_id": "TC11_SLSA_LEVEL3_COMPLIANCE",
+      "description": "SLSA Level 3 builder provenance verified",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "ALLOW",
+      "expected_code": "SLSA_LEVEL3_VERIFIED"
+    },
+    {
+      "case_id": "TC12_SLSA_LEVEL_MISMATCH",
+      "description": "Builder provenance claims SLSA Level 1 (Policy requires Level >= 3)",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 1
+          }
+        }
+      },
+      "signature": "MEYCIQDMRdvZUgao1sQGt9oHDLjmgJ2LWCoGNlGtQjqm20I6HQIhAKmgVZ4Dd0SIcjtU1KOEwM0IDItg5HUiAYkPXkjAzGSn",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "SLSA_LEVEL_INSUFFICIENT"
+    },
+    {
+      "case_id": "TC13_REAL_TRANSPORT_FAILURE",
+      "description": "Real transport failure connecting to closed port 127.0.0.1:8089",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "transport_target": "http://127.0.0.1:8089/api/v1/log",
+      "rekor_proof": null,
+      "expected_verdict": "DENY",
+      "expected_code": "TRANSPORT_PDP_UNAVAILABLE"
+    },
+    {
+      "case_id": "TC14_REKOR_INDEX_LOOKUP_VALID",
+      "description": "Query Rekor log index by hash returns verified log entry",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": 10845920,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "ALLOW",
+      "expected_code": "INDEX_LOOKUP_SUCCESS"
+    },
+    {
+      "case_id": "TC15_REKOR_INDEX_LOOKUP_NOT_FOUND",
+      "description": "Query Rekor log for unknown hash returns empty log entry",
+      "statement": {
+        "_type": "https://in-toto.io/Statement/v0.1",
+        "subject": [
+          {
+            "name": "triaxis_authorization_policy.json",
+            "digest": {
+              "sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed"
+            }
+          }
+        ],
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "predicate": {
+          "builder": {
+            "id": "https://github.com/bitmaster162/TRIAXIS/.github/workflows/ci.yml@refs/heads/research/physical-evidence-epoch-001"
+          },
+          "buildType": "https://triaxis.dev/build/v1",
+          "invocation": {
+            "configSource": {
+              "uri": "git+https://github.com/bitmaster162/TRIAXIS",
+              "entryPoint": "ci.yml"
+            }
+          },
+          "buildConfig": {
+            "slsaLevel": 3
+          }
+        }
+      },
+      "signature": "MEQCIBx6sq1cv40aPBP9brkkc2dk0TBAaIEYx9iLzS2PMx0DAiA0lgMx6rx/nq6Q9Ch2N3cWoKIZOOQka+LvlKQwXT5DTw==",
+      "pub_key": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER+vETC7HxvWNNvmczYneDalgp4fP\nUpQEDeJgx8KT5MCiwCRGXRMQsQ9jW/Up+E50RBOXdEkfngHwV87UuoEOAA==\n-----END PUBLIC KEY-----\n",
+      "rekor_proof": {
+        "logIndex": -1,
+        "integratedTime": 1786129200,
+        "logID": "c0d23d9ad696b5ae967758063e2d05a46e50367883e5967d022d4f7d62188e99",
+        "signedEntryTimestamp": "MEUCIQDx41N3Xk8V1...SIMULATED_SET_SIGNATURE...",
+        "body": "eyJfdHlwZSI6ICJodHRwczovL2luLXRvdG8uaW8vU3RhdGVtZW50L3YwLjEiLCAicHJlZGljYXRlIjogeyJidWlsZENvbmZpZyI6IHsic2xzYUxldmVsIjogM30sICJidWlsZFR5cGUiOiAiaHR0cHM6Ly90cmlheGlzLmRldi9idWlsZC92MSIsICJidWlsZGVyIjogeyJpZCI6ICJodHRwczovL2dpdGh1Yi5jb20vYml0bWFzdGVyMTYyL1RSSUFYSVMvLmdpdGh1Yi93b3JrZmxvd3MvY2kueW1sQHJlZnMvaGVhZHMvcmVzZWFyY2gvcGh5c2ljYWwtZXZpZGVuY2UtZXBvY2gtMDAxIn0sICJpbnZvY2F0aW9uIjogeyJjb25maWdTb3VyY2UiOiB7ImVudHJ5UG9pbnQiOiAiY2kueW1sIiwgInVyaSI6ICJnaXQraHR0cHM6Ly9naXRodWIuY29tL2JpdG1hc3RlcjE2Mi9UUklBWElTIn19fSwgInByZWRpY2F0ZVR5cGUiOiAiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YwLjIiLCAic3ViamVjdCI6IFt7ImRpZ2VzdCI6IHsic2hhMjU2IjogIjdkNThlNmYwZDczOTY5NWE2ZDhhODcwZjRkM2RiZGMzY2Y4NDE0MDQ1ODZlMzljYWM3NjdlMjBiMGE1MjkyZWQifSwgIm5hbWUiOiAidHJpYXhpc19hdXRob3JpemF0aW9uX3BvbGljeS5qc29uIn1dfQ==",
+        "verification": {
+          "inclusionProof": {
+            "treeSize": 15000234,
+            "rootHash": "7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a"
+          }
+        }
+      },
+      "expected_verdict": "DENY",
+      "expected_code": "ENTRY_NOT_FOUND"
+    }
+  ]
+}

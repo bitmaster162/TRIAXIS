@@ -1,0 +1,25 @@
+{
+  "failure_modes": [
+    {
+      "mode_id": "FM01_REAL_TRANSPORT_FAILURE",
+      "trigger": "Connection Refused on http://127.0.0.1:8089/api/v1/log",
+      "classification": "TRANSPORT/REKOR_UNAVAILABLE",
+      "pep_enforcement": "NO_VERIFIED_PROOF / PEP_FAIL_CLOSED_DENY",
+      "distinct_from_engine_deny": true
+    },
+    {
+      "mode_id": "FM02_SIGNATURE_VERIFICATION_FAILURE",
+      "trigger": "Corrupted or untrusted ECDSA signature on in-toto statement",
+      "classification": "SECURITY/SIGNATURE_INVALID",
+      "pep_enforcement": "ATTESTATION_VERIFICATION_DENY",
+      "distinct_from_engine_deny": false
+    },
+    {
+      "mode_id": "FM03_MISSING_INCLUSION_PROOF",
+      "trigger": "Attestation payload without Rekor Merkle tree SET proof",
+      "classification": "PROVENANCE/MISSING_TRANSPARENCY_PROOF",
+      "pep_enforcement": "NO_VERIFIED_PROOF / PEP_FAIL_CLOSED_DENY",
+      "distinct_from_engine_deny": true
+    }
+  ]
+}

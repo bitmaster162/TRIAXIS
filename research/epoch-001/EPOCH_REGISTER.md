@@ -8,7 +8,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **E001** | SPIFFE/SPIRE Workload Identity | `ACCEPTED_RESEARCH` | `research/e001-spiffe-spire` | `ADAPTER` | `PASS_WITH_CONDITIONS` | #1 (MERGED) |
 | **E002** | Policy Engine Shootout (Cedar / OPA / OpenFGA / AuthZEN) | `ACCEPTED_RESEARCH` | `research/e002-policy-engine-shootout` | Cedar `INTEGRATE`, OPA `ADAPTER`, OpenFGA `BORROW_PATTERN`, AuthZEN `ADAPTER` | `PASS_WITH_CONDITIONS` (Condition: Lifecycle/revocation assurance deferred to E009) | #2 (MERGED) |
-| **E003** | Rekor / in-toto Transparency Anchor | `QUEUED` | — | — | — | — |
+| **E003** | Rekor / in-toto Transparency Anchor | `ACCEPTED_RESEARCH` | `research/e003-rekor-intoto-transparency-anchor` | `BORROW_PATTERN` | `PASS_WITH_CONDITIONS` (Condition: Rekor v2 / in-toto toolchain NOT_ESTABLISHED; pattern enforced at load time) | #3 (MERGED) |
 | **E004** | Delegation Shootout | `QUEUED` | — | — | — | — |
 | **E005** | FAIL-BENCH v2 | `QUEUED` | — | — | — | — |
 | **E006** | Blended Principal Model | `QUEUED` | — | — | — | — |

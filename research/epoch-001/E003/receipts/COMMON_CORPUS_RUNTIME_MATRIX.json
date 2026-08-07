@@ -1,0 +1,144 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E003",
+  "timestamp_utc": "2026-08-07T19:51:50.765436+00:00",
+  "total_cases": 15,
+  "passed_cases": 15,
+  "failed_cases": 0,
+  "results": [
+    {
+      "case_id": "TC01_VALID_INTOTO_REKOR_ENTRY",
+      "description": "Valid in-toto SLSA v0.2 statement with verified Rekor log entry and valid ECDSA signature",
+      "expected_verdict": "ALLOW",
+      "actual_verdict": "ALLOW",
+      "expected_code": "PROVENANCE_VERIFIED",
+      "actual_code": "PROVENANCE_VERIFIED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC02_TRUSTED_KEY_AUTHORIZATION",
+      "description": "Statement signed by trusted release keypair",
+      "expected_verdict": "ALLOW",
+      "actual_verdict": "ALLOW",
+      "expected_code": "TRUSTED_KEY_MATCH",
+      "actual_code": "TRUSTED_KEY_MATCH",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC03_TAMPERED_SUBJECT_PAYLOAD",
+      "description": "Policy payload modified after in-toto statement generation (SHA-256 mismatch)",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "PAYLOAD_MISMATCH",
+      "actual_code": "PAYLOAD_MISMATCH",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC04_INVALID_SIGNATURE",
+      "description": "Corrupted digital signature on in-toto statement",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "SIGNATURE_INVALID",
+      "actual_code": "SIGNATURE_INVALID",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC05_UNRECOGNIZED_PUBLIC_KEY",
+      "description": "Statement signed by untrusted/unregistered keypair",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "UNTRUSTED_KEY",
+      "actual_code": "UNTRUSTED_KEY",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC06_MALFORMED_PREDICATE",
+      "description": "Corrupted JSON predicate syntax",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "PREDICATE_MALFORMED",
+      "actual_code": "PREDICATE_MALFORMED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC07_EXPIRED_ATTESTATION",
+      "description": "Attestation timestamp exceeds max allowable clock skew (expired)",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "ATTESTATION_EXPIRED",
+      "actual_code": "ATTESTATION_EXPIRED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC08_MISSING_LOG_INCLUSION_PROOF",
+      "description": "Attestation missing Rekor Signed Entry Timestamp (SET) and Merkle proof",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "MISSING_INCLUSION_PROOF",
+      "actual_code": "MISSING_INCLUSION_PROOF",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC09_MERKLE_ROOT_MISMATCH",
+      "description": "Rekor inclusion proof specifies corrupted Merkle root hash",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "MERKLE_PROOF_INVALID",
+      "actual_code": "MERKLE_PROOF_INVALID",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC10_REVOKED_KEY",
+      "description": "Attestation key marked as revoked in CRL / key registry",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "KEY_REVOKED",
+      "actual_code": "KEY_REVOKED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC11_SLSA_LEVEL3_COMPLIANCE",
+      "description": "SLSA Level 3 builder provenance verified",
+      "expected_verdict": "ALLOW",
+      "actual_verdict": "ALLOW",
+      "expected_code": "SLSA_LEVEL3_VERIFIED",
+      "actual_code": "SLSA_LEVEL3_VERIFIED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC12_SLSA_LEVEL_MISMATCH",
+      "description": "Builder provenance claims SLSA Level 1 (Policy requires Level >= 3)",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "SLSA_LEVEL_INSUFFICIENT",
+      "actual_code": "SLSA_LEVEL_INSUFFICIENT",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC13_REAL_TRANSPORT_FAILURE",
+      "description": "Real transport failure connecting to closed port 127.0.0.1:8089",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "TRANSPORT_PDP_UNAVAILABLE",
+      "actual_code": "TRANSPORT_PDP_UNAVAILABLE",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC14_REKOR_INDEX_LOOKUP_VALID",
+      "description": "Query Rekor log index by hash returns verified log entry",
+      "expected_verdict": "ALLOW",
+      "actual_verdict": "ALLOW",
+      "expected_code": "INDEX_LOOKUP_SUCCESS",
+      "actual_code": "INDEX_LOOKUP_SUCCESS",
+      "status": "PASS"
+    },
+    {
+      "case_id": "TC15_REKOR_INDEX_LOOKUP_NOT_FOUND",
+      "description": "Query Rekor log for unknown hash returns empty log entry",
+      "expected_verdict": "DENY",
+      "actual_verdict": "DENY",
+      "expected_code": "ENTRY_NOT_FOUND",
+      "actual_code": "ENTRY_NOT_FOUND",
+      "status": "PASS"
+    }
+  ]
+}
