@@ -1,0 +1,35 @@
+{
+  "case_count": 4,
+  "exactly_once_established": false,
+  "inherited_v331_boundary_status": "BOUNDARY_CONFIRMED",
+  "local_reference_complete": true,
+  "physical_independence": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_v3.32_POSTCOMMIT_TERMINAL_LOCAL_ROLLBACK_BOUNDARY_v1",
+  "real_provider_integration": false,
+  "rows": [
+    {
+      "case_id": "V332B01_CURRENT_PROVIDER_NATIVE_COMPLETED_BLOCKS_RETRY",
+      "observed": "BLOCK",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332B02_PROVIDER_AND_ANCHOR_ROLLBACK_BLOCKED_BY_CURRENT_TRANSPARENCY",
+      "observed": "NEWER_HEAD_VETO",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332B03_CURRENT_TRANSPARENCY_MINORITY_VETOES_ROLLED_THRESHOLD",
+      "observed": "NEWER_MINORITY_VETO",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332B04_COORDINATED_ROLLBACK_OF_ALL_LOCAL_EVIDENCE_DOMAINS_REVIVES_EFFECT",
+      "observed": "OLD_PERMISSIVE_VIEW_RESTORED",
+      "status": "FAIL_EXPECTED"
+    }
+  ],
+  "rows_sha256": "39543b34fe2bd025a5317112f4a7fb2f9f6a959068ffb04be77bbd68434f66e1",
+  "status": "BOUNDARY_CONFIRMED",
+  "subject_commit": "cc02b0a17a2b9edbe83d3d0d970baec533a5c17a"
+}
