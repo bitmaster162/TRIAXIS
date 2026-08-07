@@ -6,7 +6,7 @@
 
 | Experiment ID | Title | Status | Branch | Mechanism Verdict | Evidence Verdict | PR |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **E001** | SPIFFE/SPIRE Workload Identity | `EVIDENCE_READY` | `research/e001-spiffe-spire` | `ADAPTER` | `PASS_WITH_CONDITIONS` | PENDING |
+| **E001** | SPIFFE/SPIRE Workload Identity | `EVIDENCE_READY` | `research/e001-spiffe-spire` | `ADAPTER` | `PASS` | #1 |
 | **E002** | Cedar vs OPA vs OpenFGA vs AuthZEN | `QUEUED` | — | — | — | — |
 | **E003** | Rekor / in-toto Transparency Anchor | `QUEUED` | — | — | — | — |
 | **E004** | Delegation Shootout | `QUEUED` | — | — | — | — |

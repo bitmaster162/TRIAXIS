@@ -1,0 +1,2 @@
+815b1eaa5a8cea029b8b0d0f6302384b5ec1e3f12d7f5ab024726660c6475492  /tmp/triaxis-e001-r1/spire-1.15.2/bin/spire-server
+978ed3208bc11cde4af2fe8d1cba13fd38cc26de61b71f5118819f220494f9d2  /tmp/triaxis-e001-r1/spire-1.15.2/bin/spire-agent

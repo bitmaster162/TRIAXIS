@@ -1,0 +1,7 @@
+Entry ID                : 46a03492-2815-49c9-a99a-43e43c0e584b
+SPIFFE ID               : spiffe://triaxis.test/ns/research/sa/unauthorized-workload
+Parent ID               : spiffe://triaxis.test/agent/local
+Revision                : 0
+X509-SVID TTL           : default
+JWT-SVID TTL            : default
+Selector                : unix:uid:99999

@@ -1,0 +1,17 @@
+{
+    "slice_id": "E001-R1",
+    "work_order": "TRIAXIS-WO-AGY-GH-002-E001-R1",
+    "timestamp_utc": "2026-08-07T18:16:32Z",
+    "spire_version": "v1.15.2",
+    "trust_domain": "triaxis.test",
+    "platform": "Linux LAPTOP-F1UKDD7T 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+    "positive_attestation": "EXECUTED",
+    "negative_attestation": "PASS: SPIRE correctly withheld unauthorized-workload SVID from current process (UID mismatch)",
+    "x509_svid_issued": true,
+    "rotation_observed": true,
+    "entitlement_withdrawal": "EXECUTED",
+    "crl_revocation": "NOT_EXECUTED",
+    "product_integration": false,
+    "real_spire_runtime": true,
+    "simulator_scope": "LOCAL_MODEL_ONLY"
+}
