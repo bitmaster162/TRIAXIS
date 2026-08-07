@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_granted": {
+      "const": false
+    },
+    "challenge_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_PROVIDER_NATIVE_IDEMPOTENCY_STATUS_v1"
+    },
+    "effect_id": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "evidence_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "generation": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "issued_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "namespace_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "policy_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provider_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provider_request_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_response_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "service_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "ABSENT",
+        "IN_FLIGHT",
+        "UNKNOWN",
+        "COMPLETED",
+        "NO_EFFECT"
+      ]
+    },
+    "status_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "verifier_epoch_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "verifier_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "provider_id",
+    "service_id",
+    "namespace_id",
+    "effect_id",
+    "payload_sha256",
+    "state",
+    "generation",
+    "provider_request_id",
+    "provider_response_sha256",
+    "evidence_sha256",
+    "policy_id",
+    "policy_sha256",
+    "verifier_id",
+    "verifier_epoch_sha256",
+    "challenge_sha256",
+    "issued_at",
+    "valid_until",
+    "authority_granted",
+    "status_sha256"
+  ],
+  "type": "object"
+}

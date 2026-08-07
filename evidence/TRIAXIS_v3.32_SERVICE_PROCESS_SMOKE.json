@@ -1,0 +1,35 @@
+{
+  "authority_granted": false,
+  "case_count": 5,
+  "fail_count": 0,
+  "pass_count": 5,
+  "physical_independence": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_V332_SERVICE_PROCESS_SMOKE_v1",
+  "real_provider_integration": false,
+  "rows": [
+    {
+      "case_id": "V332SP01_FOUR_NEW_SERVICES_START_AND_MINIMIZE_SECRETS",
+      "process_count": 4,
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332SP02_PROVIDER_MUTATION_REQUIRES_AUTH",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332SP03_PROVIDER_NATIVE_IDEMPOTENCY_REPLAY_BLOCKS_EFFECT",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332SP04_TRANSPARENCY_CHECKPOINT_INSTALL_AUTHENTICATED",
+      "status": "PASS"
+    },
+    {
+      "case_id": "V332SP05_TWO_OF_THREE_HTTP_TRANSPARENCY_QUORUM",
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "a5b9615329b3f0bfd0c50b495b41c343c3566079983a9648f64c922316f391b7",
+  "status": "PASS"
+}

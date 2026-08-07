@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "anchor_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "authority_granted": {
+      "const": false
+    },
+    "authority_set_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "challenge_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_TRANSPARENCY_QUORUM_WITNESS_v1"
+    },
+    "head_event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "head_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "issued_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "matching_authority_ids": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "sequence": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "state_root_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "threshold": {
+      "minimum": 2,
+      "type": "integer"
+    },
+    "verifier_epoch_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "verifier_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "witness_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "config_sha256",
+    "authority_set_id",
+    "anchor_id",
+    "sequence",
+    "head_event_sha256",
+    "state_root_sha256",
+    "head_sha256",
+    "threshold",
+    "matching_authority_ids",
+    "verifier_id",
+    "verifier_epoch_sha256",
+    "challenge_sha256",
+    "issued_at",
+    "authority_granted",
+    "witness_sha256"
+  ],
+  "type": "object"
+}

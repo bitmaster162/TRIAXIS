@@ -1,0 +1,150 @@
+{
+  "authority_granted": false,
+  "case_count": 27,
+  "fail_count": 0,
+  "local_reference_complete": true,
+  "pass_count": 27,
+  "physical_independence": false,
+  "production_qualified": false,
+  "protocol_id": "TRIAXIS_PROVIDER_NATIVE_AND_COMPLETION_TRANSPARENCY_CLOSURE_v3.32",
+  "real_provider_integration": false,
+  "rows": [
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_authority_refuses_rollback_and_same_sequence_fork",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_challenge_is_single_use",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_config_current_and_threshold",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_config_digest_is_pinned",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_newer_valid_minority_vetoes_old_threshold",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_response_inner_and_envelope_window_must_match",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_same_sequence_fork_minority_vetoes",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_threshold_not_reached_blocks",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332CompletionTransparencyTests.test_two_of_three_exact_head_passes",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_absent_status_passes_only_with_current_pinned_policy",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_begin_replay_and_payload_conflict",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_caller_cannot_expand_permissive_states",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_completed_status_blocks_retry",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_expired_policy_cannot_validate_old_matching_digest",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_inner_and_envelope_freshness_windows_must_match",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_no_effect_opens_only_next_generation",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_policy_is_current_and_fail_closed_when_stale",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332ProviderNativeTests.test_reopen_replays_write_once_chain",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332TerminalGuardTests.test_guard_rejects_missing_separate_authorization_after_evidence_pass",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency.V332TerminalGuardTests.test_guard_requires_prior_guard_and_separate_authorization",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_provider_event_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_provider_head_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_provider_policy_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_provider_status_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_transparency_config_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_transparency_response_schema",
+      "error": null,
+      "status": "PASS"
+    },
+    {
+      "case_id": "tests.test_v3_32_provider_native_and_completion_transparency_schemas.V332SchemaTests.test_transparency_witness_schema",
+      "error": null,
+      "status": "PASS"
+    }
+  ],
+  "rows_sha256": "019dd873658ad6226abd0a85ef678cab55d8bd59a534cd0305b8401142605b8a",
+  "status": "PASS"
+}

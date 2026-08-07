@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority_granted": {
+      "const": false
+    },
+    "contract_id": {
+      "const": "TRIAXIS_PROVIDER_NATIVE_IDEMPOTENCY_HEAD_v1"
+    },
+    "head_event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "head_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "issued_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "namespace_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provider_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "service_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "state_root_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "provider_id",
+    "service_id",
+    "namespace_id",
+    "sequence",
+    "head_event_sha256",
+    "state_root_sha256",
+    "issued_at",
+    "valid_until",
+    "authority_granted",
+    "head_sha256"
+  ],
+  "type": "object"
+}

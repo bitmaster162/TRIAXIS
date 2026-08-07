@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_id": {
+      "const": "TRIAXIS_PROVIDER_NATIVE_IDEMPOTENCY_POLICY_v1"
+    },
+    "namespace_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "payload_binding_required": {
+      "const": true
+    },
+    "permissive_states": {
+      "const": [
+        "ABSENT",
+        "NO_EFFECT"
+      ]
+    },
+    "policy_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "provider_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "service_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "stable_effect_id_required": {
+      "const": true
+    },
+    "valid_from": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "policy_id",
+    "provider_id",
+    "service_id",
+    "namespace_id",
+    "stable_effect_id_required",
+    "payload_binding_required",
+    "permissive_states",
+    "valid_from",
+    "valid_until",
+    "policy_sha256"
+  ],
+  "type": "object"
+}

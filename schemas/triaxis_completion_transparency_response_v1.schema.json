@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "anchor_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "authority_granted": {
+      "const": false
+    },
+    "authority_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "challenge_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_TRANSPARENCY_RESPONSE_v1"
+    },
+    "head_event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "head_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "issued_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "requested_at": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "response_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "service_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "state_root_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "verifier_epoch_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "verifier_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_id",
+    "authority_id",
+    "service_id",
+    "anchor_id",
+    "sequence",
+    "head_event_sha256",
+    "state_root_sha256",
+    "head_sha256",
+    "verifier_id",
+    "verifier_epoch_sha256",
+    "challenge_sha256",
+    "requested_at",
+    "issued_at",
+    "valid_until",
+    "authority_granted",
+    "response_sha256"
+  ],
+  "type": "object"
+}

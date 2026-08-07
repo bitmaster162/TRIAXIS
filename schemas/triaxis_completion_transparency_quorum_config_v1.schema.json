@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "anchor_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "authorities": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "authority_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "key_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "service_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "signer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "trust_domain": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "authority_id",
+          "service_id",
+          "signer_id",
+          "key_id",
+          "trust_domain"
+        ],
+        "type": "object"
+      },
+      "minItems": 2,
+      "type": "array"
+    },
+    "authority_set_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "config_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "config_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contract_id": {
+      "const": "TRIAXIS_COMPLETION_TRANSPARENCY_QUORUM_CONFIG_v1"
+    },
+    "threshold": {
+      "minimum": 2,
+      "type": "integer"
+    },
+    "valid_from": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "valid_until": {
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contract_id",
+    "config_id",
+    "authority_set_id",
+    "anchor_id",
+    "threshold",
+    "authorities",
+    "valid_from",
+    "valid_until",
+    "config_sha256"
+  ],
+  "type": "object"
+}
