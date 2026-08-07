@@ -1,0 +1,55 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R2",
+  "timestamp_utc": "2026-08-08T01:56:10Z",
+  "principle": "NO VERIFIED ALLOW => NO EFFECT (Process exit codes != 0 explicitly distinguished from authorization DENY)",
+  "failure_modes": [
+    {
+      "mode_id": "FM01_COMMAND_NOT_FOUND",
+      "trigger": "Missing binary (exit code 127)",
+      "engine_output": "bash: command not found",
+      "classification": "PROCESS_ERROR",
+      "pep_enforcement": "PEP_FAIL_CLOSED_CONVERTED_TO_DENY",
+      "distinct_from_engine_deny": true
+    },
+    {
+      "mode_id": "FM02_POLICY_SYNTAX_ERROR",
+      "trigger": "Malformed Rego/Cedar syntax",
+      "engine_output": "Parse Error / Syntax Error",
+      "classification": "ENGINE_ERROR",
+      "pep_enforcement": "PEP_FAIL_CLOSED_CONVERTED_TO_DENY",
+      "distinct_from_engine_deny": true
+    },
+    {
+      "mode_id": "FM03_PDP_UNAVAILABLE_REFUSED",
+      "trigger": "Connection Refused on 127.0.0.1:8080",
+      "engine_output": "urllib.error.URLError: [Errno 111] Connection refused",
+      "classification": "PROCESS_ERROR",
+      "pep_enforcement": "PEP_FAIL_CLOSED_CONVERTED_TO_DENY",
+      "distinct_from_engine_deny": true
+    },
+    {
+      "mode_id": "FM04_AUTHORIZATION_DENIAL",
+      "trigger": "Policy explicitly forbids or no permit rule matches",
+      "engine_output": "Cedar exit code 2 (Decision: Deny) / OPA value: false / OpenFGA allowed: false",
+      "classification": "ENGINE_DECISION_DENY",
+      "pep_enforcement": "ENGINE_DECISION_DENY",
+      "distinct_from_engine_deny": false
+    },
+    {
+      "mode_id": "FM05_STALE_POLICY_VERSION",
+      "trigger": "Requested policy version v0 vs active v1",
+      "engine_output": "Version Mismatch Deny",
+      "classification": "ENGINE_DECISION_DENY",
+      "pep_enforcement": "ENGINE_DECISION_DENY",
+      "distinct_from_engine_deny": false
+    },
+    {
+      "mode_id": "FM06_REBAC_REVOKED_TUPLE",
+      "trigger": "Tuple deleted from OpenFGA store",
+      "engine_output": "OpenFGA check response allowed: false",
+      "classification": "ENGINE_DECISION_DENY",
+      "pep_enforcement": "ENGINE_DECISION_DENY",
+      "distinct_from_engine_deny": false
+    }
+  ]
+}

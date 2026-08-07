@@ -1,0 +1,36 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R2",
+  "timestamp_utc": "2026-08-08T01:56:10Z",
+  "corpus_version": "v1.0",
+  "total_test_cases": 20,
+  "summary": {
+    "cedar_positive_pass": "4/4",
+    "cedar_negative_pass": "8/8",
+    "opa_positive_pass": "4/4",
+    "opa_negative_pass": "16/16",
+    "openfga_rebac_lifecycle_pass": "4/4",
+    "process_errors": 0,
+    "engine_errors": 0
+  },
+  "engines": {
+    "cedar": {
+      "version": "cedar-policy-cli 4.12.0",
+      "executable": "/home/bit/.cargo/bin/cedar",
+      "policy_sha256": "527e1ec62303dd35fce58efae35a4e578ebd44cec5a7b710410f966da32909f1",
+      "receipt": "CEDAR_REAL_RUNTIME_RECEIPT_R2.json"
+    },
+    "opa": {
+      "version": "v1.19.0",
+      "executable": "/tmp/triaxis-e002-r2-bin/opa_v1.19.0",
+      "policy_sha256": "557aef92bb609b4db700a1209bca3b22cfca50c44acbdcbf2f7ebce085a21e42",
+      "receipt": "OPA_REAL_RUNTIME_RECEIPT_R2.json"
+    },
+    "openfga": {
+      "version": "v1.18.1",
+      "executable": "/tmp/triaxis-e002-r2-bin/openfga_v1.18.1",
+      "store_id": "01KZESABYEFNRJTF5N4SN2EHGA",
+      "model_id": "01KZESABYGR39296A488ZA0MFK",
+      "receipt": "OPENFGA_REAL_RUNTIME_RECEIPT_R2.json"
+    }
+  }
+}
