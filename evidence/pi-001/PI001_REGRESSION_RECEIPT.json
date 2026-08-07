@@ -1,0 +1,12 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001",
+  "timestamp_utc": "2026-08-07T20:21:22Z",
+  "command": "PYTHONPATH=.:src python3 -m pytest tests/",
+  "total_suite_tests": 551,
+  "baseline_tests_passed": 533,
+  "pi001_new_tests_passed": 18,
+  "total_passed": 551,
+  "failed": 0,
+  "existing_regressions": 0,
+  "src_tree_before": "aa675acd75f8d93cb8695b11db5d70467116f63f"
+}

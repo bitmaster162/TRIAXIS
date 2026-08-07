@@ -358,15 +358,56 @@ def authorize_action(
     evaluation_tick: int,
     issuer_id: str,
     trusted_assurance_issuers: Mapping[str, str] | None = None,
+    *,
+    authorization_mode: str | Any = "legacy",
+    pep: Any = None,
 ) -> dict[str, Any]:
     """Produce an exact, single-use authorization token or a sealed DENY token."""
+    from .authorization import AuthorizationMode, AuthorizationRequest, CompoundPrincipal, PolicyEnforcementPoint
 
+    mode = AuthorizationMode.parse(authorization_mode)
     action_result = validate_action_envelope(action_value, evaluation_tick)
     policy_result = validate_policy_bundle(policy_value)
     errors = list(action_result.get("errors", [])) + list(policy_result.get("errors", []))
     action = action_result.get("action")
     policy = policy_result.get("policy")
     policy_decision: dict[str, Any] | None = None
+    pep_receipt: Any = None
+
+    if mode == AuthorizationMode.CEDAR_REFERENCE:
+        if pep is None:
+            errors.append(_error("pep_unconfigured", "authorization_mode", "PEP instance required in cedar_reference mode"))
+        elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
+            try:
+                principal = CompoundPrincipal(
+                    human_id=str(action.get("human_id") or action.get("subject_id") or "alice@triaxis.dev"),
+                    agent_instance_id=str(action.get("agent_instance_id") or "agent_inst_001"),
+                    delegation_grant_id=str(action.get("delegation_grant_id") or "grant_prod_001"),
+                    task_id=str(action.get("task_id") or action.get("intent_id") or "task_001"),
+                    action=str(action.get("capability") or "execute_capability"),
+                    resource=str(action.get("execution_target") or "target_service_v1"),
+                    identity_provenance={"issuer_id": issuer_id, "subject_id": action.get("subject_id")},
+                    request_id=str(action.get("intent_id") or f"req_{evaluation_tick}"),
+                    spiffe_id=action.get("spiffe_id"),
+                )
+                authz_request = AuthorizationRequest(
+                    principal=principal,
+                    policy_id=action["policy_id"],
+                    risk_class=action["risk_class"],
+                )
+                pep_receipt = pep.evaluate_request(authz_request)
+                if not pep_receipt.is_verified_allow:
+                    errors.append(_error("cedar_authorization_denied", "pep", f"decision={pep_receipt.decision.value}, reason={pep_receipt.reason_code}"))
+                else:
+                    policy_decision = {
+                        "outcome": "ALLOW",
+                        "policy_id": action["policy_id"],
+                        "policy_sequence": action["policy_sequence"],
+                        "policy_sha256": policy["policy_sha256"],
+                        "errors": [],
+                    }
+            except Exception as exc:
+                errors.append(_error("compound_principal_construction_error", "pep", str(exc)))
     assurance_attestation = action_result.get("assurance_attestation")
     if action_result["status"] == "PASS" and assurance_attestation is not None:
         if not _trusted_assurance_issuer(assurance_attestation, trusted_assurance_issuers):
@@ -374,7 +415,7 @@ def authorize_action(
     if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
         if action.get("policy_sha256") != policy.get("policy_sha256"):
             errors.append(_error("policy_digest_mismatch", "action.policy_sha256", "action not bound to exact policy bundle"))
-    if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
+    if mode == AuthorizationMode.LEGACY and action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
         approval_types = sorted({str(item.get("approval_type")) for item in action_result["approvals"]})
         policy_request = {
             "policy_id": action["policy_id"],

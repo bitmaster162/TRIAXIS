@@ -1,0 +1,14 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001",
+  "test_file": "tests/test_pi001_failure_modes.py",
+  "total_tests": 5,
+  "passed": 5,
+  "failed": 0,
+  "failure_modes_tested": [
+    "missing_cedar_binary",
+    "missing_policy_file",
+    "pdp_exception",
+    "malformed_stdout",
+    "command_injection_attempt"
+  ]
+}
