@@ -8,7 +8,7 @@
 
 ## R1 — Real SPIRE Runtime Results (Supersedes R0)
 
-* **Runtime**: SPIRE vv1.15.2 (official release binaries)
+* **Runtime**: SPIRE v1.15.2 (official release binaries)
 * **Platform**: Linux LAPTOP-F1UKDD7T 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Th...
 * **Trust Domain**: `triaxis.test`
 * **Real Server + Agent**: YES (not simulator)
