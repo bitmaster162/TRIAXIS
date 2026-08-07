@@ -1,6 +1,6 @@
 {
   "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
-  "timestamp_utc": "2026-08-08T02:20:50Z",
+  "timestamp_utc": "2026-08-08T02:20:50+07:00",
   "corpus_version": "v1.0",
   "total_test_cases": 20,
   "summary": {

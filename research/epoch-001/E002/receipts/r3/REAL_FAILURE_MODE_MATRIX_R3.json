@@ -1,6 +1,6 @@
 {
   "work_order": "TRIAXIS-WO-AGY-GH-002-E002-R3",
-  "timestamp_utc": "2026-08-08T02:20:50Z",
+  "timestamp_utc": "2026-08-08T02:20:50+07:00",
   "principle": "NO VERIFIED ALLOW => NO EFFECT (PEP fail-closed conversion strictly distinguished from PDP engine denial)",
   "failure_modes": [
     {
