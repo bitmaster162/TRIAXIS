@@ -1,0 +1,14 @@
+{
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E003",
+  "rekor_cli_bin": "/tmp/triaxis_e003_bin/rekor-cli-linux-amd64",
+  "rekor_cli_sha256": "MISSING",
+  "cosign_bin": "/tmp/triaxis_e003_bin/cosign-linux-amd64",
+  "cosign_sha256": "MISSING",
+  "policy_subject_sha256": "7d58e6f0d739695a6d8a870f4d3dbdc3cf841404586e39cac767e20b0a5292ed",
+  "intoto_spec": "https://in-toto.io/Statement/v0.1",
+  "slsa_predicate_spec": "https://slsa.dev/provenance/v0.2",
+  "ecdsa_key_type": "secp256r1",
+  "corpus_cases_executed": 15,
+  "corpus_cases_passed": 15,
+  "status": "PASS"
+}

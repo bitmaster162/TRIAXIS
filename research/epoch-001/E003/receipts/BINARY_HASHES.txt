@@ -1,0 +1,2 @@
+rekor-cli-linux-amd64: MISSING  (v1.3.10)
+cosign-linux-amd64: MISSING  (v2.4.1)
