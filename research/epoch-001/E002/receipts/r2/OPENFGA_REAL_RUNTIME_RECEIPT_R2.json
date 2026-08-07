@@ -1,0 +1,69 @@
+{
+  "engine": "OpenFGA",
+  "server_version": "v1.18.1",
+  "store_id": "01KZESABYEFNRJTF5N4SN2EHGA",
+  "authorization_model_id": "01KZESABYGR39296A488ZA0MFK",
+  "real_execution": true,
+  "test_executions": [
+    {
+      "test_id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "request": {
+        "user": "user:ian",
+        "relation": "viewer",
+        "object": "folder:audit_logs"
+      },
+      "raw_response": {
+        "allowed": true,
+        "resolution": ""
+      },
+      "actual_decision": "ALLOW",
+      "expected_decision": "ALLOW",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC14_NESTED_RELATIONSHIP",
+      "request": {
+        "user": "user:julia",
+        "relation": "viewer",
+        "object": "folder:audit_logs"
+      },
+      "raw_response": {
+        "allowed": true,
+        "resolution": ""
+      },
+      "actual_decision": "ALLOW",
+      "expected_decision": "ALLOW",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC15_REMOVED_RELATIONSHIP",
+      "request": {
+        "user": "user:karl",
+        "relation": "viewer",
+        "object": "folder:audit_logs"
+      },
+      "raw_response": {
+        "allowed": false,
+        "resolution": ""
+      },
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC13_POST_REVOCATION_CHECK",
+      "request": {
+        "user": "user:ian",
+        "relation": "viewer",
+        "object": "folder:audit_logs"
+      },
+      "raw_response": {
+        "allowed": false,
+        "resolution": ""
+      },
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    }
+  ]
+}

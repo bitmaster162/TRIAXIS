@@ -1,0 +1,272 @@
+{
+  "corpus_version": "1.0",
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002",
+  "description": "Common TRIAXIS Authorization Corpus — 20 Engine-Neutral Test Cases",
+  "test_cases": [
+    {
+      "id": "TC01_EXPLICIT_ALLOW",
+      "name": "Explicit Allow",
+      "principal": {"type": "User", "id": "alice"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "ALLOW",
+      "expected_reason": "Matching permit policy for alice on doc_1 read"
+    },
+    {
+      "id": "TC02_EXPLICIT_DENY",
+      "name": "Explicit Deny Overrides Allow",
+      "principal": {"type": "User", "id": "bob"},
+      "action": {"type": "Action", "id": "delete"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Explicit forbid policy overrides default/permit policies"
+    },
+    {
+      "id": "TC03_NO_MATCHING_POLICY",
+      "name": "No Matching Policy (Default Deny)",
+      "principal": {"type": "User", "id": "charlie"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_99"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Default deny when no permit policy matches"
+    },
+    {
+      "id": "TC04_REVOKED_GRANT",
+      "name": "Revoked Delegation Grant",
+      "principal": {"type": "User", "id": "dave"},
+      "action": {"type": "Action", "id": "export"},
+      "resource": {"type": "Report", "id": "report_10"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": {"grant_id": "grant_404", "status": "REVOKED"},
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Delegation grant has status REVOKED"
+    },
+    {
+      "id": "TC05_EXPIRED_GRANT",
+      "name": "Expired Delegation Grant",
+      "principal": {"type": "User", "id": "eve"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": {"grant_id": "grant_500", "status": "ACTIVE", "expires_at": "2026-08-01T00:00:00Z"},
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Request time (2026-08-08) is past grant expiration (2026-08-01)"
+    },
+    {
+      "id": "TC06_WRONG_RESOURCE",
+      "name": "Wrong Resource Requested",
+      "principal": {"type": "User", "id": "frank"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_2"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Frank has permit policy for doc_1, not doc_2"
+    },
+    {
+      "id": "TC07_WRONG_ACTION",
+      "name": "Wrong Action Requested",
+      "principal": {"type": "User", "id": "grace"},
+      "action": {"type": "Action", "id": "delete"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Grace has permit policy for read, not delete"
+    },
+    {
+      "id": "TC08_WRONG_HUMAN",
+      "name": "Compound Principal Mismatch — Wrong Human",
+      "principal": {
+        "human_id": "human_bob",
+        "agent_instance_id": "agent_inst_1",
+        "task_id": "task_audit"
+      },
+      "action": {"type": "Action", "id": "execute"},
+      "resource": {"type": "Task", "id": "task_audit"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": {"grant_id": "grant_101", "authorized_human": "human_alice"},
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Delegation grant requires human_alice, but request presents human_bob"
+    },
+    {
+      "id": "TC09_WRONG_AGENT_INSTANCE",
+      "name": "Compound Principal Mismatch — Wrong Agent Instance",
+      "principal": {
+        "human_id": "human_alice",
+        "agent_instance_id": "agent_inst_99",
+        "task_id": "task_audit"
+      },
+      "action": {"type": "Action", "id": "execute"},
+      "resource": {"type": "Task", "id": "task_audit"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": {"grant_id": "grant_101", "authorized_agent_instance": "agent_inst_1"},
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Delegation grant requires agent_inst_1, but request presents agent_inst_99"
+    },
+    {
+      "id": "TC10_SAME_HUMAN_WRONG_TASK",
+      "name": "Compound Principal Mismatch — Wrong Task Scope",
+      "principal": {
+        "human_id": "human_alice",
+        "agent_instance_id": "agent_inst_1",
+        "task_id": "task_export_all"
+      },
+      "action": {"type": "Action", "id": "execute"},
+      "resource": {"type": "Task", "id": "task_export_all"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": {"grant_id": "grant_101", "authorized_task": "task_audit"},
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Delegation grant scoped to task_audit, but request presents task_export_all"
+    },
+    {
+      "id": "TC11_CONTEXTUAL_CONDITION_TRUE",
+      "name": "Contextual Policy Condition Met (Internal Network)",
+      "principal": {"type": "User", "id": "helen"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "internal_doc"},
+      "context": {"ip": "10.0.0.45", "time": "2026-08-08T10:00:00Z", "network": "internal"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "ALLOW",
+      "expected_reason": "Helen has policy requiring network==internal, which is satisfied"
+    },
+    {
+      "id": "TC12_CONTEXTUAL_CONDITION_FALSE",
+      "name": "Contextual Policy Condition Unmet (External Network)",
+      "principal": {"type": "User", "id": "helen"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "internal_doc"},
+      "context": {"ip": "198.51.100.23", "time": "2026-08-08T10:00:00Z", "network": "external"},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Helen has policy requiring network==internal, but request is external"
+    },
+    {
+      "id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "name": "ReBAC Direct Membership (Group Auditor)",
+      "principal": {"type": "User", "id": "ian"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Folder", "id": "audit_logs"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "relationships": [
+        {"subject": "User:ian", "relation": "member", "object": "Group:auditors"},
+        {"subject": "Group:auditors", "relation": "viewer", "object": "Folder:audit_logs"}
+      ],
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "ALLOW",
+      "expected_reason": "Ian is member of Group:auditors which is viewer of Folder:audit_logs"
+    },
+    {
+      "id": "TC14_NESTED_RELATIONSHIP",
+      "name": "ReBAC Nested Relationship (Subgroup -> Parent Group)",
+      "principal": {"type": "User", "id": "julia"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Folder", "id": "engineering_docs"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "relationships": [
+        {"subject": "User:julia", "relation": "member", "object": "Group:devops"},
+        {"subject": "Group:devops", "relation": "member", "object": "Group:engineers"},
+        {"subject": "Group:engineers", "relation": "viewer", "object": "Folder:engineering_docs"}
+      ],
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "ALLOW",
+      "expected_reason": "Julia -> member of devops -> member of engineers -> viewer of engineering_docs"
+    },
+    {
+      "id": "TC15_REMOVED_RELATIONSHIP",
+      "name": "ReBAC Relationship Removed",
+      "principal": {"type": "User", "id": "karl"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Folder", "id": "audit_logs"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "relationships": [
+        {"subject": "Group:auditors", "relation": "viewer", "object": "Folder:audit_logs"}
+      ],
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Karl is no longer a member of Group:auditors"
+    },
+    {
+      "id": "TC16_STALE_POLICY_VERSION",
+      "name": "Stale Policy Version Requested",
+      "principal": {"type": "User", "id": "alice"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v0_deprecated",
+      "expected_decision": "DENY",
+      "expected_reason": "Request references deprecated policy version v0_deprecated, active is v1"
+    },
+    {
+      "id": "TC17_POLICY_SUPERSEDED",
+      "name": "Policy Superseded by Governance Lifecycle",
+      "principal": {"type": "User", "id": "leo"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "legacy_doc"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z"},
+      "delegation": null,
+      "policy_version": "v1",
+      "lifecycle_state": "SUPERSEDED",
+      "expected_decision": "DENY",
+      "expected_reason": "Target policy state is SUPERSEDED by newer governance rule"
+    },
+    {
+      "id": "TC18_EMERGENCY_SUSPENSION",
+      "name": "Emergency System/Tenant Suspension",
+      "principal": {"type": "User", "id": "alice"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"ip": "10.0.0.1", "time": "2026-08-08T10:00:00Z", "emergency_lockdown": true},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "System is under emergency lockdown condition"
+    },
+    {
+      "id": "TC19_MALFORMED_REQUEST",
+      "name": "Malformed Request Payload",
+      "principal": null,
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Principal is null — malformed input must evaluate to DENY"
+    },
+    {
+      "id": "TC20_UNAVAILABLE_PDP",
+      "name": "PDP Service Unavailable / Network Error",
+      "principal": {"type": "User", "id": "alice"},
+      "action": {"type": "Action", "id": "read"},
+      "resource": {"type": "Document", "id": "doc_1"},
+      "context": {"pdp_unreachable": true},
+      "delegation": null,
+      "policy_version": "v1",
+      "expected_decision": "DENY",
+      "expected_reason": "Unreachable PDP must fail-closed to DENY in PEP enforcement wrapper"
+    }
+  ]
+}

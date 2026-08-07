@@ -1,0 +1,187 @@
+{
+  "engine": "OPA",
+  "version": "v1.17.0",
+  "real_execution": true,
+  "test_executions": [
+    {
+      "test_id": "TC01_EXPLICIT_ALLOW",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC01_EXPLICIT_ALLOW_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC02_EXPLICIT_DENY",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC02_EXPLICIT_DENY_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC03_NO_MATCHING_POLICY",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC03_NO_MATCHING_POLICY_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC04_REVOKED_GRANT",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC04_REVOKED_GRANT_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC05_EXPIRED_GRANT",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC05_EXPIRED_GRANT_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC06_WRONG_RESOURCE",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC06_WRONG_RESOURCE_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC07_WRONG_ACTION",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC07_WRONG_ACTION_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC08_WRONG_HUMAN",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC08_WRONG_HUMAN_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC09_WRONG_AGENT_INSTANCE",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC09_WRONG_AGENT_INSTANCE_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC10_SAME_HUMAN_WRONG_TASK",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC10_SAME_HUMAN_WRONG_TASK_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC11_CONTEXTUAL_CONDITION_TRUE",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC11_CONTEXTUAL_CONDITION_TRUE_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC12_CONTEXTUAL_CONDITION_FALSE",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC12_CONTEXTUAL_CONDITION_FALSE_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC13_RELATIONSHIP_BASED_MEMBERSHIP",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC13_RELATIONSHIP_BASED_MEMBERSHIP_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC14_NESTED_RELATIONSHIP",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC14_NESTED_RELATIONSHIP_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "ALLOW",
+      "status": "FAIL"
+    },
+    {
+      "test_id": "TC15_REMOVED_RELATIONSHIP",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC15_REMOVED_RELATIONSHIP_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC16_STALE_POLICY_VERSION",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC16_STALE_POLICY_VERSION_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC17_POLICY_SUPERSEDED",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC17_POLICY_SUPERSEDED_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC18_EMERGENCY_SUSPENSION",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC18_EMERGENCY_SUSPENSION_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC19_MALFORMED_REQUEST",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC19_MALFORMED_REQUEST_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    },
+    {
+      "test_id": "TC20_UNAVAILABLE_PDP",
+      "command": "/tmp/triaxis-e002-r1-bin/opa_v1.17.0 eval --data /tmp/triaxis-e002-r1-opa/policy.rego --input /tmp/triaxis-e002-r1-opa/TC20_UNAVAILABLE_PDP_input.json \"data.triaxis.authz.allow\"",
+      "process_exit_code": 127,
+      "raw_stdout": "",
+      "actual_decision": "DENY",
+      "expected_decision": "DENY",
+      "status": "PASS"
+    }
+  ]
+}

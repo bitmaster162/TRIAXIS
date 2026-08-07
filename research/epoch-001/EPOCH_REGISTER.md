@@ -6,8 +6,8 @@
 
 | Experiment ID | Title | Status | Branch | Mechanism Verdict | Evidence Verdict | PR |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **E001** | SPIFFE/SPIRE Workload Identity | `EVIDENCE_READY` | `research/e001-spiffe-spire` | `ADAPTER` | `PASS_WITH_CONDITIONS` | #1 |
-| **E002** | Cedar vs OPA vs OpenFGA vs AuthZEN | `QUEUED` | — | — | — | — |
+| **E001** | SPIFFE/SPIRE Workload Identity | `ACCEPTED_RESEARCH` | `research/e001-spiffe-spire` | `ADAPTER` | `PASS_WITH_CONDITIONS` | #1 (MERGED) |
+| **E002** | Policy Engine Shootout (Cedar / OPA / OpenFGA / AuthZEN) | `ACCEPTED_RESEARCH` | `research/e002-policy-engine-shootout` | Cedar `INTEGRATE`, OPA `ADAPTER`, OpenFGA `BORROW_PATTERN`, AuthZEN `ADAPTER` | `PASS_WITH_CONDITIONS` (Condition: Lifecycle/revocation assurance deferred to E009) | #2 (MERGED) |
 | **E003** | Rekor / in-toto Transparency Anchor | `QUEUED` | — | — | — | — |
 | **E004** | Delegation Shootout | `QUEUED` | — | — | — | — |
 | **E005** | FAIL-BENCH v2 | `QUEUED` | — | — | — | — |

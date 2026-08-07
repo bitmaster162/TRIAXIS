@@ -1,0 +1,464 @@
+{
+  "slice_id": "E002",
+  "work_order": "TRIAXIS-WO-AGY-GH-002-E002",
+  "timestamp_utc": "2026-08-07T18:31:30Z",
+  "execution_time_seconds": 11.8056,
+  "versions": {
+    "cedar": "v4.12.0 (CLI 4.1.0)",
+    "opa": "v1.0.0 (Rego v1)",
+    "openfga": "v1.8.3 (CLI v0.6.3)",
+    "authzen": "Authorization API 1.0 Final"
+  },
+  "results": {
+    "cedar": {
+      "TC01_EXPLICIT_ALLOW": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC02_EXPLICIT_DENY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC03_NO_MATCHING_POLICY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC04_REVOKED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC05_EXPIRED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC06_WRONG_RESOURCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC07_WRONG_ACTION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC08_WRONG_HUMAN": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC09_WRONG_AGENT_INSTANCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC10_SAME_HUMAN_WRONG_TASK": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC11_CONTEXTUAL_CONDITION_TRUE": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC12_CONTEXTUAL_CONDITION_FALSE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC13_RELATIONSHIP_BASED_MEMBERSHIP": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC14_NESTED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC15_REMOVED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC16_STALE_POLICY_VERSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC17_POLICY_SUPERSEDED": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC18_EMERGENCY_SUSPENSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC19_MALFORMED_REQUEST": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC20_UNAVAILABLE_PDP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      }
+    },
+    "opa": {
+      "TC01_EXPLICIT_ALLOW": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC02_EXPLICIT_DENY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC03_NO_MATCHING_POLICY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC04_REVOKED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC05_EXPIRED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC06_WRONG_RESOURCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC07_WRONG_ACTION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC08_WRONG_HUMAN": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC09_WRONG_AGENT_INSTANCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC10_SAME_HUMAN_WRONG_TASK": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC11_CONTEXTUAL_CONDITION_TRUE": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC12_CONTEXTUAL_CONDITION_FALSE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC13_RELATIONSHIP_BASED_MEMBERSHIP": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC14_NESTED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "ALLOW",
+        "status": "FAIL"
+      },
+      "TC15_REMOVED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC16_STALE_POLICY_VERSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC17_POLICY_SUPERSEDED": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC18_EMERGENCY_SUSPENSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC19_MALFORMED_REQUEST": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      },
+      "TC20_UNAVAILABLE_PDP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "status": "PASS"
+      }
+    },
+    "openfga": {
+      "TC01_EXPLICIT_ALLOW": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC02_EXPLICIT_DENY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC03_NO_MATCHING_POLICY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC04_REVOKED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC05_EXPIRED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC06_WRONG_RESOURCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC07_WRONG_ACTION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC08_WRONG_HUMAN": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC09_WRONG_AGENT_INSTANCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC10_SAME_HUMAN_WRONG_TASK": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC11_CONTEXTUAL_CONDITION_TRUE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC12_CONTEXTUAL_CONDITION_FALSE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC13_RELATIONSHIP_BASED_MEMBERSHIP": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "mode": "NATIVE",
+        "status": "PASS"
+      },
+      "TC14_NESTED_RELATIONSHIP": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "mode": "NATIVE",
+        "status": "PASS"
+      },
+      "TC15_REMOVED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NATIVE",
+        "status": "PASS"
+      },
+      "TC16_STALE_POLICY_VERSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC17_POLICY_SUPERSEDED": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC18_EMERGENCY_SUSPENSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "NOT_EXPRESSIBLE",
+        "status": "PASS"
+      },
+      "TC19_MALFORMED_REQUEST": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      },
+      "TC20_UNAVAILABLE_PDP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "mode": "MODELED",
+        "status": "PASS"
+      }
+    },
+    "authzen": {
+      "TC01_EXPLICIT_ALLOW": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC02_EXPLICIT_DENY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC03_NO_MATCHING_POLICY": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC04_REVOKED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC05_EXPIRED_GRANT": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC06_WRONG_RESOURCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC07_WRONG_ACTION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC08_WRONG_HUMAN": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC09_WRONG_AGENT_INSTANCE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC10_SAME_HUMAN_WRONG_TASK": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC11_CONTEXTUAL_CONDITION_TRUE": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC12_CONTEXTUAL_CONDITION_FALSE": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC13_RELATIONSHIP_BASED_MEMBERSHIP": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC14_NESTED_RELATIONSHIP": {
+        "decision": "ALLOW",
+        "expected": "ALLOW",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC15_REMOVED_RELATIONSHIP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC16_STALE_POLICY_VERSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC17_POLICY_SUPERSEDED": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC18_EMERGENCY_SUSPENSION": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC19_MALFORMED_REQUEST": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      },
+      "TC20_UNAVAILABLE_PDP": {
+        "decision": "DENY",
+        "expected": "DENY",
+        "classification": "SPEC_EVIDENCE",
+        "status": "PASS"
+      }
+    }
+  },
+  "product_integration": false,
+  "src_tree_unmodified": true
+}
