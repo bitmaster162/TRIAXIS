@@ -8,10 +8,13 @@ from triaxis.action_assurance import (
     APPROVAL_CONTRACT_ID,
     ASSURANCE_ATTESTATION_CONTRACT_ID,
     STATE_WITNESS_CONTRACT_ID,
+    SQLiteExecutionLedger,
+    _is_sha256,
     action_scope_sha256,
     assured_action_request_sha256,
     authorize_action,
     seal_contract,
+    validate_authorization_token,
 )
 from triaxis.authorization import (
     AuthorizationDecisionReceipt,
@@ -275,3 +278,75 @@ def test_legacy_mode_compatibility(test_setup):
         authorization_mode="legacy",
     )
     assert token["outcome"] == "ALLOW"
+
+
+def test_real_cedar_pdp_token_to_sqlite_ledger_prepared_runtime(test_setup, tmp_path):
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    mock_pdp = MockCedarPDP(policy_path)
+    pep = PolicyEnforcementPoint(pdp_adapter=mock_pdp)
+
+    token = authorize_action(
+        test_setup["action"],
+        test_setup["policy"],
+        evaluation_tick=50,
+        issuer_id=test_setup["issuer_id"],
+        trusted_assurance_issuers=test_setup["trusted_issuers"],
+        authorization_mode="cedar_reference",
+        pep=pep,
+    )
+
+    # 1. Verify token authorization output
+    assert token["outcome"] == "ALLOW"
+    assert token["contract_id"] == "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v3"
+    assert _is_sha256(token["token_sha256"])
+    assert _is_sha256(token["policy_decision_sha256"])
+
+    # 2. Validate token against contract rules
+    validation = validate_authorization_token(token, evaluation_tick=50, require_allow=True)
+    assert validation["status"] == "PASS"
+
+    # 3. Feed valid token into SQLiteExecutionLedger -> PREPARED state
+    db_path = tmp_path / "ledger.sqlite"
+    ledger = SQLiteExecutionLedger(db_path)
+    prep_result = ledger.prepare(
+        token,
+        observed_state_witness=test_setup["action"]["state_witness"],
+        evaluation_tick=50,
+    )
+
+    assert prep_result["state"] == "PREPARED"
+    assert prep_result["token_sha256"] == token["token_sha256"]
+
+
+def test_policy_pinning_mismatch_fails_closed(test_setup, monkeypatch):
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    # Mock shutil.which to simulate binary presence so policy pinning check runs
+    monkeypatch.setattr("shutil.which", lambda path: "/usr/bin/cedar")
+
+    pdp = CedarLocalReferencePDP(
+        cedar_binary_path="/usr/bin/cedar",
+        policy_filepath=policy_path,
+    )
+    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
+
+    principal = CompoundPrincipal(
+        human_id="alice@triaxis.dev",
+        agent_instance_id="agent_inst_001",
+        delegation_grant_id="grant_prod_001",
+        task_id="task_authorization_001",
+        action="execute_capability",
+        resource="target_service_v1",
+        identity_provenance={},
+        request_id="req_pin_001",
+    )
+    req = AuthorizationRequest(
+        principal=principal,
+        policy_id="pol_001",
+        pinned_policy_sha256="f" * 64,
+    )
+
+    receipt = pep.evaluate_request(req)
+
+    assert receipt.decision == DecisionState.ERROR
+    assert receipt.reason_code == "CEDAR_POLICY_HASH_MISMATCH"
+    assert not receipt.is_verified_allow

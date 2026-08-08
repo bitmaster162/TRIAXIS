@@ -49,6 +49,27 @@ class AuthorizationDecisionReceipt:
         """Effect permission condition: ONLY VERIFIED ALLOW => EFFECT MAY CONTINUE."""
         return self.decision == DecisionState.ALLOW
 
+    @property
+    def decision_sha256(self) -> str:
+        """Return the canonical SHA-256 digest of this decision receipt."""
+        from ..integrity import canonical_sha256
+        data = {
+            "decision": self.decision.value,
+            "reason_code": self.reason_code,
+            "policy_version": self.policy_version,
+            "policy_hash": self.policy_hash,
+            "provider": self.provider,
+            "provider_version": self.provider_version,
+            "request_id": self.request_id,
+            "evaluated_principal": dict(self.evaluated_principal),
+            "evaluated_task": self.evaluated_task,
+            "evaluated_action": self.evaluated_action,
+            "evaluated_resource": self.evaluated_resource,
+            "evaluation_timestamp_iso": self.evaluation_timestamp_iso,
+            "error_class": self.error_class,
+        }
+        return canonical_sha256(data)
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "decision": self.decision.value,
@@ -65,4 +86,5 @@ class AuthorizationDecisionReceipt:
             "evaluation_timestamp_iso": self.evaluation_timestamp_iso,
             "error_class": self.error_class,
             "is_verified_allow": self.is_verified_allow,
+            "decision_sha256": self.decision_sha256,
         }

@@ -92,6 +92,24 @@ class CedarLocalReferencePDP:
                 error_class="PolicyNotFoundError",
             )
 
+        # Policy Pinning Validation
+        if request.pinned_policy_sha256 and request.pinned_policy_sha256 != policy_hash:
+            return AuthorizationDecisionReceipt(
+                decision=DecisionState.ERROR,
+                reason_code="CEDAR_POLICY_HASH_MISMATCH",
+                policy_version=policy_version,
+                policy_hash=policy_hash,
+                provider=self.provider_name,
+                provider_version=self.provider_version,
+                request_id=request.principal.request_id,
+                evaluated_principal=request.principal.to_dict(),
+                evaluated_task=request.principal.task_id,
+                evaluated_action=request.principal.action,
+                evaluated_resource=request.principal.resource,
+                evaluation_timestamp_iso=now_iso,
+                error_class="PolicyHashMismatchError",
+            )
+
         # Construct Cedar entity principals & request
         # Cedar syntax: principal, action, resource, context
         principal_id = f'User::"{request.principal.human_id}"'
@@ -133,20 +151,53 @@ class CedarLocalReferencePDP:
             stdout_str = res.stdout.strip()
 
             if exit_code == 0:
-                return AuthorizationDecisionReceipt(
-                    decision=DecisionState.ALLOW,
-                    reason_code="CEDAR_DECISION_ALLOW",
-                    policy_version=policy_version,
-                    policy_hash=policy_hash,
-                    provider=self.provider_name,
-                    provider_version=self.provider_version,
-                    request_id=request.principal.request_id,
-                    evaluated_principal=request.principal.to_dict(),
-                    evaluated_task=request.principal.task_id,
-                    evaluated_action=request.principal.action,
-                    evaluated_resource=request.principal.resource,
-                    evaluation_timestamp_iso=now_iso,
-                )
+                stdout_upper = stdout_str.upper()
+                if "ALLOW" in stdout_upper or "ALLOWED" in stdout_upper:
+                    return AuthorizationDecisionReceipt(
+                        decision=DecisionState.ALLOW,
+                        reason_code="CEDAR_DECISION_ALLOW",
+                        policy_version=policy_version,
+                        policy_hash=policy_hash,
+                        provider=self.provider_name,
+                        provider_version=self.provider_version,
+                        request_id=request.principal.request_id,
+                        evaluated_principal=request.principal.to_dict(),
+                        evaluated_task=request.principal.task_id,
+                        evaluated_action=request.principal.action,
+                        evaluated_resource=request.principal.resource,
+                        evaluation_timestamp_iso=now_iso,
+                    )
+                elif "DENY" in stdout_upper or "DENIED" in stdout_upper:
+                    return AuthorizationDecisionReceipt(
+                        decision=DecisionState.DENY,
+                        reason_code="CEDAR_DECISION_DENY",
+                        policy_version=policy_version,
+                        policy_hash=policy_hash,
+                        provider=self.provider_name,
+                        provider_version=self.provider_version,
+                        request_id=request.principal.request_id,
+                        evaluated_principal=request.principal.to_dict(),
+                        evaluated_task=request.principal.task_id,
+                        evaluated_action=request.principal.action,
+                        evaluated_resource=request.principal.resource,
+                        evaluation_timestamp_iso=now_iso,
+                    )
+                else:
+                    return AuthorizationDecisionReceipt(
+                        decision=DecisionState.ERROR,
+                        reason_code="CEDAR_STDOUT_MALFORMED",
+                        policy_version=policy_version,
+                        policy_hash=policy_hash,
+                        provider=self.provider_name,
+                        provider_version=self.provider_version,
+                        request_id=request.principal.request_id,
+                        evaluated_principal=request.principal.to_dict(),
+                        evaluated_task=request.principal.task_id,
+                        evaluated_action=request.principal.action,
+                        evaluated_resource=request.principal.resource,
+                        evaluation_timestamp_iso=now_iso,
+                        error_class="MalformedStdoutError",
+                    )
             elif exit_code == 2:
                 return AuthorizationDecisionReceipt(
                     decision=DecisionState.DENY,

@@ -378,36 +378,58 @@ def authorize_action(
         if pep is None:
             errors.append(_error("pep_unconfigured", "authorization_mode", "PEP instance required in cedar_reference mode"))
         elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
-            try:
-                principal = CompoundPrincipal(
-                    human_id=str(action.get("human_id") or action.get("subject_id") or "alice@triaxis.dev"),
-                    agent_instance_id=str(action.get("agent_instance_id") or "agent_inst_001"),
-                    delegation_grant_id=str(action.get("delegation_grant_id") or "grant_prod_001"),
-                    task_id=str(action.get("task_id") or action.get("intent_id") or "task_001"),
-                    action=str(action.get("capability") or "execute_capability"),
-                    resource=str(action.get("execution_target") or "target_service_v1"),
-                    identity_provenance={"issuer_id": issuer_id, "subject_id": action.get("subject_id")},
-                    request_id=str(action.get("intent_id") or f"req_{evaluation_tick}"),
-                    spiffe_id=action.get("spiffe_id"),
-                )
-                authz_request = AuthorizationRequest(
-                    principal=principal,
-                    policy_id=action["policy_id"],
-                    risk_class=action["risk_class"],
-                )
-                pep_receipt = pep.evaluate_request(authz_request)
-                if not pep_receipt.is_verified_allow:
-                    errors.append(_error("cedar_authorization_denied", "pep", f"decision={pep_receipt.decision.value}, reason={pep_receipt.reason_code}"))
-                else:
-                    policy_decision = {
-                        "outcome": "ALLOW",
-                        "policy_id": action["policy_id"],
-                        "policy_sequence": action["policy_sequence"],
-                        "policy_sha256": policy["policy_sha256"],
-                        "errors": [],
-                    }
-            except Exception as exc:
-                errors.append(_error("compound_principal_construction_error", "pep", str(exc)))
+            human_id = action.get("human_id") or action.get("subject_id")
+            agent_instance_id = action.get("agent_instance_id")
+            delegation_grant_id = action.get("delegation_grant_id")
+            task_id = action.get("task_id") or action.get("intent_id")
+
+            missing_fields = []
+            if not isinstance(human_id, str) or not human_id.strip():
+                missing_fields.append("action.human_id")
+            if not isinstance(agent_instance_id, str) or not agent_instance_id.strip():
+                missing_fields.append("action.agent_instance_id")
+            if not isinstance(delegation_grant_id, str) or not delegation_grant_id.strip():
+                missing_fields.append("action.delegation_grant_id")
+            if not isinstance(task_id, str) or not task_id.strip():
+                missing_fields.append("action.task_id")
+
+            if missing_fields:
+                for f in missing_fields:
+                    errors.append(_error("missing_required", f, f"{f} required for compound principal in cedar_reference mode"))
+            else:
+                try:
+                    principal = CompoundPrincipal(
+                        human_id=human_id,
+                        agent_instance_id=agent_instance_id,
+                        delegation_grant_id=delegation_grant_id,
+                        task_id=task_id,
+                        action=str(action["capability"]),
+                        resource=str(action["execution_target"]),
+                        identity_provenance={"issuer_id": issuer_id, "subject_id": action["subject_id"]},
+                        request_id=str(action["intent_id"]),
+                        spiffe_id=action.get("spiffe_id"),
+                    )
+                    authz_request = AuthorizationRequest(
+                        principal=principal,
+                        policy_id=action["policy_id"],
+                        risk_class=action["risk_class"],
+                        pinned_policy_sha256=policy["policy_sha256"],
+                    )
+                    pep_receipt = pep.evaluate_request(authz_request)
+                    if not pep_receipt.is_verified_allow:
+                        errors.append(_error("cedar_authorization_denied", "pep", f"decision={pep_receipt.decision.value}, reason={pep_receipt.reason_code}"))
+                    else:
+                        policy_decision = {
+                            "outcome": "ALLOW",
+                            "policy_id": action["policy_id"],
+                            "policy_sequence": action["policy_sequence"],
+                            "policy_sha256": policy["policy_sha256"],
+                            "decision_sha256": pep_receipt.decision_sha256,
+                            "pep_decision_receipt": pep_receipt.to_dict(),
+                            "errors": [],
+                        }
+                except Exception as exc:
+                    errors.append(_error("compound_principal_construction_error", "pep", str(exc)))
     assurance_attestation = action_result.get("assurance_attestation")
     if action_result["status"] == "PASS" and assurance_attestation is not None:
         if not _trusted_assurance_issuer(assurance_attestation, trusted_assurance_issuers):

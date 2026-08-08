@@ -15,6 +15,7 @@ class AuthorizationRequest:
     principal: CompoundPrincipal
     policy_id: str
     risk_class: str = "R1"
+    pinned_policy_sha256: str | None = None
     context_data: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
