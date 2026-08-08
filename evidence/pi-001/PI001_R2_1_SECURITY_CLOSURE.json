@@ -1,0 +1,62 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2.1",
+  "timestamp_utc": "2026-08-08T05:05:26.843747+00:00",
+  "provenance": {
+    "pre_r2_1_head": "416e75ae451444c2442e7b3a2b5e798bce082699",
+    "pre_r2_1_src_tree": "39cc7b3c76e58d769b9642a33de7ee3eea301b9a",
+    "post_r2_1_head": "97c6a64847814ed3185bbe34069ecff67c140288",
+    "post_r2_1_full_tree": "4323f33a4d931152b9ba4f157828deb5385ad66b",
+    "post_r2_1_src_tree": "6aa627b4398e9392f624f5d276d5fd5d3ea464bd"
+  },
+  "executed_security_fixes": {
+    "1_missing_human_id": {
+      "test_name": "test_missing_explicit_human_id_no_subject_id_inheritance",
+      "subject_id_present": "alice@triaxis.dev",
+      "human_id_present": false,
+      "outcome": "DENY",
+      "error_code": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+      "error_path": "action.human_id",
+      "pep_invoked": false,
+      "subject_id_inheritance_prevented": true,
+      "status": "PASS"
+    },
+    "2_provider_mismatch": {
+      "test_name": "test_pep_receipt_correlation_failures[provider-EVIL_PROVIDER]",
+      "expected_provider": "Cedar",
+      "received_provider": "EVIL_PROVIDER",
+      "pep_decision": "ERROR",
+      "pep_reason_code": "PDP_RECEIPT_CORRELATION_FAILURE",
+      "is_verified_allow": false,
+      "status": "PASS"
+    },
+    "3_stderr_only_fake_allow": {
+      "test_name": "test_failure_mode_subprocess_variations[0--ALLOW-ERROR-CEDAR_STDOUT_MALFORMED]",
+      "stdout": "",
+      "stderr": "ALLOW",
+      "pep_decision": "ERROR",
+      "pep_reason_code": "CEDAR_STDOUT_MALFORMED",
+      "is_verified_allow": false,
+      "ledger_prepare": false,
+      "status": "PASS"
+    }
+  },
+  "real_cedar_e2e": {
+    "cedar_binary_path": "/home/bit/.cargo/bin/cedar",
+    "cedar_version": "cedar-policy-cli 4.12.0",
+    "cedar_binary_sha256": "b20d8186de45e57e13d06a981c6b562e171d7f1de94f2746c8857aa4f8126b3d",
+    "chain_status": "ALLOW",
+    "pep_verified_allow": true,
+    "token_validation": "PASS",
+    "sqlite_ledger_state": "PREPARED"
+  },
+  "full_regression": {
+    "command": "PYTHONPATH=.:src python3 -m pytest tests/",
+    "raw_output_file": "evidence/pi-001/PI001_RAW_PYTEST_OUTPUT_R2_1.txt",
+    "baseline_tests_passed": 533,
+    "pi001_tests_passed": 35,
+    "total_passed": 568,
+    "failed": 0,
+    "existing_regressions": 0
+  },
+  "status": "EVIDENCE_READY"
+}
