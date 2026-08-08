@@ -1,0 +1,56 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2",
+  "timestamp_utc": "2026-08-08T04:13:01.493740+00:00",
+  "correlation_checks": [
+    {
+      "field": "request_id",
+      "expected": "req_corr_001",
+      "corrupted": "fake_req_id",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "human_id",
+      "expected": "alice@triaxis.dev",
+      "corrupted": "fake_human",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "agent_instance_id",
+      "expected": "agent_inst_001",
+      "corrupted": "fake_agent",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "task_id",
+      "expected": "task_authorization_001",
+      "corrupted": "fake_task",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "action",
+      "expected": "execute_capability",
+      "corrupted": "fake_action",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "resource",
+      "expected": "target_service_v1",
+      "corrupted": "fake_resource",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    },
+    {
+      "field": "cedar_policy_sha256",
+      "expected": "0000000000000000000000000000000000000000000000000000000000000000",
+      "corrupted": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "result": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE"
+    }
+  ],
+  "all_mismatches_rejected": true
+}

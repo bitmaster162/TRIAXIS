@@ -1,0 +1,14 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001",
+  "test_file": "tests/test_pi001_unit.py",
+  "total_tests": 5,
+  "passed": 5,
+  "failed": 0,
+  "coverage": [
+    "CompoundPrincipal",
+    "AuthorizationRequest",
+    "AuthorizationDecisionReceipt",
+    "AuthorizationMode",
+    "PolicyEnforcementPoint"
+  ]
+}

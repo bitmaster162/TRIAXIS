@@ -1,0 +1,14 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2.1",
+  "timestamp_utc": "2026-08-08T05:05:08.304592+00:00",
+  "command": "PYTHONPATH=.:src python3 -m pytest tests/",
+  "total_suite_tests": 568,
+  "baseline_tests_passed": 533,
+  "pi001_r1_r2_r2_1_tests_passed": 35,
+  "total_passed": 568,
+  "failed": 0,
+  "existing_regressions": 0,
+  "raw_output_file": "evidence/pi-001/PI001_RAW_PYTEST_OUTPUT_R2_1.txt",
+  "pre_r2_1_head": "416e75ae451444c2442e7b3a2b5e798bce082699",
+  "pre_r2_1_src_tree": "39cc7b3c76e58d769b9642a33de7ee3eea301b9a"
+}

@@ -208,6 +208,10 @@ def assured_action_request_sha256(value: Mapping[str, Any]) -> str:
         ),
         "risk_class": value.get("risk_class"),
     }
+    for field in ("human_id", "agent_instance_id", "delegation_grant_id", "task_id", "spiffe_id"):
+        if field in value:
+            material[field] = value.get(field)
+
     from .integrity import canonical_sha256
 
     return canonical_sha256(material)
@@ -243,6 +247,10 @@ def action_scope_sha256(value: Mapping[str, Any]) -> str:
         "risk_class": value.get("risk_class"),
         "nonce": value.get("nonce"),
     }
+    for field in ("human_id", "agent_instance_id", "delegation_grant_id", "task_id", "spiffe_id"):
+        if field in value:
+            material[field] = value.get(field)
+
     from .integrity import canonical_sha256
 
     return canonical_sha256(material)
@@ -358,15 +366,83 @@ def authorize_action(
     evaluation_tick: int,
     issuer_id: str,
     trusted_assurance_issuers: Mapping[str, str] | None = None,
+    *,
+    authorization_mode: str | Any = "legacy",
+    pep: Any = None,
 ) -> dict[str, Any]:
     """Produce an exact, single-use authorization token or a sealed DENY token."""
+    from .authorization import AuthorizationMode, AuthorizationRequest, CompoundPrincipal, PolicyEnforcementPoint
 
+    mode = AuthorizationMode.parse(authorization_mode)
     action_result = validate_action_envelope(action_value, evaluation_tick)
     policy_result = validate_policy_bundle(policy_value)
     errors = list(action_result.get("errors", [])) + list(policy_result.get("errors", []))
     action = action_result.get("action")
     policy = policy_result.get("policy")
     policy_decision: dict[str, Any] | None = None
+    pep_receipt: Any = None
+
+    if mode == AuthorizationMode.CEDAR_REFERENCE:
+        if pep is None:
+            errors.append(_error("pep_unconfigured", "authorization_mode", "PEP instance required in cedar_reference mode"))
+        elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
+            human_id = action.get("human_id")
+            agent_instance_id = action.get("agent_instance_id")
+            delegation_grant_id = action.get("delegation_grant_id")
+            task_id = action.get("task_id") or action.get("intent_id")
+
+            missing_fields = []
+            if not isinstance(human_id, str) or not human_id.strip():
+                missing_fields.append("action.human_id")
+            if not isinstance(agent_instance_id, str) or not agent_instance_id.strip():
+                missing_fields.append("action.agent_instance_id")
+            if not isinstance(delegation_grant_id, str) or not delegation_grant_id.strip():
+                missing_fields.append("action.delegation_grant_id")
+            if not isinstance(task_id, str) or not task_id.strip():
+                missing_fields.append("action.task_id")
+
+            if missing_fields:
+                for f in missing_fields:
+                    err_code = "MISSING_COMPOUND_PRINCIPAL_COMPONENT" if f == "action.human_id" else "missing_required"
+                    errors.append(_error(err_code, f, f"{f} required for compound principal in cedar_reference mode"))
+            else:
+                try:
+                    principal = CompoundPrincipal(
+                        human_id=human_id,
+                        agent_instance_id=agent_instance_id,
+                        delegation_grant_id=delegation_grant_id,
+                        task_id=task_id,
+                        action=str(action["capability"]),
+                        resource=str(action["execution_target"]),
+                        identity_provenance={"issuer_id": issuer_id, "subject_id": action["subject_id"]},
+                        request_id=str(action["intent_id"]),
+                        spiffe_id=action.get("spiffe_id"),
+                    )
+                    cedar_hash = pep.pdp_adapter.get_cedar_policy_hash() if hasattr(pep.pdp_adapter, "get_cedar_policy_hash") else policy["policy_sha256"]
+                    authz_request = AuthorizationRequest(
+                        principal=principal,
+                        policy_id=action["policy_id"],
+                        risk_class=action["risk_class"],
+                        triaxis_policy_sha256=policy["policy_sha256"],
+                        cedar_policy_sha256=cedar_hash,
+                    )
+                    pep_receipt = pep.evaluate_request(authz_request)
+                    if not pep_receipt.is_verified_allow:
+                        errors.append(_error("cedar_authorization_denied", "pep", f"decision={pep_receipt.decision.value}, reason={pep_receipt.reason_code}"))
+                    else:
+                        policy_decision = {
+                            "outcome": "ALLOW",
+                            "policy_id": action["policy_id"],
+                            "policy_sequence": action["policy_sequence"],
+                            "policy_sha256": policy["policy_sha256"],
+                            "triaxis_policy_sha256": policy["policy_sha256"],
+                            "cedar_policy_sha256": pep_receipt.cedar_policy_sha256,
+                            "decision_sha256": pep_receipt.decision_sha256,
+                            "pep_decision_receipt": pep_receipt.to_dict(),
+                            "errors": [],
+                        }
+                except Exception as exc:
+                    errors.append(_error("compound_principal_construction_error", "pep", str(exc)))
     assurance_attestation = action_result.get("assurance_attestation")
     if action_result["status"] == "PASS" and assurance_attestation is not None:
         if not _trusted_assurance_issuer(assurance_attestation, trusted_assurance_issuers):
@@ -374,7 +450,7 @@ def authorize_action(
     if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
         if action.get("policy_sha256") != policy.get("policy_sha256"):
             errors.append(_error("policy_digest_mismatch", "action.policy_sha256", "action not bound to exact policy bundle"))
-    if action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
+    if mode == AuthorizationMode.LEGACY and action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
         approval_types = sorted({str(item.get("approval_type")) for item in action_result["approvals"]})
         policy_request = {
             "policy_id": action["policy_id"],

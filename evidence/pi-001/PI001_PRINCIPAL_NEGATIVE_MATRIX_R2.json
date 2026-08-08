@@ -1,0 +1,49 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2",
+  "timestamp_utc": "2026-08-08T04:13:01.490545+00:00",
+  "negative_cases": [
+    {
+      "dimension": "human_id",
+      "bad_value": "mallory@triaxis.dev",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    },
+    {
+      "dimension": "agent_instance_id",
+      "bad_value": "bad_agent_999",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    },
+    {
+      "dimension": "delegation_grant_id",
+      "bad_value": "bad_grant_999",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    },
+    {
+      "dimension": "task_id",
+      "bad_value": "bad_task_999",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    },
+    {
+      "dimension": "capability",
+      "bad_value": "unauthorized_capability",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    },
+    {
+      "dimension": "execution_target",
+      "bad_value": "bad_target_999",
+      "pre_cedar_validation": "PASS",
+      "cedar_decision": "DENY",
+      "ledger_prepare": "NO_PREPARE"
+    }
+  ],
+  "all_failed_closed": true
+}

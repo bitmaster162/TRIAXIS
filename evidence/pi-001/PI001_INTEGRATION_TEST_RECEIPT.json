@@ -1,0 +1,12 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001",
+  "test_file": "tests/test_pi001_integration.py",
+  "total_tests": 8,
+  "passed": 8,
+  "failed": 0,
+  "controls": [
+    "positive_control_cedar_reference_mode",
+    "negative_controls_independent_dimensions (6 cases)",
+    "legacy_mode_compatibility"
+  ]
+}

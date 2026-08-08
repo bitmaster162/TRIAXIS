@@ -1,0 +1,16 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2",
+  "timestamp_utc": "2026-08-08T04:13:01.489544+00:00",
+  "chain_verification": {
+    "1_sealed_action": "bd0d9770bdd477719f30a585db805db607f1475b72d80d5efd4a802d7c2dce15",
+    "2_real_cedar_decision": "ALLOW",
+    "3_pep_verified_allow": true,
+    "4_authorization_token_sha256": "14469758244217784e0584d85457f357285a3d78906fcc28b5d02b9539fff441",
+    "5_validate_authorization_token_status": "PASS",
+    "6_sqlite_ledger_state": "PREPARED"
+  },
+  "token_contract_id": "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v3",
+  "policy_decision_sha256": "6767696a3f8b2b0c3fc909bb81fc76b3681282512107bf0b356bdb6655f41f6c",
+  "receipt_sha256": "6767696a3f8b2b0c3fc909bb81fc76b3681282512107bf0b356bdb6655f41f6c",
+  "status": "PASS"
+}

@@ -1,0 +1,105 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2.1",
+  "timestamp_utc": "2026-08-08T05:05:08.302279+00:00",
+  "failure_modes": [
+    {
+      "mode": "missing_binary",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_BINARY_UNAVAILABLE",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "timeout",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_PROCESS_TIMEOUT",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "invalid_policy_syntax",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_PROCESS_ERROR",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "unexpected_process_exit",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_PROCESS_ERROR",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "empty_stdout",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_STDOUT_MALFORMED",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "stderr_only_fake_allow",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_STDOUT_MALFORMED",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "garbage_stdout_exit_0",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_STDOUT_MALFORMED",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "NOTALLOW_exit_0",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_STDOUT_MALFORMED",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "stderr_legitimate_warning",
+      "decision": "ALLOW",
+      "reason_code": "CEDAR_DECISION_ALLOW",
+      "allow": true,
+      "ledger_prepare": true
+    },
+    {
+      "mode": "cedar_policy_sha_mismatch",
+      "decision": "ERROR",
+      "reason_code": "CEDAR_POLICY_HASH_MISMATCH",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "receipt_correlation_mismatch",
+      "decision": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "provider_mismatch",
+      "decision": "ERROR",
+      "reason_code": "PDP_RECEIPT_CORRELATION_FAILURE",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "missing_human_id",
+      "decision": "DENY",
+      "reason_code": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+      "allow": false,
+      "ledger_prepare": false
+    },
+    {
+      "mode": "argument_injection_input",
+      "decision": "DENY",
+      "reason_code": "CEDAR_DECISION_DENY",
+      "allow": false,
+      "ledger_prepare": false
+    }
+  ],
+  "all_failed_closed": true
+}

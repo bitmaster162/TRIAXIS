@@ -1,0 +1,13 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001",
+  "timestamp_utc": "2026-08-07T20:13:44Z",
+  "os_platform": "linux / WSL2",
+  "python_version": "3.12.3",
+  "command": "PYTHONPATH=.:src python3 -m pytest tests/",
+  "total_tests": 533,
+  "passed": 533,
+  "failed": 0,
+  "skipped": 0,
+  "baseline_commit": "a5d46712aaed3304dd2c3089ae79567ef3e12dba",
+  "baseline_src_tree": "aa675acd75f8d93cb8695b11db5d70467116f63f"
+}
