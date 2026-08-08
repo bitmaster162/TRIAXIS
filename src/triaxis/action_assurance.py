@@ -208,6 +208,10 @@ def assured_action_request_sha256(value: Mapping[str, Any]) -> str:
         ),
         "risk_class": value.get("risk_class"),
     }
+    for field in ("human_id", "agent_instance_id", "delegation_grant_id", "task_id", "spiffe_id"):
+        if field in value:
+            material[field] = value.get(field)
+
     from .integrity import canonical_sha256
 
     return canonical_sha256(material)
@@ -243,6 +247,10 @@ def action_scope_sha256(value: Mapping[str, Any]) -> str:
         "risk_class": value.get("risk_class"),
         "nonce": value.get("nonce"),
     }
+    for field in ("human_id", "agent_instance_id", "delegation_grant_id", "task_id", "spiffe_id"):
+        if field in value:
+            material[field] = value.get(field)
+
     from .integrity import canonical_sha256
 
     return canonical_sha256(material)
@@ -409,11 +417,13 @@ def authorize_action(
                         request_id=str(action["intent_id"]),
                         spiffe_id=action.get("spiffe_id"),
                     )
+                    cedar_hash = pep.pdp_adapter.get_cedar_policy_hash() if hasattr(pep.pdp_adapter, "get_cedar_policy_hash") else policy["policy_sha256"]
                     authz_request = AuthorizationRequest(
                         principal=principal,
                         policy_id=action["policy_id"],
                         risk_class=action["risk_class"],
-                        pinned_policy_sha256=policy["policy_sha256"],
+                        triaxis_policy_sha256=policy["policy_sha256"],
+                        cedar_policy_sha256=cedar_hash,
                     )
                     pep_receipt = pep.evaluate_request(authz_request)
                     if not pep_receipt.is_verified_allow:
@@ -424,6 +434,8 @@ def authorize_action(
                             "policy_id": action["policy_id"],
                             "policy_sequence": action["policy_sequence"],
                             "policy_sha256": policy["policy_sha256"],
+                            "triaxis_policy_sha256": policy["policy_sha256"],
+                            "cedar_policy_sha256": pep_receipt.cedar_policy_sha256,
                             "decision_sha256": pep_receipt.decision_sha256,
                             "pep_decision_receipt": pep_receipt.to_dict(),
                             "errors": [],

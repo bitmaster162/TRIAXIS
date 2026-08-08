@@ -1,0 +1,60 @@
+{
+  "work_order": "TRIAXIS-WO-PRODUCT-PI-001-R2",
+  "timestamp_utc": "2026-08-08T04:13:01.488553+00:00",
+  "cedar_binary_path": "/home/bit/.cargo/bin/cedar",
+  "cedar_version": "cedar-policy-cli 4.12.0",
+  "cedar_binary_sha256": "b20d8186de45e57e13d06a981c6b562e171d7f1de94f2746c8857aa4f8126b3d",
+  "cedar_policy_filepath": "src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar",
+  "cedar_policy_sha256": "92b41e33f8ed64fb73a178238a9111ea54f4cc94c77b7df871366a42d99ef472",
+  "triaxis_policy_sha256": "2d8a91b38e5b4f03d1d2b742020e2415494ba6922ea6151a960ff94c684c0458",
+  "argv": [
+    "/home/bit/.cargo/bin/cedar",
+    "authorize",
+    "--policies",
+    "src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar",
+    "--entities",
+    "<temp_entities.json>",
+    "--context",
+    "<temp_context.json>",
+    "--principal",
+    "User::\"alice@triaxis.dev\"",
+    "--action",
+    "Action::\"execute_capability\"",
+    "--resource",
+    "Resource::\"target_service_v1\""
+  ],
+  "exit_code": 0,
+  "stdout": "ALLOW\n",
+  "stderr": "",
+  "decision_receipt": {
+    "decision": "ALLOW",
+    "reason_code": "CEDAR_DECISION_ALLOW",
+    "policy_version": 1,
+    "triaxis_policy_sha256": "2d8a91b38e5b4f03d1d2b742020e2415494ba6922ea6151a960ff94c684c0458",
+    "cedar_policy_sha256": "92b41e33f8ed64fb73a178238a9111ea54f4cc94c77b7df871366a42d99ef472",
+    "provider": "Cedar",
+    "provider_version": "cedar-policy-cli 4.12.0",
+    "request_id": "intent_task_authorization_001",
+    "evaluated_principal": {
+      "human_id": "alice@triaxis.dev",
+      "agent_instance_id": "agent_inst_001",
+      "delegation_grant_id": "grant_prod_001",
+      "task_id": "task_authorization_001",
+      "action": "execute_capability",
+      "resource": "target_service_v1",
+      "identity_provenance": {
+        "issuer_id": "issuer_001",
+        "subject_id": "alice@triaxis.dev"
+      },
+      "request_id": "intent_task_authorization_001"
+    },
+    "evaluated_task": "task_authorization_001",
+    "evaluated_action": "execute_capability",
+    "evaluated_resource": "target_service_v1",
+    "evaluation_timestamp_iso": "2026-08-08T04:12:52.821877+00:00",
+    "error_class": null,
+    "is_verified_allow": true,
+    "decision_sha256": "6767696a3f8b2b0c3fc909bb81fc76b3681282512107bf0b356bdb6655f41f6c"
+  },
+  "verified_allow": true
+}

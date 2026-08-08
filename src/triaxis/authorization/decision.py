@@ -1,13 +1,10 @@
-"""TRIAXIS v4.0 Authorization Decision & Receipt Model (PI-001)."""
+"""TRIAXIS v4.0 Authorization Decision & Receipt Model (PI-001 R2)."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any
-
-from .compound_principal import CompoundPrincipal
 
 
 class DecisionState(str, Enum):
@@ -23,7 +20,8 @@ class AuthorizationDecisionReceipt:
     decision: DecisionState
     reason_code: str
     policy_version: int
-    policy_hash: str
+    triaxis_policy_sha256: str
+    cedar_policy_sha256: str
     provider: str
     provider_version: str
     request_id: str
@@ -57,7 +55,8 @@ class AuthorizationDecisionReceipt:
             "decision": self.decision.value,
             "reason_code": self.reason_code,
             "policy_version": self.policy_version,
-            "policy_hash": self.policy_hash,
+            "triaxis_policy_sha256": self.triaxis_policy_sha256,
+            "cedar_policy_sha256": self.cedar_policy_sha256,
             "provider": self.provider,
             "provider_version": self.provider_version,
             "request_id": self.request_id,
@@ -75,7 +74,8 @@ class AuthorizationDecisionReceipt:
             "decision": self.decision.value,
             "reason_code": self.reason_code,
             "policy_version": self.policy_version,
-            "policy_hash": self.policy_hash,
+            "triaxis_policy_sha256": self.triaxis_policy_sha256,
+            "cedar_policy_sha256": self.cedar_policy_sha256,
             "provider": self.provider,
             "provider_version": self.provider_version,
             "request_id": self.request_id,

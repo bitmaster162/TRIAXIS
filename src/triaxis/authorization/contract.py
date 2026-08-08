@@ -1,4 +1,4 @@
-"""TRIAXIS v4.0 Authorization Request & AuthZEN-Compatible Adapter Contract (PI-001)."""
+"""TRIAXIS v4.0 Authorization Request & AuthZEN-Compatible Adapter Contract (PI-001 R2)."""
 
 from __future__ import annotations
 
@@ -15,7 +15,8 @@ class AuthorizationRequest:
     principal: CompoundPrincipal
     policy_id: str
     risk_class: str = "R1"
-    pinned_policy_sha256: str | None = None
+    triaxis_policy_sha256: str | None = None
+    cedar_policy_sha256: str | None = None
     context_data: dict[str, Any] | None = None
 
     def __post_init__(self) -> None:
@@ -38,6 +39,8 @@ class AuthorizationRequest:
             "request_id": self.principal.request_id,
             "risk_class": self.risk_class,
             "policy_id": self.policy_id,
+            "triaxis_policy_sha256": self.triaxis_policy_sha256,
+            "cedar_policy_sha256": self.cedar_policy_sha256,
             "identity_provenance": self.principal.identity_provenance,
         })
         if self.principal.spiffe_id:

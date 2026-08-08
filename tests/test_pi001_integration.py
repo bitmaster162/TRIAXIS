@@ -1,4 +1,4 @@
-"""TRIAXIS PI-001 Integration Test Suite."""
+"""TRIAXIS PI-001 Integration & Real Cedar E2E Test Suite (PI-001 R2)."""
 
 from pathlib import Path
 import pytest
@@ -14,6 +14,7 @@ from triaxis.action_assurance import (
     assured_action_request_sha256,
     authorize_action,
     seal_contract,
+    validate_action_envelope,
     validate_authorization_token,
 )
 from triaxis.authorization import (
@@ -50,13 +51,6 @@ class MockCedarPDP:
         p = request.principal
         now_iso = datetime.now(timezone.utc).isoformat()
 
-        # Match exact policy rules:
-        # human_id == "alice@triaxis.dev"
-        # agent_instance_id == "agent_inst_001"
-        # delegation_grant_id == "grant_prod_001"
-        # task_id == "task_authorization_001"
-        # action == "execute_capability"
-        # resource == "target_service_v1"
         if (
             p.human_id == "alice@triaxis.dev"
             and p.agent_instance_id == "agent_inst_001"
@@ -69,7 +63,8 @@ class MockCedarPDP:
                 decision=DecisionState.ALLOW,
                 reason_code="CEDAR_DECISION_ALLOW",
                 policy_version=1,
-                policy_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                triaxis_policy_sha256=request.triaxis_policy_sha256 or ("0" * 64),
+                cedar_policy_sha256=request.cedar_policy_sha256 or "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
                 provider="CedarMock",
                 provider_version="4.12.0",
                 request_id=p.request_id,
@@ -84,7 +79,8 @@ class MockCedarPDP:
                 decision=DecisionState.DENY,
                 reason_code="CEDAR_DECISION_DENY",
                 policy_version=1,
-                policy_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                triaxis_policy_sha256=request.triaxis_policy_sha256 or ("0" * 64),
+                cedar_policy_sha256=request.cedar_policy_sha256 or "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
                 provider="CedarMock",
                 provider_version="4.12.0",
                 request_id=p.request_id,
@@ -96,28 +92,90 @@ class MockCedarPDP:
             )
 
 
+def make_valid_action_envelope(
+    policy,
+    human_id="alice@triaxis.dev",
+    agent_instance_id="agent_inst_001",
+    delegation_grant_id="grant_prod_001",
+    task_id="task_authorization_001",
+    capability="execute_capability",
+    execution_target="target_service_v1",
+):
+    witness_raw = {
+        "contract_id": STATE_WITNESS_CONTRACT_ID,
+        "state_id": f"state_{task_id}",
+        "subject_id": human_id,
+        "object_id": execution_target,
+        "adapter_id": "issuer_001",
+        "version": 1,
+        "state_sha256": "0" * 64,
+        "attestation_level": "AUTHENTICATED",
+        "observed_at": 10,
+        "valid_until": 1000,
+        "witness_sha256": "",
+    }
+    witness = seal_contract(witness_raw, "witness_sha256")
+
+    attestation_raw = {
+        "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
+        "attestation_id": f"att_{task_id}",
+        "issuer_id": "issuer_001",
+        "trust_domain": "dev.domain",
+        "subject_id": human_id,
+        "decision_case_sha256": "0" * 64,
+        "evidence_report_sha256": "0" * 64,
+        "assured_action_request_sha256": "",
+        "assurance_status": "PASS",
+        "synthesis_decision": "ACCEPT",
+        "attestation_level": "AUTHENTICATED",
+        "issued_at": 10,
+        "valid_until": 1000,
+        "attestation_sha256": "",
+    }
+
+    action_base = {
+        "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
+        "intent_id": f"intent_{task_id}",
+        "principal_id": human_id,
+        "subject_id": human_id,
+        "object_id": execution_target,
+        "human_id": human_id,
+        "agent_instance_id": agent_instance_id,
+        "delegation_grant_id": delegation_grant_id,
+        "task_id": task_id,
+        "capability": capability,
+        "tool_id": "tool_001",
+        "execution_target": execution_target,
+        "payload_sha256": "0" * 64,
+        "decision_case_sha256": "0" * 64,
+        "evidence_report_sha256": "0" * 64,
+        "policy_id": "pol_001",
+        "policy_sequence": 1,
+        "policy_sha256": policy["policy_sha256"],
+        "state_witness": witness,
+        "risk_class": "R1",
+        "nonce": f"nonce_{task_id}",
+        "issued_at": 10,
+        "expires_at": 1000,
+        "approvals": [],
+        "scope_sha256": "",
+        "action_sha256": "",
+    }
+
+    req_digest = assured_action_request_sha256(action_base)
+    attestation_raw["assured_action_request_sha256"] = req_digest
+    attestation = seal_contract(attestation_raw, "attestation_sha256")
+    action_base["assurance_attestation"] = attestation
+    action_base["assured_action_request_sha256"] = req_digest
+
+    scope_digest = action_scope_sha256(action_base)
+    action_base["scope_sha256"] = scope_digest
+    action = seal_contract(action_base, "action_sha256")
+    return action
+
+
 @pytest.fixture
 def test_setup():
-    registry = TrustKeyRegistry()
-    keys = generate_ed25519_keypair()
-    pub_b64 = keys["public_key_b64"]
-    priv_b64 = keys["private_key_b64"]
-    record = make_trust_key_record(
-        key_id="k1",
-        signer_id="issuer_001",
-        trust_domain="dev.domain",
-        public_key_b64=pub_b64,
-        purposes=[
-            PURPOSE_ASSURANCE_ATTESTATION,
-            PURPOSE_STATE_WITNESS,
-            PURPOSE_ACTION_APPROVAL,
-            PURPOSE_POLICY_BUNDLE,
-        ],
-        valid_from=0,
-        valid_until=1000,
-    )
-    registry.add(record)
-
     policy_raw = {
         "contract_id": POLICY_BUNDLE_CONTRACT_ID,
         "policy_id": "pol_001",
@@ -137,76 +195,7 @@ def test_setup():
     }
     policy = seal_policy(policy_raw)
 
-    state_witness_raw = {
-        "contract_id": STATE_WITNESS_CONTRACT_ID,
-        "state_id": "state_001",
-        "subject_id": "alice@triaxis.dev",
-        "object_id": "target_service_v1",
-        "adapter_id": "issuer_001",
-        "version": 1,
-        "state_sha256": "0" * 64,
-        "attestation_level": "AUTHENTICATED",
-        "observed_at": 10,
-        "valid_until": 1000,
-        "witness_sha256": "",
-    }
-    witness = seal_contract(state_witness_raw, "witness_sha256")
-
-    attestation_raw = {
-        "contract_id": ASSURANCE_ATTESTATION_CONTRACT_ID,
-        "attestation_id": "att_001",
-        "subject_id": "alice@triaxis.dev",
-        "issuer_id": "issuer_001",
-        "trust_domain": "dev.domain",
-        "decision_case_sha256": "0" * 64,
-        "evidence_report_sha256": "0" * 64,
-        "assured_action_request_sha256": "",
-        "assurance_status": "PASS",
-        "synthesis_decision": "ACCEPT",
-        "attestation_level": "AUTHENTICATED",
-        "issued_at": 10,
-        "valid_until": 1000,
-        "attestation_sha256": "",
-    }
-
-    action_base = {
-        "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
-        "principal_id": "alice@triaxis.dev",
-        "human_id": "alice@triaxis.dev",
-        "agent_instance_id": "agent_inst_001",
-        "delegation_grant_id": "grant_prod_001",
-        "task_id": "task_authorization_001",
-        "intent_id": "intent_001",
-        "subject_id": "alice@triaxis.dev",
-        "object_id": "target_service_v1",
-        "capability": "execute_capability",
-        "tool_id": "tool_001",
-        "execution_target": "target_service_v1",
-        "payload_sha256": "0" * 64,
-        "decision_case_sha256": "0" * 64,
-        "evidence_report_sha256": "0" * 64,
-        "policy_id": "pol_001",
-        "policy_sequence": 1,
-        "policy_sha256": policy["policy_sha256"],
-        "state_witness": witness,
-        "risk_class": "R1",
-        "nonce": "nonce_001",
-        "issued_at": 10,
-        "expires_at": 1000,
-        "approvals": [],
-        "scope_sha256": "",
-        "action_sha256": "",
-    }
-
-    req_digest = assured_action_request_sha256(action_base)
-    attestation_raw["assured_action_request_sha256"] = req_digest
-    attestation = seal_contract(attestation_raw, "attestation_sha256")
-    action_base["assurance_attestation"] = attestation
-    action_base["assured_action_request_sha256"] = req_digest
-
-    scope_digest = action_scope_sha256(action_base)
-    action_base["scope_sha256"] = scope_digest
-    action = seal_contract(action_base, "action_sha256")
+    action = make_valid_action_envelope(policy)
 
     return {
         "policy": policy,
@@ -236,38 +225,6 @@ def test_positive_control_cedar_reference_mode(test_setup):
     assert pep.last_receipt.is_verified_allow
 
 
-@pytest.mark.parametrize(
-    "field_to_corrupt,bad_value",
-    [
-        ("human_id", "mallory@triaxis.dev"),
-        ("agent_instance_id", "bad_agent"),
-        ("delegation_grant_id", "bad_grant"),
-        ("task_id", "bad_task"),
-        ("capability", "unauthorized_action"),
-        ("execution_target", "bad_target"),
-    ],
-)
-def test_negative_controls_independent_dimensions(test_setup, field_to_corrupt, bad_value):
-    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
-    mock_pdp = MockCedarPDP(policy_path)
-    pep = PolicyEnforcementPoint(pdp_adapter=mock_pdp)
-
-    corrupted_action = dict(test_setup["action"])
-    corrupted_action[field_to_corrupt] = bad_value
-
-    token = authorize_action(
-        corrupted_action,
-        test_setup["policy"],
-        evaluation_tick=50,
-        issuer_id=test_setup["issuer_id"],
-        trusted_assurance_issuers=test_setup["trusted_issuers"],
-        authorization_mode="cedar_reference",
-        pep=pep,
-    )
-
-    assert token["outcome"] == "DENY"
-
-
 def test_legacy_mode_compatibility(test_setup):
     token = authorize_action(
         test_setup["action"],
@@ -281,9 +238,14 @@ def test_legacy_mode_compatibility(test_setup):
 
 
 def test_real_cedar_pdp_token_to_sqlite_ledger_prepared_runtime(test_setup, tmp_path):
+    """Section 2: REAL CEDAR E2E TEST (No MockCedarPDP)."""
     policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
-    mock_pdp = MockCedarPDP(policy_path)
-    pep = PolicyEnforcementPoint(pdp_adapter=mock_pdp)
+    pdp = CedarLocalReferencePDP(
+        cedar_binary_path="/home/bit/.cargo/bin/cedar",
+        policy_filepath=policy_path,
+    )
+    assert pdp.cedar_ready, f"Cedar binary must be ready: {pdp.provider_version}"
+    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
 
     token = authorize_action(
         test_setup["action"],
@@ -295,11 +257,14 @@ def test_real_cedar_pdp_token_to_sqlite_ledger_prepared_runtime(test_setup, tmp_
         pep=pep,
     )
 
-    # 1. Verify token authorization output
+    # 1. Verify real token authorization output
     assert token["outcome"] == "ALLOW"
     assert token["contract_id"] == "TRIAXIS_SINGLE_USE_AUTHORIZATION_TOKEN_v3"
     assert _is_sha256(token["token_sha256"])
     assert _is_sha256(token["policy_decision_sha256"])
+    assert pep.last_receipt is not None
+    assert pep.last_receipt.is_verified_allow
+    assert pep.last_receipt.provider == "Cedar"
 
     # 2. Validate token against contract rules
     validation = validate_authorization_token(token, evaluation_tick=50, require_allow=True)
@@ -318,17 +283,83 @@ def test_real_cedar_pdp_token_to_sqlite_ledger_prepared_runtime(test_setup, tmp_
     assert prep_result["token_sha256"] == token["token_sha256"]
 
 
-def test_policy_pinning_mismatch_fails_closed(test_setup, monkeypatch):
-    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
-    # Mock shutil.which to simulate binary presence so policy pinning check runs
-    monkeypatch.setattr("shutil.which", lambda path: "/usr/bin/cedar")
+@pytest.mark.parametrize(
+    "neg_param,bad_val",
+    [
+        ("human_id", "mallory@triaxis.dev"),
+        ("agent_instance_id", "bad_agent_999"),
+        ("delegation_grant_id", "bad_grant_999"),
+        ("task_id", "bad_task_999"),
+        ("capability", "unauthorized_capability"),
+        ("execution_target", "bad_target_999"),
+    ],
+)
+def test_negative_controls_rebuilt_from_scratch(test_setup, tmp_path, neg_param, bad_val):
+    """Section 6: REBUILD NEGATIVE PRINCIPAL CONTROLS CORRECTLY."""
+    kwargs = {
+        "human_id": "alice@triaxis.dev",
+        "agent_instance_id": "agent_inst_001",
+        "delegation_grant_id": "grant_prod_001",
+        "task_id": "task_authorization_001",
+        "capability": "execute_capability",
+        "execution_target": "target_service_v1",
+    }
+    kwargs[neg_param] = bad_val
 
+    # Construct semantically valid action envelope from scratch
+    rebuilt_action = make_valid_action_envelope(test_setup["policy"], **kwargs)
+
+    # Prove pre-Cedar envelope validation passes
+    val_res = validate_action_envelope(rebuilt_action, evaluation_tick=50)
+    assert val_res["status"] == "PASS"
+
+    # Execute real Cedar PDP
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
     pdp = CedarLocalReferencePDP(
-        cedar_binary_path="/usr/bin/cedar",
+        cedar_binary_path="/home/bit/.cargo/bin/cedar",
         policy_filepath=policy_path,
     )
     pep = PolicyEnforcementPoint(pdp_adapter=pdp)
 
+    token = authorize_action(
+        rebuilt_action,
+        test_setup["policy"],
+        evaluation_tick=50,
+        issuer_id=test_setup["issuer_id"],
+        trusted_assurance_issuers=test_setup["trusted_issuers"],
+        authorization_mode="cedar_reference",
+        pep=pep,
+    )
+
+    # Expected: DENY and NO LEDGER PREPARE
+    assert token["outcome"] == "DENY"
+    assert pep.last_receipt is not None
+    assert pep.last_receipt.decision == DecisionState.DENY
+
+    db_path = tmp_path / "ledger_neg.sqlite"
+    ledger = SQLiteExecutionLedger(db_path)
+    with pytest.raises(Exception):
+        ledger.prepare(
+            token,
+            observed_state_witness=rebuilt_action["state_witness"],
+            evaluation_tick=50,
+        )
+
+
+@pytest.mark.parametrize(
+    "corrupt_field,fake_val",
+    [
+        ("request_id", "fake_req_id"),
+        ("human_id", "fake_human"),
+        ("agent_instance_id", "fake_agent"),
+        ("task_id", "fake_task"),
+        ("action", "fake_action"),
+        ("resource", "fake_resource"),
+        ("cedar_policy_sha256", "f" * 64),
+    ],
+)
+def test_pep_receipt_correlation_failures(test_setup, corrupt_field, fake_val):
+    """Section 4: PEP RECEIPT CORRELATION FAILURES."""
     principal = CompoundPrincipal(
         human_id="alice@triaxis.dev",
         agent_instance_id="agent_inst_001",
@@ -337,16 +368,57 @@ def test_policy_pinning_mismatch_fails_closed(test_setup, monkeypatch):
         action="execute_capability",
         resource="target_service_v1",
         identity_provenance={},
-        request_id="req_pin_001",
+        request_id="req_corr_001",
     )
     req = AuthorizationRequest(
         principal=principal,
         policy_id="pol_001",
-        pinned_policy_sha256="f" * 64,
+        cedar_policy_sha256="0" * 64,
     )
 
+    # Create mock adapter returning receipt with corrupted field
+    class CorruptedReceiptPDP:
+        def evaluate(self, request):
+            from datetime import datetime, timezone
+            p_dict = request.principal.to_dict()
+            act = request.principal.action
+            res = request.principal.resource
+            req_id = request.principal.request_id
+            c_hash = request.cedar_policy_sha256 or ("0" * 64)
+
+            if corrupt_field == "request_id":
+                req_id = fake_val
+            elif corrupt_field == "action":
+                act = fake_val
+                p_dict["action"] = fake_val
+            elif corrupt_field == "resource":
+                res = fake_val
+                p_dict["resource"] = fake_val
+            elif corrupt_field == "cedar_policy_sha256":
+                c_hash = fake_val
+            elif corrupt_field in p_dict:
+                p_dict[corrupt_field] = fake_val
+
+            return AuthorizationDecisionReceipt(
+                decision=DecisionState.ALLOW,
+                reason_code="CEDAR_DECISION_ALLOW",
+                policy_version=1,
+                triaxis_policy_sha256="0" * 64,
+                cedar_policy_sha256=c_hash,
+                provider="Cedar",
+                provider_version="4.12.0",
+                request_id=req_id,
+                evaluated_principal=p_dict,
+                evaluated_task=p_dict.get("task_id", ""),
+                evaluated_action=act,
+                evaluated_resource=res,
+                evaluation_timestamp_iso=datetime.now(timezone.utc).isoformat(),
+            )
+
+    pep = PolicyEnforcementPoint(pdp_adapter=CorruptedReceiptPDP())
     receipt = pep.evaluate_request(req)
 
+    # Must fail closed with correlation failure
     assert receipt.decision == DecisionState.ERROR
-    assert receipt.reason_code == "CEDAR_POLICY_HASH_MISMATCH"
+    assert receipt.reason_code == "PDP_RECEIPT_CORRELATION_FAILURE"
     assert not receipt.is_verified_allow

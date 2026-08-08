@@ -1,11 +1,11 @@
-"""TRIAXIS v4.0 Typed Compound Principal Model (PI-001).
+"""TRIAXIS v4.0 Typed Compound Principal Model (PI-001 R2).
 
 Implements: HUMAN x AGENT_INSTANCE x DELEGATION_GRANT x TASK
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 

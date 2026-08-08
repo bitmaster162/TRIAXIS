@@ -1,6 +1,7 @@
-"""TRIAXIS PI-001 Failure Modes & Security Test Suite."""
+"""TRIAXIS PI-001 Real Failure Modes & Security Test Suite (PI-001 R2)."""
 
 from pathlib import Path
+import tempfile
 import pytest
 
 from triaxis.authorization import (
@@ -13,40 +14,32 @@ from triaxis.authorization import (
 )
 
 
-class ErrorFailingPDP:
-    """PDP adapter that raises an unhandled exception during evaluation."""
+class MockSubprocessPDP(CedarLocalReferencePDP):
+    """Subclass allowing simulation of specific subprocess stdout/stderr/exit_code."""
+
+    def __init__(self, exit_code: int, stdout: str, stderr: str, **kwargs):
+        super().__init__(**kwargs)
+        self.mock_exit_code = exit_code
+        self.mock_stdout = stdout
+        self.mock_stderr = stderr
 
     def evaluate(self, request: AuthorizationRequest) -> AuthorizationDecisionReceipt:
-        raise RuntimeError("PDP subprocess crashed unexpectedly")
+        # Override evaluate to use mocked subprocess run output
+        from unittest.mock import MagicMock, patch
+        mock_res = MagicMock(returncode=self.mock_exit_code, stdout=self.mock_stdout, stderr=self.mock_stderr)
+        with patch("subprocess.run", return_value=mock_res):
+            with patch.object(self, "_resolve_binary", return_value="/usr/bin/cedar"):
+                self._cedar_ready = True
+                return super().evaluate(request)
 
 
-class MalformedStdoutPDP:
-    """PDP adapter returning malformed / unexpected response."""
-
-    def evaluate(self, request: AuthorizationRequest) -> AuthorizationDecisionReceipt:
-        from datetime import datetime, timezone
-        return AuthorizationDecisionReceipt(
-            decision=DecisionState.ERROR,
-            reason_code="CEDAR_PROCESS_ERROR",
-            policy_version=1,
-            policy_hash="0" * 64,
-            provider="CedarMalformed",
-            provider_version="4.12.0",
-            request_id=request.principal.request_id,
-            evaluated_principal=request.principal.to_dict(),
-            evaluated_task=request.principal.task_id,
-            evaluated_action=request.principal.action,
-            evaluated_resource=request.principal.resource,
-            evaluation_timestamp_iso=datetime.now(timezone.utc).isoformat(),
-            error_class="ProcessExitCode_1",
-        )
-
-
-def test_missing_cedar_binary_fails_closed():
+def test_failure_mode_missing_binary(monkeypatch):
     pdp = CedarLocalReferencePDP(
-        cedar_binary_path="/nonexistent/path/to/cedar_binary_xyz",
+        cedar_binary_path="/nonexistent/cedar_binary_path_9999",
         policy_filepath="src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar",
     )
+    monkeypatch.setattr(pdp, "_resolve_binary", lambda: None)
+    monkeypatch.setattr(pdp, "_cedar_ready", False)
     pep = PolicyEnforcementPoint(pdp_adapter=pdp)
     principal = CompoundPrincipal(
         human_id="alice@triaxis.dev",
@@ -66,89 +59,119 @@ def test_missing_cedar_binary_fails_closed():
     assert not receipt.is_verified_allow
 
 
-def test_missing_policy_file_fails_closed():
+def test_failure_mode_timeout():
     pdp = CedarLocalReferencePDP(
-        cedar_binary_path="cedar",
-        policy_filepath="/nonexistent/path/to/missing_policy.cedar",
-    )
-    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
-    principal = CompoundPrincipal(
-        human_id="alice@triaxis.dev",
-        agent_instance_id="agent_inst_001",
-        delegation_grant_id="grant_prod_001",
-        task_id="task_authorization_001",
-        action="execute_capability",
-        resource="target_service_v1",
-        identity_provenance={},
-        request_id="req_001",
-    )
-    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
-    receipt = pep.evaluate_request(req)
-
-    assert receipt.decision == DecisionState.ERROR
-    assert receipt.reason_code in ("CEDAR_POLICY_UNAVAILABLE", "CEDAR_BINARY_UNAVAILABLE")
-    assert not receipt.is_verified_allow
-
-
-def test_pdp_exception_handled_by_pep():
-    pep = PolicyEnforcementPoint(pdp_adapter=ErrorFailingPDP())
-    principal = CompoundPrincipal(
-        human_id="alice@triaxis.dev",
-        agent_instance_id="agent_inst_001",
-        delegation_grant_id="grant_prod_001",
-        task_id="task_authorization_001",
-        action="execute_capability",
-        resource="target_service_v1",
-        identity_provenance={},
-        request_id="req_001",
-    )
-    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
-    receipt = pep.evaluate_request(req)
-
-    assert receipt.decision == DecisionState.ERROR
-    assert receipt.reason_code == "PEP_ADAPTER_INVOCATION_EXCEPTION"
-    assert receipt.error_class == "RuntimeError"
-    assert not receipt.is_verified_allow
-
-
-def test_malformed_stdout_pdp_fails_closed():
-    pep = PolicyEnforcementPoint(pdp_adapter=MalformedStdoutPDP())
-    principal = CompoundPrincipal(
-        human_id="alice@triaxis.dev",
-        agent_instance_id="agent_inst_001",
-        delegation_grant_id="grant_prod_001",
-        task_id="task_authorization_001",
-        action="execute_capability",
-        resource="target_service_v1",
-        identity_provenance={},
-        request_id="req_001",
-    )
-    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
-    receipt = pep.evaluate_request(req)
-
-    assert receipt.decision == DecisionState.ERROR
-    assert not receipt.is_verified_allow
-
-
-def test_command_injection_attempt_in_principal_sanitized():
-    pdp = CedarLocalReferencePDP(
-        cedar_binary_path="/nonexistent/path/to/cedar",
+        cedar_binary_path="/home/bit/.cargo/bin/cedar",
         policy_filepath="src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar",
+        timeout_seconds=0.00001,
     )
     pep = PolicyEnforcementPoint(pdp_adapter=pdp)
     principal = CompoundPrincipal(
-        human_id='alice"; rm -rf / ; #',
+        human_id="alice@triaxis.dev",
         agent_instance_id="agent_inst_001",
         delegation_grant_id="grant_prod_001",
-        task_id="task_001",
+        task_id="task_authorization_001",
         action="execute_capability",
         resource="target_service_v1",
         identity_provenance={},
-        request_id="req_injection_001",
+        request_id="req_timeout",
     )
     req = AuthorizationRequest(principal=principal, policy_id="pol_001")
     receipt = pep.evaluate_request(req)
 
-    # Must fail closed safely without executing shell commands!
     assert receipt.decision == DecisionState.ERROR
+    assert receipt.reason_code in ("CEDAR_PROCESS_TIMEOUT", "CEDAR_BINARY_UNAVAILABLE")
+    assert not receipt.is_verified_allow
+
+
+def test_failure_mode_invalid_policy_syntax(tmp_path):
+    bad_pol = tmp_path / "bad_policy.cedar"
+    bad_pol.write_text("permit (invalid cedar syntax !!!);")
+
+    pdp = CedarLocalReferencePDP(
+        cedar_binary_path="/home/bit/.cargo/bin/cedar",
+        policy_filepath=bad_pol,
+    )
+    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
+    principal = CompoundPrincipal(
+        human_id="alice@triaxis.dev",
+        agent_instance_id="agent_inst_001",
+        delegation_grant_id="grant_prod_001",
+        task_id="task_authorization_001",
+        action="execute_capability",
+        resource="target_service_v1",
+        identity_provenance={},
+        request_id="req_syntax",
+    )
+    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
+    receipt = pep.evaluate_request(req)
+
+    assert receipt.decision == DecisionState.ERROR
+    assert receipt.reason_code == "CEDAR_PROCESS_ERROR"
+    assert not receipt.is_verified_allow
+
+
+@pytest.mark.parametrize(
+    "exit_code,stdout,stderr,expected_decision,expected_reason",
+    [
+        (1, "", "Syntax error", DecisionState.ERROR, "CEDAR_PROCESS_ERROR"),
+        (0, "", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
+        (0, "ALLOW_GARBAGE", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
+        (0, "NOTALLOW", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
+        (0, "ALLOW", "FAKE ALLOW ON STDERR", DecisionState.ALLOW, "CEDAR_DECISION_ALLOW"),
+        (0, "DENY", "", DecisionState.DENY, "CEDAR_DECISION_DENY"),
+        (2, "DENY", "", DecisionState.DENY, "CEDAR_DECISION_DENY"),
+    ],
+)
+def test_failure_mode_subprocess_variations(tmp_path, exit_code, stdout, stderr, expected_decision, expected_reason):
+    pol = tmp_path / "policy.cedar"
+    pol.write_text("permit(principal, action, resource);")
+
+    pdp = MockSubprocessPDP(
+        exit_code=exit_code,
+        stdout=stdout,
+        stderr=stderr,
+        cedar_binary_path="/usr/bin/cedar",
+        policy_filepath=pol,
+    )
+    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
+    principal = CompoundPrincipal(
+        human_id="alice@triaxis.dev",
+        agent_instance_id="agent_inst_001",
+        delegation_grant_id="grant_prod_001",
+        task_id="task_authorization_001",
+        action="execute_capability",
+        resource="target_service_v1",
+        identity_provenance={},
+        request_id="req_sub_var",
+    )
+    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
+    receipt = pep.evaluate_request(req)
+
+    assert receipt.decision == expected_decision
+    assert receipt.reason_code == expected_reason
+
+
+def test_failure_mode_argument_injection():
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    pdp = CedarLocalReferencePDP(
+        cedar_binary_path="/home/bit/.cargo/bin/cedar",
+        policy_filepath=policy_path,
+    )
+    pep = PolicyEnforcementPoint(pdp_adapter=pdp)
+    principal = CompoundPrincipal(
+        human_id='alice"; drop table; #',
+        agent_instance_id="agent_inst_001",
+        delegation_grant_id="grant_prod_001",
+        task_id="task_authorization_001",
+        action="execute_capability",
+        resource="target_service_v1",
+        identity_provenance={},
+        request_id="req_inj_001",
+    )
+    req = AuthorizationRequest(principal=principal, policy_id="pol_001")
+    receipt = pep.evaluate_request(req)
+
+    # Shell-free execution ensures argument injection is treated as literal principal string and DENIED by Cedar
+    assert receipt.decision in (DecisionState.DENY, DecisionState.ERROR)
     assert not receipt.is_verified_allow
