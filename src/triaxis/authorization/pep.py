@@ -25,8 +25,9 @@ class PDPAdapterProtocol(Protocol):
 class PolicyEnforcementPoint:
     """Canonical Policy Enforcement Point (PEP) gating bounded effect paths."""
 
-    def __init__(self, pdp_adapter: PDPAdapterProtocol | None = None) -> None:
+    def __init__(self, pdp_adapter: PDPAdapterProtocol | None = None, expected_provider: str = "Cedar") -> None:
         self.pdp_adapter = pdp_adapter
+        self.expected_provider = expected_provider
         self._last_receipt: AuthorizationDecisionReceipt | None = None
 
     def evaluate_request(self, request: AuthorizationRequest) -> AuthorizationDecisionReceipt:
@@ -80,6 +81,8 @@ class PolicyEnforcementPoint:
         if receipt.decision == DecisionState.ALLOW:
             p = receipt.evaluated_principal
             mismatches = []
+            if self.expected_provider and receipt.provider != self.expected_provider:
+                mismatches.append(f"provider: expected {self.expected_provider!r}, got {receipt.provider!r}")
             if receipt.request_id != request.principal.request_id:
                 mismatches.append(f"request_id: expected {request.principal.request_id!r}, got {receipt.request_id!r}")
             if p.get("human_id") != request.principal.human_id:

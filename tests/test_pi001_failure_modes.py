@@ -116,9 +116,10 @@ def test_failure_mode_invalid_policy_syntax(tmp_path):
     [
         (1, "", "Syntax error", DecisionState.ERROR, "CEDAR_PROCESS_ERROR"),
         (0, "", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
+        (0, "", "ALLOW", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
         (0, "ALLOW_GARBAGE", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
         (0, "NOTALLOW", "", DecisionState.ERROR, "CEDAR_STDOUT_MALFORMED"),
-        (0, "ALLOW", "FAKE ALLOW ON STDERR", DecisionState.ALLOW, "CEDAR_DECISION_ALLOW"),
+        (0, "ALLOW", "Warning: deprecated policy feature", DecisionState.ALLOW, "CEDAR_DECISION_ALLOW"),
         (0, "DENY", "", DecisionState.DENY, "CEDAR_DECISION_DENY"),
         (2, "DENY", "", DecisionState.DENY, "CEDAR_DECISION_DENY"),
     ],

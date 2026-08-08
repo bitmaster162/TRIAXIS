@@ -65,7 +65,7 @@ class MockCedarPDP:
                 policy_version=1,
                 triaxis_policy_sha256=request.triaxis_policy_sha256 or ("0" * 64),
                 cedar_policy_sha256=request.cedar_policy_sha256 or "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-                provider="CedarMock",
+                provider="Cedar",
                 provider_version="4.12.0",
                 request_id=p.request_id,
                 evaluated_principal=p.to_dict(),
@@ -81,7 +81,7 @@ class MockCedarPDP:
                 policy_version=1,
                 triaxis_policy_sha256=request.triaxis_policy_sha256 or ("0" * 64),
                 cedar_policy_sha256=request.cedar_policy_sha256 or "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-                provider="CedarMock",
+                provider="Cedar",
                 provider_version="4.12.0",
                 request_id=p.request_id,
                 evaluated_principal=p.to_dict(),
@@ -95,16 +95,19 @@ class MockCedarPDP:
 def make_valid_action_envelope(
     policy,
     human_id="alice@triaxis.dev",
+    subject_id=None,
     agent_instance_id="agent_inst_001",
     delegation_grant_id="grant_prod_001",
     task_id="task_authorization_001",
     capability="execute_capability",
     execution_target="target_service_v1",
 ):
+    eff_human = human_id if human_id is not None else "alice@triaxis.dev"
+    eff_subject = subject_id if subject_id is not None else eff_human
     witness_raw = {
         "contract_id": STATE_WITNESS_CONTRACT_ID,
         "state_id": f"state_{task_id}",
-        "subject_id": human_id,
+        "subject_id": eff_subject,
         "object_id": execution_target,
         "adapter_id": "issuer_001",
         "version": 1,
@@ -121,7 +124,7 @@ def make_valid_action_envelope(
         "attestation_id": f"att_{task_id}",
         "issuer_id": "issuer_001",
         "trust_domain": "dev.domain",
-        "subject_id": human_id,
+        "subject_id": eff_subject,
         "decision_case_sha256": "0" * 64,
         "evidence_report_sha256": "0" * 64,
         "assured_action_request_sha256": "",
@@ -136,10 +139,9 @@ def make_valid_action_envelope(
     action_base = {
         "contract_id": ACTION_ENVELOPE_CONTRACT_ID,
         "intent_id": f"intent_{task_id}",
-        "principal_id": human_id,
-        "subject_id": human_id,
+        "principal_id": eff_human,
+        "subject_id": eff_subject,
         "object_id": execution_target,
-        "human_id": human_id,
         "agent_instance_id": agent_instance_id,
         "delegation_grant_id": delegation_grant_id,
         "task_id": task_id,
@@ -161,6 +163,8 @@ def make_valid_action_envelope(
         "scope_sha256": "",
         "action_sha256": "",
     }
+    if human_id is not None:
+        action_base["human_id"] = human_id
 
     req_digest = assured_action_request_sha256(action_base)
     attestation_raw["assured_action_request_sha256"] = req_digest
@@ -386,6 +390,7 @@ def test_pep_receipt_correlation_failures(test_setup, corrupt_field, fake_val):
             req_id = request.principal.request_id
             c_hash = request.cedar_policy_sha256 or ("0" * 64)
 
+            prov = "Cedar"
             if corrupt_field == "request_id":
                 req_id = fake_val
             elif corrupt_field == "action":
@@ -396,6 +401,8 @@ def test_pep_receipt_correlation_failures(test_setup, corrupt_field, fake_val):
                 p_dict["resource"] = fake_val
             elif corrupt_field == "cedar_policy_sha256":
                 c_hash = fake_val
+            elif corrupt_field == "provider":
+                prov = fake_val
             elif corrupt_field in p_dict:
                 p_dict[corrupt_field] = fake_val
 
@@ -405,7 +412,7 @@ def test_pep_receipt_correlation_failures(test_setup, corrupt_field, fake_val):
                 policy_version=1,
                 triaxis_policy_sha256="0" * 64,
                 cedar_policy_sha256=c_hash,
-                provider="Cedar",
+                provider=prov,
                 provider_version="4.12.0",
                 request_id=req_id,
                 evaluated_principal=p_dict,
@@ -422,3 +429,64 @@ def test_pep_receipt_correlation_failures(test_setup, corrupt_field, fake_val):
     assert receipt.decision == DecisionState.ERROR
     assert receipt.reason_code == "PDP_RECEIPT_CORRELATION_FAILURE"
     assert not receipt.is_verified_allow
+
+
+def test_missing_explicit_human_id_no_subject_id_inheritance(test_setup):
+    """Section 1: Missing explicit human_id yields DENY without subject_id fallback."""
+    policy = test_setup["policy"]
+    action = make_valid_action_envelope(policy, human_id=None)
+
+    # Prove pre-Cedar envelope validation passes
+    val_res = validate_action_envelope(action, evaluation_tick=50)
+    assert val_res["status"] == "PASS"
+
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    mock_pdp = MockCedarPDP(policy_path)
+    pep = PolicyEnforcementPoint(pdp_adapter=mock_pdp)
+
+    token = authorize_action(
+        action,
+        policy,
+        evaluation_tick=50,
+        issuer_id=test_setup["issuer_id"],
+        trusted_assurance_issuers=test_setup["trusted_issuers"],
+        authorization_mode="cedar_reference",
+        pep=pep,
+    )
+
+    assert token["outcome"] == "DENY"
+    # Prove no PDP evaluation occurred
+    assert pep.last_receipt is None
+    # Prove specific error code emitted
+    codes = [e["code"] for e in token.get("errors", [])]
+    assert "MISSING_COMPOUND_PRINCIPAL_COMPONENT" in codes
+
+
+def test_explicit_disagreement_human_id_and_subject_id(test_setup):
+    """Section 1: Explicit disagreement between human_id and subject_id is processed explicitly."""
+    policy = test_setup["policy"]
+    action = make_valid_action_envelope(
+        policy,
+        human_id="alice@triaxis.dev",
+        subject_id="bob_target_subject@triaxis.dev",
+        execution_target="target_service_v1",
+    )
+
+    policy_path = Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    mock_pdp = MockCedarPDP(policy_path)
+    pep = PolicyEnforcementPoint(pdp_adapter=mock_pdp)
+
+    token = authorize_action(
+        action,
+        policy,
+        evaluation_tick=50,
+        issuer_id=test_setup["issuer_id"],
+        trusted_assurance_issuers=test_setup["trusted_issuers"],
+        authorization_mode="cedar_reference",
+        pep=pep,
+    )
+
+    assert token["outcome"] == "ALLOW"
+    assert pep.last_receipt is not None
+    assert pep.last_receipt.evaluated_principal["human_id"] == "alice@triaxis.dev"
+

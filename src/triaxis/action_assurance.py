@@ -386,7 +386,7 @@ def authorize_action(
         if pep is None:
             errors.append(_error("pep_unconfigured", "authorization_mode", "PEP instance required in cedar_reference mode"))
         elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
-            human_id = action.get("human_id") or action.get("subject_id")
+            human_id = action.get("human_id")
             agent_instance_id = action.get("agent_instance_id")
             delegation_grant_id = action.get("delegation_grant_id")
             task_id = action.get("task_id") or action.get("intent_id")
@@ -403,7 +403,8 @@ def authorize_action(
 
             if missing_fields:
                 for f in missing_fields:
-                    errors.append(_error("missing_required", f, f"{f} required for compound principal in cedar_reference mode"))
+                    err_code = "MISSING_COMPOUND_PRINCIPAL_COMPONENT" if f == "action.human_id" else "missing_required"
+                    errors.append(_error(err_code, f, f"{f} required for compound principal in cedar_reference mode"))
             else:
                 try:
                     principal = CompoundPrincipal(
