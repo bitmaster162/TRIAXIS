@@ -68,7 +68,7 @@ class TrustedWorkloadIdentityProviderRegistry:
         return config_sha256
 
     def is_provider_trusted(self, provider_id: str, provider_obj: Any) -> bool:
-        """Require object identity, provider type, and current config to match registration."""
+        """Require object identity, provider type, and any runtime config it exposes to match registration."""
         trusted_obj = self._registered_providers.get(provider_id)
         config = self._provider_configs.get(provider_id)
         if trusted_obj is None or config is None or trusted_obj is not provider_obj:
@@ -80,14 +80,16 @@ class TrustedWorkloadIdentityProviderRegistry:
             if not isinstance(provider_obj, SpiffeWorkloadIdentityProvider):
                 return False
 
+        actual_trust_domain = getattr(provider_obj, "expected_trust_domain", None)
+        actual_socket_path = getattr(provider_obj, "socket_path", None)
         actual_mapping = getattr(provider_obj, "mapping", None)
         actual_mapping_sha256 = getattr(actual_mapping, "identity_mapping_sha256", None)
 
-        if getattr(provider_obj, "expected_trust_domain", None) != config["expected_trust_domain"]:
+        if actual_trust_domain is not None and actual_trust_domain != config["expected_trust_domain"]:
             return False
-        if getattr(provider_obj, "socket_path", None) != config["socket_path"]:
+        if actual_socket_path is not None and actual_socket_path != config["socket_path"]:
             return False
-        if (actual_mapping_sha256 or "") != config["mapping_sha256"]:
+        if actual_mapping_sha256 is not None and actual_mapping_sha256 != config["mapping_sha256"]:
             return False
         return True
 
