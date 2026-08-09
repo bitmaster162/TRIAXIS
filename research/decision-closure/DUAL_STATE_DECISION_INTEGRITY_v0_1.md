@@ -60,6 +60,12 @@ The bounded claim is established/rejected within current scope and no in-scope d
 - COMMITMENT owns bounded action now.
 - REOPEN owns future material revision conditions.
 
+## Prior-art boundary
+
+This is **not** a claim to invent belief-state/action separation, belief revision, value of information, or provenance. Those are established adjacent areas.
+
+The research question is narrower: whether a model-agnostic decision record and benchmark that jointly scores epistemic state, bounded commitment, minimal sufficient witness, counterfactual/reopen boundary, and audit trace exposes useful capabilities or failure modes not captured by final-answer accuracy alone.
+
 ## Research hypothesis
 
 The useful primitive may be neither generic debate nor generic belief revision. It may be **synchronization between epistemic state and bounded commitment state**, with externally auditable evidence and explicit reopen boundaries.
