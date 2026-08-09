@@ -114,5 +114,5 @@ tests/test_v3_32_provider_native_and_completion_transparency.py ........ [ 96%]
 tests/test_v3_32_provider_native_and_completion_transparency_schemas.py . [ 98%]
 ......                                                                   [100%]
 
-============================= 595 passed in 54.18s =============================
+======================== 595 passed in 74.64s (0:01:14) ========================
 

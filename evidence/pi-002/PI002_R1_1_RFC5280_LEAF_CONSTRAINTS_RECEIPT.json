@@ -1,0 +1,12 @@
+{
+  "rfc5280_path_validation_engine": "OpenSSL.crypto.X509StoreContext",
+  "spiffe_x509_svid_leaf_constraints": {
+    "basic_constraints": "ca=False MUST be enforced",
+    "key_usage": "digitalSignature MUST be set; keyCertSign & crlSign MUST NOT be set",
+    "extended_key_usage": "clientAuth and/or serverAuth MUST be set if extension present",
+    "subject_alternative_name": "URI SAN MUST contain valid spiffe:// ID",
+    "trust_domain_confinement": "Trust domain extracted from SVID MUST match expected trust domain",
+    "validity_window": "now MUST be between not_before and not_after"
+  },
+  "verification_status": "VERIFIED"
+}
