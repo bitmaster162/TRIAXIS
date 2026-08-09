@@ -1,0 +1,10 @@
+{
+  "svid_acquisition_mode": "IN_MEMORY_JSON_STREAM",
+  "filesystem_private_key_written": false,
+  "cryptographic_verification_method": "ECDSA_P256_PUBLIC_KEY_VERIFY",
+  "trust_bundle_verification_status": "VERIFIED",
+  "signature_algorithm": "ecdsa-with-SHA256",
+  "invalid_chain_rejection": "PASSED (SVID_CHAIN_INVALID)",
+  "unavailable_bundle_rejection": "PASSED (TRUST_BUNDLE_UNAVAILABLE)",
+  "trust_domain_mismatch_rejection": "PASSED (TRUST_DOMAIN_MISMATCH)"
+}

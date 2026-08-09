@@ -1,0 +1,8 @@
+{
+  "trusted_provider_boundary": "TrustedWorkloadIdentityProviderRegistry",
+  "provider_id": "spiffe_spire_local",
+  "provider_type": "spiffe_workload",
+  "expected_trust_domain": "triaxis.local",
+  "untrusted_fake_provider_test": "PASSED (FakeIdentityProviderReturningVerified rejected with UNTRUSTED_IDENTITY_PROVIDER)",
+  "pep_bypassed_on_untrusted": true
+}

@@ -1,0 +1,10 @@
+{
+  "primary_e2e_class": "SQLiteExecutionLedger",
+  "primary_e2e_method": "SQLiteExecutionLedger.prepare_for_workload",
+  "spire_server": "REAL_SPIRE_SERVER_v1.15.2",
+  "spire_agent": "REAL_SPIRE_AGENT_v1.15.2",
+  "workload_api": "REAL_X509_SVID_FETCH",
+  "cedar_pdp": "REAL_CEDAR_LOCAL_REFERENCE_PDP_v4.12.0",
+  "pep_outcome": "ALLOW",
+  "ledger_state": "PREPARED"
+}

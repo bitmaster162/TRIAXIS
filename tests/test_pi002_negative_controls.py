@@ -228,6 +228,7 @@ def test_negative_identity_controls_matrix(scenario, ver_status, ver_reason, cla
         pep=pep,
         identity_mode="spiffe_workload",
         workload_identity_provider=provider,
+        allow_unregistered_providers=True,
     )
 
     assert token["outcome"] == "DENY"

@@ -371,6 +371,9 @@ def authorize_action(
     pep: Any = None,
     identity_mode: str = "explicit_reference",
     workload_identity_provider: Any = None,
+    trusted_provider_registry: Any = None,
+    provider_id: str = "spiffe_spire_local",
+    allow_unregistered_providers: bool = False,
 ) -> dict[str, Any]:
     """Produce an exact, single-use authorization token or a sealed DENY token."""
     from .authorization import AuthorizationMode, AuthorizationRequest, CompoundPrincipal, PolicyEnforcementPoint
@@ -392,17 +395,28 @@ def authorize_action(
         if workload_identity_provider is None:
             errors.append(_error("CONFIG_ERROR", "workload_identity_provider", "workload_identity_provider instance required in spiffe_workload mode"))
         elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
-            intent_id = str(action.get("intent_id", ""))
-            verified_identity = workload_identity_provider.fetch_and_verify_identity(request_id=intent_id)
-            if verified_identity.verification_status != "VERIFIED":
-                errors.append(_error(verified_identity.verification_reason, "workload_identity", f"workload identity verification failed: {verified_identity.verification_reason}"))
-            else:
-                claimed_agent = action.get("agent_instance_id")
-                if claimed_agent != verified_identity.agent_instance_id:
-                    errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.agent_instance_id", f"claimed agent_instance_id '{claimed_agent}' does not match verified agent '{verified_identity.agent_instance_id}'"))
-                claimed_spiffe = action.get("spiffe_id")
-                if claimed_spiffe and claimed_spiffe != verified_identity.spiffe_id:
-                    errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.spiffe_id", f"claimed spiffe_id '{claimed_spiffe}' does not match verified spiffe '{verified_identity.spiffe_id}'"))
+            # Enforce trusted provider boundary
+            if trusted_provider_registry is not None:
+                if not trusted_provider_registry.is_provider_trusted(provider_id, workload_identity_provider):
+                    errors.append(_error("UNTRUSTED_IDENTITY_PROVIDER", "workload_identity_provider", f"untrusted identity provider '{provider_id}'"))
+            elif not allow_unregistered_providers:
+                # Require explicit trusted_provider_registry or allow_unregistered_providers=True
+                from .identity import SpiffeWorkloadIdentityProvider
+                if not isinstance(workload_identity_provider, SpiffeWorkloadIdentityProvider):
+                    errors.append(_error("UNTRUSTED_IDENTITY_PROVIDER", "workload_identity_provider", "untrusted identity provider instance"))
+
+            if not errors:
+                intent_id = str(action.get("intent_id", ""))
+                verified_identity = workload_identity_provider.fetch_and_verify_identity(request_id=intent_id)
+                if verified_identity.verification_status != "VERIFIED":
+                    errors.append(_error(verified_identity.verification_reason, "workload_identity", f"workload identity verification failed: {verified_identity.verification_reason}"))
+                else:
+                    claimed_agent = action.get("agent_instance_id")
+                    if claimed_agent != verified_identity.agent_instance_id:
+                        errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.agent_instance_id", f"claimed agent_instance_id '{claimed_agent}' does not match verified agent '{verified_identity.agent_instance_id}'"))
+                    claimed_spiffe = action.get("spiffe_id")
+                    if claimed_spiffe and claimed_spiffe != verified_identity.spiffe_id:
+                        errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.spiffe_id", f"claimed spiffe_id '{claimed_spiffe}' does not match verified spiffe '{verified_identity.spiffe_id}'"))
 
     if mode == AuthorizationMode.CEDAR_REFERENCE:
         if pep is None:
@@ -714,11 +728,67 @@ class SQLiteExecutionLedger:
     def get(self, nonce: str) -> dict[str, Any] | None:
         return self._row(nonce)
 
-    def prepare(self, token_value: Mapping[str, Any], observed_state_witness: Mapping[str, Any], evaluation_tick: int) -> dict[str, Any]:
+    def prepare_for_workload(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+        current_workload_identity: Any,
+        trusted_provider_registry: Any = None,
+        provider_id: str = "spiffe_spire_local",
+        provider_instance: Any = None,
+    ) -> dict[str, Any]:
+        """Identity-aware execution preparation path enforcing stable workload identity correlation."""
+        return self.prepare(
+            token_value=token_value,
+            observed_state_witness=observed_state_witness,
+            evaluation_tick=evaluation_tick,
+            current_workload_identity=current_workload_identity,
+            trusted_provider_registry=trusted_provider_registry,
+            provider_id=provider_id,
+            provider_instance=provider_instance,
+        )
+
+    def prepare(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+        current_workload_identity: Any = None,
+        trusted_provider_registry: Any = None,
+        provider_id: str = "spiffe_spire_local",
+        provider_instance: Any = None,
+    ) -> dict[str, Any]:
         token_result = validate_authorization_token(token_value, evaluation_tick, require_allow=True)
         if token_result["status"] != "PASS":
             raise ExecutionLedgerError("invalid_authorization_token", str(token_result["errors"]))
         token = token_result["token"]
+
+        # Enforce workload identity ownership if token was authorized under spiffe_workload mode or current_workload_identity is passed
+        wl_meta = token.get("workload_identity") or token.get("authorization_provenance") or {}
+        token_identity_mode = wl_meta.get("identity_mode") or ("spiffe_workload" if wl_meta.get("spiffe_id") else None)
+
+        if token_identity_mode == "spiffe_workload" or current_workload_identity is not None:
+            if current_workload_identity is None or getattr(current_workload_identity, "verification_status", None) != "VERIFIED":
+                raise ExecutionLedgerError("EXECUTION_WORKLOAD_IDENTITY_MISMATCH", "current workload identity is missing or not VERIFIED")
+
+            if trusted_provider_registry is not None and provider_instance is not None:
+                if not trusted_provider_registry.is_provider_trusted(provider_id, provider_instance):
+                    raise ExecutionLedgerError("UNTRUSTED_IDENTITY_PROVIDER", f"untrusted workload identity provider '{provider_id}'")
+
+            token_spiffe = wl_meta.get("spiffe_id")
+            token_agent = wl_meta.get("agent_instance_id")
+            token_td = wl_meta.get("trust_domain")
+
+            current_spiffe = getattr(current_workload_identity, "spiffe_id", None)
+            current_agent = getattr(current_workload_identity, "agent_instance_id", None)
+            current_td = getattr(current_workload_identity, "trust_domain", None)
+
+            if (token_spiffe and current_spiffe != token_spiffe) or \
+               (token_agent and current_agent != token_agent) or \
+               (token_td and current_td != token_td):
+                raise ExecutionLedgerError("EXECUTION_WORKLOAD_IDENTITY_MISMATCH", f"current workload identity '{current_spiffe}/{current_agent}' does not match token authorized identity '{token_spiffe}/{token_agent}'")
+
         witness_result = validate_state_witness(observed_state_witness, evaluation_tick)
         if witness_result["status"] != "PASS":
             raise ExecutionLedgerError("invalid_observed_state", str(witness_result["errors"]))

@@ -287,6 +287,9 @@ def test_real_spire_primary_positive_e2e(spire_test_env):
     -> mapped agent_instance_id -> CompoundPrincipal -> REAL Cedar PDP ALLOW
     -> PEP verified ALLOW -> valid token -> SQLiteExecutionLedger PREPARED.
     """
+    from triaxis.action_assurance import SQLiteExecutionLedger
+    from triaxis.identity import TrustedWorkloadIdentityProviderRegistry
+
     mapping = SpiffeAgentMapping({
         spire_test_env["positive_spiffe_id"]: "agent_inst_001",
     })
@@ -296,6 +299,9 @@ def test_real_spire_primary_positive_e2e(spire_test_env):
         socket_path=spire_test_env["socket_path"],
         spire_agent_binary=spire_test_env["agent_bin"],
     )
+
+    registry = TrustedWorkloadIdentityProviderRegistry()
+    registry.register_provider("spiffe_spire_local", provider, expected_trust_domain="triaxis.local", mapping_sha256=mapping.identity_mapping_sha256)
 
     action, policy, cedar_policy = make_pi002_action_envelope(
         human_id="alice@triaxis.dev",
@@ -318,6 +324,8 @@ def test_real_spire_primary_positive_e2e(spire_test_env):
         pep=pep,
         identity_mode="spiffe_workload",
         workload_identity_provider=provider,
+        trusted_provider_registry=registry,
+        provider_id="spiffe_spire_local",
     )
 
     print("PI002 E2E TOKEN ERRORS:", token["errors"])
@@ -335,18 +343,19 @@ def test_real_spire_primary_positive_e2e(spire_test_env):
     val_res = validate_authorization_token(token, evaluation_tick=150, require_allow=True)
     assert val_res["status"] == "PASS"
 
-    # SQLite Execution Ledger PREPARED verification
-    conn = sqlite3.connect(":memory:")
-    conn.execute("""
-        CREATE TABLE execution_ledger (
-            token_sha256 TEXT PRIMARY KEY,
-            state TEXT NOT NULL,
-            prepared_at INTEGER NOT NULL
+    # Real SQLiteExecutionLedger PREPARED verification
+    ledger_path = spire_test_env["work_dir"] / "e2e_ledger.sq3"
+    with SQLiteExecutionLedger(ledger_path) as ledger:
+        verified_id = provider.fetch_and_verify_identity("req_e2e_prep")
+        prep_row = ledger.prepare_for_workload(
+            token_value=token,
+            observed_state_witness=action["state_witness"],
+            evaluation_tick=150,
+            current_workload_identity=verified_id,
+            trusted_provider_registry=registry,
+            provider_id="spiffe_spire_local",
         )
-    """)
-    conn.execute("INSERT INTO execution_ledger VALUES (?, 'PREPARED', 150)", (token["token_sha256"],))
-    row = conn.execute("SELECT state FROM execution_ledger WHERE token_sha256 = ?", (token["token_sha256"],)).fetchone()
-    assert row[0] == "PREPARED"
+        assert prep_row["state"] == "PREPARED"
 
 
 def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):

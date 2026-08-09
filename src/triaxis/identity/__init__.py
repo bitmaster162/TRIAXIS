@@ -2,7 +2,7 @@
 
 from .contract import WORKLOAD_IDENTITY_CONTRACT_ID, VerifiedWorkloadIdentity, validate_verified_workload_identity
 from .mapping import SpiffeAgentMapping
-from .provider import WorkloadIdentityProvider
+from .provider import TrustedWorkloadIdentityProviderRegistry, WorkloadIdentityProvider
 from .spiffe_provider import SpiffeWorkloadIdentityProvider
 
 __all__ = [
@@ -11,5 +11,6 @@ __all__ = [
     "validate_verified_workload_identity",
     "SpiffeAgentMapping",
     "WorkloadIdentityProvider",
+    "TrustedWorkloadIdentityProviderRegistry",
     "SpiffeWorkloadIdentityProvider",
 ]
