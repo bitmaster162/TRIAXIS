@@ -1,8 +1,9 @@
-"""TRIAXIS PI-002 SPIFFE/SPIRE Workload Identity Provider.
+"""TRIAXIS PI-002 SPIFFE/SPIRE workload identity provider.
 
-The production path accepts identity material only from a Unix-domain SPIFFE
-Workload API endpoint. It never reads SPIRE datastores and never synthesizes
-SVIDs or trust roots locally.
+Production identity acquisition is delegated to the py-spiffe Workload API
+client. TRIAXIS owns only local endpoint confinement, identity correlation,
+certificate/profile checks, mapping, and authorization-boundary semantics.
+It never reads SPIRE datastores and never synthesizes SVIDs or trust roots.
 """
 
 from __future__ import annotations
@@ -11,11 +12,9 @@ import base64
 from datetime import datetime as dt, timezone
 import hashlib
 import os
-import socket
 import stat
-import struct
-import time
-from typing import Any, Iterator
+from typing import Any, Callable
+from urllib.parse import urlparse
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -27,19 +26,32 @@ from .mapping import SpiffeAgentMapping
 
 
 class NativeSpiffeWorkloadApiClient:
-    """Minimal native SPIFFE Workload API client over a Unix-domain socket."""
+    """Compatibility wrapper around the py-spiffe WorkloadApiClient.
 
-    _FETCH_X509_SVID_PATH = "/spiffe.workload.v1.SpiffeWorkloadAPI/FetchX509SVID"
+    The historical class name is retained to avoid breaking callers. No custom
+    HTTP/2, gRPC, protobuf, SPIRE datastore, or synthetic-PKI implementation
+    exists in this class.
+    """
 
-    def __init__(self, socket_path: str, timeout_seconds: float = 5.0):
+    def __init__(
+        self,
+        socket_path: str,
+        timeout_seconds: float = 5.0,
+        client_factory: Callable[..., Any] | None = None,
+    ) -> None:
         self.socket_path = socket_path
         self.timeout_seconds = timeout_seconds
+        self._client_factory = client_factory
 
     def fetch_x509_svid(self) -> tuple[dict[str, Any] | None, str]:
-        """Fetch an X509-SVID only from the configured Workload API UDS."""
-        resolved_path = self.socket_path
+        """Fetch an X509 context exclusively through the configured Workload API UDS."""
         try:
-            endpoint_stat = os.stat(resolved_path)
+            endpoint_uri, filesystem_path = self._normalize_unix_endpoint(self.socket_path)
+        except ValueError:
+            return None, "INVALID_WORKLOAD_API_ENDPOINT"
+
+        try:
+            endpoint_stat = os.stat(filesystem_path)
         except FileNotFoundError:
             return None, "SPIRE_AGENT_UNAVAILABLE"
         except OSError:
@@ -48,196 +60,71 @@ class NativeSpiffeWorkloadApiClient:
         if not stat.S_ISSOCK(endpoint_stat.st_mode):
             return None, "INVALID_WORKLOAD_API_ENDPOINT"
 
+        client_factory = self._client_factory
+        if client_factory is None:
+            try:
+                from spiffe import WorkloadApiClient
+            except ImportError:
+                return None, "SPIFFE_SDK_UNAVAILABLE"
+            client_factory = WorkloadApiClient
+
         try:
-            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-                sock.settimeout(self.timeout_seconds)
-                sock.connect(resolved_path)
-                sock.sendall(self._build_fetch_request())
-
-                raw_response = b""
-                started = time.monotonic()
-                while time.monotonic() - started < self.timeout_seconds:
-                    try:
-                        chunk = sock.recv(65536)
-                    except socket.timeout:
-                        break
-                    if not chunk:
-                        break
-                    raw_response += chunk
-                    parsed, status = self._parse_http2_grpc_response(raw_response)
-                    if status == "OK":
-                        return parsed, status
-
-            parsed, status = self._parse_http2_grpc_response(raw_response)
-            if status == "OK":
-                return parsed, status
-            return None, "NO_SVID_ISSUED"
-        except (ConnectionError, OSError):
+            with client_factory(
+                socket_path=endpoint_uri,
+                default_timeout=self.timeout_seconds,
+            ) as client:
+                context = client.fetch_x509_context(timeout=self.timeout_seconds)
+        except Exception as exc:
+            message = f"{type(exc).__name__}: {exc}".upper()
+            if "PERMISSION_DENIED" in message or "PERMISSIONDENIED" in message:
+                return None, "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH"
             return None, "SPIRE_WORKLOAD_API_ERROR"
 
-    def _build_fetch_request(self) -> bytes:
-        preface = b"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n"
-        settings = self._frame(frame_type=0x04, flags=0x00, stream_id=0, payload=b"")
+        try:
+            svid = context.default_svid
+            cert_chain = list(svid.cert_chain)
+            spiffe_id = str(svid.spiffe_id)
+            trust_domain = svid.spiffe_id.trust_domain
+            bundle = context.x509_bundle_set.get_bundle_for_trust_domain(trust_domain)
+            if bundle is None:
+                return None, "TRUST_BUNDLE_UNAVAILABLE"
+            authorities = list(bundle.x509_authorities)
+        except Exception:
+            return None, "SPIFFE_CONTEXT_INVALID"
 
-        headers = b"\x83\x86"
-        headers += self._hpack_literal(":path", self._FETCH_X509_SVID_PATH)
-        headers += self._hpack_literal(":authority", "localhost")
-        headers += self._hpack_literal("content-type", "application/grpc")
-        headers += self._hpack_literal("workload.spiffe.io", "true")
-        headers += self._hpack_literal("te", "trailers")
-        headers_frame = self._frame(
-            frame_type=0x01,
-            flags=0x04,
-            stream_id=1,
-            payload=headers,
-        )
+        if not cert_chain:
+            return None, "NO_SVID_ISSUED"
+        if not authorities:
+            return None, "TRUST_BUNDLE_UNAVAILABLE"
 
-        grpc_empty_request = b"\x00\x00\x00\x00\x00"
-        data_frame = self._frame(
-            frame_type=0x00,
-            flags=0x01,
-            stream_id=1,
-            payload=grpc_empty_request,
-        )
-        return preface + settings + headers_frame + data_frame
+        return {
+            "spiffe_id": spiffe_id,
+            "svid_chain": cert_chain,
+            "bundle_authorities": authorities,
+        }, "OK"
 
     @staticmethod
-    def _frame(frame_type: int, flags: int, stream_id: int, payload: bytes) -> bytes:
-        length = len(payload)
-        return (
-            length.to_bytes(3, "big")
-            + bytes([frame_type, flags])
-            + struct.pack(">I", stream_id & 0x7FFFFFFF)
-            + payload
-        )
+    def _normalize_unix_endpoint(socket_path: str) -> tuple[str, str]:
+        """Return (py-spiffe endpoint URI, local filesystem path)."""
+        if not isinstance(socket_path, str) or not socket_path:
+            raise ValueError("empty socket path")
 
-    @staticmethod
-    def _hpack_literal(name: str, value: str) -> bytes:
-        name_bytes = name.encode("utf-8")
-        value_bytes = value.encode("utf-8")
-        if len(name_bytes) >= 127 or len(value_bytes) >= 127:
-            raise ValueError("HPACK literal too long for minimal encoder")
-        return bytes([0x00, len(name_bytes)]) + name_bytes + bytes([len(value_bytes)]) + value_bytes
+        if socket_path.startswith("/"):
+            return f"unix:{socket_path}", socket_path
 
-    def _parse_http2_grpc_response(self, raw_response: bytes) -> tuple[dict[str, Any] | None, str]:
-        data = bytearray()
-        for frame_type, flags, stream_id, payload in self._iter_http2_frames(raw_response):
-            if stream_id != 1 or frame_type != 0x00:
-                continue
-            if flags & 0x08:
-                if not payload:
-                    continue
-                pad_len = payload[0]
-                if pad_len >= len(payload):
-                    continue
-                payload = payload[1 : len(payload) - pad_len]
-            data.extend(payload)
+        parsed = urlparse(socket_path)
+        if parsed.scheme != "unix" or parsed.netloc or not parsed.path:
+            raise ValueError("endpoint must be an absolute unix-domain socket")
+        if not parsed.path.startswith("/"):
+            raise ValueError("endpoint path must be absolute")
+        if parsed.params or parsed.query or parsed.fragment:
+            raise ValueError("endpoint contains unsupported components")
 
-        for message in self._iter_grpc_messages(bytes(data)):
-            result = self._decode_x509_svid_response(message)
-            if result is not None:
-                return result, "OK"
-        return None, "INCOMPLETE_RESPONSE"
-
-    @staticmethod
-    def _iter_http2_frames(raw: bytes) -> Iterator[tuple[int, int, int, bytes]]:
-        pos = 0
-        while pos + 9 <= len(raw):
-            length = int.from_bytes(raw[pos : pos + 3], "big")
-            frame_type = raw[pos + 3]
-            flags = raw[pos + 4]
-            stream_id = int.from_bytes(raw[pos + 5 : pos + 9], "big") & 0x7FFFFFFF
-            end = pos + 9 + length
-            if end > len(raw):
-                break
-            yield frame_type, flags, stream_id, raw[pos + 9 : end]
-            pos = end
-
-    @staticmethod
-    def _iter_grpc_messages(data: bytes) -> Iterator[bytes]:
-        pos = 0
-        while pos + 5 <= len(data):
-            compressed = data[pos]
-            message_len = int.from_bytes(data[pos + 1 : pos + 5], "big")
-            end = pos + 5 + message_len
-            if end > len(data):
-                break
-            if compressed == 0:
-                yield data[pos + 5 : end]
-            pos = end
-
-    @classmethod
-    def _decode_x509_svid_response(cls, message: bytes) -> dict[str, Any] | None:
-        """Decode the first X509SVID from the protobuf response."""
-        for field_no, wire_type, value in cls._iter_protobuf_fields(message):
-            if field_no != 1 or wire_type != 2 or not isinstance(value, bytes):
-                continue
-            x509_svid = b""
-            bundle = b""
-            for nested_no, nested_wire, nested_value in cls._iter_protobuf_fields(value):
-                if nested_wire != 2 or not isinstance(nested_value, bytes):
-                    continue
-                if nested_no == 2:
-                    x509_svid = nested_value
-                elif nested_no == 4:
-                    bundle = nested_value
-            if x509_svid and bundle:
-                return {
-                    "x509_svid": base64.b64encode(x509_svid).decode("ascii"),
-                    "bundle": base64.b64encode(bundle).decode("ascii"),
-                }
-        return None
-
-    @classmethod
-    def _iter_protobuf_fields(cls, data: bytes) -> Iterator[tuple[int, int, int | bytes]]:
-        pos = 0
-        while pos < len(data):
-            key, pos = cls._read_varint(data, pos)
-            field_no = key >> 3
-            wire_type = key & 0x07
-            if field_no == 0:
-                return
-            if wire_type == 0:
-                value, pos = cls._read_varint(data, pos)
-                yield field_no, wire_type, value
-            elif wire_type == 1:
-                end = pos + 8
-                if end > len(data):
-                    return
-                yield field_no, wire_type, data[pos:end]
-                pos = end
-            elif wire_type == 2:
-                length, pos = cls._read_varint(data, pos)
-                end = pos + length
-                if end > len(data):
-                    return
-                yield field_no, wire_type, data[pos:end]
-                pos = end
-            elif wire_type == 5:
-                end = pos + 4
-                if end > len(data):
-                    return
-                yield field_no, wire_type, data[pos:end]
-                pos = end
-            else:
-                return
-
-    @staticmethod
-    def _read_varint(data: bytes, pos: int) -> tuple[int, int]:
-        value = 0
-        shift = 0
-        while pos < len(data) and shift < 70:
-            byte = data[pos]
-            pos += 1
-            value |= (byte & 0x7F) << shift
-            if not byte & 0x80:
-                return value, pos
-            shift += 7
-        raise ValueError("invalid protobuf varint")
+        return f"unix:{parsed.path}", parsed.path
 
 
 class SpiffeWorkloadIdentityProvider:
-    """SPIFFE Workload API provider with RFC 5280 path validation."""
+    """SPIFFE Workload API adapter with TRIAXIS identity/profile enforcement."""
 
     def __init__(
         self,
@@ -253,6 +140,7 @@ class SpiffeWorkloadIdentityProvider:
             "SPIFFE_ENDPOINT_SOCKET",
             "/tmp/spire-agent/public/api.sock",
         )
+        # Retained for constructor/API compatibility only. Runtime subprocess use is forbidden.
         self.spire_agent_binary = spire_agent_binary
         self.timeout_seconds = timeout_seconds
         self.client = NativeSpiffeWorkloadApiClient(self.socket_path, timeout_seconds)
@@ -270,6 +158,7 @@ class SpiffeWorkloadIdentityProvider:
                 "NO_SVID_ISSUED",
                 "TRUST_BUNDLE_UNAVAILABLE",
                 "INVALID_WORKLOAD_API_ENDPOINT",
+                "SPIFFE_CONTEXT_INVALID",
             }
             return self._identity_result(
                 request_id=request_id,
@@ -280,34 +169,46 @@ class SpiffeWorkloadIdentityProvider:
                 reason=status,
             )
 
-        svid_raw = svid_data.get("x509_svid", "")
-        bundle_raw = svid_data.get("bundle", "")
-        if not svid_raw:
-            return self._identity_result(
-                request_id=request_id,
-                mapping_hash=mapping_hash,
-                now_iso=now_iso,
-                fingerprint=empty_fingerprint,
-                status="DENIED",
-                reason="NO_SVID_ISSUED",
-            )
-        if not bundle_raw:
-            return self._identity_result(
-                request_id=request_id,
-                mapping_hash=mapping_hash,
-                now_iso=now_iso,
-                fingerprint=empty_fingerprint,
-                status="DENIED",
-                reason="TRUST_BUNDLE_UNAVAILABLE",
-            )
-
+        workload_api_spiffe_id: str | None = None
         try:
-            svid_chain = self._parse_x509_chain(svid_raw)
-            trust_bundle = self._parse_x509_chain(bundle_raw)
+            if "svid_chain" in svid_data or "bundle_authorities" in svid_data:
+                svid_chain = list(svid_data.get("svid_chain") or [])
+                trust_bundle = list(svid_data.get("bundle_authorities") or [])
+                workload_api_spiffe_id = str(svid_data.get("spiffe_id") or "")
+            else:
+                # Compatibility path for existing test doubles only. The production
+                # Workload API adapter above never emits raw file/JSON payloads.
+                svid_raw = svid_data.get("x509_svid", "")
+                bundle_raw = svid_data.get("bundle", "")
+                if not svid_raw:
+                    return self._identity_result(
+                        request_id=request_id,
+                        mapping_hash=mapping_hash,
+                        now_iso=now_iso,
+                        fingerprint=empty_fingerprint,
+                        status="DENIED",
+                        reason="NO_SVID_ISSUED",
+                    )
+                if not bundle_raw:
+                    return self._identity_result(
+                        request_id=request_id,
+                        mapping_hash=mapping_hash,
+                        now_iso=now_iso,
+                        fingerprint=empty_fingerprint,
+                        status="DENIED",
+                        reason="TRUST_BUNDLE_UNAVAILABLE",
+                    )
+                svid_chain = self._parse_x509_chain(svid_raw)
+                trust_bundle = self._parse_x509_chain(bundle_raw)
+
             if not svid_chain:
                 raise ValueError("empty SVID chain")
             if not trust_bundle:
                 raise ValueError("empty trust bundle")
+            if not all(isinstance(cert, x509.Certificate) for cert in svid_chain):
+                raise TypeError("invalid SVID certificate object")
+            if not all(isinstance(cert, x509.Certificate) for cert in trust_bundle):
+                raise TypeError("invalid trust bundle certificate object")
             svid_cert = svid_chain[0]
         except Exception as exc:
             return self._identity_result(
@@ -350,6 +251,17 @@ class SpiffeWorkloadIdentityProvider:
                 fingerprint=cert_fp,
                 status="DENIED",
                 reason="SVID_SPIFFE_ID_AMBIGUOUS",
+            )
+
+        if workload_api_spiffe_id and workload_api_spiffe_id != spiffe_id:
+            return self._identity_result(
+                request_id=request_id,
+                mapping_hash=mapping_hash,
+                now_iso=now_iso,
+                fingerprint=cert_fp,
+                status="DENIED",
+                reason="WORKLOAD_API_SPIFFE_ID_MISMATCH",
+                spiffe_id=spiffe_id,
             )
 
         remainder = spiffe_id[len("spiffe://") :]
@@ -447,11 +359,13 @@ class SpiffeWorkloadIdentityProvider:
     @staticmethod
     def _validate_leaf_profile(cert: x509.Certificate) -> str | None:
         try:
-            basic = cert.extensions.get_extension_for_oid(x509.ExtensionOID.BASIC_CONSTRAINTS).value
-            if basic.ca:
-                return "SVID_LEAF_CONSTRAINTS_VIOLATED"
+            basic = cert.extensions.get_extension_for_oid(
+                x509.ExtensionOID.BASIC_CONSTRAINTS
+            ).value
         except x509.ExtensionNotFound:
-            pass
+            return "SVID_LEAF_CONSTRAINTS_VIOLATED"
+        if basic.ca:
+            return "SVID_LEAF_CONSTRAINTS_VIOLATED"
 
         try:
             key_usage_ext = cert.extensions.get_extension_for_oid(x509.ExtensionOID.KEY_USAGE)
@@ -466,7 +380,9 @@ class SpiffeWorkloadIdentityProvider:
             return "SVID_LEAF_CONSTRAINTS_VIOLATED"
 
         try:
-            eku = cert.extensions.get_extension_for_oid(x509.ExtensionOID.EXTENDED_KEY_USAGE).value
+            eku = cert.extensions.get_extension_for_oid(
+                x509.ExtensionOID.EXTENDED_KEY_USAGE
+            ).value
             if (
                 x509.ExtendedKeyUsageOID.CLIENT_AUTH not in eku
                 or x509.ExtendedKeyUsageOID.SERVER_AUTH not in eku
@@ -494,13 +410,18 @@ class SpiffeWorkloadIdentityProvider:
         return sans[0]
 
     @staticmethod
-    def _verify_path(svid_chain: list[x509.Certificate], trust_bundle: list[x509.Certificate]) -> bool:
+    def _verify_path(
+        svid_chain: list[x509.Certificate],
+        trust_bundle: list[x509.Certificate],
+    ) -> bool:
         try:
             store = crypto.X509Store()
             for cert in trust_bundle:
                 store.add_cert(crypto.X509.from_cryptography(cert))
             leaf = crypto.X509.from_cryptography(svid_chain[0])
-            intermediates = [crypto.X509.from_cryptography(cert) for cert in svid_chain[1:]]
+            intermediates = [
+                crypto.X509.from_cryptography(cert) for cert in svid_chain[1:]
+            ]
             crypto.X509StoreContext(store, leaf, intermediates).verify_certificate()
             return True
         except Exception:
@@ -508,7 +429,11 @@ class SpiffeWorkloadIdentityProvider:
 
     @classmethod
     def _parse_x509_chain(cls, data_str: str) -> list[x509.Certificate]:
-        raw = data_str.encode("utf-8") if data_str.startswith("-----BEGIN") else base64.b64decode(data_str)
+        raw = (
+            data_str.encode("utf-8")
+            if data_str.startswith("-----BEGIN")
+            else base64.b64decode(data_str)
+        )
         if b"-----BEGIN CERTIFICATE-----" in raw:
             return list(x509.load_pem_x509_certificates(raw))
         return [
@@ -529,10 +454,17 @@ class SpiffeWorkloadIdentityProvider:
                 content_len = length_octet
             else:
                 length_len = length_octet & 0x7F
-                if length_len == 0 or length_len > 4 or pos + 2 + length_len > len(raw):
+                if (
+                    length_len == 0
+                    or length_len > 4
+                    or pos + 2 + length_len > len(raw)
+                ):
                     raise ValueError("invalid DER length")
                 header_len = 2 + length_len
-                content_len = int.from_bytes(raw[pos + 2 : pos + 2 + length_len], "big")
+                content_len = int.from_bytes(
+                    raw[pos + 2 : pos + 2 + length_len],
+                    "big",
+                )
             end = pos + header_len + content_len
             if end > len(raw):
                 raise ValueError("truncated DER certificate")
