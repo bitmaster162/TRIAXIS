@@ -1,8 +1,14 @@
 {
   "spire_server_path": "/home/bit/.local/bin/spire-server",
-  "spire_server_version": "",
+  "spire_server_version": "1.15.2",
+  "spire_server_stdout": "",
+  "spire_server_stderr": "1.15.2",
+  "spire_server_returncode": 0,
   "spire_server_sha256": "815b1eaa5a8cea029b8b0d0f6302384b5ec1e3f12d7f5ab024726660c6475492",
   "spire_agent_path": "/home/bit/.local/bin/spire-agent",
-  "spire_agent_version": "",
+  "spire_agent_version": "1.15.2",
+  "spire_agent_stdout": "",
+  "spire_agent_stderr": "1.15.2",
+  "spire_agent_returncode": 0,
   "spire_agent_sha256": "978ed3208bc11cde4af2fe8d1cba13fd38cc26de61b71f5118819f220494f9d2"
 }

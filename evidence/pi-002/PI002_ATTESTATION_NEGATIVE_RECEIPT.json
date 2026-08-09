@@ -1,6 +1,19 @@
 {
+  "boundary_control": "REAL_SPIRE_WORKLOAD_API_SELECTOR_MISMATCH",
+  "registered_selector": "unix:uid:9999",
+  "requesting_process_uid": 1000,
+  "workload_api_response": "rpc error: code = PermissionDenied desc = no identity issued",
   "verification_status": "DENIED",
-  "verification_reason": "IDENTITY_MAPPING_NOT_FOUND",
-  "outcome": "DENY",
-  "pep_invoked": false
+  "verification_reason": "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH",
+  "authorization_outcome": "DENY",
+  "authorization_errors": [
+    {
+      "code": "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH",
+      "path": "workload_identity",
+      "message": "workload identity verification failed: WORKLOAD_ATTESTATION_SELECTOR_MISMATCH"
+    }
+  ],
+  "pep_invoked": false,
+  "token_allow_issued": false,
+  "ledger_prepared": false
 }

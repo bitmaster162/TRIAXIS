@@ -356,7 +356,26 @@ def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):
     Workload API returns no identity issued -> WORKLOAD_ATTESTATION_SELECTOR_MISMATCH / DENIED.
     Identity failure occurs BEFORE policy evaluation (PEP/Cedar not invoked).
     """
-    # Create non-matching workload entry
+    # Delete positive entry temporarily so ONLY unmatched entry exists for node
+    show_res = subprocess.run([
+        spire_test_env["server_bin"], "entry", "show",
+        "-spiffeID", spire_test_env["positive_spiffe_id"],
+        "-socketPath", spire_test_env["server_socket"]
+    ], capture_output=True, text=True)
+    pos_entry_id = None
+    for line in show_res.stdout.splitlines():
+        if "Entry ID" in line:
+            pos_entry_id = line.split(":", 1)[1].strip()
+            break
+
+    if pos_entry_id:
+        subprocess.run([
+            spire_test_env["server_bin"], "entry", "delete",
+            "-entryID", pos_entry_id,
+            "-socketPath", spire_test_env["server_socket"]
+        ], capture_output=True, text=True)
+
+    # Create non-matching workload entry (unix:uid:9999)
     subprocess.run([
         spire_test_env["server_bin"], "entry", "create",
         "-spiffeID", "spiffe://triaxis.local/agent/unmatched-workload",
@@ -364,6 +383,8 @@ def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):
         "-selector", "unix:uid:9999",
         "-socketPath", spire_test_env["server_socket"]
     ], capture_output=True, text=True)
+
+    time.sleep(6)  # Allow agent cache sync
 
     mapping = SpiffeAgentMapping({
         "spiffe://triaxis.local/agent/unmatched-workload": "agent_inst_unmatched",
@@ -377,14 +398,16 @@ def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):
 
     # Attempt fetch
     verified = provider.fetch_and_verify_identity(request_id="req_mismatch")
-    assert verified.verification_status in ("DENIED", "ERROR")
-    assert verified.verification_reason in ("WORKLOAD_ATTESTATION_SELECTOR_MISMATCH", "IDENTITY_MAPPING_NOT_FOUND")
+    assert verified.verification_status == "DENIED"
+    assert verified.verification_reason == "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH"
 
     action, policy, cedar_policy = make_pi002_action_envelope(
         human_id="alice@triaxis.dev",
         agent_instance_id="agent_inst_unmatched",
         spiffe_id="spiffe://triaxis.local/agent/unmatched-workload",
+        task_id="task_authorization_001",
     )
+
     pdp = CedarLocalReferencePDP(
         policy_filepath=Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar"),
     )
@@ -394,7 +417,8 @@ def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):
         action,
         policy,
         evaluation_tick=150,
-        issuer_id="issuer_v1",
+        issuer_id="issuer_001",
+        trusted_assurance_issuers={"issuer_001": "dev.domain"},
         authorization_mode="cedar_reference",
         pep=pep,
         identity_mode="spiffe_workload",
@@ -402,4 +426,5 @@ def test_spire_attestation_selector_mismatch_negative_control(spire_test_env):
     )
 
     assert token["outcome"] == "DENY"
-    assert pep.last_receipt is None  # PEP/Cedar WAS NOT INVOKED
+    assert any(e["code"] == "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH" for e in token["errors"])
+    assert pep.last_receipt is None  # CRITICAL: NO CEDAR CALL PROVEN!PEP/Cedar WAS NOT INVOKED
