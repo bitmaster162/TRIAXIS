@@ -1,0 +1,31 @@
+{
+  "token_sha256": "db6bd6d62a5ee80d04e67049c4cad08259b9eef056a5aa1e124c13f4de65cffe",
+  "outcome": "ALLOW",
+  "cedar_decision_sha256": "b2e613539a4f8d2086250a86d7c956e91d81a5a59db440c75d22849f791d67ed",
+  "triaxis_policy_sha256": "4200406ef34f563fa1bca1c98747af743290151c6de3547ae3898fd8d66b6fa8",
+  "cedar_policy_sha256": "92b41e33f8ed64fb73a178238a9111ea54f4cc94c77b7df871366a42d99ef472",
+  "evaluated_principal": {
+    "human_id": "alice@triaxis.dev",
+    "agent_instance_id": "agent_inst_001",
+    "delegation_grant_id": "grant_prod_001",
+    "task_id": "task_authorization_001",
+    "action": "execute_capability",
+    "resource": "target_service_v1",
+    "identity_provenance": {
+      "issuer_id": "issuer_001",
+      "subject_id": "alice@triaxis.dev",
+      "identity_mode": "spiffe_workload",
+      "spiffe_id": "spiffe://triaxis.local/agent/operator-001",
+      "trust_domain": "triaxis.local",
+      "agent_instance_id": "agent_inst_001",
+      "certificate_fingerprint_sha256": "418edba18a4ece79e41b9f104a754f2770bb6e0b9e656a0f6a06f9586a174058",
+      "identity_mapping_sha256": "95a0de3bdb6ccc4a80bed22e5433dd7a98e748709450ebc06e3be6843f4270ce",
+      "identity_provider": "SPIFFE-SPIRE-WorkloadAPI",
+      "verification_status": "VERIFIED"
+    },
+    "request_id": "intent_pi002_001",
+    "spiffe_id": "spiffe://triaxis.local/agent/operator-001"
+  },
+  "ledger_state": "PREPARED",
+  "ledger_prepared_at": 150
+}

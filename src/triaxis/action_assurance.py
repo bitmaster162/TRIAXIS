@@ -369,6 +369,8 @@ def authorize_action(
     *,
     authorization_mode: str | Any = "legacy",
     pep: Any = None,
+    identity_mode: str = "explicit_reference",
+    workload_identity_provider: Any = None,
 ) -> dict[str, Any]:
     """Produce an exact, single-use authorization token or a sealed DENY token."""
     from .authorization import AuthorizationMode, AuthorizationRequest, CompoundPrincipal, PolicyEnforcementPoint
@@ -382,14 +384,34 @@ def authorize_action(
     policy_decision: dict[str, Any] | None = None
     pep_receipt: Any = None
 
+    if identity_mode not in ("explicit_reference", "spiffe_workload"):
+        errors.append(_error("CONFIG_ERROR", "identity_mode", f"unsupported identity mode: {identity_mode}"))
+
+    verified_identity: Any = None
+    if identity_mode == "spiffe_workload" and not errors:
+        if workload_identity_provider is None:
+            errors.append(_error("CONFIG_ERROR", "workload_identity_provider", "workload_identity_provider instance required in spiffe_workload mode"))
+        elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
+            intent_id = str(action.get("intent_id", ""))
+            verified_identity = workload_identity_provider.fetch_and_verify_identity(request_id=intent_id)
+            if verified_identity.verification_status != "VERIFIED":
+                errors.append(_error(verified_identity.verification_reason, "workload_identity", f"workload identity verification failed: {verified_identity.verification_reason}"))
+            else:
+                claimed_agent = action.get("agent_instance_id")
+                if claimed_agent != verified_identity.agent_instance_id:
+                    errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.agent_instance_id", f"claimed agent_instance_id '{claimed_agent}' does not match verified agent '{verified_identity.agent_instance_id}'"))
+                claimed_spiffe = action.get("spiffe_id")
+                if claimed_spiffe and claimed_spiffe != verified_identity.spiffe_id:
+                    errors.append(_error("WORKLOAD_IDENTITY_MISMATCH", "action.spiffe_id", f"claimed spiffe_id '{claimed_spiffe}' does not match verified spiffe '{verified_identity.spiffe_id}'"))
+
     if mode == AuthorizationMode.CEDAR_REFERENCE:
         if pep is None:
             errors.append(_error("pep_unconfigured", "authorization_mode", "PEP instance required in cedar_reference mode"))
         elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy and not errors:
             human_id = action.get("human_id")
-            agent_instance_id = action.get("agent_instance_id")
+            agent_instance_id = verified_identity.agent_instance_id if (identity_mode == "spiffe_workload" and verified_identity) else action.get("agent_instance_id")
             delegation_grant_id = action.get("delegation_grant_id")
-            task_id = action.get("task_id") or action.get("intent_id")
+            task_id = action.get("task_id")
 
             missing_fields = []
             if not isinstance(human_id, str) or not human_id.strip():
@@ -407,6 +429,21 @@ def authorize_action(
                     errors.append(_error(err_code, f, f"{f} required for compound principal in cedar_reference mode"))
             else:
                 try:
+                    provenance_meta: dict[str, Any] = {"issuer_id": issuer_id, "subject_id": action["subject_id"]}
+                    eff_spiffe_id = action.get("spiffe_id")
+                    if identity_mode == "spiffe_workload" and verified_identity:
+                        eff_spiffe_id = verified_identity.spiffe_id
+                        provenance_meta.update({
+                            "identity_mode": "spiffe_workload",
+                            "spiffe_id": verified_identity.spiffe_id,
+                            "trust_domain": verified_identity.trust_domain,
+                            "agent_instance_id": verified_identity.agent_instance_id,
+                            "certificate_fingerprint_sha256": verified_identity.certificate_fingerprint_sha256,
+                            "identity_mapping_sha256": verified_identity.identity_mapping_sha256,
+                            "identity_provider": verified_identity.identity_provider,
+                            "verification_status": verified_identity.verification_status,
+                        })
+
                     principal = CompoundPrincipal(
                         human_id=human_id,
                         agent_instance_id=agent_instance_id,
@@ -414,9 +451,9 @@ def authorize_action(
                         task_id=task_id,
                         action=str(action["capability"]),
                         resource=str(action["execution_target"]),
-                        identity_provenance={"issuer_id": issuer_id, "subject_id": action["subject_id"]},
+                        identity_provenance=provenance_meta,
                         request_id=str(action["intent_id"]),
-                        spiffe_id=action.get("spiffe_id"),
+                        spiffe_id=eff_spiffe_id,
                     )
                     cedar_hash = pep.pdp_adapter.get_cedar_policy_hash() if hasattr(pep.pdp_adapter, "get_cedar_policy_hash") else policy["policy_sha256"]
                     authz_request = AuthorizationRequest(
@@ -551,6 +588,8 @@ def authorize_action(
         "errors": errors,
         "token_sha256": "",
     }
+    if verified_identity is not None:
+        token["workload_identity"] = verified_identity.to_dict()
     return seal_mapping(token, "token_sha256")
 
 

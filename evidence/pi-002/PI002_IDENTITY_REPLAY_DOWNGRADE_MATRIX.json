@@ -1,0 +1,29 @@
+[
+  {
+    "scenario": "adversarial_1_caller_spoofs_agent_instance_id",
+    "result": "DENY",
+    "error": "WORKLOAD_IDENTITY_MISMATCH",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "adversarial_2_caller_spoofs_spiffe_id",
+    "result": "DENY",
+    "error": "WORKLOAD_IDENTITY_MISMATCH",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "adversarial_11_receipt_replay_under_different_identity",
+    "result": "PROVEN_DIFFERENT_DECISION_HASHES",
+    "digest_bound_principal": true
+  },
+  {
+    "scenario": "adversarial_12_token_reuse_by_different_workload",
+    "result": "REJECTED_BY_LEDGER_SINGLE_USE",
+    "sqlite_integrity_error": true
+  },
+  {
+    "scenario": "downgrade_attempt_invalid_identity_mode",
+    "result": "CONFIG_ERROR",
+    "pep_invoked": false
+  }
+]

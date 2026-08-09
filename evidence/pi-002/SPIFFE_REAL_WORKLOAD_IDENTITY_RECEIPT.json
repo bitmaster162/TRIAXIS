@@ -1,0 +1,12 @@
+{
+  "spiffe_id": "spiffe://triaxis.local/agent/operator-001",
+  "trust_domain": "triaxis.local",
+  "identity_provider": "SPIFFE-SPIRE-WorkloadAPI",
+  "certificate_fingerprint_sha256": "418edba18a4ece79e41b9f104a754f2770bb6e0b9e656a0f6a06f9586a174058",
+  "not_before_iso": "2026-08-09T01:02:39+00:00",
+  "not_after_iso": "2026-08-09T02:02:49+00:00",
+  "verification_status": "VERIFIED",
+  "verification_reason": "SPIFFE_SVID_VERIFIED",
+  "identity_mapping_sha256": "95a0de3bdb6ccc4a80bed22e5433dd7a98e748709450ebc06e3be6843f4270ce",
+  "mapped_agent_instance_id": "agent_inst_001"
+}
