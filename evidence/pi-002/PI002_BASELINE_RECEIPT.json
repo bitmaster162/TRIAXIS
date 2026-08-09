@@ -1,12 +1,11 @@
 {
   "baseline_main_head": "d44a2b6d4987fdf55796cc9199b917e4cc35df90",
   "baseline_src_tree": "6aa627b4398e9392f624f5d276d5fd5d3ea464bd",
-  "final_branch_head": "c63984148ee318aa3329726281e43cb8ef6d99e7",
-  "final_full_tree": "0491e9aa691b1f84a2722a5e7e785452ac654683",
+  "final_branch_head": "FEATURE_COMMIT_RECORDED_EXTERNALLY",
   "final_src_tree": "a785695647e0f2ff48b50983f3463459ae8ec2ce",
   "logical_changed_file_count": 23,
   "branch": "product/pi-002-spiffe-workload-identity",
   "baseline_regression_total": 568,
   "baseline_regression_passed": 568,
-  "timestamp_iso": "2026-08-09T08:03:00Z"
+  "timestamp_iso": "2026-08-09T08:12:00Z"
 }
