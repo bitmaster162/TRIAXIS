@@ -1,0 +1,36 @@
+{
+  "schema": "gpt56sol.fc16.self_test_result/v1",
+  "author_contaminated": true,
+  "valid_for_external_method_claims": false,
+  "frozen_oracle_scores": {
+    "U1": {
+      "overall_status_accuracy": 0.5,
+      "true_close_accuracy": 1.0,
+      "false_closure_resistance": 0.0,
+      "witness_accuracy": 1.0,
+      "trap_discriminator_accuracy": 0.0,
+      "stop_accuracy": 0.5,
+      "pair_closure_joint_accuracy": 0.0
+    },
+    "U2": {
+      "overall_status_accuracy": 0.5,
+      "true_close_accuracy": 1.0,
+      "false_closure_resistance": 0.0,
+      "witness_accuracy": 1.0,
+      "trap_discriminator_accuracy": 0.0,
+      "stop_accuracy": 0.5,
+      "pair_closure_joint_accuracy": 0.0
+    }
+  },
+  "paired_difference": {
+    "U1_vs_U2_identical_outputs": true,
+    "incremental_trialectic_lift_observed": false
+  },
+  "semantic_adjudication": {
+    "FC16_status_metric": "INVALID_FOR_METHOD_COMPARISON",
+    "FC16_stop_metric": "INVALID_FOR_METHOD_COMPARISON",
+    "witness_metric": "RETAINS_SANITY_VALUE",
+    "new_candidate": "BOUNDED_REVISABLE_CLOSURE",
+    "key_insight": "Epistemic uncertainty does not imply operational non-closure."
+  }
+}
