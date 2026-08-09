@@ -1,0 +1,128 @@
+[
+  {
+    "control_id": "positive_svid_valid",
+    "description": "Fully valid SPIFFE X509-SVID leaf certificate",
+    "expected_status": "VERIFIED",
+    "expected_reason": "SPIFFE_SVID_VERIFIED",
+    "actual_status": "VERIFIED",
+    "actual_reason": "SPIFFE_SVID_VERIFIED",
+    "passed": true
+  },
+  {
+    "control_id": "missing_key_usage",
+    "description": "Missing KeyUsage extension",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_KEY_USAGE_MISSING",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_KEY_USAGE_MISSING",
+    "passed": true
+  },
+  {
+    "control_id": "non_critical_key_usage",
+    "description": "Non-critical KeyUsage extension",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_KEY_USAGE_NOT_CRITICAL",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_KEY_USAGE_NOT_CRITICAL",
+    "passed": true
+  },
+  {
+    "control_id": "digital_signature_false",
+    "description": "KeyUsage digitalSignature=false",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "key_cert_sign_true",
+    "description": "KeyUsage keyCertSign=true",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "crl_sign_true",
+    "description": "KeyUsage crlSign=true",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "zero_uri_san",
+    "description": "Zero URI SANs",
+    "expected_status": "DENIED",
+    "expected_reason": "MISSING_SPIFFE_ID_IN_SVID",
+    "actual_status": "DENIED",
+    "actual_reason": "MISSING_SPIFFE_ID_IN_SVID",
+    "passed": true
+  },
+  {
+    "control_id": "two_uri_sans",
+    "description": "Two URI SANs",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_SPIFFE_ID_AMBIGUOUS",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_SPIFFE_ID_AMBIGUOUS",
+    "passed": true
+  },
+  {
+    "control_id": "non_spiffe_uri",
+    "description": "Non-SPIFFE URI scheme (https://)",
+    "expected_status": "DENIED",
+    "expected_reason": "MISSING_SPIFFE_ID_IN_SVID",
+    "actual_status": "DENIED",
+    "actual_reason": "MISSING_SPIFFE_ID_IN_SVID",
+    "passed": true
+  },
+  {
+    "control_id": "root_only_spiffe_id",
+    "description": "Root-only SPIFFE ID (spiffe://triaxis.local)",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "eku_only_client_auth",
+    "description": "EKU with only clientAuth",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "eku_only_server_auth",
+    "description": "EKU with only serverAuth",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "ca_flag_true",
+    "description": "BasicConstraints ca=true",
+    "expected_status": "DENIED",
+    "expected_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "actual_status": "DENIED",
+    "actual_reason": "SVID_LEAF_CONSTRAINTS_VIOLATED",
+    "passed": true
+  },
+  {
+    "control_id": "expired_certificate",
+    "description": "Expired SVID certificate",
+    "expected_status": "DENIED",
+    "expected_reason": "CERTIFICATE_EXPIRED",
+    "actual_status": "DENIED",
+    "actual_reason": "CERTIFICATE_EXPIRED",
+    "passed": true
+  }
+]

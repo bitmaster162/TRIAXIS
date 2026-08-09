@@ -1,10 +1,13 @@
 {
   "rfc5280_path_validation_engine": "OpenSSL.crypto.X509StoreContext",
   "spiffe_x509_svid_leaf_constraints": {
+    "key_usage_presence": "KeyUsage MUST be present (SVID_KEY_USAGE_MISSING if missing)",
+    "key_usage_criticality": "KeyUsage MUST be marked critical (SVID_KEY_USAGE_NOT_CRITICAL if non-critical)",
+    "key_usage_flags": "digitalSignature=true MUST be set; keyCertSign=false & crlSign=false MUST NOT be set",
+    "uri_san_count": "EXACTLY ONE URI SAN required (MISSING_SPIFFE_ID_IN_SVID if 0; SVID_SPIFFE_ID_AMBIGUOUS if > 1)",
+    "spiffe_uri_format": "Scheme MUST be spiffe:// and path MUST be non-root (spiffe://<td>/<path>)",
+    "extended_key_usage": "If EKU present, BOTH clientAuth AND serverAuth MUST be set",
     "basic_constraints": "ca=False MUST be enforced",
-    "key_usage": "digitalSignature MUST be set; keyCertSign & crlSign MUST NOT be set",
-    "extended_key_usage": "clientAuth and/or serverAuth MUST be set if extension present",
-    "subject_alternative_name": "URI SAN MUST contain valid spiffe:// ID",
     "trust_domain_confinement": "Trust domain extracted from SVID MUST match expected trust domain",
     "validity_window": "now MUST be between not_before and not_after"
   },

@@ -327,30 +327,7 @@ class SpiffeWorkloadIdentityProvider:
 
         cert_fp = hashlib.sha256(svid_cert.public_bytes(Encoding.DER)).hexdigest()
 
-        # 2. Perform RFC 5280 certificate path validation using OpenSSL X509Store Context
-        try:
-            store = crypto.X509Store()
-            ca_ossl = crypto.X509.from_cryptography(bundle_cert)
-            store.add_cert(ca_ossl)
-            leaf_ossl = crypto.X509.from_cryptography(svid_cert)
-            ctx = crypto.X509StoreContext(store, leaf_ossl)
-            ctx.verify_certificate()
-        except Exception:
-            return VerifiedWorkloadIdentity(
-                agent_instance_id="",
-                spiffe_id="",
-                trust_domain=self.expected_trust_domain,
-                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
-                certificate_fingerprint_sha256=cert_fp,
-                not_before_iso=now_iso,
-                not_after_iso=now_iso,
-                verification_status="DENIED",
-                verification_reason="SVID_CHAIN_INVALID",
-                identity_mapping_sha256=mapping_hash,
-                request_id=request_id,
-            )
-
-        # 3. Perform SPIFFE X509-SVID Leaf Constraints Verification
+        # 2. Perform SPIFFE X509-SVID Leaf Constraints Verification
         # Constraint A: Basic Constraints must have ca=False
         try:
             bc = svid_cert.extensions.get_extension_for_oid(x509.ExtensionOID.BASIC_CONSTRAINTS).value
@@ -371,10 +348,64 @@ class SpiffeWorkloadIdentityProvider:
         except x509.ExtensionNotFound:
             pass
 
-        # Constraint B: Key Usage must have digitalSignature=True and keyCertSign=False
+        # Constraint B1: KeyUsage MUST be present
         try:
-            ku = svid_cert.extensions.get_extension_for_oid(x509.ExtensionOID.KEY_USAGE).value
-            if not ku.digital_signature or ku.key_cert_sign or ku.crl_sign:
+            ku_ext = svid_cert.extensions.get_extension_for_oid(x509.ExtensionOID.KEY_USAGE)
+        except x509.ExtensionNotFound:
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_KEY_USAGE_MISSING",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # Constraint B2: KeyUsage MUST be marked critical
+        if not ku_ext.critical:
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_KEY_USAGE_NOT_CRITICAL",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # Constraint B3: KeyUsage MUST have digitalSignature=true, keyCertSign=false, crlSign=false
+        ku = ku_ext.value
+        if not ku.digital_signature or ku.key_cert_sign or ku.crl_sign:
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_LEAF_CONSTRAINTS_VIOLATED",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # Constraint C: If ExtendedKeyUsage is present, MUST require BOTH clientAuth AND serverAuth
+        try:
+            eku_ext = svid_cert.extensions.get_extension_for_oid(x509.ExtensionOID.EXTENDED_KEY_USAGE)
+            eku = eku_ext.value
+            has_client = x509.ExtendedKeyUsageOID.CLIENT_AUTH in eku
+            has_server = x509.ExtendedKeyUsageOID.SERVER_AUTH in eku
+            if not (has_client and has_server):
                 return VerifiedWorkloadIdentity(
                     agent_instance_id="",
                     spiffe_id="",
@@ -391,19 +422,15 @@ class SpiffeWorkloadIdentityProvider:
         except x509.ExtensionNotFound:
             pass
 
-        # Constraint C: Extract SPIFFE ID from SAN extension
-        spiffe_id = ""
+        # Constraint D: SAN MUST contain EXACTLY ONE URI SAN
+        all_uri_sans = []
         try:
             san_ext = svid_cert.extensions.get_extension_for_oid(x509.ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
-            uris = san_ext.value.get_values_for_type(x509.UniformResourceIdentifier)
-            for uri in uris:
-                if uri.startswith("spiffe://"):
-                    spiffe_id = uri
-                    break
-        except Exception:
-            pass
+            all_uri_sans = san_ext.value.get_values_for_type(x509.UniformResourceIdentifier)
+        except x509.ExtensionNotFound:
+            all_uri_sans = []
 
-        if not spiffe_id:
+        if len(all_uri_sans) == 0:
             return VerifiedWorkloadIdentity(
                 agent_instance_id="",
                 spiffe_id="",
@@ -418,7 +445,58 @@ class SpiffeWorkloadIdentityProvider:
                 request_id=request_id,
             )
 
-        # Constraint D: Verify certificate validity window
+        if len(all_uri_sans) > 1:
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_SPIFFE_ID_AMBIGUOUS",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        spiffe_id = all_uri_sans[0]
+
+        # Scheme MUST be spiffe://
+        if not spiffe_id.startswith("spiffe://"):
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="MISSING_SPIFFE_ID_IN_SVID",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # Path MUST be non-root (spiffe://<trust_domain>/<path>)
+        spiffe_path_raw = spiffe_id[9:]  # strip 'spiffe://'
+        parts = spiffe_path_raw.split("/", 1)
+        if len(parts) < 2 or not parts[1].strip("/"):
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id=spiffe_id,
+                trust_domain=parts[0],
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_LEAF_CONSTRAINTS_VIOLATED",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # Constraint E: Verify certificate validity window
         if hasattr(svid_cert, "not_valid_before_utc"):
             not_before = svid_cert.not_valid_before_utc
             not_after = svid_cert.not_valid_after_utc
@@ -441,8 +519,8 @@ class SpiffeWorkloadIdentityProvider:
                 request_id=request_id,
             )
 
-        # Constraint E: Extract trust domain from SPIFFE ID (spiffe://<trust_domain>/path)
-        td = spiffe_id.replace("spiffe://", "").split("/")[0]
+        # Constraint F: Extract trust domain from SPIFFE ID
+        td = parts[0]
         if td != self.expected_trust_domain:
             return VerifiedWorkloadIdentity(
                 agent_instance_id="",
@@ -454,6 +532,29 @@ class SpiffeWorkloadIdentityProvider:
                 not_after_iso=not_after.isoformat(),
                 verification_status="DENIED",
                 verification_reason="TRUST_DOMAIN_MISMATCH",
+                identity_mapping_sha256=mapping_hash,
+                request_id=request_id,
+            )
+
+        # 3. Perform RFC 5280 certificate path validation using OpenSSL X509Store Context
+        try:
+            store = crypto.X509Store()
+            ca_ossl = crypto.X509.from_cryptography(bundle_cert)
+            store.add_cert(ca_ossl)
+            leaf_ossl = crypto.X509.from_cryptography(svid_cert)
+            ctx = crypto.X509StoreContext(store, leaf_ossl)
+            ctx.verify_certificate()
+        except Exception:
+            return VerifiedWorkloadIdentity(
+                agent_instance_id="",
+                spiffe_id="",
+                trust_domain=self.expected_trust_domain,
+                identity_provider="SPIFFE-SPIRE-WorkloadAPI",
+                certificate_fingerprint_sha256=cert_fp,
+                not_before_iso=now_iso,
+                not_after_iso=now_iso,
+                verification_status="DENIED",
+                verification_reason="SVID_CHAIN_INVALID",
                 identity_mapping_sha256=mapping_hash,
                 request_id=request_id,
             )
