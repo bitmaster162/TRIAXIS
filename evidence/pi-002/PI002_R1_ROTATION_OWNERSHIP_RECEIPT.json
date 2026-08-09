@@ -1,0 +1,9 @@
+{
+  "stable_spiffe_id": "spiffe://triaxis.local/agent/operator-001",
+  "stable_agent_instance_id": "agent_inst_001",
+  "fingerprint_a1": "1111111111111111111111111111111111111111111111111111111111111111",
+  "fingerprint_a2": "2222222222222222222222222222222222222222222222222222222222222222",
+  "fingerprint_equal": false,
+  "effect_boundary_result": "PREPARED",
+  "availability_preserved_across_rotation": true
+}

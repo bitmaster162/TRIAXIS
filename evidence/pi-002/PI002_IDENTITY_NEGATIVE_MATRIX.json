@@ -1,0 +1,107 @@
+[
+  {
+    "scenario": "1_workload_api_unavailable",
+    "ver_status": "ERROR",
+    "ver_reason": "SPIRE_AGENT_UNAVAILABLE",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "2_spire_agent_unavailable",
+    "ver_status": "ERROR",
+    "ver_reason": "SPIFFE_WORKLOAD_API_UNAVAILABLE",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "3_no_svid_issued",
+    "ver_status": "DENIED",
+    "ver_reason": "NO_SVID_ISSUED",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "4_wrong_spiffe_id",
+    "ver_status": "DENIED",
+    "ver_reason": "SPIFFE_ID_INVALID",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "5_wrong_trust_domain",
+    "ver_status": "DENIED",
+    "ver_reason": "TRUST_DOMAIN_MISMATCH",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "6_spiffe_id_not_in_mapping",
+    "ver_status": "DENIED",
+    "ver_reason": "IDENTITY_MAPPING_NOT_FOUND",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "7_mapped_agent_differs_from_action",
+    "ver_status": "VERIFIED",
+    "ver_reason": "WORKLOAD_IDENTITY_MISMATCH",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "8_expected_action_spiffe_differs",
+    "ver_status": "VERIFIED",
+    "ver_reason": "WORKLOAD_IDENTITY_MISMATCH",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "9_missing_action_agent_instance_id",
+    "ver_status": "VERIFIED",
+    "ver_reason": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "10_missing_explicit_human_id",
+    "ver_status": "VERIFIED",
+    "ver_reason": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "11_missing_delegation_grant",
+    "ver_status": "VERIFIED",
+    "ver_reason": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "12_missing_task",
+    "ver_status": "VERIFIED",
+    "ver_reason": "MISSING_COMPOUND_PRINCIPAL_COMPONENT",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "13_malformed_provider_response",
+    "ver_status": "ERROR",
+    "ver_reason": "MALFORMED_PROVIDER_RESPONSE",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "14_expired_svid",
+    "ver_status": "DENIED",
+    "ver_reason": "CERTIFICATE_EXPIRED",
+    "outcome": "DENY",
+    "pep_invoked": false
+  },
+  {
+    "scenario": "15_provider_exception",
+    "ver_status": "ERROR",
+    "ver_reason": "SPIFFE_WORKLOAD_API_EXCEPTION: RuntimeError",
+    "outcome": "DENY",
+    "pep_invoked": false
+  }
+]

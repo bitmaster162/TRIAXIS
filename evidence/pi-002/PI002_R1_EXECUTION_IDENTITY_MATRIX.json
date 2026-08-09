@@ -1,0 +1,18 @@
+[
+  {
+    "scenario": "token_a_presented_by_workload_b_first_use",
+    "result": "REJECTED_WITH_EXECUTION_WORKLOAD_IDENTITY_MISMATCH",
+    "token_prepared": false,
+    "token_remains_unprepared_for_workload_a": true
+  },
+  {
+    "scenario": "token_a_presented_by_workload_a_subsequently",
+    "result": "PREPARED_SUCCESSFULLY",
+    "token_prepared": true
+  },
+  {
+    "scenario": "untrusted_provider_at_prepare_boundary",
+    "result": "REJECTED_WITH_UNTRUSTED_IDENTITY_PROVIDER",
+    "token_prepared": false
+  }
+]
