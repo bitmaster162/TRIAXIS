@@ -17,7 +17,7 @@ Examples:
 
 - We may not know whether a timed-out mutation succeeded, but we can still close the immediate action: **do not retry; query the authoritative scope**.
 - We may not know the current serving revision, but we can close: **do not assert a revision; obtain one fresh post-route readback**.
-- We may know enough to permanently reject a claim even though a positive proof is absent: if Run B used Run A's reasoning, independence is already falsified.
+- We may know enough to reject a bounded claim even though a positive proof is absent: if Run B consumed Run A's reasoning, the specific independence claim is falsified for the current frozen scope.
 
 ## Canonical decision record
 
@@ -65,16 +65,16 @@ The third pole is not a synthesizer persona. It is **COMMITMENT**:
 ## Closure classes
 
 ### TERMINAL_CLOSED
-Current evidence establishes an action and no admissible future observation in the bounded case can restore the rejected alternative.
+Within the **current frozen scope**, the bounded action/claim is closed and no unresolved in-scope discriminator is required. This does **not** mean metaphysical or permanent irreversibility: genuinely new contradictory evidence or a later scope change can start a new decision episode.
 
 ### PROVISIONAL_CLOSED
-The immediate action is justified now, but a named material observation would reopen the decision.
+The immediate action is justified now, but a named material observation is expected or plausible and would reopen/change the decision.
 
 ### INVESTIGATIVE_CLOSED
 The correct immediate action is a specific test/observation. The underlying world state is unresolved, but the next operational decision is closed.
 
 ### OPEN
-The system cannot even identify a justified bounded next action. This should be rare and must not be used as a generic uncertainty bucket.
+The system cannot even identify a justified bounded next action from the admissible action surface and current evidence. This should be rare and must not be used as a generic uncertainty bucket.
 
 ## Why this may be the stronger primitive
 
