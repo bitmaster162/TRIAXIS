@@ -1,40 +1,50 @@
-# Decision Closure / EBD Research
+# Decision Closure / EBRC Research
 
-This research branch separates four objects:
+This research branch separates the benchmark from the method under test and keeps the surviving claims falsifiable.
 
-1. **Decision Closure Protocol** — compact procedure for sufficiency, witness, flip boundary, discriminator, and stop.
-2. **Decision Closure Benchmark** — method-neutral evaluator for those closure dimensions.
-3. **Decision Trace / Auditability** — provenance and replayability layer, motivated by the observed +12.5 pp evidence-binding candidate lift with zero action lift on Boundary-20.
-4. **Trialectic Closure** — conditional `REALITY → ANGEL → DEVIL → CLOSURE` implementation used to test whether constructive sufficiency plus one action-changing countermodel improves false-closure resistance.
+## Current tracks
 
-## Current empirical state
+1. **Decision Closure** — sufficiency, minimal witness, flip boundary, discriminator, and stop.
+2. **Decision Trace / Auditability** — provenance, replayability, witness sufficiency/minimality, and forbidden-evidence reliance.
+3. **Trialectic Closure** — conditional `REALITY -> ANGEL -> DEVIL -> COMMITMENT`; ANGEL/DEVIL are operators, not independent agents.
+4. **Bounded Revisable Closure / Dual-State** — epistemic resolution is separate from operational closure; `UNRESOLVED != OPEN`.
+5. **EBRC — Evidence-Bound Revisable Commitment** — bounded action now + minimal witness + at most one action-changing countermodel + explicit material reopen condition.
+6. **WMX / EBRC-Orchestrator** — weak-model exoskeleton: compact state -> orchestrator -> selective discriminator/tool -> external verifier -> bounded correction -> zero-VOI stop.
+7. **External benchmarks** — UMWP/AbstentionBench bridge ready; CorrectBench and NeuroState adapter specs prepared.
+8. **Historical Evolution Replay** — replay the creation history to locate the earliest minimal mutation that produces reproducible external lift.
 
-- Z8.1 and EBD Pilot40 reached an action ceiling: Ordinary and Structured both perfect on the tested actions.
-- Boundary-20: U0 and U1 both 20/20 actions; after symmetric oracle quarantine, evidence binding was U0 14/16 vs U1 16/16 (+12.5 pp), zero action harm.
-- GPT-5.6 Sol self-test on Decision Closure-24: U0, U1 and Trialectic U2 all passed the full closure vector, but this is **author-contaminated sanity control only**, not blind evidence.
+## Historical replay rule
 
-The current empirical result does **not** support a claim that TRIAXIS improves final decision accuracy. The branch exists to test narrower, falsifiable hypotheses:
+Do not compare every historical release as if it were a prompting strategy.
 
-- sufficiency detection;
-- minimal sufficient witness construction;
-- counterfactual / flip-boundary precision;
-- cost-aware discriminator selection;
-- decision-frontier stopping;
-- provenance / traceability / auditability;
-- false-closure resistance from conditional ANGEL/DEVIL checks.
-
-`TRIAXIS_IS_CONTESTANT=true`
-
-`TRIAXIS_IS_ORACLE=false`
-
-No production/runtime change is authorized by this research branch.
+- Decision/cognitive mutations are normalized into equal-contract cross-benchmark arms.
+- Assurance/runtime releases are replayed on repository-native tests and historical failure surfaces.
+- The v2.11-v2.33 Git gap is explicit and never reconstructed by inference; v2.34 is treated as a recovered artifact lineage on verified v2.10 ancestry.
 
 See:
-- `DECISION_CLOSURE_PROTOCOL_v0_1.md`
-- `DECISION_CLOSURE_BENCHMARK_v0_1.md`
-- `EVIDENCE_TRACEABILITY_AUDITABILITY_v0_1.md`
-- `TRIALECTIC_CLOSURE_v0_1.md`
-- `SELF_TEST_GPT56SOL_2026-08-09.md`
-- `RESEARCH_STATE_2026-08-09.md`
-- `DC24_RELEASE_v0_1_1.md`
-- `decision_closure_record.schema.json`
+- `HISTORICAL_EVOLUTION_REPLAY_v0_1.md`
+- `HISTORICAL_FAILURE_SURFACE_MAP_v0_1.md`
+- `EVOLUTION_REPLAY_RUNNER_RECEIPT_v0_1.md`
+
+## Current empirical boundary
+
+- Broad claim `TRIAXIS improves model intelligence/decision accuracy`: **not supported**.
+- Z8.1 / EBD Pilot40: action-level ceiling.
+- Boundary-20: U0=20/20 and U1=20/20 actions; after symmetric oracle quarantine evidence binding U0=14/16 vs U1=16/16, candidate `+12.5 pp` evidence-discipline signal with zero action harm.
+- GPT-5.6 Sol closure/integrity self-runs are author-contaminated conformance controls, not blind evidence.
+- FC16 exposed `SEMANTIC_CONTRACT_SPLIT`; old `ENOUGH / NOT_ENOUGH` status/stop semantics are invalid for method comparison.
+- Incremental DEVIL value remains unproven.
+
+## Historical signal under test
+
+The strongest historical failures repeatedly occurred at input/context/evidence boundaries rather than from lack of extra debate passes:
+
+`input contract -> semantic ingress -> context scope -> provenance/common-cause -> state binding -> verifier -> stop`
+
+This is a research prior only. Weak-model external replay and native historical tests decide whether it survives.
+
+`TRIAXIS_IS_CONTESTANT=true`
+`TRIAXIS_IS_ORACLE=false`
+`PRODUCTION_CHANGE=false`
+`AUTO_MERGE=false`
+`MERGE_PERMISSION=DENY`
