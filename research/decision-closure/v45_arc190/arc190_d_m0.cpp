@@ -51,19 +51,25 @@ int main(){
         }
         return 0;
     }
-    Mat C=A;
+    Mat C=A; // zeros already represent 0 in F_p
     Mat R=mpow(C,p,p);
+
+    // A zero self-loop may be used exactly p-1 times; the one remaining
+    // step must be a fixed nonzero edge entering or leaving that vertex.
     for(int u=0;u<N;u++) if(A[u][u]==0){
         for(int v=0;v<N;v++) if(v!=u){
             R[u][v]=(R[u][v]+C[u][v])%p;
             R[v][u]=(R[v][u]+C[v][u])%p;
         }
     }
+    // For p=3 only, a non-loop zero edge u->v can occur twice in the word,
+    // with the unique remaining fixed step v->u between the two copies.
     if(p==3){
         for(int u=0;u<N;u++) for(int v=0;v<N;v++) if(u!=v && A[u][v]==0){
             R[u][v]=(R[u][v]+C[v][u])%p;
         }
     }
+
     if(K&1){
         for(int i=0;i<N;i++) for(int j=0;j<N;j++)
             if(R[i][j]) R[i][j]=p-R[i][j];
