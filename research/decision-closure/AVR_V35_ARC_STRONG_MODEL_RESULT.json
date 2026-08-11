@@ -1,0 +1,42 @@
+{
+  "broad_claim": "UNSUPPORTED",
+  "contest": "arc208",
+  "delta": {
+    "M0_pass_added": 2,
+    "X1_final_pass_added": 2,
+    "claim_grade_tasks_added": 2,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "rescues_added": 0
+  },
+  "interpretation": "V35 adds two ceiling passes and one constraint quarantine, with no causal rescue evidence. It strengthens external validation of the strong-model baseline and the constraint gate, but does not move the TRIAXIS intelligence-improvement claim toward confirmation.",
+  "schema": "triaxis.avr_v35_arc_strong_model_result/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "tasks": {
+    "arc208_c": {
+      "claim_grade": true,
+      "final": "PASS",
+      "m0": "PASS",
+      "rescue": false,
+      "score": 700,
+      "x1": "NOT_ACTIVATED"
+    },
+    "arc208_d": {
+      "claim_grade": true,
+      "final": "PASS",
+      "m0": "PASS",
+      "rescue": false,
+      "score": 700,
+      "x1": "NOT_ACTIVATED"
+    },
+    "arc208_e": {
+      "claim_grade": false,
+      "final": "PERFORMANCE_QUARANTINE",
+      "m0": "CORRECTNESS_PASS_CONSTRAINT_FAIL",
+      "rescue": false,
+      "score": 1100,
+      "x1": "NOT_ACTIVATED"
+    }
+  },
+  "version": "V35"
+}
