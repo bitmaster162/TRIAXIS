@@ -1,0 +1,91 @@
+{
+  "schema": "triaxis.avr.v46.m0_verifier/v0.1",
+  "batch": "V46",
+  "contest": "arc189",
+  "compile": {
+    "E": "PASS",
+    "D": "PASS",
+    "C": "PASS"
+  },
+  "official_samples": {
+    "E": {
+      "N2": "PASS_NO",
+      "N5": "FAIL_OUTPUT_INVALID",
+      "failure_witness": {
+        "path_1_indexed": [1,2,3,5,4],
+        "labels": [1,3,4,4],
+        "nondecreasing": true
+      }
+    },
+    "D": {
+      "sample_sets": 2,
+      "status": "PASS"
+    },
+    "C": {
+      "sample_sets": 4,
+      "status": "PASS"
+    }
+  },
+  "independent_verification": {
+    "D": {
+      "oracle": "direct order-independent interval closure simulation",
+      "cases": 3089,
+      "mismatches": 0,
+      "range": "all values 1..3 for N=2..6 plus 2000 random N=7"
+    },
+    "C": {
+      "oracle": "BFS over exact red/blue count states under actual box operations",
+      "executable_random_cases": 1000,
+      "mismatches": 0,
+      "range": "N=2..5",
+      "structural_exhaustive_N3": {
+        "cases": 6912,
+        "mismatches": 0,
+        "scope": "all P,Q permutations, all binary A,B, all X"
+      }
+    },
+    "E": {
+      "validator": "exact Hamilton-path enumeration on frozen output for small N",
+      "N4_good": true,
+      "N5_good": false,
+      "N5_witness": {
+        "path_1_indexed": [1,2,3,5,4],
+        "labels": [1,3,4,4]
+      }
+    }
+  },
+  "proof_equivalent_gates": {
+    "D": "PASS: max-Cartesian subtree closure lemma plus parent-crossing iff subtree_sum>A_parent; crossing parent makes mass exceed 2*A_parent and consumes sibling subtree.",
+    "C": "PASS: each color induces one mandatory permutation-cycle path to X; valid schedules are exactly common supersequences of the two mandatory paths; minimum is SCS = |R|+|B|-LCS; unique symbols reduce LCS to LIS.",
+    "E": "FAIL: inductive new-largest-label extension is not closed under placing the new vertex second-last; N5 counterexample invalidates the construction."
+  },
+  "constraint_gates": {
+    "D": {
+      "official_N_max": 500000,
+      "frozen_complexity": "O(N)",
+      "max_style_elapsed_seconds": 0.38,
+      "rss_kb": 28784,
+      "status": "PASS"
+    },
+    "C": {
+      "official_N_max": 200000,
+      "frozen_complexity": "O(N log N)",
+      "max_style_elapsed_seconds": 0.03,
+      "rss_kb": 10580,
+      "status": "PASS"
+    },
+    "E": {
+      "official_N_max": 20,
+      "frozen_complexity": "O(N^2) output construction",
+      "status": "CONSTRAINT_SAFE_BUT_CORRECTNESS_FAIL"
+    }
+  },
+  "pre_editorial_classification": {
+    "D": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "E": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1"
+  },
+  "x1_activated": false,
+  "x1_reason": "The frozen E trigger invalidates the global inductive construction itself. A rescue requires a qualitatively new all-N construction together with an optimality/lower-bound theorem, not a bounded local correction. X1 is optional and is not manufactured.",
+  "editorial_or_gold_used": false
+}
