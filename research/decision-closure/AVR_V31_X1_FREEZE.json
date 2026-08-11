@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr_v31.x1_freeze/v0.1",
+  "status": "FROZEN_BEFORE_X1_EXECUTION",
+  "timestamp_local": "2026-08-11T23:42:00+07:00",
+  "activated_task": "arc214_f",
+  "m0_failure_receipt_sha256": "2eb8e4f9d295c23bf9bb1e3959297a39da04b3810ec5231a1010dd5b468aa1ce",
+  "feedback_used": {
+    "representative_input": {
+      "H": 3,
+      "W": 4,
+      "grid": [
+        ".#..",
+        ".#..",
+        "..#."
+      ]
+    },
+    "expected": 1,
+    "actual": 2,
+    "failure_class": "REPEATED_DESTROYED_WALL_DOUBLE_CHARGE"
+  },
+  "x1_source_sha256": "acd12964616d05b29098c0c5dadf3cb26d905cd51994dd5f18c91d2cfaa20a9f",
+  "correction": "Add an explicit straight-progress macro: after arriving with direction d, continuing in d is represented by a valid perpendicular out-and-back reset at the current cell, charging the side cell (if wall) and the next cell but not charging the already-entered current cell again. Retain all direct nd!=d moves.",
+  "editorial_or_gold_used": false,
+  "candidate_execution_before_x1_freeze": false,
+  "max_corrections_used": 1,
+  "governance": {
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false
+  }
+}
