@@ -1,0 +1,38 @@
+{
+  "schema": "triaxis.avr_v14.telegram_diagnostic_invalidation/v0.1",
+  "status": "INVALID_FOR_CONFIRMATORY_CLAIM",
+  "timestamp_local": "2026-08-11T17:36:00+07:00",
+  "runtime": {
+    "primary": "OPENCLAW",
+    "declared_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "secondary_runtime": "HERMES",
+    "secondary_status": "HERMES_INIT_FAILURE"
+  },
+  "frozen_subset_case_count": 20,
+  "openclaw_response_count": 20,
+  "openclaw_response_vector_sha256": "33734b4e72d376084bae41dee629e8657de5d125580fc9fd7aaceb827b4f3681",
+  "oracle_opened_after_all_openclaw_responses_frozen": true,
+  "descriptive_only": {
+    "raw_exact": 20,
+    "raw_exact_denominator": 20,
+    "raw_exact_rate": 1.0
+  },
+  "invalidation_reason": {
+    "type": "MODEL_VISIBLE_ANSWER_KEY_LEAKAGE",
+    "detail": "Telegram evidence packets exposed final_value to the model. The frozen v0.14 preregistration explicitly required model-visible answer keys including final_value/final_answer/canonical answer aliases to be scrubbed before model exposure. In this diagnostic, the exposed terminal final_value matched the hidden benchmark final_answer on all 20 selected cases after oracle opening.",
+    "impact": "The 20/20 OpenClaw score cannot be used as weaker-model efficacy evidence, cannot satisfy the v0.14 confirmatory gate, and must not be cited as a TERMINAL_AUTHORITY lift result."
+  },
+  "protocol_relation": {
+    "preregistration_sha256": "94cce81aec3f4085153e071d318a8267dc2298c711152f11126eb77976fa555d",
+    "required_property_violated": "design.model_visible_answer_keys_scrubbed includes final_value and final_answer",
+    "official_v14_execution_status_remains": "EXTERNAL_DEPENDENCY_HOLD"
+  },
+  "governance": {
+    "production_change": false,
+    "merge_permission": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  },
+  "next_valid_test": "Run the same frozen 20-case Telegram evidence test with all model-visible answer keys scrubbed before exposure. Batch delivery is allowed; do not alter the selected cases or oracle answers."
+}
