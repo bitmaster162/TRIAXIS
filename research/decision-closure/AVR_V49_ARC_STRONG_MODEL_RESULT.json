@@ -1,0 +1,43 @@
+{
+  "schema": "triaxis.avr.v49.result/v0.1",
+  "batch": "V49",
+  "contest": "ARC186",
+  "tasks": {
+    "E": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "m0": "PASS",
+      "x1": false
+    },
+    "A": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "m0": "PASS",
+      "x1": false
+    },
+    "B": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "m0": "PASS",
+      "x1": false
+    }
+  },
+  "delta": {
+    "claim_grade": 3,
+    "m0_pass": 3,
+    "final_pass": 3,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0,
+    "x1_activations": 0
+  },
+  "scientific_interpretation": "V49 is another strong-model ceiling batch: three fresh claim-grade M0 passes, no frozen failure and therefore no causal-lift rescue. It does not change the paired rescue statistic.",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED",
+  "governance": {
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}
