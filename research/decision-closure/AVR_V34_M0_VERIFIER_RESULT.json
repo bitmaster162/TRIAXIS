@@ -1,0 +1,67 @@
+{
+  "schema": "triaxis.avr_v34_m0_verifier_result/v0.1",
+  "version": "V34",
+  "freeze_sha256": "bab50edb68b5f49ebcc5701cfd080cf4d4c382b9a0cb35af5dee51aa1a22eca7",
+  "x1_freeze_sha256": "2891cc99fceb5875543c5aec4cd9b2c6d25336d7a9fcd664745dac7220c60ab3",
+  "editorial_opened": false,
+  "tasks": [
+    {
+      "task_id": "arc209_c",
+      "m0": "PASS_CORRECTNESS",
+      "official_sample": "PASS",
+      "independent_oracle": "exact DP over explicit (a,b) states; 1047 randomized query cases, N<=7, X<=5; 0 mismatches",
+      "proof_equivalent_recurrence": "candidate transition is exact maximization over previous retained side u partitioned by u*v<S_i versus u*v>=S_i using prefix/suffix maxima",
+      "performance_measurement": "N=1200,X=1200,Q=20, all full-range: 0.10s, RSS 3700KB",
+      "official_constraints": "N,X,Q<=1e5",
+      "complexity": "O(X * sum query lengths) time; O(X) memory",
+      "constraint_status": "FAIL",
+      "classification": "PERFORMANCE_QUARANTINE"
+    },
+    {
+      "task_id": "arc209_d",
+      "m0": "FAIL",
+      "official_sample": "PASS",
+      "m0_independent_oracle": "exhaustive all partial arrays for N<=4 (700 inputs) against enumeration of all unknown assignments",
+      "m0_frozen_counterexample": {
+        "input": "1\\n4\\n4 -1 -1 -1\\n",
+        "expected": "1 1 1 4",
+        "actual": "1 1 4 4"
+      },
+      "x1": "FAIL",
+      "x1_repaired_frozen_counterexample": true,
+      "x1_regression": {
+        "input": "1\\n2\\n-1 1\\n",
+        "expected": "1 1",
+        "actual": "1 2",
+        "m0_on_this_case": "PASS"
+      },
+      "second_x1_allowed": false,
+      "x1_performance_measurement": "N=500000 synthetic: 0.31s, RSS 30704KB",
+      "classification": "CLAIM_GRADE_PERSISTENT_FAIL",
+      "paired_task_harm": false,
+      "note": "X1 introduced a local regression, but the task was already an M0 failure; it is not counted as a paired pass-to-fail harm. It blocks rescue."
+    },
+    {
+      "task_id": "arc209_e",
+      "m0": "PASS_CORRECTNESS",
+      "official_sample": "PASS",
+      "independent_oracle": "enumerated every ternary string for each N=1..10; grouped by exact minimum deletions to eliminate ABC subsequences; 25 (N,d) buckets; 0 mismatches",
+      "proof_equivalent_invariant": "minimum deletions equals third-row size under reversed-alphabet RSK; count for shape lambda is f^lambda*s_lambda(1^3), summed over lambda_3=d",
+      "performance_measurement": "60 unique queries N=940001..940060,d=100: 0.41s, RSS 18032KB",
+      "official_constraints": "T<=2e5,N<=1e6,K>=N-100; no bound on sum N",
+      "complexity": "O(maxN + sum over unique queries of N) time in worst case; O(maxN) memory",
+      "constraint_status": "FAIL",
+      "classification": "PERFORMANCE_QUARANTINE"
+    }
+  ],
+  "v34_pre_editorial_delta": {
+    "claim_grade_tasks_added": 1,
+    "m0_pass_added": 0,
+    "final_pass_added": 0,
+    "rescues_added": 0,
+    "harms_added": 0,
+    "x1_local_regressions": 1,
+    "quarantined_added": 2,
+    "persistent_failures_added": 1
+  }
+}
