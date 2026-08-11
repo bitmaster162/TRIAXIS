@@ -1,0 +1,36 @@
+{
+  "schema": "triaxis.avr.v44.result/v0.1",
+  "batch": "V44",
+  "contest": "arc192",
+  "tasks": {
+    "E": {
+      "score": 800,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "B": {
+      "score": 600,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "C": {
+      "score": 600,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 3,
+    "final_passes": 3,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0
+  },
+  "scientific_interpretation": "V44 adds three fresh claim-grade strong-model ceiling passes. No frozen correctness failure occurred, so no X1 was activated and V44 adds no new causal-lift rescue evidence.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}
