@@ -1,0 +1,62 @@
+{
+  "schema": "triaxis.avr_v37_m0_verifier_result/v0.1",
+  "tasks": {
+    "arc204_b": {
+      "official_samples": {
+        "sample1": "PASS",
+        "sample2": "PASS",
+        "sample3": {
+          "status": "FAIL",
+          "expected": 7,
+          "actual": 11
+        }
+      },
+      "independent_exact": {
+        "cases_until_first_mismatch": 51,
+        "smallest_counterexample": {
+          "N": 2,
+          "K": 2,
+          "P_1based": [
+            2,
+            3,
+            4,
+            1
+          ],
+          "expected": 1,
+          "actual": 2
+        }
+      },
+      "complexity": "O(NK + per-cycle residue marking); constraint-safe",
+      "classification": "CLAIM_GRADE_M0_FAIL",
+      "failure_surface": "arbitrary spanning-tree assumption ignores recursive/noncrossing split constraint of minimal cycle sorting"
+    },
+    "arc204_c": {
+      "official_samples": "PASS_ALL",
+      "independent_exact": {
+        "cases": 390,
+        "mismatches": 0,
+        "N_max": 8
+      },
+      "complexity": "exact exhaustive label enumeration per query; exponential in N",
+      "classification": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED; scalable repair would require qualitatively new global query algorithm"
+    },
+    "arc204_d": {
+      "official_samples": {
+        "sample1": "PASS_VALID",
+        "sample2": "PASS_VALID",
+        "sample3": "TIMEOUT_GT_5S"
+      },
+      "independent_exact": {
+        "cases": 112,
+        "N_max": 8,
+        "verdict_mismatches": 0,
+        "invalid_yes_outputs": 0
+      },
+      "state_invariant": "current sequence remains sorted; only counts l/u of outside-target elements determine whether residue removes lower/upper outside target",
+      "complexity": "exact factorial/exponential order search",
+      "classification": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED; scalable construction/existence theorem would be a new algorithm"
+    }
+  }
+}
