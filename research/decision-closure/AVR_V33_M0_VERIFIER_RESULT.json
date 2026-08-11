@@ -1,0 +1,82 @@
+{
+  "schema": "triaxis.avr_v33_m0_verifier_result/v0.1",
+  "batch": "V33",
+  "contest": "arc210",
+  "editorial_opened_before_this_receipt": false,
+  "tasks": {
+    "arc210_d": {
+      "M0": "FAIL",
+      "claim_grade": true,
+      "official_sample": "PASS_3_OF_3",
+      "exact_exhaustive_graphs_N_le_5": {
+        "cases": 1098,
+        "mismatches": 0
+      },
+      "random_exact_minimax_N_6_to_9": {
+        "cases": 1000,
+        "mismatches": 3
+      },
+      "first_frozen_counterexample": {
+        "N": 6,
+        "edges_1_indexed": [
+          [1,3],
+          [1,5],
+          [3,5],
+          [3,6],
+          [4,5]
+        ],
+        "expected": "Alice",
+        "actual": "Bob"
+      },
+      "constraint_smoke": {
+        "N": 200000,
+        "M": 200000,
+        "elapsed_sec": 0.045
+      },
+      "X1": "NOT_ACTIVATED_NO_BOUNDED_CONSTRAINT_SAFE_GENERAL_CORRECTION_DERIVED"
+    },
+    "arc210_e": {
+      "M0": "PROVISIONAL_PASS",
+      "claim_grade": "PENDING_POSTFREEZE_AUDIT",
+      "official_samples": "PASS_4_OF_4",
+      "independent_exact_subset_sum_random": {
+        "cases": 300,
+        "N_max": 15,
+        "mismatches": 0
+      },
+      "max_N_smokes": [
+        {
+          "N": 5000,
+          "distribution": "uniform_1_to_1e13",
+          "elapsed_sec": 0.0083,
+          "output_lines": 35
+        },
+        {
+          "N": 5000,
+          "distribution": "geometric_like",
+          "elapsed_sec": 0.0163,
+          "output_lines": 102
+        }
+      ],
+      "complexity": "O(N*C log C), C bounded by multiplicative-gap component count; observed small"
+    },
+    "arc210_f": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "claim_grade": false,
+      "official_samples": "PASS_3_OF_3",
+      "independent_small_shortest_path_random": {
+        "cases": 300,
+        "mismatches": 0
+      },
+      "static_complexity": "O(N*Q) exact pair aggregation",
+      "timing_scaling_sec": {
+        "300x300": 0.0144,
+        "600x600": 0.0477,
+        "1200x1200": 0.1739,
+        "2000x2000": 0.5047
+      },
+      "constraint": "N,Q<=200000, time_limit=10s",
+      "X1": "NOT_ACTIVATED_REQUIRES_NEW_ASYMPTOTIC_AGGREGATION_NOT_BOUNDED_CORRECTION"
+    }
+  }
+}
