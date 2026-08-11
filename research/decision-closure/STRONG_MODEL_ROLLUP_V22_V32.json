@@ -1,0 +1,25 @@
+{
+  "M0_pass": "20/27",
+  "X1_pass": "23/27",
+  "claim_grade_external_tasks_total": 27,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "confirmatory": false,
+  "decision": "CONTINUE_V33_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; DO_NOT_WEAKEN_MODEL; KEEP_GLOBAL_STATE_AND_CONSTRAINT_GATES",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "methodological_delta": "V32 preserved the V31 safety separation: exact small-case correctness did not override asymptotic constraint failure; C/D remained quarantined despite matching official structural derivations.",
+  "paired_exact_two_sided_p": 0.25,
+  "partial_repairs_not_counted": 1,
+  "protocol_excluded_not_counted": 1,
+  "quarantined_tasks_not_counted": 5,
+  "schema": "triaxis.strong_model_external_rollup_v22_v32/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v32_delta": {
+    "M0_pass_added": 1,
+    "X1_pass_added": 1,
+    "claim_grade_tasks_added": 1,
+    "harms_added": 0,
+    "quarantined_added": 2,
+    "rescues_added": 0
+  }
+}
