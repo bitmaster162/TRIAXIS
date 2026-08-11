@@ -1,0 +1,50 @@
+{
+  "schema": "triaxis.avr_v37_x1_verifier_result/v0.1",
+  "task": "arc204_b",
+  "trigger": {
+    "status": "PASS",
+    "N": 2,
+    "K": 2,
+    "P_1based": [
+      2,
+      3,
+      4,
+      1
+    ],
+    "expected": 1,
+    "actual": 1
+  },
+  "official_samples": {
+    "sample1": 2,
+    "sample2": 0,
+    "sample3": 7,
+    "status": "PASS_ALL"
+  },
+  "independent_regression": {
+    "exact_minimal_swap_state_oracle": {
+      "cases": 3209,
+      "max_total_size": 6,
+      "mismatches": 0
+    },
+    "executable_random": {
+      "cases": 180,
+      "N_max": 6,
+      "K_max": 5,
+      "mismatches": 0
+    }
+  },
+  "proof_equivalent_invariant": {
+    "statement": "minimal swaps recursively split original cycles; scored equal-residue transpositions are exactly a monochromatic noncrossing forest. Any such forest can be extended to a noncrossing spanning tree and realized as a minimal factorization.",
+    "reduction": "maximum scored swaps on a cycle = cycle_length - minimum number of monochromatic blocks in a noncrossing partition",
+    "recurrence": "dp[l][r]=min(1+dp[l+1][r], dp[l+1][k-1]+dp[k][r] for k>l with same residue)"
+  },
+  "constraint_gate": {
+    "official_max": "N<=500,K<=10,NK<=5000,2 sec,1024 MiB",
+    "max_style_case": "N=500,K=10, one cycle of length 5000",
+    "local_time_seconds": 0.08,
+    "local_rss_kb": 52332,
+    "classification": "CONSTRAINT_SAFE_ON_MEASURED_MAX_STYLE_CASE"
+  },
+  "classification": "PROVISIONAL_CLAIM_GRADE_X1_RESCUE_POSTFREEZE_DOWNGRADE_ONLY",
+  "second_X1_used": false
+}
