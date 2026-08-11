@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v45.postfreeze_audit/v0.1",
+  "batch": "V45",
+  "contest": "arc190",
+  "scoring_freeze_commit": "40090dbeb8d5e086a9334b169c07b17b5be81cc3",
+  "official_editorials": {
+    "D": {
+      "url": "https://atcoder.jp/contests/arc190/editorial/11922",
+      "finding": "Official derives the same finite-field power-sum moment, the same all-zero-exponent and exactly-one-(p-1)-exponent term split, the same diagonal corrections, the p=3 non-diagonal reverse-edge term, and O(N^3 log p).",
+      "effect": "CORROBORATE"
+    },
+    "E": {
+      "url": "https://atcoder.jp/contests/arc190/editorial/11923",
+      "finding": "Official formulates maximum matching via Tutte-Berge, reduces to a constant-state DP, and answers ranges with max-plus matrix products/segment tree. Frozen greedy is both incorrect and asymptotically unsuitable.",
+      "effect": "CORROBORATE_QUARANTINE"
+    },
+    "B": {
+      "url": "https://atcoder.jp/contests/arc190/editorial/11920",
+      "finding": "Official bijects partitions with nested row/column interval chains and computes counts using binomial recurrences in O(N). Frozen exact-cover baseline has a compile defect and exponential architecture.",
+      "effect": "CORROBORATE_QUARANTINE"
+    }
+  },
+  "final_scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT",
+    "B": "PERFORMANCE_QUARANTINE_WITH_FROZEN_COMPILE_DEFECT"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}
