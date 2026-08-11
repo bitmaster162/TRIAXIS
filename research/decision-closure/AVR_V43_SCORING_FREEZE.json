@@ -1,0 +1,27 @@
+{
+  "schema": "triaxis.avr.v43.scoring_freeze/v0.1",
+  "batch": "V43",
+  "contest": "arc193",
+  "editorial_opened_before_freeze": false,
+  "scores": {
+    "B": "PERFORMANCE_QUARANTINE_BORDERLINE",
+    "C": "PERFORMANCE_QUARANTINE",
+    "D": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activated": 0,
+  "clean_rescues": 0,
+  "harms": 0,
+  "claim_grade_delta": 0,
+  "m0_pass_delta": 0,
+  "final_pass_provisional_delta": 0,
+  "quarantine_delta": 3,
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 45,
+    "m0_passes": 32,
+    "final_or_x1_passes": 37,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false
+  }
+}
