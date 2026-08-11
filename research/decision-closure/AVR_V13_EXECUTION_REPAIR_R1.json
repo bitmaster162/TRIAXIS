@@ -1,0 +1,22 @@
+{
+  "schema": "avr.v13.execution_repair/v0.1",
+  "status": "FROZEN_BEFORE_RESTART",
+  "parent_preregistration_sha256": "64acd98a01e127c4bfd29fdacb05a9b2b7d920b10cd1eef24409beb8204e045f",
+  "subset_freeze_sha256": "a7c147815851d3e6f081334fe313b0c85b367449887fc001a38d62c1f83f1dcc",
+  "runner_sha256": "f61a78273774de5fdb3bdb76e03be966939a244b19998e009fb3fc663b8ad333",
+  "observed_failure": "The external 30-second process cap killed two C0 cases before run_r2 returned, leaving calls=None and making preregistered per-case call parity unobservable.",
+  "allowed_change": "Wrap the preserved runner call_one function with a non-semantic append-only CALL_BEGIN audit counter in each isolated case process. The wrapper delegates immediately to the original call_one and does not alter arguments, return values, exception handling, retry policy, composition, fail seed, subset, or 30-second cap.",
+  "timeout_measurement": "For a killed process, tool_calls is the number of durable CALL_BEGIN audit records. For a normally completed process, audited call count must equal len(traces); mismatch invalidates the run.",
+  "restart_rule": "Discard the partial parent execution as confirmatory evidence and restart C0 and C1 from case 1 on the unchanged frozen 40-case subset.",
+  "parity_rule": "For every case, C0 and C1 audited tool-call counts must be identical, including timeout cases. Timeout status must also match; otherwise execution parity FAILS.",
+  "oracle_policy": "Remain closed until both repaired arms are fully frozen.",
+  "mechanism_change": false,
+  "selection_change": false,
+  "timeout_change": false,
+  "fail_seed_change": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY",
+  "auto_merge": false,
+  "merge_permission": "DENY"
+}
