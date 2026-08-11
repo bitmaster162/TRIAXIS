@@ -1,0 +1,26 @@
+{
+  "schema": "triaxis.strong_model_external_rollup_v22_v33/v0.1",
+  "claim_grade_external_tasks_total": 29,
+  "M0_pass": "21/29",
+  "X1_pass": "24/29",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks_not_counted": 6,
+  "protocol_excluded_not_counted": 1,
+  "paired_exact_two_sided_p": 0.25,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v33_delta": {
+    "claim_grade_tasks_added": 2,
+    "M0_pass_added": 1,
+    "X1_pass_added": 1,
+    "rescues_added": 0,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "claim_grade_fail_without_x1_added": 1
+  },
+  "methodological_delta": "V33 again enforced evidence/constraint gates: an incomplete D theorem remained a fail rather than receiving speculative X1, while E was promoted only after independent exact verification plus post-freeze official structural corroboration; F local correctness did not override O(NQ) constraint failure.",
+  "decision": "CONTINUE_V34_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; SEEK_FAILURES_WITH_BOUNDED_CORRECTABLE_SURFACE; DO_NOT_FORCE_X1; KEEP_GLOBAL_STATE_AND_CONSTRAINT_GATES"
+}
