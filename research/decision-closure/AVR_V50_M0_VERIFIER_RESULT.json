@@ -1,0 +1,91 @@
+{
+  "schema": "triaxis.avr.v50.m0_verifier/v0.1",
+  "batch": "V50",
+  "compile": {
+    "D": "PASS",
+    "E": "PASS",
+    "A": "PASS"
+  },
+  "official_samples": {
+    "D": {
+      "cases": 2,
+      "status": "PASS",
+      "outputs": [
+        "20",
+        "69292914"
+      ]
+    },
+    "E": {
+      "cases": 3,
+      "status": "PASS"
+    },
+    "A": {
+      "cases": 8,
+      "status": "PASS"
+    }
+  },
+  "independent_verification": {
+    "D": {
+      "oracle": "exact rational Markov-chain linear solve over full painted-depth/current-position state",
+      "cases": 9,
+      "domain": "all N,M in {1,2,3}",
+      "mismatches": 0,
+      "proof_gate": "tree is N equal length-M arms; center-state recurrence E_k=E_{k+1}+2*N*M^2/(N-k), terminal E_{N-1}=(2N-1)M^2; hence E_0=M^2(2N H_N-1)",
+      "constraint": {
+        "N": 200000,
+        "M": 200000,
+        "runs_seconds": [
+          "<0.01",
+          "<0.01",
+          "<0.01"
+        ],
+        "rss_kb_max": 6084,
+        "status": "PASS"
+      }
+    },
+    "E": {
+      "oracle": "full enumeration of every nonempty subsequence for random small arrays",
+      "cases": 120,
+      "domain": "N<=9, Ai<=20",
+      "mismatches": 0,
+      "proof_gate": "pair (i,j) is consecutive selected in exactly 2^(i-1)*2^(m-j) subsequences; gcd(x,y)=sum_{d|x,y} phi(d), yielding divisor accumulators and Ans_m=2 Ans_{m-1}+F_m",
+      "constraint": {
+        "N": 500000,
+        "pattern": "all Ai=83160 (high divisor count)",
+        "runs_seconds": [
+          0.32,
+          0.3,
+          0.31
+        ],
+        "rss_kb_max": 16572,
+        "status": "PASS"
+      }
+    },
+    "A": {
+      "oracle": "exact minimax over both remaining-card masks and current residue",
+      "cases": 69,
+      "domain": "N=1..6, M=N+1..15",
+      "mismatches": 0,
+      "proof_gate": "Alice can avoid the unique lethal card while >=2 cards remain. Before Alice's final move, loss iff Bob's remaining y equals N(N+1) mod M. If y in [1,N], Bob can reserve y: while >=2 non-y cards choose a safe one; when only {y,z} remain, z cannot be lethal because that would require Alice's last x congruent 0 mod M. Otherwise Alice's last move is always safe.",
+      "constraint": {
+        "T": 100000,
+        "runs_seconds": [
+          0.02,
+          0.01,
+          0.01
+        ],
+        "rss_kb_max": 4544,
+        "status": "PASS"
+      }
+    }
+  },
+  "x1": {
+    "activated": false,
+    "reason": "no frozen claim-grade correctness failure"
+  },
+  "provisional": {
+    "D": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "A": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  }
+}
