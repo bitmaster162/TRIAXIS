@@ -1,0 +1,48 @@
+{
+  "schema": "triaxis.avr_v34_arc_strong_model_result/v0.1",
+  "version": "V34",
+  "contest_id": "arc209",
+  "prereg_sha256": "a500f315004dc6f7e9b50f8001eb7eb9ffe486c1b72ad9d2add8d7b114100dcf",
+  "m0_freeze_sha256": "bab50edb68b5f49ebcc5701cfd080cf4d4c382b9a0cb35af5dee51aa1a22eca7",
+  "x1_freeze_sha256": "2891cc99fceb5875543c5aec4cd9b2c6d25336d7a9fcd664745dac7220c60ab3",
+  "verifier_result_sha256": "0b3c5ba5f60a47ca41da127201eabbe4f537d5886291af98eb64fd2db272c189",
+  "scoring_freeze_sha256": "b38a53fb0bd1203e5c1ed90cfa2f8c9e1f796d1075f080769ef6f1cc03e3d067",
+  "postfreeze_audit_sha256": "a4a981a64a6b56ed6066b850bd610d109a860fea3fd4588d9c0b3c39f8c50f1c",
+  "tasks": [
+    {
+      "task_id": "arc209_c",
+      "M0": "CORRECTNESS_PASS",
+      "X1": "NOT_ACTIVATED",
+      "final": "PERFORMANCE_QUARANTINE",
+      "claim_grade": false
+    },
+    {
+      "task_id": "arc209_d",
+      "M0": "FAIL",
+      "X1": "FAIL_WITH_REGRESSION",
+      "final": "PERSISTENT_FAIL",
+      "claim_grade": true,
+      "rescue": false
+    },
+    {
+      "task_id": "arc209_e",
+      "M0": "CORRECTNESS_PASS",
+      "X1": "NOT_ACTIVATED",
+      "final": "PERFORMANCE_QUARANTINE",
+      "claim_grade": false
+    }
+  ],
+  "v34_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 0,
+    "final_pass_added": 0,
+    "rescues_added": 0,
+    "harms_added": 0,
+    "x1_local_regressions": 1,
+    "quarantined_added": 2,
+    "persistent_failures_added": 1
+  },
+  "scientific_interpretation": "V34 adds no causal-lift evidence. It contributes one clean claim-grade persistent failure and two correctly quarantined exact-but-unscalable candidates. The single bounded X1 repaired its trigger but regressed another exact case, demonstrating that local counterexample repair does not imply generalization.",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_intelligence_claim": "UNSUPPORTED"
+}
