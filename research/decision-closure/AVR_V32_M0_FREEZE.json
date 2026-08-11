@@ -1,0 +1,28 @@
+{
+  "candidate_execution_before_freeze": false,
+  "editorial_or_gold_seen": false,
+  "governance": {
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false
+  },
+  "predecessor_prereg_commit": "2241e31fef1175817b1b48573292bfd37f8567fe",
+  "schema": "triaxis.avr_v32.m0_freeze/v0.1",
+  "sources": {
+    "arc213_b_m0.cpp": {
+      "declared_complexity": "O(log R + (R-L+1) if q=1)",
+      "sha256": "7baba69f950d34045a869dadb0d00f6af086ab8d59dab2ef6c858dbcce87a6a6"
+    },
+    "arc213_c_m0.cpp": {
+      "declared_complexity": "O(N^2 log N) worst-case across all k; exact but constraint-risk",
+      "sha256": "520f17d2efff2d8d3d2a425b5f161c3004cbce150ba57677f62f06f032ef8b48"
+    },
+    "arc213_d_m0.cpp": {
+      "declared_complexity": "O(N^2); exact formula but constraint-risk",
+      "sha256": "2fa8138585755f9c00011e324030731f69bac470b805f2a01304d820ad4c3be9"
+    }
+  },
+  "status": "FROZEN_BEFORE_ANY_SELECTED_CANDIDATE_EXECUTION",
+  "timestamp_local": "2026-08-12T00:02:43+07:00",
+  "vector_sha256": "efd0846fe773bc92e20f5f8154e03ad8813504c77d03e45f7fbac55c68470ec8"
+}
