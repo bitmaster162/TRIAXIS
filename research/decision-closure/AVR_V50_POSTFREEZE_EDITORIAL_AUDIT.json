@@ -1,0 +1,27 @@
+{
+  "schema": "triaxis.avr.v50.postfreeze_audit/v0.1",
+  "batch": "V50",
+  "opened_after_scoring_freeze": true,
+  "postfreeze_upgrade_performed": false,
+  "score_changed": false,
+  "tasks": {
+    "D": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "official_url": "https://atcoder.jp/contests/arc185/editorial/11155",
+      "audit": "CORROBORATED",
+      "note": "official derives coupon-collector round trips for M=1 and M^2 scaling for general M, giving the same O(N) result"
+    },
+    "E": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "official_url": "https://atcoder.jp/contests/arc185/editorial/11156",
+      "audit": "CORROBORATED_WITH_PARSED_INDEXING_NOTE",
+      "note": "official confirms R_i recurrence structure, Euler-totient gcd decomposition, divisor accumulators, and O(maxA log maxA + sum d(A_i)); parsed English text displays a one-power indexing offset, so exact frozen weighting remains independently fixed by official samples plus brute subsequence oracle"
+    },
+    "A": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "official_url": "https://atcoder.jp/contests/arc185/editorial/11152",
+      "audit": "CORROBORATED",
+      "note": "official gives exactly Bob iff 1 <= N(N+1) mod M <= N and the same last-card reservation proof"
+    }
+  }
+}
