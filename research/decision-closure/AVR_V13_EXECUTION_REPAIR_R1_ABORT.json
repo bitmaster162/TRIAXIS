@@ -1,0 +1,18 @@
+{
+  "schema": "toolbenchx.native.avr_v13.execution_repair_r1_abort/v0.1",
+  "status": "R1_ABORTED_BEFORE_ORACLE",
+  "reason": "INDEPENDENT_ARM_EXTERNAL_LATENCY_NONDETERMINISM",
+  "parent_repair_sha256": "af8239bba0e23386021d9d0920393d6f3340572091dd424a7f6a07c099f0c27e",
+  "progress": {"C0_repaired_completed_or_timed_out": 16, "C1_started": false},
+  "repeat_state_flips": [
+    {"case_id":"84c03d6f5e9d","initial":{"timeout":false,"complete":true,"calls":4},"repair_r1":{"timeout":true,"complete":false,"calls":2}},
+    {"case_id":"f910eeda7504","initial":{"timeout":true,"complete":false,"calls":null},"repair_r1":{"timeout":false,"complete":true,"calls":4}},
+    {"case_id":"9a62861648f1","initial":{"timeout":true,"complete":false,"calls":null},"repair_r1":{"timeout":false,"complete":true,"calls":4}},
+    {"case_id":"1fed2006f701","initial":{"timeout":false,"complete":true,"calls":4},"repair_r1":{"timeout":true,"complete":false,"calls":3}}
+  ],
+  "repeat_state_flip_count": 4,
+  "injection_schedule_observation": "Inspected exception modules use FAIL_SEED plus SHA-256/random.Random deterministic schedules; selected tool implementations also contain urllib calls with finite network timeouts. The observed repeat flips prevent treating independent per-arm wall-clock completion as a stable causal comparison in this runtime.",
+  "oracle_opened": false,
+  "hints_opened": false,
+  "adjudication": "Do not score R1. Amend execution pairing before oracle so the composition-only gate is evaluated on the exact same tool/recovery trace."
+}
