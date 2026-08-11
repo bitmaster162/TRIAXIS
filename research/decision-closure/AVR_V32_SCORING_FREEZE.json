@@ -1,0 +1,13 @@
+{
+  "frozen_classification": {
+    "arc213_b": "PROVISIONAL_CLAIM_GRADE_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+    "arc213_c": "PERFORMANCE_QUARANTINE",
+    "arc213_d": "PERFORMANCE_QUARANTINE"
+  },
+  "rule": "Post-freeze editorial may downgrade B if it supplies independent falsification or invalidates the structural invariant; it cannot upgrade C/D or manufacture a rescue.",
+  "schema": "triaxis.avr_v32.scoring_freeze/v0.1",
+  "status": "FROZEN_BEFORE_EDITORIAL_GOLD",
+  "timestamp_local": "2026-08-12T00:07:21+07:00",
+  "verifier_result_sha256": "02e112a430e1d9de5f5457f0e45b80f3da0528ed30be8f75bb6c796fa5ab7b32",
+  "x1_activations": 0
+}
