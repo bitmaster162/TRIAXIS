@@ -1,0 +1,19 @@
+{
+  "schema": "toolbenchx.native.avr_v13.r2_output_freeze_receipt/v0.1",
+  "output_freeze_r2_sha256": "cf035ec6e962825113bff6c803170f345032cdc192048d7425751e2f84bfe92d",
+  "oracle_opened": false,
+  "hints_opened": false,
+  "pre_oracle_summary": {
+    "n": 40,
+    "complete": 25,
+    "timeouts": 2,
+    "terminal_authority_activations": 23,
+    "composition_changed": 6,
+    "audit_trace_mismatches": 0,
+    "normal_completed_with_audit_match": 38,
+    "tool_calls_shared_total": 171
+  },
+  "changed_case_ids": ["fe05cde47598","1fed2006f701","f9916b8656bf","a0528554ed8b","669620506970","f040615b7079"],
+  "C0_answer_vector_sha256": "ca164e05bbe5b677cbe7728d9cef215cc9821d46d920444a194f0fe0c6e14695",
+  "C1_answer_vector_sha256": "31f5c3289f1b1805aeb9caa525787736b734dd9be07211e2747c1003e3ee76c1"
+}
