@@ -1,0 +1,19 @@
+{
+  "schema": "triaxis.avr_v34_x1_freeze/v0.1",
+  "version": "V34",
+  "task_id": "arc209_d",
+  "activation_reason": "frozen M0 exact-oracle mismatch",
+  "frozen_failure": {
+    "input": "1\\n4\\n4 -1 -1 -1\\n",
+    "expected": "1 1 1 4",
+    "m0_actual": "1 1 4 4",
+    "failure_class": "PREMATURE_NEW_ONE_TARGET_ON_LEX_TIE"
+  },
+  "feedback_used": "frozen failing input + expected/actual only; no editorial/gold",
+  "correction": "When an unassigned current position can obtain B_i=1 via an already one-valued target, reuse the existing target before consuming another unassigned variable as a new one-valued target.",
+  "source_path": "research/decision-closure/v34_arc209/arc209_d_x1.cpp",
+  "source_sha256": "2a5b90b2588a07549d17422d4de701d1a485d3eebaeb53ca9128308abcd3dc70",
+  "candidate_execution_before_x1_freeze": false,
+  "x1_attempt_number": 1,
+  "x1_max": 1
+}
