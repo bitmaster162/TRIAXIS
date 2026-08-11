@@ -1,0 +1,25 @@
+{
+  "M0_pass": "19/26",
+  "X1_pass": "22/26",
+  "claim_grade_external_tasks_total": 26,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "confirmatory": false,
+  "decision": "CONTINUE_V32_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; DO_NOT_WEAKEN_MODEL; STRENGTHEN_VERIFIER_FOR_GLOBAL_STATE",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "methodological_delta": "Post-freeze authoritative audit downgraded a provisional small-verifier X1 PASS on ARC214 F to final FAIL using the official counterexample; future global/persistent-state candidates require a stronger independent verifier gate before rescue promotion.",
+  "paired_exact_two_sided_p": 0.25,
+  "partial_repairs_not_counted": 1,
+  "protocol_excluded_not_counted": 1,
+  "quarantined_tasks_not_counted": 3,
+  "schema": "triaxis.strong_model_external_rollup_v22_v31/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v31_delta": {
+    "M0_pass_added": 2,
+    "X1_pass_added": 2,
+    "claim_grade_tasks_added": 3,
+    "harms_added": 0,
+    "persistent_x1_failures_added": 1,
+    "rescues_added": 0
+  }
+}
