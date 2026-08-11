@@ -1,0 +1,19 @@
+{
+  "causal_lift_evidence_added": false,
+  "final_scores": {
+    "arc202_b": "CLAIM_GRADE_M0_PASS",
+    "arc202_c": "CLAIM_GRADE_M0_PASS",
+    "arc202_d": "PERFORMANCE_QUARANTINE"
+  },
+  "interpretation": "V38 adds two fresh strong-model ceiling passes and one exact-but-unscalable quarantine; no frozen M0 correctness failure occurred, so no X1 and no causal-lift evidence.",
+  "schema": "triaxis.avr_v38_arc_strong_model_result/v0.1",
+  "v38_delta": {
+    "M0_pass_added": 2,
+    "X1_pass_added": 2,
+    "claim_grade_tasks_added": 2,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "rescues_added": 0
+  },
+  "version": "V38"
+}
