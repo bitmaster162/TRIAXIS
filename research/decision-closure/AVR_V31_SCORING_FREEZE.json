@@ -1,0 +1,22 @@
+{
+  "schema": "triaxis.avr_v31.scoring_freeze/v0.1",
+  "status": "FROZEN_BEFORE_EDITORIAL_AUDIT",
+  "timestamp_local": "2026-08-11T23:49:00+07:00",
+  "prereg_sha256": "bbce1a8f862c1c4235fd4151821a5761c70315fe2972d6ee4a0a4bc49768cfe2",
+  "m0_freeze_sha256": "ce2f98083774ec9e919e28204169cf937e94965557f27776d727b683e2b7d345",
+  "m0_verifier_sha256": "2eb8e4f9d295c23bf9bb1e3959297a39da04b3810ec5231a1010dd5b468aa1ce",
+  "x1_freeze_sha256": "a75c76936ae4f9579c05cbc79cbf0c796feec5471405cb080884663e00e4ee02",
+  "task_scores": {
+    "arc214_d": {"M0": "PASS", "X1": "NOT_ACTIVATED_CEILING", "claim_grade": "PENDING_POSTFREEZE_AUDIT"},
+    "arc214_e": {"M0": "PASS", "X1": "NOT_ACTIVATED_CEILING", "claim_grade": "PENDING_POSTFREEZE_AUDIT"},
+    "arc214_f": {"M0": "FAIL", "X1": "PASS", "claim_grade": "PENDING_POSTFREEZE_AUDIT"}
+  },
+  "verification": {
+    "arc214_d": {"official_sample": "PASS", "exact_all_N_2_13": true, "N13_paths": 2704156, "N13_unique_scores": 2704156, "N13_max_score": 2704155},
+    "arc214_e": {"official_sample": "PASS", "exact_small_cases": 47449, "mismatches": 0, "max_N_smoke": 300000, "max_elapsed_sec_approx": 0.14, "max_rss_kb_approx": 53324},
+    "arc214_f": {"official_sample_M0": "PASS", "representative_M0_failure_expected": 1, "representative_M0_failure_actual": 2, "X1_representative": "PASS", "X1_exact_corpus_3012_mismatches": 0, "X1_full_4x4_grids": 16384, "X1_full_4x4_mismatches": 0, "max_total_HW_smoke": 30000, "max_elapsed_sec_approx": 0.01, "max_rss_kb_approx": 3832}
+  },
+  "frozen_delta_if_postfreeze_claim_grade_holds": {"claim_grade_tasks": 3, "M0_pass": 2, "X1_pass": 3, "rescues": 1, "harms": 0, "quarantined": 0},
+  "editorial_or_gold_opened_before_this_freeze": false,
+  "governance": {"score_changes_after_editorial_forbidden": true, "MERGE_PERMISSION": "DENY", "PRODUCTION_CHANGE": false}
+}
