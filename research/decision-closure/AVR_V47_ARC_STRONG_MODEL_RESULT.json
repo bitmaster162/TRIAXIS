@@ -1,0 +1,47 @@
+{
+  "schema": "triaxis.avr.v47.result/v0.1",
+  "batch": "V47",
+  "contest": "ARC188",
+  "tasks": {
+    "D": "PERFORMANCE_QUARANTINE",
+    "E": "PERFORMANCE_QUARANTINE",
+    "C": "CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activations": 0,
+  "clean_rescues": 0,
+  "harms": 0,
+  "delta": {
+    "claim_grade_tasks": 1,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "quarantines": 2,
+    "protocol_exclusions": 0
+  },
+  "aggregate_after_v47": {
+    "claim_grade_external_tasks": 53,
+    "m0": "39/53",
+    "final": "44/53",
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions_not_paired_harms": 2,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}
