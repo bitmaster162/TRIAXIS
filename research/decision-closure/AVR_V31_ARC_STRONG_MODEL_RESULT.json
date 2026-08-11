@@ -1,0 +1,81 @@
+{
+  "aggregate_after_v31": {
+    "M0_pass": "19/26",
+    "X1_pass": "22/26",
+    "claim_grade_external_tasks_total": 26,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+    "confirmatory": false,
+    "decision": "CONTINUE_V32_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS_WITH_STRONGER_GLOBAL_STATE_VERIFIER_GATE",
+    "full_task_rescues": 3,
+    "harms": 0,
+    "paired_exact_two_sided_p": 0.25,
+    "partial_repairs_not_counted": 1,
+    "protocol_excluded_not_counted": 1,
+    "quarantined_tasks_not_counted": 3
+  },
+  "contest": "AtCoder Regular Contest 214",
+  "evidence_sha256": {
+    "m0_freeze": "ce2f98083774ec9e919e28204169cf937e94965557f27776d727b683e2b7d345",
+    "m0_verifier": "2eb8e4f9d295c23bf9bb1e3959297a39da04b3810ec5231a1010dd5b468aa1ce",
+    "postfreeze_audit": "311f4e6392963449bf9ff12e569f09438d038c72187f6fcdc0802608fb36c747",
+    "prereg": "bbce1a8f862c1c4235fd4151821a5761c70315fe2972d6ee4a0a4bc49768cfe2",
+    "scoring_freeze": "3bd20b6f885c263b0e0947400cb8c1f4ee298ca2b26c65256191ae29f5a6b19b",
+    "x1_freeze": "a75c76936ae4f9579c05cbc79cbf0c796feec5471405cb080884663e00e4ee02"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "DEVIL_DEFAULT": "OFF",
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "schema": "triaxis.avr_v31.arc_strong_model_result/v0.1",
+  "scientific_interpretation": [
+    "V31 adds no causal-lift evidence: two ceiling passes and one failure that remains a failure after the single allowed correction.",
+    "The pre-editorial small-grid verifier was strong enough to falsify F M0 but not strong enough to validate F X1 globally.",
+    "Post-freeze authoritative audit prevented a false rescue from entering the aggregate.",
+    "Broad TRIAXIS intelligence/decision-accuracy improvement claim remains unsupported."
+  ],
+  "status": "COMPLETE_NEGATIVE_NULL_BATCH",
+  "tasks": {
+    "arc214_d": {
+      "M0": "PASS",
+      "X1": "NOT_ACTIVATED_CEILING",
+      "claim_grade_task": true,
+      "final": "PASS",
+      "score": 700
+    },
+    "arc214_e": {
+      "M0": "PASS",
+      "X1": "NOT_ACTIVATED_CEILING",
+      "claim_grade_task": true,
+      "final": "PASS",
+      "score": 700
+    },
+    "arc214_f": {
+      "M0": "FAIL",
+      "X1": "FAIL",
+      "claim_grade_task": true,
+      "final": "FAIL_AFTER_ONE_BOUNDED_CORRECTION",
+      "m0_counterexample_source": "independent pre-editorial exact subset oracle",
+      "score": 900,
+      "x1_counterexample_source": "official post-freeze editorial",
+      "x1_official_counterexample_actual": 3,
+      "x1_official_counterexample_expected": 2
+    }
+  },
+  "timestamp_local": "2026-08-11T23:46:00+07:00",
+  "v31_delta": {
+    "M0_pass": 2,
+    "X1_pass": 2,
+    "claim_grade_tasks": 3,
+    "full_task_rescues": 0,
+    "harms": 0,
+    "persistent_failures_after_x1": 1,
+    "quarantined": 0
+  }
+}
