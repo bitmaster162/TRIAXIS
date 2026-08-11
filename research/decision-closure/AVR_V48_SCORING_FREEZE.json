@@ -1,0 +1,42 @@
+{
+  "schema": "triaxis.avr.v48.scoring_freeze/v0.1",
+  "batch": "V48",
+  "editorial_opened_before_freeze": false,
+  "gold_opened_before_freeze": false,
+  "tasks": {
+    "E": {
+      "frozen_score": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+      "x1_activated": false
+    },
+    "D": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "x1_activated": false
+    },
+    "C": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "x1_activated": false
+    }
+  },
+  "v48_delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_exclusions": 0,
+    "x1_activations": 0
+  },
+  "provisional_aggregate": {
+    "claim_grade_external_tasks": 56,
+    "m0_passes": 41,
+    "final_passes": 46,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY"
+  }
+}
