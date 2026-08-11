@@ -1,0 +1,19 @@
+{
+  "schema": "triaxis.avr.v42.x1_freeze/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "task": "D",
+  "m0_verifier_commit": "3de1a04d01cbc491e55e545ad8993c51740a6b2d",
+  "frozen_feedback": {
+    "input": "8\n(()())()\n",
+    "expected": "2",
+    "actual": "3"
+  },
+  "correction_scope": "same rooted-forest mechanism; replace depth-profile equivalence by unordered rooted-subtree type invariant and count ordered representations",
+  "source_path": "research/decision-closure/v42_arc194/arc194_d_x1.cpp",
+  "source_sha256": "e6203d86fd82af650d38ba19b03a266e397a81fc6314e0d7a7d99572e65a7b24",
+  "x1_compile_before_freeze": false,
+  "x1_execution_before_freeze": false,
+  "editorial_or_gold_used": false,
+  "second_x1_allowed": false
+}
