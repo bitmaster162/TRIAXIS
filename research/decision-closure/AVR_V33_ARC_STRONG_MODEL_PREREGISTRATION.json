@@ -1,0 +1,76 @@
+{
+  "schema": "triaxis.avr_v33_arc_strong_model_preregistration/v0.1",
+  "batch": "V33",
+  "date_local": "2026-08-12",
+  "model": "GPT-5.6 Sol",
+  "repository": "bitmaster162/TRIAXIS",
+  "branch": "research/decision-closure-ebd-v0.3",
+  "git_baseline": {
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_head_sha": "6f33c9b59f8b055f7ed585c6f6ec4d793e4f9df1",
+    "ahead": 130,
+    "behind": 0
+  },
+  "contest": {
+    "id": "arc210",
+    "name": "AtCoder Regular Contest 210",
+    "completed": true,
+    "contest_end": "2025-11-16T23:00:00+09:00",
+    "metadata_sources": [
+      "https://atcoder.jp/contests/arc210",
+      "https://atcoder.jp/contests/arc210/tasks"
+    ]
+  },
+  "selected_tasks": [
+    {
+      "id": "arc210_d",
+      "letter": "D",
+      "name": "Independent Set Game",
+      "score": 800,
+      "time_limit_sec": 2
+    },
+    {
+      "id": "arc210_e",
+      "letter": "E",
+      "name": "Subset Sum Gaps",
+      "score": 1000,
+      "time_limit_sec": 2
+    },
+    {
+      "id": "arc210_f",
+      "letter": "F",
+      "name": "± ab",
+      "score": 1100,
+      "time_limit_sec": 10
+    }
+  ],
+  "selection_rule": "fresh completed hard ARC; select contiguous high-score D/E/F from metadata only; unused in V21-V32",
+  "statement_opened_before_prereg": false,
+  "editorial_or_accepted_solution_opened_before_scoring": false,
+  "arms": {
+    "M0": "one-shot GPT-5.6 Sol implementation from official statement only",
+    "X1": "at most one bounded correction after frozen independent counterexample"
+  },
+  "gates": [
+    "all M0 source hashes freeze before any candidate execution",
+    "independent verifier after M0 freeze",
+    "official samples + exact/random reduced oracle when feasible",
+    "constraint/performance safety required for claim-grade pass",
+    "global/persistent latent-state compression requires proof-equivalent invariant or scalable/reference oracle before rescue promotion",
+    "one X1 correction maximum",
+    "performance/unsound cases quarantine rather than forced rescue",
+    "editorial/gold only after scoring freeze",
+    "post-freeze authoritative audit may downgrade but never create rescue retroactively"
+  ],
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}
