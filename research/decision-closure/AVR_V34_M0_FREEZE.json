@@ -1,0 +1,35 @@
+{
+  "schema": "triaxis.avr_v34_m0_freeze/v0.1",
+  "version": "V34",
+  "prereg_sha256": "a500f315004dc6f7e9b50f8001eb7eb9ffe486c1b72ad9d2add8d7b114100dcf",
+  "prereg_commit": "b4b6c54b2be72f6712692a5547fe1ea69471a226",
+  "candidate_execution_before_freeze": false,
+  "editorial_opened_before_scoring_freeze": false,
+  "tasks": [
+    {
+      "task_id": "arc209_c",
+      "statement_url": "https://atcoder.jp/contests/arc209/tasks/arc209_c",
+      "source_path": "research/decision-closure/v34_arc209/arc209_c_m0.cpp",
+      "source_sha256": "6cb36d9f3cd04f22323098e067e99ea0fbd3d1b2fb93bdf3333d00f1e08ee587"
+    },
+    {
+      "task_id": "arc209_d",
+      "statement_url": "https://atcoder.jp/contests/arc209/tasks/arc209_d",
+      "source_path": "research/decision-closure/v34_arc209/arc209_d_m0.cpp",
+      "source_sha256": "33547165a69fbbf5ee1743e8219597b6932dafe24bdc0fae1454800f01ddb1c3"
+    },
+    {
+      "task_id": "arc209_e",
+      "statement_url": "https://atcoder.jp/contests/arc209/tasks/arc209_e",
+      "statement_retrieval": "official tasks_print due direct endpoint HTTP 429",
+      "source_path": "research/decision-closure/v34_arc209/arc209_e_m0.cpp",
+      "source_sha256": "71674af108534feab1afacc7db01c1ed2dd4431746c3f757cb86583079f29856"
+    }
+  ],
+  "model": "GPT-5.6 Sol",
+  "notes": [
+    "C is an exact per-query max-plus DP over the retained side length with O(X) transition per position; correctness and constraints scored separately.",
+    "D is a one-pass lexicographic lazy-assignment construction; all unknown assignments become immutable when first committed.",
+    "E uses the RSK/Young-shape identity that deletion distance to avoiding strict A<B<C equals the third row length under reversed-alphabet row insertion, summed by f^lambda*s_lambda(1^3); scalability scored separately."
+  ]
+}
