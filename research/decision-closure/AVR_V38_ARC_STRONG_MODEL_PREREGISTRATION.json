@@ -1,0 +1,64 @@
+{
+  "contest": {
+    "contest_id": "arc202",
+    "ended": "2025-07-20T23:30:00+09:00",
+    "platform": "AtCoder",
+    "selection_basis": "official contest Top page metadata/point-value table only; Tasks/statements/editorials not opened before prereg freeze",
+    "title": "AtCoder Regular Contest 202 (Div. 1)"
+  },
+  "git_baseline": {
+    "ahead": 189,
+    "behind": 0,
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "pr": 7,
+    "repository": "bitmaster162/TRIAXIS",
+    "research_branch": "research/decision-closure-ebd-v0.3",
+    "research_head_before_v38": "dc9704b6730210e11a2efc20e031125d46a0f6a4"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "DEVIL_DEFAULT": "OFF",
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "protocol": {
+    "M0": "one-shot implementation from official statement only",
+    "X1_feedback": "smallest frozen failing input + expected/actual only; no editorial/gold",
+    "X1_max_per_task": 1,
+    "X1_only_for_actual_frozen_M0_failure": true,
+    "constraint_gate": "small-case correctness cannot override official-constraint asymptotic or memory unsafety",
+    "do_not_force_X1": true,
+    "freeze_X1_source_before_execution": true,
+    "freeze_all_M0_source_hashes_before_execution": true,
+    "global_state_gate": "bounded-small exhaustive alone is insufficient for compressed persistent/global latent state; require proof-equivalent invariant or scalable/reference oracle",
+    "independent_executable_verifier_after_M0_freeze": true,
+    "model": "GPT-5.6 Sol",
+    "postfreeze_editorial_audit": "downgrade/corroborate only; cannot manufacture rescue",
+    "scoring_freeze_before_editorial": true,
+    "x1_rescue_requires_trigger_repair_plus_independent_regression": true
+  },
+  "schema": "triaxis.avr_v38_arc_strong_model_preregistration/v0.1",
+  "selected_tasks": [
+    {
+      "letter": "B",
+      "score": 800,
+      "task_id": "arc202_b"
+    },
+    {
+      "letter": "C",
+      "score": 900,
+      "task_id": "arc202_c"
+    },
+    {
+      "letter": "D",
+      "score": 1000,
+      "task_id": "arc202_d"
+    }
+  ],
+  "version": "V38"
+}
