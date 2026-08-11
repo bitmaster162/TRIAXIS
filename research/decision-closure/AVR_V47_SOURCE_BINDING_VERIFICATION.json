@@ -1,0 +1,21 @@
+{
+  "schema": "triaxis.avr.v47.source_binding/v0.1",
+  "batch": "V47",
+  "verified_before_first_compile_or_execution": true,
+  "status": "PASS",
+  "sources": {
+    "D": {
+      "frozen_sha256": "524c38fa81805df9a90f23aaaaf43de1a0b0b119f6eb1d1627bc61ad7787e0b3",
+      "github_content_match": true
+    },
+    "E": {
+      "frozen_sha256": "cb777220289da6bbb239b45714ccf5738a3acc0bd690f46c601982f1590e5a86",
+      "github_content_match": true
+    },
+    "C": {
+      "frozen_sha256": "924ee553b1b9cec16c62478e5c0fdc4d0177e183e9a41f2d2787214c46ae5f46",
+      "github_content_match": true
+    }
+  },
+  "note": "GitHub fetch_file content was compared byte-for-byte to the frozen local UTF-8 source strings; no repair required."
+}
