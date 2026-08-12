@@ -1,0 +1,55 @@
+{
+  "schema": "triaxis.r5a.f5_repo_wave.receipt/v0.1",
+  "date_local": "2026-08-12",
+  "status": "COMPLETE_INCREMENTAL_DEFECT_DISCOVERY",
+  "research_report_commit": "b8f7a85e723382c5798fd77840c77055f0c28277",
+  "experiments": {
+    "synthetic_wrapper_composition": {
+      "status": "CONTAMINATED_BY_PREEXPOSURE_NON_CLAIM_GRADE",
+      "use": "mechanism_sanity_check_only"
+    },
+    "real_ci_r33_killswitch": {
+      "run_id": 31561738850,
+      "head_sha": "690ff69ca76ebeed8145dec5a9d70ea9f5541962",
+      "result": "NO_DONOR_LIFT",
+      "new_fingerprint": "F5_SCHEMA_ABI"
+    },
+    "real_ci_reconcile_chain_integrity_r6": {
+      "run_id": 31544903853,
+      "head_sha": "da4098f9300f1d674a67b720e7362f8379e9c7bb",
+      "result": "B2_INCREMENTAL_DEFECT_DISCOVERY",
+      "fingerprint": "F5_CANONICAL_STATE_VALIDATION_GAP",
+      "B0_local_ci_repair": 1,
+      "B1_increment_over_B0": 0,
+      "B2_incremental_defect_discoveries_over_B1": 1,
+      "B2_verified_product_repair_rescues": 0,
+      "B2_harms": 0
+    }
+  },
+  "evidence": {
+    "historical_gold_local_repair": "CONFIRMED_POST_FREEZE",
+    "B2_extra_finding": "CURRENT_SOURCE_STATICALLY_PROVEN",
+    "current_master_state_blob_sha": "da9d8c635a62d582045a2808476bde5d0fdf0be7",
+    "target_repo_modified": false
+  },
+  "epistemic": {
+    "D_REPO_BEHAVIOR": "SUPPORTED_ON_ONE_CLEAN_REPLAY_FOR_INCREMENTAL_DEFECT_DISCOVERY",
+    "D_LONG_HORIZON": "NOT_YET_SEPARATELY_DEMONSTRATED",
+    "B2_verified_product_repair_lift": "NOT_YET_DEMONSTRATED",
+    "full_triaxis_incremental_lift": "UNRESOLVED",
+    "distinct_triaxis_causal_lift": "UNRESOLVED",
+    "devil_default": "OFF"
+  },
+  "next_gate": "fresh clean replay with isolated actual-repo patch and actual regression execution",
+  "claim_boundary": "historical replay plus current-source static validation; same model/session; non-independent and non-confirmatory",
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}
