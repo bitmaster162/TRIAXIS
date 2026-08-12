@@ -11,6 +11,7 @@ static int sz(Node* t){ return t?t->sz:0; }
 static void pull(Node* t){ if(t) t->sz=1+sz(t->l)+sz(t->r); }
 
 static void split(Node* t,int k,Node*&a,Node*&b){
+    // first k nodes go to a
     if(!t){ a=b=nullptr; return; }
     if(sz(t->l)>=k){
         split(t->l,k,a,t->l);
@@ -68,7 +69,7 @@ int main(){
         }else{
             Node *x,*y,*z;
             split(root,B-1,x,y);
-            split(y,1,y,z);
+            split(y,1,y,z); // delete rank B
             root=merge(x,z);
             root=merge(new Node(0,rng32()),root);
             root=merge(root,new Node(oldLast+1,rng32()));
