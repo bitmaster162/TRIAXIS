@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.avr.v54.scoring_freeze/v0.1",
+  "batch": "V54",
+  "scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE",
+    "F": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activations": 0,
+  "postfreeze_policy": "official editorial/gold may corroborate or downgrade only; no upgrade of frozen failures/quarantines",
+  "delta": {
+    "claim_grade_tasks": 1,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 2,
+    "protocol_exclusions": 0
+  },
+  "aggregate": {
+    "claim_grade_external_tasks": 70,
+    "m0_passes": 52,
+    "final_passes": 57,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 28,
+    "protocol_excluded": 5,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED",
+    "rescues_needed_for_p_le_0_05_if_harms_zero": 1
+  }
+}
