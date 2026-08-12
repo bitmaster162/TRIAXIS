@@ -41,6 +41,7 @@ def rate(key,ss=None):
     return sum(bool(x[key]) for x in ss)/len(ss) if ss else None
 ans=[x for x in scores if x["answerable"]]
 un=[x for x in scores if not x["answerable"]]
+# Pair integrity: both the original answerable case and its corresponding UMWP mutation are correct.
 correct_by_umwp={x["umwp_id"]:x["final_correct"] for x in scores}
 pairs=[]
 for x in un:
