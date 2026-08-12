@@ -80,6 +80,7 @@ def run_arm(key,model,arm,batch_size,timeout,outdir):
         (raw/f"{arm}_batch_{i//batch_size+1:02d}.txt").write_text(text,encoding="utf-8")
         got=parse_jsonl(text)
         wanted={x["case_id"] for x in batch}
+        # Reject duplicate IDs and rows outside the frozen batch.
         ids=[x.get("case_id") for x in got]
         if len(ids)!=len(set(ids)): raise RuntimeError(f"{arm}: duplicate case_id in batch {i//batch_size+1}")
         got=[x for x in got if x.get("case_id") in wanted]
