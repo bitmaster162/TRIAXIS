@@ -19,7 +19,10 @@ struct AssignMinSeg{
         build(p<<1,l,m,a); build(p<<1|1,m+1,r,a);
         baseMn[p]=min(baseMn[p<<1],baseMn[p<<1|1]);
     }
-    void apply(int p,int64 c){ tag[p]=c; mn[p]=baseMn[p]+c; }
+    void apply(int p,int64 c){
+        tag[p]=c;
+        mn[p]=baseMn[p]+c;
+    }
     void push(int p){
         if(tag[p]!=INF){
             apply(p<<1,tag[p]); apply(p<<1|1,tag[p]);
@@ -91,7 +94,9 @@ static vector<int64> solveRight(const vector<int64>&a, vector<Req> reqs, int out
             int l=(g==0?1:g);
             seg.assignRange(l,r-1,a[r]);
         }
-        for(auto [aa,id]:byR[r]) out[id]=seg.query(aa,r-1);
+        for(auto [aa,id]:byR[r]){
+            out[id]=seg.query(aa,r-1);
+        }
     }
     return out;
 }
