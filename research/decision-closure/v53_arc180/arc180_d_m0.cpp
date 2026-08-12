@@ -6,7 +6,7 @@ static const int64 INF = (1LL<<60);
 struct AssignMinSeg{
     int n;
     vector<int64> mn, baseMn, tag;
-    AssignMinSeg(const vector<int64>&a){
+    AssignMinSeg(const vector<int64>&a){ // 1-indexed
         n=(int)a.size()-1;
         mn.assign(4*n+4,INF);
         baseMn.assign(4*n+4,INF);
@@ -49,7 +49,7 @@ struct AssignMinSeg{
 
 struct MaxSeg{
     int n;
-    vector<pair<int64,int>> st;
+    vector<pair<int64,int>> st; // max value, negative index to prefer leftmost
     MaxSeg(const vector<int64>&a){
         n=(int)a.size()-1; st.assign(4*n+4,{-1,0});
         build(1,1,n,a);
