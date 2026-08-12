@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.strong_model_rollup/v52",
+  "range": "V22-V52",
+  "claim_grade_external_tasks": 67,
+  "m0_passes": 50,
+  "final_passes": 55,
+  "clean_full_task_rescues": 5,
+  "paired_harms": 0,
+  "x1_local_regressions_not_paired_harms": 3,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks": 25,
+  "protocol_excluded": 4,
+  "paired_exact_two_sided_p": 0.0625,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED",
+  "v52": {
+    "contest": "ARC182",
+    "F": "PASS",
+    "E": "PERFORMANCE_QUARANTINE",
+    "D": "PASS",
+    "x1": 0,
+    "protocol_exclusion": "ARC183"
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}
