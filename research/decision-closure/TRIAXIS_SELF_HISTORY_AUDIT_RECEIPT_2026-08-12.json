@@ -1,0 +1,75 @@
+{
+  "schema": "triaxis.self_history_audit/v0.1",
+  "date": "2026-08-12",
+  "mode": "RETROSPECTIVE_SELF_AUDIT",
+  "independence": "AUTHOR_CONTAMINATED_NOT_CONFIRMATORY",
+  "predecessor": {
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_head": "e84eb9b141454c5b9b378eefc2d25971a5a4f945",
+    "ahead": 395,
+    "behind": 0,
+    "pr": 7,
+    "pr_state": "OPEN_DRAFT_UNMERGED"
+  },
+  "audit_file": "research/decision-closure/TRIAXIS_SELF_HISTORY_AUDIT_2026-08-12.md",
+  "audit_commit": "49548577b06fe8e35be5a7e3594366edaad296c5",
+  "history_provenance": {
+    "canonical_origin": "2026-07-18 SELF_REALITY_DEVIL_ANGEL_SYNTHESIS",
+    "prehistory_context": "March 2026 P1/P3/P4 operational-domain material; not asserted as canonical TRIAXIS lineage",
+    "verified_git_range": "v2.3-v2.10",
+    "unavailable_git_gap": "v2.11-v2.33",
+    "recovered_runtime_line": "v2.34-v3.32"
+  },
+  "epoch_adjudications": {
+    "original_persona_core": "REVISE_AS_DEFAULT",
+    "v2_3_to_v2_10_boundary_hardening": "PASS_WITH_CONDITIONS",
+    "v2_34_to_v3_32_big_runtime_stack": "REVISE_AS_COGNITIVE_CORE__HOLD_ORTHOGONAL_ENGINEERING",
+    "v3_0_external_verifier_turn": "PASS_WITH_CONDITIONS",
+    "decision_closure_dual_state_ebrc": "SEMANTIC_PASS__CAUSAL_LIFT_UNRESOLVED",
+    "core_search_k0_k6": "HONEST_NULL_PASS",
+    "external_executable_verification": "PASS_WITH_NARROW_CLAIM",
+    "toolbenchx_avr_mutation_line": "PASS_WITH_CONDITIONS__SUPPORTS_MINIMIZATION",
+    "conditional_devil": "PASS_DEFAULT_OFF",
+    "strong_model_v22_v55": "POSITIVE_NOT_CONFIRMATORY",
+    "weak_model_historical_evolution": "UNRESOLVED_REQUIRED_DISCRIMINATOR"
+  },
+  "strongest_surviving_model": "state/scope binding -> evidence/origin -> semantic applicability -> selective capability acquisition -> instrument validation -> evidence-complete commit -> reopen/stop",
+  "strongest_surviving_countermodel": "A simpler Proposer + external verifier + deterministic gate may explain essentially all useful measured effect; TRIAXIS may not add distinct integrated reasoning lift.",
+  "dual_state": {
+    "epistemic_state": "UNRESOLVED",
+    "closure_class": "PROVISIONAL_CLOSED",
+    "action": "retain minimal EBRC/AVR evidence-controller core; exclude mandatory persona debate and big runtime stack from cognitive core; do not promote broad efficacy claims",
+    "reopen_trigger": "matched external weak-model/mechanism-hidden evolution replay shows reproducible incremental TRIAXIS lift over simpler equal-budget baselines, or new prospective evidence falsifies the minimal-core interpretation",
+    "next_discriminator": "Direct vs Self-Critique vs Proposer+Verifier vs EBRC vs WMX on an actually weak external model with hidden mechanism and independent scoring"
+  },
+  "current_claims": {
+    "distinct_triaxis_causal_lift": "UNRESOLVED",
+    "mechanism_level_binding_verifier_value": "SUPPORTED_ON_MULTIPLE_NARROW_SURFACES",
+    "broad_intelligence_or_decision_accuracy": "UNSUPPORTED",
+    "big_stack_product_direction": "REJECTED",
+    "minimal_ebrc_avr_research_direction": "PROVISIONALLY_RETAINED"
+  },
+  "process_risks": [
+    "metric_fork",
+    "selection_enrichment",
+    "reconstructed_baseline",
+    "same_model_contamination",
+    "benchmark_concentration",
+    "missing_external_weak_model_history_replay",
+    "sunk_cost_relapse"
+  ],
+  "terminal_status": "PASS_WITH_CONDITIONS",
+  "new_claim_grade_external_tasks": 0,
+  "strong_model_rollup_changed": false,
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}
