@@ -1,0 +1,51 @@
+{
+  "schema": "triaxis.avr.v51.scoring_freeze/v0.1",
+  "batch": "V51",
+  "editorial_or_gold_opened": false,
+  "task_scores": {
+    "D": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+    "E": "CLAIM_GRADE_M0_PASS",
+    "C": "CLAIM_GRADE_X1_FAILED_WITH_REGRESSION"
+  },
+  "x1": {
+    "C": {
+      "activated": true,
+      "trigger_repaired": true,
+      "rescue": false,
+      "official_regression": true
+    },
+    "D": {
+      "activated": false
+    },
+    "E": {
+      "activated": false
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 1,
+    "quarantines": 0,
+    "protocol_exclusions": 0
+  },
+  "aggregate": {
+    "claim_grade_external_tasks": 65,
+    "m0_passes": 48,
+    "final_passes": 53,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions_not_counted_as_paired_harms": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED",
+    "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1
+  },
+  "postfreeze_policy": "official audit may corroborate or downgrade; it cannot upgrade a frozen failure or failed rescue"
+}
