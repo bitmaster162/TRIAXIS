@@ -4,9 +4,15 @@ using int64 = long long;
 using i128 = __int128_t;
 
 static long long floor_div(long long a, long long b){
+    // b>0
     long long q=a/b, r=a%b;
     if(r<0){ --q; r+=b; }
     return q;
+}
+
+static long long absll128_to_ll(i128 x){
+    if(x<0) x=-x;
+    return (long long)x;
 }
 
 int main(){
@@ -33,6 +39,7 @@ int main(){
         if(da<0) da+=M;
         long long db=(B[i]-B[i-1])%M;
         if(db<0) db+=M;
+        // Inputs are good, so da,db are in [1,M-1].
         X[i]=X[i-1]+da;
         Y[i]=Y[i-1]+db;
     }
@@ -63,10 +70,14 @@ int main(){
         best=min(best,cost);
     }
 
-    if(best==0){ cout<<0<<'\n'; return 0; }
-    string s;
-    while(best){ s.push_back(char('0'+best%10)); best/=10; }
-    reverse(s.begin(),s.end());
-    cout<<s<<'\n';
+    auto print128=[&](i128 v){
+        if(v==0){ cout<<0; return; }
+        string s;
+        while(v){ s.push_back(char('0'+v%10)); v/=10; }
+        reverse(s.begin(),s.end());
+        cout<<s;
+    };
+    print128(best);
+    cout<<'\n';
     return 0;
 }
