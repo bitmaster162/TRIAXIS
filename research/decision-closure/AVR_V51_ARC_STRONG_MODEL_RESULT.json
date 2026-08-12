@@ -1,0 +1,48 @@
+{
+  "schema": "triaxis.avr.v51.result/v0.1",
+  "batch": "V51",
+  "contest": "ARC184",
+  "tasks": {
+    "D": {
+      "m0": "FAIL",
+      "x1": "NOT_ACTIVATED",
+      "final": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1"
+    },
+    "E": {
+      "m0": "PASS",
+      "x1": "NOT_ACTIVATED",
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "C": {
+      "m0": "FAIL",
+      "x1": "ACTIVATED_FAILED_WITH_REGRESSION",
+      "final": "CLAIM_GRADE_X1_FAILED_WITH_REGRESSION"
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 1,
+    "quarantines": 0,
+    "protocol_exclusions": 0
+  },
+  "aggregate_after": {
+    "claim_grade_external_tasks": 65,
+    "m0": "48/65",
+    "final": "53/65",
+    "clean_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions_not_paired_harms": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  }
+}
