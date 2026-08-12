@@ -1,0 +1,21 @@
+{
+  "schema": "triaxis.avr.v51.m0_freeze/v0.1",
+  "batch": "V51",
+  "candidate_execution_before_freeze": false,
+  "compile_before_freeze": false,
+  "editorial_or_gold_opened": false,
+  "sources": {
+    "D": {
+      "path": "research/decision-closure/v51_arc184/arc184_d_m0.cpp",
+      "sha256": "e7935d1b14e5ddfd5cd59befea5fcc0c45c1eb76aae6ac2a3eca83b37a3224bc"
+    },
+    "E": {
+      "path": "research/decision-closure/v51_arc184/arc184_e_m0.cpp",
+      "sha256": "28f8b57b5c5488219dfcc17f05fc4162614dba90ac59d3f4ef7174ef182fc75f"
+    },
+    "C": {
+      "path": "research/decision-closure/v51_arc184/arc184_c_m0.cpp",
+      "sha256": "f42ef5e56c949e74da092de619d57677f1ed30676b7a9773772d89291287c1a9"
+    }
+  }
+}
