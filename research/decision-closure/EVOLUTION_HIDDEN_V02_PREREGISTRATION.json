@@ -1,0 +1,76 @@
+{
+  "schema": "triaxis.evolution_hidden_v02.preregistration/v1",
+  "date": "2026-08-12",
+  "status": "FROZEN_BEFORE_EXTERNAL_MODEL_EXPOSURE",
+  "objective": "Test whether distilled TRIAXIS/EBRC mechanisms add decision-quality lift beyond simpler matched-call/output-budget baselines on an actually weak external model without teaching the target abstention mechanism in the shared contract.",
+  "predecessor_experiment": {
+    "package": "TRIAXIS_EVOLUTION_UMWP20_WEAK_RUNNER_v0_1.zip",
+    "sha256": "4b2d65828cf6783deaa76975dcab70919e2f1057cfb26075e8428941e2356f13",
+    "adjudication": "NARROW_TO_CONFORMANCE_DIAGNOSTIC",
+    "reason": "H00 and the shared v0.1 contract explicitly instructed the model not to invent missing information/quantities, creating CONTRACT_TEACHES_MECHANISM risk for the main answerability discriminator."
+  },
+  "frozen_external_subject": "same 20 UMWP cases and same private oracle as v0.1",
+  "model": "meta-llama/llama-3.2-3b-instruct:free",
+  "model_rail": "OpenRouter free route only; do not substitute paid model or Hugging Face Job",
+  "temperature": 0,
+  "batch_size": 5,
+  "max_tokens": 1800,
+  "screen_arms": [
+    "H00_DIRECT",
+    "H01_SELF_CRITIQUE",
+    "H09_MVT_PROPOSER_VERIFIER",
+    "H13_EBRC_DUAL_STATE",
+    "H14_WMX_EBRC"
+  ],
+  "shared_contract": {
+    "output": "JSONL only",
+    "fields": ["case_id", "answer", "reason"],
+    "answer_type": "JSON number or null",
+    "mechanism_hidden": true,
+    "forbidden_shared_instructions": [
+      "do not invent missing information",
+      "do not invent missing quantities",
+      "abstain on missing information",
+      "answerability labels",
+      "epistemic RESOLVED/UNRESOLVED labels"
+    ]
+  },
+  "primary_metrics": [
+    "overall_final_accuracy",
+    "answerable_accuracy",
+    "unanswerable_null_accuracy",
+    "pair_integrity_rate",
+    "overanswer_rate_on_unanswerable"
+  ],
+  "interpretation": {
+    "screen_only": true,
+    "confirmatory_claim_allowed": false,
+    "expand_condition": "At least one non-H00 arm produces a concrete task-level rescue pattern not offset by harms and not attributable to parsing/schema differences.",
+    "collapse_condition": "If H00 matches the richer arms on all 20 cases, or simpler H09 matches H13/H14 with lower or equal protocol complexity, do not credit integrated TRIAXIS lift from this benchmark."
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  },
+  "budget_matching": {
+    "external_calls_per_arm": 4,
+    "cases_per_arm": 20,
+    "batch_size": 5,
+    "temperature": 0,
+    "max_output_tokens_per_call": 1800,
+    "exact_total_compute_equalized": false,
+    "reason": "Protocol prompts differ in input length; v0.2 matches call count and output ceiling and reports provider token usage. This is a screening comparison, not a confirmatory equal-compute estimate."
+  },
+  "residual_design_risks": [
+    "The shared schema permits answer=null, so the model can infer that a non-numeric outcome is representationally possible. The contract does not state when to use null or mention missing information/answerability; therefore this is mechanism-hidden, not latent-task-unaware.",
+    "UMWP20 exposes no external tool/verifier. H14 therefore tests compact-state/commitment orchestration only, not the full WMX externalized-verifier capability.",
+    "Different arm prompts have different input-token lengths; provider token usage must be reported and no confirmatory equal-compute claim is allowed."
+  ]
+}
