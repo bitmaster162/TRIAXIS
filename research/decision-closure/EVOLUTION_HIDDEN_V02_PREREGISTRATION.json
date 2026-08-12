@@ -24,7 +24,11 @@
   ],
   "shared_contract": {
     "output": "JSONL only",
-    "fields": ["case_id", "answer", "reason"],
+    "fields": [
+      "case_id",
+      "answer",
+      "reason"
+    ],
     "answer_type": "JSON number or null",
     "mechanism_hidden": true,
     "forbidden_shared_instructions": [
