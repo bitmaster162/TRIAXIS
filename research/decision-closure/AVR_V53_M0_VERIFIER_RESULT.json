@@ -1,0 +1,97 @@
+{
+  "schema": "triaxis.avr.v53.m0_verifier/v0.1",
+  "batch": "V53",
+  "execution_after_source_binding": true,
+  "official_samples": {
+    "F": {
+      "samples_1_to_5": "PASS",
+      "sample_6": {
+        "input": "10000 12345",
+        "expected": "32201773",
+        "bounded_run_seconds": 5.0,
+        "result": "TIMEOUT"
+      }
+    },
+    "E": {
+      "sample_1": "PASS",
+      "sample_2": "PASS",
+      "sample_3": "PASS",
+      "sample_4": {
+        "expected": "0 0 0 1 2 3 4 5 7 8 9",
+        "actual": "0 0 0 0 1 3 4 5 7 8 9",
+        "result": "FAIL"
+      }
+    },
+    "D": {
+      "sample_1": "PASS",
+      "sample_2": "PASS"
+    }
+  },
+  "independent_verification": {
+    "F": {
+      "oracle": "independent exact rational expansion over all factor target choices; ordered-simplex monomial integral evaluated as Fraction, then reduced mod 1e9+7",
+      "cases": 42,
+      "range": "N=1..7, A=1..6",
+      "mismatches": 0,
+      "constraint_gate": {
+        "official_N_max": 10000,
+        "time_limit_sec": 2,
+        "official_sample6_bounded_timeout_sec": 5,
+        "frozen_declared_complexity": "O(N^3 + N^2 log MOD)",
+        "classification": "PERFORMANCE_QUARANTINE"
+      }
+    },
+    "E": {
+      "oracle": "complete permutation enumeration; exact LIS and per-position previous-greater counts; minimize cost for every k",
+      "valid_A_vectors_checked": 873,
+      "range": "all valid A vectors for N=1..6",
+      "mismatches": 422,
+      "first_independent_trigger": {
+        "N": 4,
+        "A": [0, 0, 2, 1],
+        "expected": [0, 0, 1, 2],
+        "actual": [0, 0, 0, 2]
+      },
+      "theorem_diagnostic": {
+        "claimed_dp_recurrence_also_fails_first_trigger": true,
+        "not_only_treap_compression_bug": true,
+        "x1_activated": false,
+        "x1_reason": "failure is distributed across small exact state space and invalidates the frozen DP characterization; bounded local correction is not justified"
+      },
+      "constraint_gate": {
+        "N": 250000,
+        "time_sec": 0.03,
+        "rss_kb": 17004,
+        "architecture": "O(N log N)",
+        "scoreable": true
+      },
+      "classification": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1"
+    },
+    "D": {
+      "oracle": "direct enumeration of both cut positions for every tested query interval",
+      "cases": 4874,
+      "random_arrays": 200,
+      "N_range": "3..12",
+      "mismatches": 0,
+      "constraint_gate": {
+        "N": 250000,
+        "Q": 250000,
+        "time_sec": 0.32,
+        "rss_kb": 80572
+      },
+      "proof_gate": [
+        "global maximum belongs to exactly one of three parts",
+        "middle-part case reduces to endpoint singleton minima A_l+A_r",
+        "right/left cases reduce to min_j A_j + suffix/prefix maximum",
+        "monotone-stack previous-greater boundary defines exact range whose suffix maximum changes on sweep"
+      ],
+      "classification": "CLAIM_GRADE_M0_PASS"
+    }
+  },
+  "x1_activations": 0,
+  "pre_editorial_classification": {
+    "F": "PERFORMANCE_QUARANTINE",
+    "E": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+    "D": "CLAIM_GRADE_M0_PASS"
+  }
+}
