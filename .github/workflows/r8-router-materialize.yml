@@ -1,4 +1,4 @@
-name: R8 LLMRouterBench Materialization
+name: R8 LLMRouterBench Offline Router Probe
 
 on:
   push:
@@ -11,21 +11,24 @@ permissions:
   contents: read
 
 jobs:
-  materialize:
+  offline-router:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - name: Freeze receipt
+      - name: Frozen protocol
         shell: bash
         run: |
           set -euo pipefail
-          echo 'TRIAXIS_R8_REMOTE_RAIL=1'
+          echo 'EVIDENCE_CLASS=EXPLORATORY_OFFLINE_HELDOUT'
           echo 'LLMROUTERBENCH_CODE_COMMIT=c77cb0506949d8f959e97967d2fefca0e8ff1b05'
           echo 'ARCHIVE_SHA256=b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1'
+          echo 'POOL=OFFICIAL_20_SMALL_MODELS'
+          echo 'SPLIT=SHA256_QUERY_70_30'
+          echo 'ARMS=BEST_SINGLE,DATASET_ROUTER,FINGERPRINT_F0,INSTANCE_ORACLE'
           echo 'NO_MODEL_API=1'
           echo 'NO_SECRETS=1'
 
-      - name: Download and verify public result archive
+      - name: Download verify extract
         shell: bash
         run: |
           set -euo pipefail
@@ -33,98 +36,208 @@ jobs:
           curl --fail --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 420 \
             --output bench-release.tar.gz "$URL"
           echo 'b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1  bench-release.tar.gz' | sha256sum -c -
-          ls -lh bench-release.tar.gz
-
-      - name: Extract and inventory
-        shell: bash
-        run: |
-          set -euo pipefail
           mkdir extracted
           tar -xzf bench-release.tar.gz -C extracted
-          python3 - <<'PY'
-          import json, os, pathlib, collections
-          root=pathlib.Path('extracted')
-          files=[p for p in root.rglob('*') if p.is_file()]
-          ext=collections.Counter(p.suffix.lower() or '<none>' for p in files)
-          top=collections.Counter((p.relative_to(root).parts[0] if p.relative_to(root).parts else '.') for p in files)
-          samples=[]
-          for p in files:
-              if len(samples)>=40:
-                  break
-              if p.suffix.lower() not in {'.json','.jsonl','.csv','.parquet','.txt'}:
-                  continue
-              rec={'path':str(p.relative_to(root)),'size':p.stat().st_size,'suffix':p.suffix.lower()}
-              try:
-                  if p.suffix.lower()=='.json':
-                      obj=json.loads(p.read_text(encoding='utf-8',errors='replace'))
-                      rec['json_type']=type(obj).__name__
-                      if isinstance(obj,dict): rec['keys']=sorted(map(str,obj.keys()))[:80]
-                      elif isinstance(obj,list) and obj and isinstance(obj[0],dict): rec['first_keys']=sorted(map(str,obj[0].keys()))[:80]
-                  elif p.suffix.lower()=='.jsonl':
-                      line=p.open(encoding='utf-8',errors='replace').readline()
-                      obj=json.loads(line) if line.strip() else None
-                      rec['first_type']=type(obj).__name__
-                      if isinstance(obj,dict): rec['first_keys']=sorted(map(str,obj.keys()))[:80]
-                  elif p.suffix.lower()=='.csv':
-                      header=p.open(encoding='utf-8',errors='replace').readline().strip()
-                      rec['header']=header[:1000]
-              except Exception as e:
-                  rec['inspect_error']=type(e).__name__
-              samples.append(rec)
-          report={
-            'schema':'triaxis.r8.router_archive_inventory/v1',
-            'file_count':len(files),
-            'total_bytes':sum(p.stat().st_size for p in files),
-            'extensions':dict(ext),
-            'top_level':dict(top),
-            'samples':samples,
-          }
-          pathlib.Path('R8_ROUTER_ARCHIVE_INVENTORY.json').write_text(json.dumps(report,indent=2,sort_keys=True),encoding='utf-8')
-          print('===R8_ROUTER_ARCHIVE_INVENTORY_BEGIN===')
-          print(json.dumps(report,indent=2,sort_keys=True))
-          print('===R8_ROUTER_ARCHIVE_INVENTORY_END===')
-          PY
 
-      - name: Schema census
+      - name: Offline heldout router comparison
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, pathlib, collections
-          root=pathlib.Path('extracted')
-          keysets=collections.Counter()
-          parsed=0
-          errors=0
-          examples={}
-          for p in root.rglob('*'):
-              if not p.is_file() or p.suffix.lower() not in {'.json','.jsonl'}:
-                  continue
+          import json, pathlib, hashlib, math, random, statistics, collections, re
+
+          ROOT=pathlib.Path('extracted/bench-release')
+          POOL=[
+            'DeepHermes-3-Llama-3-8B-Preview',
+            'DeepSeek-R1-0528-Qwen3-8B',
+            'DeepSeek-R1-Distill-Qwen-7B',
+            'Fin-R1','GLM-Z1-9B-0414','Intern-S1-mini',
+            'Llama-3.1-8B-Instruct','Llama-3.1-8B-UltraMedical',
+            'Llama-3.1-Nemotron-Nano-8B-v1','MiMo-7B-RL-0530',
+            'MiniCPM4.1-8B','NVIDIA-Nemotron-Nano-9B-v2','OpenThinker3-7B',
+            'Qwen2.5-Coder-7B-Instruct','Qwen3-8B','cogito-v1-preview-llama-8B',
+            'gemma-2-9b-it','glm-4-9b-chat','granite-3.3-8b-instruct','internlm3-8b-instruct'
+          ]
+          norm=lambda s: str(s).strip().lower()
+          pool_by_norm={norm(x):x for x in POOL}
+
+          def stable(x):
+              try: return json.dumps(x,sort_keys=True,ensure_ascii=False,separators=(',',':'))
+              except Exception: return repr(x)
+
+          def record_id(r, idx):
+              for k in ('id','task_id','problem_id','question_id','sample_id','data_id','index','idx'):
+                  if k in r and r[k] is not None:
+                      return f'{k}:{stable(r[k])}'
+              for k in ('origin_query','prompt','question','input','messages'):
+                  if k in r and r[k] is not None:
+                      return f'{k}:{hashlib.sha256(stable(r[k]).encode()).hexdigest()}'
+              return f'index:{idx}'
+
+          def score_of(r):
+              for k in ('score','reward','accuracy','correct','pass','success'):
+                  if k in r:
+                      v=r[k]
+                      if isinstance(v,bool): return float(v)
+                      if isinstance(v,(int,float)) and math.isfinite(float(v)): return float(v)
+                      if isinstance(v,dict):
+                          for kk in ('score','reward','accuracy','value'):
+                              vv=v.get(kk)
+                              if isinstance(vv,bool): return float(vv)
+                              if isinstance(vv,(int,float)) and math.isfinite(float(vv)): return float(vv)
+              return None
+
+          def text_of(r):
+              for k in ('origin_query','prompt','question','input','messages'):
+                  if k in r and r[k] is not None:
+                      return stable(r[k])
+              return ''
+
+          # dataset -> rid -> {scores:{model:score}, text:str}
+          table=collections.defaultdict(dict)
+          file_meta=[]
+          record_keysets=collections.Counter()
+          for p in ROOT.rglob('*.json'):
               try:
-                  objs=[]
-                  if p.suffix.lower()=='.json':
-                      x=json.loads(p.read_text(encoding='utf-8',errors='replace'))
-                      if isinstance(x,dict): objs=[x]
-                      elif isinstance(x,list): objs=[o for o in x[:10] if isinstance(o,dict)]
-                  else:
-                      with p.open(encoding='utf-8',errors='replace') as f:
-                          for i,line in enumerate(f):
-                              if i>=10: break
-                              if line.strip():
-                                  o=json.loads(line)
-                                  if isinstance(o,dict): objs.append(o)
-                  for o in objs:
-                      ks=tuple(sorted(map(str,o.keys())))
-                      keysets[ks]+=1
-                      examples.setdefault(ks,str(p.relative_to(root)))
-                      parsed+=1
+                  obj=json.loads(p.read_text(encoding='utf-8',errors='replace'))
               except Exception:
-                  errors+=1
-          rows=[]
-          for ks,n in keysets.most_common(30):
-              rows.append({'count':n,'keys':list(ks),'example':examples[ks]})
-          out={'schema':'triaxis.r8.router_schema_census/v1','parsed_objects_sampled':parsed,'parse_errors':errors,'top_keysets':rows}
-          pathlib.Path('R8_ROUTER_SCHEMA_CENSUS.json').write_text(json.dumps(out,indent=2,sort_keys=True),encoding='utf-8')
-          print('===R8_ROUTER_SCHEMA_CENSUS_BEGIN===')
+                  continue
+              if not isinstance(obj,dict): continue
+              model_raw=obj.get('model_name')
+              if norm(model_raw) not in pool_by_norm: continue
+              model=pool_by_norm[norm(model_raw)]
+              if str(obj.get('split','')).lower()!='test': continue
+              ds=str(obj.get('dataset_name') or p.parts[-4]).strip().lower()
+              records=obj.get('records')
+              if not isinstance(records,list): continue
+              file_meta.append((ds,model,len(records),str(p.relative_to(ROOT))))
+              for idx,r in enumerate(records):
+                  if not isinstance(r,dict): continue
+                  record_keysets[tuple(sorted(map(str,r.keys())))] += 1
+                  s=score_of(r)
+                  if s is None: continue
+                  rid=record_id(r,idx)
+                  row=table[ds].setdefault(rid,{'scores':{},'text':text_of(r)})
+                  row['scores'][model]=s
+                  if not row['text']:
+                      row['text']=text_of(r)
+
+          # Require exact 20-model support per query for matched comparisons.
+          matched={}
+          coverage={}
+          for ds,rows in table.items():
+              alln=len(rows)
+              good={rid:r for rid,r in rows.items() if all(m in r['scores'] for m in POOL)}
+              coverage[ds]={'observed_rows':alln,'matched_20_model_rows':len(good)}
+              if good: matched[ds]=good
+
+          def is_train(ds,rid):
+              h=int(hashlib.sha256((ds+'\0'+rid).encode()).hexdigest()[:16],16)
+              return (h % 10) < 7
+
+          train=[]; test=[]
+          for ds,rows in matched.items():
+              for rid,row in rows.items():
+                  (train if is_train(ds,rid) else test).append((ds,rid,row))
+
+          def macro_model_score(rows, model):
+              per=collections.defaultdict(list)
+              for ds,rid,row in rows: per[ds].append(row['scores'][model])
+              vals=[sum(v)/len(v) for v in per.values() if v]
+              return sum(vals)/len(vals) if vals else float('nan')
+
+          global_train={m:macro_model_score(train,m) for m in POOL}
+          best_single=max(POOL,key=lambda m:(global_train[m],m))
+
+          ds_choice={}
+          for ds in matched:
+              rr=[x for x in train if x[0]==ds]
+              if rr:
+                  ds_choice[ds]=max(POOL,key=lambda m:(sum(x[2]['scores'][m] for x in rr)/len(rr),m))
+
+          def fingerprint(text):
+              n=len(text)
+              if n < 200: lb='S'
+              elif n < 800: lb='M'
+              elif n < 2400: lb='L'
+              else: lb='XL'
+              low=text.lower()
+              code=bool(re.search(r'```|\bdef\b|\bclass\b|\bfunction\b|stdin|stdout|input format|output format',low))
+              mc=(' a)' in low or ' a.' in low or '(a)' in low) and (' b)' in low or ' b.' in low or '(b)' in low)
+              symbolic=bool(re.search(r'\\frac|\\sqrt|\$|\^|\bprove\b|\bcalculate\b|\bequation\b',low))
+              return (lb,int(code),int(mc),int(symbolic))
+
+          bucket_scores=collections.defaultdict(lambda:collections.defaultdict(list))
+          bucket_n=collections.Counter()
+          for ds,rid,row in train:
+              f=fingerprint(row['text'])
+              bucket_n[(ds,f)] += 1
+              for m in POOL: bucket_scores[(ds,f)][m].append(row['scores'][m])
+          fp_choice={}
+          for key,by_model in bucket_scores.items():
+              if bucket_n[key] < 12: continue
+              fp_choice[key]=max(POOL,key=lambda m:(sum(by_model[m])/len(by_model[m]),m))
+
+          def choose_dataset(ds,row): return ds_choice.get(ds,best_single)
+          def choose_fp(ds,row): return fp_choice.get((ds,fingerprint(row['text'])),ds_choice.get(ds,best_single))
+
+          def eval_router(rows, chooser):
+              per=collections.defaultdict(list); flat=[]; recall=[]
+              for ds,rid,row in rows:
+                  m=chooser(ds,row)
+                  s=row['scores'][m]
+                  per[ds].append(s); flat.append(s)
+                  mx=max(row['scores'].values())
+                  recall.append(1.0 if s>=mx-1e-12 else 0.0)
+              macro=sum(sum(v)/len(v) for v in per.values())/len(per) if per else float('nan')
+              weighted=sum(flat)/len(flat) if flat else float('nan')
+              return {'macro':macro,'weighted':weighted,'model_recall':sum(recall)/len(recall) if recall else float('nan'),'per_dataset':{d:sum(v)/len(v) for d,v in sorted(per.items())}}
+
+          best_eval=eval_router(test,lambda ds,row:best_single)
+          ds_eval=eval_router(test,choose_dataset)
+          fp_eval=eval_router(test,choose_fp)
+          oracle_eval=eval_router(test,lambda ds,row:max(POOL,key=lambda m:(row['scores'][m],m)))
+
+          paired=[]
+          for ds,rid,row in test:
+              paired.append(row['scores'][choose_fp(ds,row)]-row['scores'][choose_dataset(ds,row)])
+          obs=sum(paired)/len(paired) if paired else float('nan')
+          rng=random.Random(20260813)
+          boots=[]
+          if paired:
+              for _ in range(3000):
+                  boots.append(sum(paired[rng.randrange(len(paired))] for __ in range(len(paired)))/len(paired))
+              boots.sort()
+              lo=boots[int(.025*len(boots))]; hi=boots[int(.975*len(boots))-1]
+          else: lo=hi=float('nan')
+
+          verdict='CANDIDATE_LIFT' if obs>0 and lo>0 else 'COLLAPSE_SIGNAL_NO_VERIFIED_INCREMENT_OVER_DATASET_ROUTER'
+          out={
+            'schema':'triaxis.r8.llmrouterbench_offline_probe/v1',
+            'evidence_class':'EXPLORATORY_OFFLINE_HELDOUT',
+            'pool':POOL,
+            'datasets':sorted(matched),
+            'coverage':coverage,
+            'train_rows':len(train),'test_rows':len(test),
+            'best_single_model':best_single,
+            'best_single':best_eval,
+            'dataset_router':ds_eval,
+            'fingerprint_F0':fp_eval,
+            'instance_oracle':oracle_eval,
+            'fp_minus_dataset_weighted':obs,
+            'fp_minus_dataset_bootstrap95':[lo,hi],
+            'fingerprint_bucket_count':len(fp_choice),
+            'verdict':verdict,
+            'record_keysets_top':[{'count':n,'keys':list(k)} for k,n in record_keysets.most_common(5)],
+            'claim_boundary':[
+              'This is an exploratory offline held-out probe over pre-collected LLMRouterBench outcomes.',
+              'It is not a reproduction of an official LLMRouterBench router leaderboard entry.',
+              'The F0 fingerprint uses only frozen query-text surface features plus dataset identity.',
+              'No live model was called and no test outcome was used to choose a route.'
+            ]
+          }
+          pathlib.Path('R8_LLMROUTERBENCH_OFFLINE_PROBE.json').write_text(json.dumps(out,indent=2,sort_keys=True),encoding='utf-8')
+          print('===R8_OFFLINE_ROUTER_RESULT_BEGIN===')
           print(json.dumps(out,indent=2,sort_keys=True))
-          print('===R8_ROUTER_SCHEMA_CENSUS_END===')
+          print('===R8_OFFLINE_ROUTER_RESULT_END===')
           PY
