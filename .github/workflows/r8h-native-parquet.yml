@@ -1,4 +1,4 @@
-name: R8-H Native Code Smoke Parquet
+name: R8-H Native Code Smoke Parquet v2
 
 on:
   push:
@@ -28,9 +28,12 @@ jobs:
       - name: Prepare
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check --quiet 'duckdb==1.4.1' 'numpy==2.2.6' 'tqdm==4.67.1'
+          python -m pip install --disable-pip-version-check --quiet \
+            'duckdb==1.4.1' 'datasets==2.21.0' 'huggingface-hub==0.33.4' \
+            'numpy==2.2.6' 'pandas==2.2.3' 'tqdm==4.67.1'
           git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
           git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
       - name: Verify
         env:
           LCB_REPO: ./LiveCodeBench
