@@ -1,0 +1,58 @@
+{
+  "schema": "triaxis.r5c.receipt/v0.1",
+  "date_local": "2026-08-13",
+  "status": "COMPLETE_HARD_NEGATIVE_DONOR_COMBO_INSUFFICIENT",
+  "research_report_commit": "3d349d82769aa4c9f09c6261f6fa402eee2711d8",
+  "source_proxy": {
+    "repo": "bitmaster162/continuityos",
+    "failed_run_id": 31531821208,
+    "failed_head": "90b33960e4ebc7c5ecdc38a06c1504611ec90281",
+    "gold_head": "4812e740dcbdf2d76de6d873e1aa9f6d1fcb2252",
+    "gold_workflow_run_id": 31532374873,
+    "gold_workflow_conclusion": "success"
+  },
+  "gold_chain": [
+    "d6a20b7b76abe0c3f42eece0e63883393788dc2b",
+    "9ff91805441c2c0be0255d29ef351aea17add5cf",
+    "4812e740dcbdf2d76de6d873e1aa9f6d1fcb2252"
+  ],
+  "adjudication": {
+    "FRONTIER_GAP_CLOSED": "NO",
+    "B0": "REPAIR_MISMATCH",
+    "B1": "REPAIR_MISMATCH",
+    "B2": "REPAIR_MISMATCH",
+    "B3": "REPAIR_MISMATCH",
+    "B3_INCREMENTAL_LIFT": 0,
+    "POTENTIAL_COMPATIBILITY_HARM": "YES_NOT_APPLIED",
+    "D_REPO_BEHAVIOR_PLUS_D_LONG_HORIZON_V1": "INSUFFICIENT_ON_THIS_PROXY",
+    "D_LONG_HORIZON_V2": "HYPOTHESIS_NOT_VERIFIED",
+    "DISTINCT_TRIAXIS_CAUSAL_LIFT": "UNRESOLVED",
+    "DEVIL_DEFAULT": "OFF"
+  },
+  "capability_memory_delta": [
+    "F5_COMPATIBILITY_SYMBOL_WITHOUT_EFFECT_AUTHORITY",
+    "F5_ROUTING_POLICY_BEFORE_LEGACY_DISPATCH"
+  ],
+  "package": {
+    "filename": "TRIAXIS_R5C_FRONTIER_TARGET_CHASE_20260813.zip",
+    "sha256": "5a89005af96a98a555542dfdb29281bf5f2779a6f60f0cbb967fed9ca137f859",
+    "local_receipt_sha256": "dfe6b7a88826788dec6f9223d7949ab20f7c0bee04c052f0cac8d2c714cf2a5b",
+    "report_sha256": "844490a5b09e31eeaf19f6e697ba91691e4dcc3ec803f845d09aa8912e813ab2"
+  },
+  "external_models": {
+    "claude_called": false,
+    "gemini_called": false,
+    "mechanism_emulation_only": true
+  },
+  "claim_boundary": "Historical same-session repo-scale proxy replay; non-independent and non-confirmatory; not a SWE-Bench-Pro reproduction.",
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}
