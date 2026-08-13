@@ -1,48 +1,85 @@
+import hashlib
 import json
 import os
 import pathlib
 import sys
-import urllib.parse
 import urllib.request
-
-import duckdb
 
 SELECTED = ("abc391_d", "abc338_b", "abc357_b")
 TIMEOUT = 6
-DATASET = "livecodebench/code_generation_lite"
-CONFIG = "release_v6"
-SPLIT = "test"
+HF_DATASET_HEAD = "0fe84c3912ea0c4d4a78037083943e8f0c4dd505"
+HF_BASE = f"https://huggingface.co/datasets/livecodebench/code_generation_lite/resolve/{HF_DATASET_HEAD}"
+SHARDS = [
+    ("test6.jsonl", "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5", 134303240),
+    ("test5.jsonl", "7f77571c2a6df0c2a72a3277650309f67e01e0008e18117e624633df53f81214", 557699297),
+    ("test4.jsonl", "d711138ddaebfcf5f8ec6a4283ee677298c0f5c5d374a235af92aaf0584510da", 1204644685),
+    ("test3.jsonl", "28ed26cc83363ce3f1fe2d5fad9f8393077beb1907b167a31bd3b32f80801b79", 623360766),
+    ("test2.jsonl", "095df7c5daf15f882c51a9deb84085cff1e073495a5dbcf95015a564d485f3a3", 713377060),
+    ("test.jsonl", "2bd02b38beb48e8c46b5b9987095d999ff38cd8efc255ea5d58974317c48f63f", 1252609773),
+]
 
 
-def sql_string(value: str) -> str:
-    return "'" + value.replace("'", "''") + "'"
+def sha256_file(path: pathlib.Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
-def fetch_selected_rows():
-    manifest_url = "https://datasets-server.huggingface.co/parquet?" + urllib.parse.urlencode({"dataset": DATASET})
-    req = urllib.request.Request(manifest_url, headers={"User-Agent": "TRIAXIS-R8H/1.0"})
-    with urllib.request.urlopen(req, timeout=60) as response:
-        payload = json.load(response)
-    urls = [
-        item["url"] for item in payload.get("parquet_files", [])
-        if item.get("config") == CONFIG and item.get("split") == SPLIT and item.get("url")
-    ]
-    if not urls:
-        raise RuntimeError("NO_RELEASE_V6_PARQUET_URLS")
+def retrieve_selected_rows():
+    remaining = set(SELECTED)
+    found = {}
+    audit = []
+    temp = pathlib.Path("r8h_lfs_temp")
+    temp.mkdir(exist_ok=True)
 
-    con = duckdb.connect(database=":memory:")
-    con.execute("INSTALL httpfs")
-    con.execute("LOAD httpfs")
-    url_list = "[" + ",".join(sql_string(url) for url in urls) + "]"
-    id_list = ",".join(sql_string(qid) for qid in SELECTED)
-    query = f"SELECT * FROM read_parquet({url_list}, union_by_name=true) WHERE question_id IN ({id_list})"
-    cursor = con.execute(query)
-    columns = [desc[0] for desc in cursor.description]
-    rows = [dict(zip(columns, values)) for values in cursor.fetchall()]
-    by_id = {str(row.get("question_id")): row for row in rows}
-    if set(by_id) != set(SELECTED):
-        raise RuntimeError(f"PARQUET_CARDINALITY:{sorted(by_id)}")
-    return by_id, len(urls)
+    for filename, expected_sha, expected_size in SHARDS:
+        if not remaining:
+            break
+        path = temp / filename
+        url = f"{HF_BASE}/{filename}?download=true"
+        req = urllib.request.Request(url, headers={"User-Agent": "TRIAXIS-R8H/1.0"})
+        with urllib.request.urlopen(req, timeout=120) as response, path.open("wb") as out:
+            while True:
+                chunk = response.read(1 << 20)
+                if not chunk:
+                    break
+                out.write(chunk)
+
+        actual_size = path.stat().st_size
+        actual_sha = sha256_file(path)
+        if actual_size != expected_size:
+            raise RuntimeError(f"LFS_SIZE_MISMATCH:{filename}:{actual_size}:{expected_size}")
+        if actual_sha != expected_sha:
+            raise RuntimeError(f"LFS_SHA_MISMATCH:{filename}:{actual_sha}:{expected_sha}")
+
+        matched_here = []
+        with path.open("r", encoding="utf-8", errors="strict") as handle:
+            for line in handle:
+                if not remaining:
+                    break
+                # Cheap prefilter avoids parsing almost every huge JSON row.
+                if not any(qid in line for qid in remaining):
+                    continue
+                row = json.loads(line)
+                qid = str(row.get("question_id"))
+                if qid in remaining:
+                    found[qid] = row
+                    remaining.remove(qid)
+                    matched_here.append(qid)
+
+        audit.append({
+            "file": filename,
+            "sha256": actual_sha,
+            "size": actual_size,
+            "matched_frozen_ids": sorted(matched_here),
+        })
+        path.unlink(missing_ok=True)
+
+    if remaining:
+        raise RuntimeError(f"FROZEN_IDS_NOT_FOUND:{sorted(remaining)}")
+    return found, audit
 
 
 def classify(result_list):
@@ -74,7 +111,7 @@ def main():
     from lcb_runner.benchmarks.code_generation import CodeGenerationProblem
     from lcb_runner.evaluation.compute_code_generation_metrics import check_correctness
 
-    rows, shard_count = fetch_selected_rows()
+    rows, shard_audit = retrieve_selected_rows()
     public_results = []
     for qid in SELECTED:
         problem = CodeGenerationProblem(**rows[qid])
@@ -93,12 +130,13 @@ def main():
     del rows
 
     out = {
-        "schema": "triaxis.r8h.native_b0_result/v4-parquet",
+        "schema": "triaxis.r8h.native_b0_result/v5-lfs",
         "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
-        "data_access": "official HF parquet manifest + DuckDB HTTP range reads/predicate pushdown",
-        "parquet_shard_count": shard_count,
+        "data_access": "pinned HF dataset git head + staged direct LFS shard retrieval",
+        "hf_dataset_head": HF_DATASET_HEAD,
+        "shard_audit": shard_audit,
         "livecodebench_commit": os.environ.get("LCB_COMMIT"),
-        "release": CONFIG,
+        "release": "release_v6",
         "evaluator_details_disclosed": False,
         "results": public_results,
         "passed_tasks": sum(int(r["reward"] == 1.0) for r in public_results),
