@@ -1,4 +1,4 @@
-name: R8-H Native Code Smoke DuckDB Shard Local
+name: R8-I Fresh Sealed B0 Native test6
 
 on:
   push:
@@ -13,39 +13,262 @@ permissions:
 jobs:
   verify-b0:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Freeze
+      - name: Freeze provenance
         run: |
-          echo 'B0=b975656f11d89e86ef3fbfa30f139310ca6c980e'
+          echo 'LOCAL_B0_FREEZE_SHA256=9d65bed2fd80824ab9fd520aa92a13538beec62b4d258c1fdca62c9567f5c0ed'
+          echo 'SOLUTIONS_CANON_SHA256=ae7a6eafc2ac3894ac4456257ffc03501e8f3463812f496310f46bbd3d5252e8'
+          echo 'EVOAGENTBENCH=948a17288782d5120778da16b4cf1cad9305d8b4'
           echo 'LCB=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
-          echo 'HF_PARQUET_SNAPSHOT=d44be6b144381afa49392b1f0eb424a64a4d8a10'
-          echo 'RELEASE=release_v6'
-          echo 'EXPECTED_RELEASE_ROWS=1055'
-          echo 'TASKS=abc391_d,abc338_b,abc357_b'
-          echo 'DATA_ACCESS=PINNED_PARQUET_DUCKDB_SHARD_LOCAL_HTTP_RANGE'
-          echo 'INSTRUMENT_REPAIR=LOCATE_BY_QUESTION_ID_COLUMN_THEN_MATERIALIZE_MATCHED_SHARDS_ONLY'
+          echo 'TEST6_COMMIT=503416f80ac447d31f252d8434023786ce45dd0c'
+          echo 'TEST6_SHA256=bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5'
+          echo 'TASKS=abc392_d,abc394_a,abc394_g,abc395_c,abc396_b,abc397_a'
           echo 'NO_MODEL_API=1'
           echo 'NO_SECRETS=1'
 
-      - name: Prepare
+      - name: Prepare pinned verifier
         shell: bash
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check --quiet \
-            'duckdb==1.3.2' 'datasets==2.21.0' 'huggingface-hub==0.33.4' \
+            'datasets==2.21.0' 'huggingface-hub==0.33.4' \
             'numpy==2.2.6' 'pandas==2.2.3' 'tqdm==4.67.1'
           git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
           git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
           test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
 
+      - name: Download exact incremental v6 shard
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://huggingface.co/datasets/livecodebench/code_generation_lite/resolve/503416f80ac447d31f252d8434023786ce45dd0c/test6.jsonl?download=true' \
+            -o /tmp/test6.jsonl
+          test "$(stat -c %s /tmp/test6.jsonl)" = '134303240'
+          echo 'bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5  /tmp/test6.jsonl' | sha256sum -c -
+
       - name: Verify frozen B0
         env:
           LCB_REPO: ./LiveCodeBench
           LCB_COMMIT: 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
-        run: python research/benchmark_rail_r8/r8h_native_verify_b0_duckdb.py
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, pathlib, sys
+
+          TASKS = ('abc392_d','abc394_a','abc394_g','abc395_c','abc396_b','abc397_a')
+          EXPECTED_SOL_SHA = 'ae7a6eafc2ac3894ac4456257ffc03501e8f3463812f496310f46bbd3d5252e8'
+          SOL = {
+          'abc392_d': """from collections import Counter
+          import sys
+          input=sys.stdin.readline
+          N=int(input())
+          dice=[]
+          for _ in range(N):
+              row=list(map(int,input().split()))
+              k=row[0]
+              dice.append((k,Counter(row[1:])))
+          ans=0.0
+          for i in range(N):
+              ki,ci=dice[i]
+              for j in range(i+1,N):
+                  kj,cj=dice[j]
+                  if len(ci)<=len(cj):
+                      common=sum(v*cj.get(x,0) for x,v in ci.items())
+                  else:
+                      common=sum(v*ci.get(x,0) for x,v in cj.items())
+                  p=common/(ki*kj)
+                  if p>ans: ans=p
+          print('{:.15f}'.format(ans))
+          """,
+          'abc394_a': """s=input().strip()
+          print(''.join(ch for ch in s if ch=='2'))
+          """,
+          'abc394_g': """import sys
+          from array import array
+          input=sys.stdin.readline
+          H,W=map(int,input().split())
+          n=H*W
+          F=[]
+          for _ in range(H): F.extend(map(int,input().split()))
+          order=list(range(n))
+          order.sort(key=F.__getitem__,reverse=True)
+          dsu=array('i',range(n))
+          sz=array('i',[1])*n
+          comp=array('i',range(n))
+          active=bytearray(n)
+          left=array('i',[-1])*n
+          right=array('i',[-1])*n
+          par_tree=array('i',[-1])*n
+          val=array('i',F)
+          def find(x):
+              while dsu[x]!=x:
+                  dsu[x]=dsu[dsu[x]]
+                  x=dsu[x]
+              return x
+          def merge(v,u,h):
+              a=find(v); b=find(u)
+              if a==b: return
+              node=len(val)
+              val.append(h); left.append(comp[a]); right.append(comp[b]); par_tree.append(-1)
+              par_tree[comp[a]]=node; par_tree[comp[b]]=node
+              if sz[a]<sz[b]: a,b=b,a
+              dsu[b]=a; sz[a]+=sz[b]; comp[a]=node
+          for v in order:
+              active[v]=1
+              r,c=divmod(v,W)
+              h=F[v]
+              if r and active[v-W]: merge(v,v-W,h)
+              if r+1<H and active[v+W]: merge(v,v+W,h)
+              if c and active[v-1]: merge(v,v-1,h)
+              if c+1<W and active[v+1]: merge(v,v+1,h)
+          root=comp[find(0)]
+          m=len(val)
+          depth=array('i',[0])*m
+          stack=[root]
+          while stack:
+              x=stack.pop()
+              l=left[x]
+              if l!=-1:
+                  rr=right[x]
+                  depth[l]=depth[x]+1; depth[rr]=depth[x]+1
+                  stack.append(l); stack.append(rr)
+          up0=array('i',par_tree); up0[root]=root
+          up=[up0]
+          LOG=max(1,m.bit_length())
+          for _ in range(1,LOG):
+              prev=up[-1]
+              up.append(array('i',(prev[prev[i]] for i in range(m))))
+          def lca(a,b):
+              if depth[a]<depth[b]: a,b=b,a
+              d=depth[a]-depth[b]; bit=0
+              while d:
+                  if d&1: a=up[bit][a]
+                  d>>=1; bit+=1
+              if a==b: return a
+              for k in range(LOG-1,-1,-1):
+                  ua=up[k][a]; ub=up[k][b]
+                  if ua!=ub:
+                      a=ua; b=ub
+              return up[0][a]
+          Q=int(input())
+          out=[]
+          for _ in range(Q):
+              A,B,Y,C,D,Z=map(int,input().split())
+              u=(A-1)*W+(B-1); v=(C-1)*W+(D-1)
+              t=val[lca(u,v)]
+              x=min(Y,Z,t)
+              out.append(str(Y+Z-2*x))
+          print('\\n'.join(out))
+          """,
+          'abc395_c': """import sys
+          input=sys.stdin.readline
+          N=int(input())
+          A=list(map(int,input().split()))
+          last={}
+          ans=N+1
+          for i,x in enumerate(A):
+              if x in last:
+                  d=i-last[x]+1
+                  if d<ans: ans=d
+              last[x]=i
+          print(-1 if ans==N+1 else ans)
+          """,
+          'abc396_b': """import sys
+          input=sys.stdin.readline
+          Q=int(input())
+          st=[0]*100
+          out=[]
+          for _ in range(Q):
+              q=list(map(int,input().split()))
+              if q[0]==1: st.append(q[1])
+              else: out.append(str(st.pop()))
+          print('\\n'.join(out))
+          """,
+          'abc397_a': """x=float(input())
+          if x>=38.0: print(1)
+          elif x>=37.5: print(2)
+          else: print(3)
+          """,
+          }
+
+          # YAML block indentation adds 10 spaces to each physical line above.
+          # Normalize exactly back to the locally frozen source strings.
+          import textwrap
+          SOL = {k: textwrap.dedent(v) for k,v in SOL.items()}
+          canon = json.dumps(SOL, ensure_ascii=False, sort_keys=True, separators=(',',':')).encode()
+          actual_sol_sha = hashlib.sha256(canon).hexdigest()
+          if actual_sol_sha != EXPECTED_SOL_SHA:
+              raise RuntimeError(f'B0_SOLUTION_HASH_MISMATCH:{actual_sol_sha}')
+
+          rows = {}
+          with open('/tmp/test6.jsonl','r',encoding='utf-8') as f:
+              for line in f:
+                  if not any(q in line for q in TASKS):
+                      continue
+                  row = json.loads(line)
+                  qid = str(row.get('question_id'))
+                  if qid in TASKS:
+                      rows[qid] = row
+          if set(rows) != set(TASKS):
+              raise RuntimeError(f'FROZEN_IDS_NOT_FOUND:{sorted(set(TASKS)-set(rows))}')
+
+          lcb = pathlib.Path(os.environ['LCB_REPO']).resolve()
+          sys.path.insert(0, str(lcb))
+          from lcb_runner.benchmarks.code_generation import CodeGenerationProblem
+          from lcb_runner.evaluation.compute_code_generation_metrics import check_correctness
+
+          def classify(x):
+              flat=[]
+              def walk(v):
+                  if isinstance(v,(list,tuple)):
+                      for z in v: walk(z)
+                  else: flat.append(v)
+              walk(x)
+              if flat and all(v is True or v==1 for v in flat): return 'PASS'
+              if any(v==-3 for v in flat): return 'TLE'
+              if any(v==-4 for v in flat): return 'RE'
+              if any(v==-2 for v in flat): return 'WA'
+              if any(v==-1 for v in flat): return 'CE_OR_TIMEOUT'
+              return 'FAIL'
+
+          public=[]
+          for qid in TASKS:
+              problem=CodeGenerationProblem(**rows[qid])
+              sample=problem.get_evaluation_sample()
+              result_list, metadata = check_correctness(sample, SOL[qid], timeout=6, debug=False)
+              flat=[]
+              def walk(v):
+                  if isinstance(v,(list,tuple)):
+                      for z in v: walk(z)
+                  else: flat.append(v)
+              walk(result_list)
+              total=len(flat)
+              passed=sum(1 for v in flat if v is True or v==1)
+              public.append({'task_id':qid,'reward':1.0 if total and passed==total else 0.0,
+                             'passed':passed,'total':total,'error_class':classify(result_list)})
+              del problem,sample,result_list,metadata
+          del rows
+
+          out={
+            'schema':'triaxis.r8i.native_b0_result/v1',
+            'evidence_class':'REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL',
+            'b0_local_freeze_sha256':'9d65bed2fd80824ab9fd520aa92a13538beec62b4d258c1fdca62c9567f5c0ed',
+            'solutions_canon_sha256':actual_sol_sha,
+            'test6_sha256':'bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5',
+            'livecodebench_commit':os.environ.get('LCB_COMMIT'),
+            'results':public,
+            'passed_tasks':sum(int(r['reward']==1.0) for r in public),
+            'total_tasks':len(public),
+            'hidden_test_content_disclosed':False,
+          }
+          print('===R8I_SANITIZED_NATIVE_RESULT_BEGIN===')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          print('===R8I_SANITIZED_NATIVE_RESULT_END===')
+          PY
