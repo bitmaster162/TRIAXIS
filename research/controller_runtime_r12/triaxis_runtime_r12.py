@@ -179,42 +179,141 @@ class EventAdjudication:
 
 def adjudicate_event(f:EventFacts)->EventAdjudication:
     if f.consequential_action and not f.user_authority:
-        return EventAdjudication(EventOutcome.BLOCKED_PRE_EXECUTION,FailureCause.USER_AUTHORITY_DENIED,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.BLOCKED_PRE_EXECUTION,
+            FailureCause.USER_AUTHORITY_DENIED,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if f.platform_policy_blocked:
-        return EventAdjudication(EventOutcome.BLOCKED_PRE_EXECUTION,FailureCause.PLATFORM_POLICY_BLOCKED,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.BLOCKED_PRE_EXECUTION,
+            FailureCause.PLATFORM_POLICY_BLOCKED,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if f.external_access_denied:
-        return EventAdjudication(EventOutcome.BLOCKED_PRE_EXECUTION,FailureCause.EXTERNAL_ACCESS_DENIED,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.BLOCKED_PRE_EXECUTION,
+            FailureCause.EXTERNAL_ACCESS_DENIED,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if f.infrastructure_blocked:
-        return EventAdjudication(EventOutcome.BLOCKED_PRE_EXECUTION,FailureCause.INFRASTRUCTURE_BLOCKED,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.BLOCKED_PRE_EXECUTION,
+            FailureCause.INFRASTRUCTURE_BLOCKED,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if not f.action_attempted:
-        return EventAdjudication(EventOutcome.NOT_ATTEMPTED,FailureCause.NONE,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.NOT_ATTEMPTED,
+            FailureCause.NONE,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
+
     if f.instrument_required and not f.instrument_applicable:
-        return EventAdjudication(EventOutcome.PARTIAL,FailureCause.INSTRUMENT_CONTRACT_MISMATCH,ScientificVerdict.QUARANTINED,False)
+        return EventAdjudication(
+            EventOutcome.PARTIAL,
+            FailureCause.INSTRUMENT_CONTRACT_MISMATCH,
+            ScientificVerdict.QUARANTINED,
+            False,
+        )
     if f.instrument_required and not f.instrument_functioning:
-        return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.INSTRUMENT_IMPLEMENTATION_FAILURE,ScientificVerdict.UNKNOWN,False)
+        return EventAdjudication(
+            EventOutcome.EXECUTED_FAILURE,
+            FailureCause.INSTRUMENT_IMPLEMENTATION_FAILURE,
+            ScientificVerdict.UNKNOWN,
+            False,
+        )
     if not f.evidence_complete:
-        return EventAdjudication(EventOutcome.PARTIAL,FailureCause.EVIDENCE_CHAIN_INCOMPLETE,ScientificVerdict.UNKNOWN if f.scientific_candidate_executed else ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.PARTIAL,
+            FailureCause.EVIDENCE_CHAIN_INCOMPLETE,
+            ScientificVerdict.UNKNOWN if f.scientific_candidate_executed else ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
+
     if f.tool_needed and not f.tool_invocation_valid:
         if f.scientific_candidate_executed:
-            return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.MODEL_TOOL_USE_FAILURE,ScientificVerdict.FAIL,True)
-        return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.UNKNOWN,ScientificVerdict.NOT_APPLICABLE,False)
+            return EventAdjudication(
+                EventOutcome.EXECUTED_FAILURE,
+                FailureCause.MODEL_TOOL_USE_FAILURE,
+                ScientificVerdict.FAIL,
+                True,
+            )
+        return EventAdjudication(
+            EventOutcome.EXECUTED_FAILURE,
+            FailureCause.UNKNOWN,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if f.tool_needed and not f.tool_runtime_success:
-        return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.CAPABILITY_EXECUTION_FAILURE,ScientificVerdict.UNKNOWN if f.scientific_candidate_executed else ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.EXECUTED_FAILURE,
+            FailureCause.CAPABILITY_EXECUTION_FAILURE,
+            ScientificVerdict.UNKNOWN if f.scientific_candidate_executed else ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
+
     if f.scientific_candidate_executed:
         if not f.output_contract_satisfied:
-            return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.MODEL_OUTPUT_CONTRACT_FAILURE,ScientificVerdict.FAIL,True)
+            return EventAdjudication(
+                EventOutcome.EXECUTED_FAILURE,
+                FailureCause.MODEL_OUTPUT_CONTRACT_FAILURE,
+                ScientificVerdict.FAIL,
+                True,
+            )
         if f.score_available:
             if f.score_pass:
-                return EventAdjudication(EventOutcome.EXECUTED_SUCCESS,FailureCause.NONE,ScientificVerdict.PASS,True)
-            return EventAdjudication(EventOutcome.EXECUTED_FAILURE,FailureCause.MODEL_TASK_FAILURE,ScientificVerdict.FAIL,True)
+                return EventAdjudication(
+                    EventOutcome.EXECUTED_SUCCESS,
+                    FailureCause.NONE,
+                    ScientificVerdict.PASS,
+                    True,
+                )
+            return EventAdjudication(
+                EventOutcome.EXECUTED_FAILURE,
+                FailureCause.MODEL_TASK_FAILURE,
+                ScientificVerdict.FAIL,
+                True,
+            )
         if f.action_completed:
-            return EventAdjudication(EventOutcome.EXECUTED_SUCCESS,FailureCause.NONE,ScientificVerdict.UNKNOWN,False)
-        return EventAdjudication(EventOutcome.PARTIAL,FailureCause.EVIDENCE_CHAIN_INCOMPLETE,ScientificVerdict.UNKNOWN,False)
+            return EventAdjudication(
+                EventOutcome.EXECUTED_SUCCESS,
+                FailureCause.NONE,
+                ScientificVerdict.UNKNOWN,
+                False,
+            )
+        return EventAdjudication(
+            EventOutcome.PARTIAL,
+            FailureCause.EVIDENCE_CHAIN_INCOMPLETE,
+            ScientificVerdict.UNKNOWN,
+            False,
+        )
+
     if f.action_executed and f.action_completed:
-        return EventAdjudication(EventOutcome.EXECUTED_SUCCESS,FailureCause.NONE,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.EXECUTED_SUCCESS,
+            FailureCause.NONE,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
     if f.action_executed and not f.action_completed:
-        return EventAdjudication(EventOutcome.PARTIAL,FailureCause.EVIDENCE_CHAIN_INCOMPLETE,ScientificVerdict.NOT_APPLICABLE,False)
-    return EventAdjudication(EventOutcome.NOT_ATTEMPTED,FailureCause.NONE,ScientificVerdict.NOT_APPLICABLE,False)
+        return EventAdjudication(
+            EventOutcome.PARTIAL,
+            FailureCause.EVIDENCE_CHAIN_INCOMPLETE,
+            ScientificVerdict.NOT_APPLICABLE,
+            False,
+        )
+    return EventAdjudication(
+        EventOutcome.NOT_ATTEMPTED,
+        FailureCause.NONE,
+        ScientificVerdict.NOT_APPLICABLE,
+        False,
+    )
 
 
 @dataclass(frozen=True)
@@ -265,10 +364,20 @@ def classify_evidence_independence(p:ProviderContext)->EvidenceClass:
     return EvidenceClass.UNKNOWN_HOLD
 
 
-def recovery_disposition(a:EventAdjudication,*,transient:bool=False,correction_allowed_by_protocol:bool=False)->RecoveryDisposition:
+def recovery_disposition(
+    a:EventAdjudication,
+    *,
+    transient:bool=False,
+    correction_allowed_by_protocol:bool=False,
+)->RecoveryDisposition:
     if a.outcome is EventOutcome.EXECUTED_SUCCESS:
         return RecoveryDisposition.COMMIT
-    if a.failure_cause in {FailureCause.PLATFORM_POLICY_BLOCKED,FailureCause.EXTERNAL_ACCESS_DENIED,FailureCause.USER_AUTHORITY_DENIED,FailureCause.INSTRUMENT_CONTRACT_MISMATCH}:
+    if a.failure_cause in {
+        FailureCause.PLATFORM_POLICY_BLOCKED,
+        FailureCause.EXTERNAL_ACCESS_DENIED,
+        FailureCause.USER_AUTHORITY_DENIED,
+        FailureCause.INSTRUMENT_CONTRACT_MISMATCH,
+    }:
         return RecoveryDisposition.HOLD_NO_RETRY
     if a.failure_cause is FailureCause.INFRASTRUCTURE_BLOCKED:
         return RecoveryDisposition.RETRY_ONCE_IF_TRANSIENT if transient else RecoveryDisposition.HOLD_NO_RETRY
@@ -307,37 +416,66 @@ class Receipt:
 
 def validate_receipt(r:Receipt)->Sequence[str]:
     errors:list[str]=[]
-    if r.corrections not in (0,1): errors.append("CORRECTION_BUDGET_EXCEEDED")
-    if r.retries not in (0,1): errors.append("RETRY_BUDGET_EXCEEDED")
-    if r.countermodels not in (0,1): errors.append("COUNTERMODEL_BUDGET_EXCEEDED")
+
+    if r.corrections not in (0,1):
+        errors.append("CORRECTION_BUDGET_EXCEEDED")
+    if r.retries not in (0,1):
+        errors.append("RETRY_BUDGET_EXCEEDED")
+    if r.countermodels not in (0,1):
+        errors.append("COUNTERMODEL_BUDGET_EXCEEDED")
+
     if r.event_outcome is EventOutcome.BLOCKED_PRE_EXECUTION:
-        if r.scientific_verdict is not ScientificVerdict.NOT_APPLICABLE: errors.append("BLOCKED_HAS_SCIENTIFIC_VERDICT")
-        if r.model_denominator_eligible: errors.append("BLOCKED_IN_MODEL_DENOMINATOR")
+        if r.scientific_verdict is not ScientificVerdict.NOT_APPLICABLE:
+            errors.append("BLOCKED_HAS_SCIENTIFIC_VERDICT")
+        if r.model_denominator_eligible:
+            errors.append("BLOCKED_IN_MODEL_DENOMINATOR")
+
     if r.scientific_verdict is ScientificVerdict.PASS:
-        if not r.scientific_candidate_executed: errors.append("PASS_WITHOUT_CANDIDATE")
-        if r.failure_cause is not FailureCause.NONE: errors.append("PASS_WITH_FAILURE_CAUSE")
-        if r.contract_status is not ContractStatus.ADMIT: errors.append("PASS_WITHOUT_ADMITTED_CONTRACT")
-        if not r.instrument_applicable or not r.instrument_functioning: errors.append("PASS_WITH_INVALID_INSTRUMENT")
-        if not r.model_denominator_eligible: errors.append("PASS_NOT_IN_MODEL_DENOMINATOR")
+        if not r.scientific_candidate_executed:
+            errors.append("PASS_WITHOUT_CANDIDATE")
+        if r.failure_cause is not FailureCause.NONE:
+            errors.append("PASS_WITH_FAILURE_CAUSE")
+        if r.contract_status is not ContractStatus.ADMIT:
+            errors.append("PASS_WITHOUT_ADMITTED_CONTRACT")
+        if not r.instrument_applicable or not r.instrument_functioning:
+            errors.append("PASS_WITH_INVALID_INSTRUMENT")
+        if not r.model_denominator_eligible:
+            errors.append("PASS_NOT_IN_MODEL_DENOMINATOR")
+
     if r.scientific_verdict is ScientificVerdict.FAIL:
-        if r.failure_cause not in MODEL_FAILURE_CAUSES: errors.append("SCIENTIFIC_FAIL_WITH_NONMODEL_CAUSE")
-        if not r.scientific_candidate_executed: errors.append("FAIL_WITHOUT_CANDIDATE")
-        if r.contract_status is not ContractStatus.ADMIT: errors.append("FAIL_WITHOUT_ADMITTED_CONTRACT")
-        if not r.instrument_applicable or not r.instrument_functioning: errors.append("FAIL_WITH_INVALID_INSTRUMENT")
-        if not r.model_denominator_eligible: errors.append("FAIL_NOT_IN_MODEL_DENOMINATOR")
+        if r.failure_cause not in MODEL_FAILURE_CAUSES:
+            errors.append("SCIENTIFIC_FAIL_WITH_NONMODEL_CAUSE")
+        if not r.scientific_candidate_executed:
+            errors.append("FAIL_WITHOUT_CANDIDATE")
+        if r.contract_status is not ContractStatus.ADMIT:
+            errors.append("FAIL_WITHOUT_ADMITTED_CONTRACT")
+        if not r.instrument_applicable or not r.instrument_functioning:
+            errors.append("FAIL_WITH_INVALID_INSTRUMENT")
+        if not r.model_denominator_eligible:
+            errors.append("FAIL_NOT_IN_MODEL_DENOMINATOR")
+
     if r.scientific_verdict is ScientificVerdict.QUARANTINED:
-        if r.failure_cause is not FailureCause.INSTRUMENT_CONTRACT_MISMATCH: errors.append("QUARANTINE_WRONG_CAUSE")
-        if r.contract_status is not ContractStatus.QUARANTINE: errors.append("QUARANTINE_WRONG_CONTRACT_STATUS")
-        if r.model_denominator_eligible: errors.append("QUARANTINE_IN_MODEL_DENOMINATOR")
-    if not r.scientific_candidate_executed and r.model_denominator_eligible: errors.append("NONMODEL_EVENT_IN_MODEL_DENOMINATOR")
-    if r.event_outcome is EventOutcome.EXECUTED_SUCCESS and r.failure_cause is not FailureCause.NONE: errors.append("SUCCESS_WITH_FAILURE_CAUSE")
+        if r.failure_cause is not FailureCause.INSTRUMENT_CONTRACT_MISMATCH:
+            errors.append("QUARANTINE_WRONG_CAUSE")
+        if r.contract_status is not ContractStatus.QUARANTINE:
+            errors.append("QUARANTINE_WRONG_CONTRACT_STATUS")
+        if r.model_denominator_eligible:
+            errors.append("QUARANTINE_IN_MODEL_DENOMINATOR")
+
+    if not r.scientific_candidate_executed and r.model_denominator_eligible:
+        errors.append("NONMODEL_EVENT_IN_MODEL_DENOMINATOR")
+
+    if r.event_outcome is EventOutcome.EXECUTED_SUCCESS and r.failure_cause is not FailureCause.NONE:
+        errors.append("SUCCESS_WITH_FAILURE_CAUSE")
+
     return tuple(errors)
 
 
 def receipt_to_dict(r:Receipt)->dict:
     d=asdict(r)
     for k,v in tuple(d.items()):
-        if isinstance(v,Enum): d[k]=v.value
+        if isinstance(v,Enum):
+            d[k]=v.value
     return d
 
 
