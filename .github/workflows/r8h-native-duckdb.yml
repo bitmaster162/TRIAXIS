@@ -1,4 +1,4 @@
-name: R8-H Native Code Smoke DuckDB
+name: R8-H Native Code Smoke DuckDB Shard Local
 
 on:
   push:
@@ -28,7 +28,8 @@ jobs:
           echo 'RELEASE=release_v6'
           echo 'EXPECTED_RELEASE_ROWS=1055'
           echo 'TASKS=abc391_d,abc338_b,abc357_b'
-          echo 'DATA_ACCESS=PINNED_PARQUET_DUCKDB_HTTP_RANGE'
+          echo 'DATA_ACCESS=PINNED_PARQUET_DUCKDB_SHARD_LOCAL_HTTP_RANGE'
+          echo 'INSTRUMENT_REPAIR=LOCATE_BY_QUESTION_ID_COLUMN_THEN_MATERIALIZE_MATCHED_SHARDS_ONLY'
           echo 'NO_MODEL_API=1'
           echo 'NO_SECRETS=1'
 
