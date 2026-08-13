@@ -17,7 +17,7 @@ def fetch_one(qid: str) -> dict:
         "dataset": DATASET,
         "config": CONFIG,
         "split": SPLIT,
-        "where": f"question_id='{qid}'",
+        "where": f'"question_id"=\'{qid}\'',
         "offset": 0,
         "length": 10,
     })
@@ -80,11 +80,10 @@ def main():
             "total": total,
             "error_class": classify(result_list, metadata),
         })
-        # Do not print or persist row/sample/metadata: they may contain evaluator-only cases.
         del row, problem, sample, metadata, result_list
 
     out = {
-        "schema": "triaxis.r8h.native_b0_result/v2-filtered",
+        "schema": "triaxis.r8h.native_b0_result/v3-filtered",
         "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
         "data_access": "Hugging Face Dataset Server server-side filter by frozen question_id",
         "livecodebench_commit": os.environ.get("LCB_COMMIT"),
