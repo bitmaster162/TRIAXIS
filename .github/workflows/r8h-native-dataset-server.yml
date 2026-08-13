@@ -1,0 +1,51 @@
+name: R8-H Native Code Smoke Dataset Server
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-native-dataset-server.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b0:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Freeze
+        run: |
+          echo 'B0=b975656f11d89e86ef3fbfa30f139310ca6c980e'
+          echo 'LCB=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+          echo 'DATASET=livecodebench/code_generation_lite'
+          echo 'CONFIG=release_v6'
+          echo 'SPLIT=test'
+          echo 'EXPECTED_RELEASE_ROWS=1055'
+          echo 'TASKS=abc391_d,abc338_b,abc357_b'
+          echo 'DATA_ACCESS=DATASET_SERVER_FILTER'
+          echo 'NO_MODEL_API=1'
+          echo 'NO_SECRETS=1'
+
+      - name: Prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet \
+            'datasets==2.21.0' 'huggingface-hub==0.33.4' \
+            'numpy==2.2.6' 'pandas==2.2.3' 'tqdm==4.67.1'
+          git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
+          git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+
+      - name: Verify frozen B0
+        env:
+          LCB_REPO: ./LiveCodeBench
+          LCB_COMMIT: 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+        run: python research/benchmark_rail_r8/r8h_native_verify_b0_dataset_server.py
