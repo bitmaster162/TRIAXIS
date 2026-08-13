@@ -1,0 +1,171 @@
+{
+  "adjudication": {
+    "boundary": "This supports procedural transfer of instrument-validity control only. It does not establish benchmark prevalence, model intelligence lift, EBRC novelty, or production qualification.",
+    "claim": "On a second fresh deterministic frozen sample, the unchanged verifier-contract gate prospectively identified an unseen task whose official output semantics are incompatible with exact-output scoring.",
+    "historical_context": "A prior independent frozen prospective sample identified abc324_f under the same numeric-tolerance mismatch class; R10-A independently identifies abc319_c.",
+    "status": "PASS",
+    "verifier_contract_gate_prospective_transfer_replication": "PASS"
+  },
+  "aggregate": {
+    "new_mismatch_task_ids": [
+      "abc319_c"
+    ],
+    "no_mismatch_detected": 19,
+    "quarantine_non_unique_or_property": 0,
+    "quarantine_numeric_tolerance": 1,
+    "quarantined": 1,
+    "sample_size": 20
+  },
+  "date": "2026-08-14",
+  "epoch": "R10A_EBRC_VERIFIER_GATE_TRANSFER_20260814",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "protocol": {
+    "cognitive_lift_credit": 0,
+    "editorials_used": false,
+    "gate_rule_unchanged_from_prior_prospective_verifier-contract work": true,
+    "hidden_tests_used": false,
+    "model_outputs_generated": false,
+    "prevalence_claim": "DENY_FROM_THIS_SMALL_SAMPLE",
+    "scope": "CONTROLLER_ONLY_NO_MODEL_INFERENCE"
+  },
+  "results": [
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc330/tasks/abc330_a?lang=en",
+      "task_id": "abc330_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/abc376/tasks/abc376_g?lang=en",
+      "task_id": "abc376_g"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc367/tasks/abc367_a?lang=en",
+      "task_id": "abc367_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc374/tasks/abc374_a?lang=en",
+      "task_id": "abc374_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/abc366/tasks/abc366_d?lang=en",
+      "task_id": "abc366_d"
+    },
+    {
+      "decision": "QUARANTINE_NUMERIC_TOLERANCE",
+      "mismatch_reason": "Official judge accepts absolute error <= 1e-8; the frozen generic exact-output verifier contract does not encode that tolerance.",
+      "official_acceptance": "ABS_ERROR_LE_1E-8",
+      "output_contract": "NUMERIC_TOLERANCE_ABS_1E-8",
+      "statement_url": "https://atcoder.jp/contests/abc319/tasks/abc319_c?lang=en",
+      "task_id": "abc319_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc373/tasks/abc373_a?lang=en",
+      "task_id": "abc373_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc327/tasks/abc327_d?lang=en",
+      "task_id": "abc327_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_OR_MINUS_ONE",
+      "statement_url": "https://atcoder.jp/contests/arc189/tasks/arc189_c?lang=en",
+      "task_id": "arc189_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/arc186/tasks/arc186_e?lang=en",
+      "task_id": "arc186_e"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc336/tasks/abc336_b?lang=en",
+      "task_id": "abc336_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc378/tasks/abc378_d?lang=en",
+      "task_id": "abc378_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc366/tasks/abc366_a?lang=en",
+      "task_id": "abc366_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/abc378/tasks/abc378_c?lang=en",
+      "task_id": "abc378_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_OR_MINUS_ONE",
+      "statement_url": "https://atcoder.jp/contests/abc352/tasks/abc352_e?lang=en",
+      "task_id": "abc352_e"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/abc370/tasks/abc370_g?lang=en",
+      "task_id": "abc370_g"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_OR_MINUS_ONE",
+      "statement_url": "https://atcoder.jp/contests/abc353/tasks/abc353_a?lang=en",
+      "task_id": "abc353_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc390/tasks/abc390_f?lang=en",
+      "task_id": "abc390_f"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc356/tasks/abc356_c?lang=en",
+      "task_id": "abc356_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/abc382/tasks/abc382_g?lang=en",
+      "task_id": "abc382_g"
+    }
+  ],
+  "sample_freeze": {
+    "commit": "02f9268d5ba2a0bb1f3c561c187ffeb8319195b6",
+    "opened_statements_after_freeze": true,
+    "path": "research/capability_upgrader_r10/R10A_VERIFIER_GATE_TRANSFER_SAMPLE_FREEZE_2026-08-14.json",
+    "selection": "ascending SHA256(epoch + ':' + task_id), 20 of 44 fresh eligible AtCoder IDs"
+  },
+  "schema": "triaxis.r10a.verifier_gate_transfer_result/v1"
+}
