@@ -1,0 +1,91 @@
+{
+  "applicability_preconditions": [
+    "authoritative upstream task/output contract is accessible without hidden-test or oracle leakage",
+    "verifier semantics are known or inspectable",
+    "contract classification occurs before candidate output is scored under that verifier",
+    "classification rule is frozen before opening the fresh task statements in prospective experiments",
+    "quarantine does not get converted into model failure"
+  ],
+  "date": "2026-08-14",
+  "decision": {
+    "cognitive_lift_credit": 0,
+    "model_capability_promotion": "NOT_APPLICABLE",
+    "primitive": "VERIFIER_CONTRACT_GATE",
+    "production_promotion": "DENY",
+    "research_controller_default": "ON_WHEN_APPLICABILITY_PRECONDITIONS_HOLD",
+    "status": "RETAIN_AS_BOUNDED_RESEARCH_CONTROLLER_PRIMITIVE"
+  },
+  "evidence_chain": {
+    "bounded_fresh_remainder": {
+      "claim_boundary": "descriptive census of this explicitly bounded remainder only",
+      "classified": 44,
+      "compatible": 41,
+      "quarantine_ids": ["abc319_c","abc375_b","arc183_d"],
+      "quarantined": 3,
+      "scope": "44 fresh eligible AtCoder IDs after prior-exposure exclusions, composed of R10-A + R10-C"
+    },
+    "r10a": {
+      "adjudication": "PASS",
+      "classes": ["NUMERIC_TOLERANCE"],
+      "prospective_new_mismatches": ["abc319_c"],
+      "result_commit": "e50e2dfafc32e7f23af0c5f020aab5fd6b9db79f",
+      "sample_n": 20
+    },
+    "r10c": {
+      "adjudication": "PASS",
+      "classes": ["NUMERIC_TOLERANCE","NON_UNIQUE_CONSTRUCTIVE"],
+      "prospective_new_mismatches": ["abc375_b","arc183_d"],
+      "result_commit": "a996182469c4b66dfe829aceea975bbaf42a836e",
+      "sample_n": 24
+    },
+    "r8l": {
+      "adjudication": "VERIFIER_CONTRACT_GATE_PROSPECTIVE_TRANSFER=PASS",
+      "classes": ["NUMERIC_TOLERANCE"],
+      "cognitive_lift_credit": 0,
+      "prospective_new_mismatches": ["abc324_f"],
+      "sample_n": 12,
+      "schema": "triaxis.r8l.prospective_transfer_result/v1"
+    }
+  },
+  "falsifiers_or_demotion_triggers": [
+    "prospective false quarantine caused by misreading an authoritative output contract",
+    "prospective miss of a direct material verifier/task semantic incompatibility that the frozen rule should cover",
+    "classification requires hidden outputs, hidden tests, editorials, or post-outcome adaptation",
+    "verifier implementation already natively supports the task contract but the gate incorrectly quarantines it",
+    "measured overhead becomes material relative to prevented invalid scoring on a target workload"
+  ],
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "next_research": {
+    "failure": "no transferable rule beyond AtCoder-specific stdout semantics or any material false quarantine",
+    "instruction": "Test the same abstract applicability gate on a non-AtCoder/non-stdio domain where verifier contracts differ, without importing AtCoder-specific markers. Pre-register domain semantics and mismatch classes before opening fresh cases.",
+    "priority": "DOMAIN_TRANSFER",
+    "success": "at least one prospectively detected real verifier/applicability mismatch with zero false quarantines on the frozen fresh sample"
+  },
+  "not_supported": [
+    "benchmark-wide mismatch prevalence",
+    "general model intelligence amplification",
+    "EBRC novelty",
+    "that the gate improves raw task-solving accuracy",
+    "that the same gate taxonomy is sufficient for every benchmark/domain",
+    "production qualification"
+  ],
+  "schema": "triaxis.r10d.verifier_contract_gate_promotion_boundary/v1",
+  "supported_mechanism": [
+    "bind candidate task to authoritative upstream output contract before model inference or hidden scoring",
+    "classify downstream verifier semantic assumptions",
+    "admit only when task output contract and verifier contract are compatible",
+    "quarantine numeric-tolerance outputs if the verifier is exact-equality only",
+    "quarantine non-unique/property/constructive outputs if the verifier is exact expected-output only",
+    "execute scoring/correction only on admitted tasks",
+    "record immutable admission/quarantine receipt"
+  ]
+}
