@@ -1,4 +1,4 @@
-name: R8-D LLMRouterBench Simple Query Router Challengers
+name: R8-E LLMRouterBench Semantic Cluster Emulation
 
 on:
   push:
@@ -11,18 +11,19 @@ permissions:
   contents: read
 
 jobs:
-  simple-query-routers:
+  semantic-cluster:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - name: Frozen protocol
         run: |
-          echo 'EVIDENCE_CLASS=EXPLORATORY_OFFLINE_HELDOUT'
-          echo 'SPLIT=SHA256_QUERY_70_30_IDENTICAL_TO_R8C'
-          echo 'ARMS=BEST_SINGLE,DATASET_ROUTER,TFIDF_5NN,TFIDF_LINEAR,INSTANCE_ORACLE'
-          echo 'NO_MODEL_API=1'
-          echo 'NO_SECRETS=1'
+          echo 'EVIDENCE_CLASS=MECHANISM_EMULATION_EXPLORATORY_OFFLINE_HELDOUT'
+          echo 'SPLIT=SHA256_QUERY_70_30_IDENTICAL_TO_R8C_R8D'
+          echo 'MECHANISM=AVENGERS_STYLE_SEMANTIC_EMBEDDING_PLUS_30_CLUSTERS_TOP1'
+          echo 'EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41'
+          echo 'NOT_OFFICIAL_AVENGERS_REPRODUCTION=1'
+          echo 'NO_LLM_API=1'
       - name: Download verify extract
         run: |
           set -euo pipefail
@@ -32,9 +33,11 @@ jobs:
           echo 'b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1  bench-release.tar.gz' | sha256sum -c -
           mkdir extracted
           tar -xzf bench-release.tar.gz -C extracted
-      - name: Install frozen dependency
+      - name: Install frozen dependencies
         run: |
-          python3 -m pip install --disable-pip-version-check --quiet 'scikit-learn==1.7.1'
-          python3 -c "import sklearn; assert sklearn.__version__ == '1.7.1'; print(sklearn.__version__)"
-      - name: Run R8-D
-        run: python3 research/benchmark_rail_r8/r8d_simple_query_router_probe.py
+          python3 -m pip install --disable-pip-version-check --quiet 'scikit-learn==1.7.1' 'sentence-transformers==5.1.0'
+          python3 -c "import sklearn, sentence_transformers; assert sklearn.__version__ == '1.7.1'; assert sentence_transformers.__version__ == '5.1.0'; print(sklearn.__version__, sentence_transformers.__version__)"
+      - name: Run R8-E
+        env:
+          TOKENIZERS_PARALLELISM: 'false'
+        run: python3 research/benchmark_rail_r8/r8e_semantic_cluster_router_probe.py
