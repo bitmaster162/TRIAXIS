@@ -1,0 +1,28 @@
+{
+  "schema": "triaxis.r8h.instrument_incident/v1",
+  "date": "2026-08-13",
+  "status": "F4_DATA_ACCESS_TIMEOUT_UNRUN",
+  "workflow_commit": "4ce0f4c3c0e3a37e2d427250122116915c6f89dd",
+  "workflow_run_id": 31714340229,
+  "workflow_job_id": 94495085235,
+  "timeout_minutes": 10,
+  "facts": [
+    "checkout/setup/frozen contract/evaluator dependency install passed",
+    "streaming load began and downloaded only the dataset builder script and README",
+    "workflow was canceled at timeout before any sanitized native verifier result was emitted",
+    "no B0 task was scored in this run",
+    "no hidden test detail was disclosed"
+  ],
+  "B0_state": "UNCHANGED_FROZEN",
+  "subset_state": "UNCHANGED_FROZEN",
+  "claim_effect": "NONE",
+  "repair": "use Hugging Face Dataset Server server-side filter for the same three frozen question_ids; evaluator code and B0 remain unchanged",
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}
