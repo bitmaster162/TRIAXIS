@@ -1,4 +1,4 @@
-name: R8-H Native Code Smoke Filtered
+name: R8-H Native Code Smoke Filtered v2
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
           echo 'LIVECODEBENCH=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
           echo 'RELEASE=release_v6'
           echo 'TASKS=abc391_d,abc338_b,abc357_b'
-          echo 'DATA_ACCESS=SERVER_SIDE_FILTER'
+          echo 'DATA_ACCESS=SERVER_SIDE_FILTER_CORRECTED_PREDICATE'
           echo 'PUBLIC_RESULT_FIELDS=task_id,reward,passed,total,error_class'
       - name: Prepare evaluator
         run: |
