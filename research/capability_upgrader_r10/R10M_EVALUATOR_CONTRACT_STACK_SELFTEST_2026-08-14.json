@@ -1,0 +1,32 @@
+{
+  "claim_boundary": "Controller/instrument attribution consistency only; cognitive lift credit 0.",
+  "date": "2026-08-14",
+  "decision": {
+    "CONTRACT_STACK": "RETAIN",
+    "R10L_NEGATIVE_CONTROL": "INCORPORATED",
+    "next": "Convert gate outputs into explicit attribution classes so parser/scorer faults cannot be counted as model failures."
+  },
+  "invariants": [
+    {"name":"RAW_EXACT_MUST_NOT_OVERRIDE_CANONICAL_PARSER","pass":true},
+    {"name":"CANONICAL_EXACT_CAN_BE_VALID","pass":true},
+    {"name":"TOLERANCE_REJECTS_RAW_EXACT_SUBSTITUTE","pass":true},
+    {"name":"PROPERTY_VALID_REJECTS_REFERENCE_STRING_SUBSTITUTE","pass":true}
+  ],
+  "invariants_passed": 4,
+  "invariants_total": 4,
+  "known_cases_passed": 8,
+  "known_cases_total": 8,
+  "rows": [
+    {"actual":"ADMIT","case":"ATCODER_UNIQUE_EXACT","expected":"ADMIT","pass":true},
+    {"actual":"QUARANTINE","case":"ATCODER_FLOAT_TOLERANCE","expected":"QUARANTINE","pass":true},
+    {"actual":"QUARANTINE","case":"ATCODER_MULTIPLE_VALID_CONSTRUCTIVE","expected":"QUARANTINE","pass":true},
+    {"actual":"QUARANTINE","case":"BFCL_SIMPLE_PYTHON","expected":"QUARANTINE","pass":true},
+    {"actual":"ADMIT","case":"MMLU_PRO","expected":"ADMIT","pass":true},
+    {"actual":"QUARANTINE","case":"MMLU_PRO_RAW_TEXT","expected":"QUARANTINE","pass":true},
+    {"actual":"ADMIT","case":"TOOLBENCH_X_FINAL_ANSWER","expected":"ADMIT","pass":true},
+    {"actual":"QUARANTINE_OR_SCOPE_RESTRICT","case":"CORRECTBENCH_NATIVE_REQUIRED","expected":"QUARANTINE_OR_SCOPE_RESTRICT","pass":true}
+  ],
+  "schema": "triaxis.r10m.evaluator_contract_stack_selftest/v1",
+  "spec_sha256": "02edeb28a58bdf24fe52440e92041d747cadc2c5164097643bf5e306a88de157",
+  "status": "PASS"
+}
