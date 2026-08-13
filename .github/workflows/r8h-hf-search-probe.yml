@@ -1,0 +1,50 @@
+name: R8-H HF Dataset Search Probe
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-hf-search-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Probe exact frozen IDs without row content
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, urllib.parse, urllib.request
+          dataset='livecodebench/code_generation_lite'
+          config='release_v6'
+          split='test'
+          ids=['abc391_d','abc338_b','abc357_b']
+          out=[]
+          for qid in ids:
+              params=urllib.parse.urlencode({
+                'dataset':dataset,'config':config,'split':split,
+                'query':qid,'offset':0,'length':10,
+              })
+              url='https://datasets-server.huggingface.co/search?'+params
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'TRIAXIS-R8H/1.0'})
+                  with urllib.request.urlopen(req,timeout=30) as r:
+                      payload=json.load(r)
+                  rows=payload.get('rows') or []
+                  exact=[]
+                  for item in rows:
+                      row=item.get('row') if isinstance(item,dict) else None
+                      if isinstance(row,dict) and str(row.get('question_id'))==qid:
+                          exact.append(qid)
+                  out.append({'task_id':qid,'http':'PASS','rows_returned':len(rows),'exact_matches':len(exact)})
+              except Exception as e:
+                  out.append({'task_id':qid,'http':'FAIL','error_type':type(e).__name__,'error':str(e)[:160]})
+          print('===R8H_SEARCH_PROBE_BEGIN===')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          print('===R8H_SEARCH_PROBE_END===')
+          PY
