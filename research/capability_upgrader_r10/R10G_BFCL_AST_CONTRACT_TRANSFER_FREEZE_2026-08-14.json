@@ -1,0 +1,50 @@
+{
+  "claim_boundary": {
+    "cognitive_lift_credit": 0,
+    "model_inference": false,
+    "no_benchmark_prevalence_claim": true,
+    "no_bfcl_accuracy_claim": true,
+    "purpose": "prospective cross-domain transfer of verifier/instrument applicability control only"
+  },
+  "date": "2026-08-14",
+  "domain": "Berkeley Function Calling Leaderboard v4 / simple_python",
+  "epoch": "R10G_BFCL_AST_CONTRACT_TRANSFER_20260814",
+  "frozen_abstract_contract_hypothesis": {
+    "candidate_bad_instrument": "generic exact serialized-string equality",
+    "false_quarantine_gate": "if official simple_python evaluator actually requires byte/string identity, transfer fails",
+    "mismatch_class": "STRUCTURED_AST_EQUIVALENCE_VS_EXACT_STRING_EQUALITY",
+    "official_target_semantics_to_verify": "AST/structured function-call correctness",
+    "positive_transfer_gate": "official evaluator demonstrably accepts semantically identical function-call structures that can differ in serialization/order/format, making raw exact-string equality an invalid substitute"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "schema": "triaxis.r10g.bfcl_ast_contract_transfer_freeze/v1",
+  "selection": {
+    "case_ids": [
+      "simple_python_175","simple_python_43","simple_python_40","simple_python_293","simple_python_19",
+      "simple_python_35","simple_python_188","simple_python_268","simple_python_339","simple_python_149",
+      "simple_python_333","simple_python_294","simple_python_141","simple_python_98","simple_python_118",
+      "simple_python_176","simple_python_347","simple_python_100","simple_python_374","simple_python_223"
+    ],
+    "ranking": "ascending SHA256(epoch + ':' + case_id)",
+    "sample_size": 20,
+    "universe_size": 400
+  },
+  "source": {
+    "branch": "main",
+    "ground_truth_opened": false,
+    "ground_truth_path": "berkeley-function-call-leaderboard/bfcl_eval/data/possible_answer/BFCL_v4_simple_python.json",
+    "id_universe": "simple_python_0..simple_python_399",
+    "repo": "ShishirPatil/gorilla",
+    "test_path": "berkeley-function-call-leaderboard/bfcl_eval/data/BFCL_v4_simple_python.json"
+  },
+  "status": "FROZEN_BEFORE_POSSIBLE_ANSWER_OPEN"
+}
