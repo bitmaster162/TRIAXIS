@@ -6,10 +6,12 @@ import pathlib
 import random
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+import onnxruntime as ort
 from sklearn.cluster import KMeans
+from tokenizers import Tokenizer
 
 ROOT = pathlib.Path("extracted/bench-release")
+EMBED_ROOT = pathlib.Path("embedding_model")
 POOL = [
     "DeepHermes-3-Llama-3-8B-Preview", "DeepSeek-R1-0528-Qwen3-8B",
     "DeepSeek-R1-Distill-Qwen-7B", "Fin-R1", "GLM-Z1-9B-0414", "Intern-S1-mini",
@@ -96,6 +98,49 @@ def is_train(dataset, rid):
     return digest % 10 < 7
 
 
+class OnnxSentenceEncoder:
+    def __init__(self):
+        pooling = json.loads((EMBED_ROOT / "pooling.json").read_text())
+        sentence_cfg = json.loads((EMBED_ROOT / "sentence_bert_config.json").read_text())
+        assert pooling.get("pooling_mode_mean_tokens") is True, pooling
+        assert not pooling.get("pooling_mode_cls_token", False), pooling
+        self.max_length = int(sentence_cfg.get("max_seq_length", 256))
+        self.tokenizer = Tokenizer.from_file(str(EMBED_ROOT / "tokenizer.json"))
+        self.tokenizer.enable_truncation(max_length=self.max_length)
+        pad_id = self.tokenizer.token_to_id("[PAD]")
+        assert pad_id is not None
+        self.tokenizer.enable_padding(pad_id=pad_id, pad_token="[PAD]")
+        self.session = ort.InferenceSession(
+            str(EMBED_ROOT / "model.onnx"), providers=["CPUExecutionProvider"]
+        )
+        self.input_names = {item.name for item in self.session.get_inputs()}
+
+    def encode(self, texts, batch_size=128):
+        result = []
+        for start in range(0, len(texts), batch_size):
+            batch = texts[start:start + batch_size]
+            encoded = self.tokenizer.encode_batch(batch)
+            ids = np.asarray([item.ids for item in encoded], dtype=np.int64)
+            mask = np.asarray([item.attention_mask for item in encoded], dtype=np.int64)
+            type_ids = np.asarray([item.type_ids for item in encoded], dtype=np.int64)
+            feed = {}
+            if "input_ids" in self.input_names: feed["input_ids"] = ids
+            if "attention_mask" in self.input_names: feed["attention_mask"] = mask
+            if "token_type_ids" in self.input_names: feed["token_type_ids"] = type_ids
+            outputs = self.session.run(None, feed)
+            hidden = next((out for out in outputs if getattr(out, "ndim", 0) == 3), None)
+            if hidden is None:
+                pooled = next((out for out in outputs if getattr(out, "ndim", 0) == 2), None)
+                if pooled is None: raise RuntimeError("No suitable ONNX embedding output")
+            else:
+                weights = mask.astype(np.float32)[..., None]
+                pooled = (hidden * weights).sum(axis=1) / np.clip(weights.sum(axis=1), 1e-9, None)
+            pooled = pooled.astype(np.float32)
+            pooled /= np.clip(np.linalg.norm(pooled, axis=1, keepdims=True), 1e-12, None)
+            result.append(pooled)
+        return np.vstack(result)
+
+
 def evaluate(rows, chooser):
     per_dataset = collections.defaultdict(list)
     flat, recall = [], []
@@ -114,10 +159,7 @@ def evaluate(rows, chooser):
 
 
 def paired_delta(test, challenger, baseline):
-    values = [
-        row["scores"][challenger(dataset, rid, row)] - row["scores"][baseline(dataset, rid, row)]
-        for dataset, rid, row in test
-    ]
+    values = [row["scores"][challenger(ds, rid, row)] - row["scores"][baseline(ds, rid, row)] for ds, rid, row in test]
     observed = sum(values) / len(values)
     rng = random.Random(20260813)
     bootstrap = []
@@ -145,19 +187,11 @@ def main():
     dataset_choice = {}
     for dataset in matched:
         rows = [item for item in train if item[0] == dataset]
-        dataset_choice[dataset] = max(
-            POOL, key=lambda m: (sum(item[2]["scores"][m] for item in rows) / len(rows), m)
-        )
+        dataset_choice[dataset] = max(POOL, key=lambda m: (sum(item[2]["scores"][m] for item in rows) / len(rows), m))
 
-    encoder = SentenceTransformer(MODEL_ID, revision=MODEL_REVISION, device="cpu")
-    train_embeddings = encoder.encode(
-        [row["text"] for _, _, row in train], batch_size=128, show_progress_bar=True,
-        normalize_embeddings=True, convert_to_numpy=True,
-    )
-    test_embeddings = encoder.encode(
-        [row["text"] for _, _, row in test], batch_size=128, show_progress_bar=True,
-        normalize_embeddings=True, convert_to_numpy=True,
-    )
+    encoder = OnnxSentenceEncoder()
+    train_embeddings = encoder.encode([row["text"] for _, _, row in train])
+    test_embeddings = encoder.encode([row["text"] for _, _, row in test])
 
     kmeans = KMeans(n_clusters=N_CLUSTERS, random_state=SEED, n_init=10)
     train_cluster = kmeans.fit_predict(train_embeddings)
@@ -165,16 +199,12 @@ def main():
 
     cluster_model_scores = collections.defaultdict(lambda: collections.defaultdict(list))
     for cluster, (_, _, row) in zip(train_cluster, train):
-        for model in POOL:
-            cluster_model_scores[int(cluster)][model].append(row["scores"][model])
+        for model in POOL: cluster_model_scores[int(cluster)][model].append(row["scores"][model])
     cluster_choice = {
         cluster: max(POOL, key=lambda m: (sum(by_model[m]) / len(by_model[m]), m))
         for cluster, by_model in cluster_model_scores.items()
     }
-    semantic_choice = {
-        (dataset, rid): cluster_choice[int(cluster)]
-        for cluster, (dataset, rid, _) in zip(test_cluster, test)
-    }
+    semantic_choice = {(dataset, rid): cluster_choice[int(cluster)] for cluster, (dataset, rid, _) in zip(test_cluster, test)}
 
     choose_best = lambda dataset, rid, row: best_single
     choose_dataset = lambda dataset, rid, row: dataset_choice[dataset]
@@ -190,7 +220,7 @@ def main():
     contrast = paired_delta(test, choose_semantic, choose_dataset)
     survivor = contrast["delta"] > 0 and contrast["bootstrap95"][0] > 0
     output = {
-        "schema": "triaxis.r8e.semantic_cluster_emulation/v1",
+        "schema": "triaxis.r8e.semantic_cluster_emulation/v2",
         "evidence_class": "MECHANISM_EMULATION_EXPLORATORY_OFFLINE_HELDOUT",
         "source": {
             "llmrouterbench_commit": "c77cb0506949d8f959e97967d2fefca0e8ff1b05",
@@ -202,7 +232,9 @@ def main():
                 "official_provider": "external OpenAI-compatible endpoint",
                 "used_local_model": MODEL_ID,
                 "revision": MODEL_REVISION,
+                "execution_backend": "quantized ONNX + official mean pooling"
             },
+            "repair_from_v1": "PyTorch install failed ENOSPC; algorithm and frozen cluster parameters unchanged"
         },
         "train_rows": len(train), "test_rows": len(test), "n_clusters": N_CLUSTERS,
         "evaluations": evaluations,
@@ -213,8 +245,8 @@ def main():
             "This is NOT an official Avengers or Avengers-Pro reproduction.",
             "The routing mechanism is emulated with a pinned public local embedding model.",
             "All fitting uses train only; held-out outcomes are scoring only.",
-            "No live LLM model calls and no test-time tuning.",
-        ],
+            "No live LLM model calls and no test-time tuning."
+        ]
     }
     pathlib.Path("R8E_SEMANTIC_CLUSTER_RESULT.json").write_text(json.dumps(output, indent=2, sort_keys=True), encoding="utf-8")
     print("===R8E_RESULT_BEGIN===")
@@ -222,5 +254,4 @@ def main():
     print("===R8E_RESULT_END===")
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
