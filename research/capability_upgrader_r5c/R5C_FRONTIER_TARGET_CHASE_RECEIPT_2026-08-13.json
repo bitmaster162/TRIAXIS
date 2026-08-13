@@ -2,7 +2,7 @@
   "schema": "triaxis.r5c.receipt/v0.1",
   "date_local": "2026-08-13",
   "status": "COMPLETE_HARD_NEGATIVE_DONOR_COMBO_INSUFFICIENT",
-  "research_report_commit": "3d349d82769aa4c9f09c6261f6fa402eee2711d8",
+  "research_report_commit": "83e4e62ac6a8d91840693ff43f18f28854b284a8",
   "source_proxy": {
     "repo": "bitmaster162/continuityos",
     "failed_run_id": 31531821208,
@@ -35,9 +35,10 @@
   ],
   "package": {
     "filename": "TRIAXIS_R5C_FRONTIER_TARGET_CHASE_20260813.zip",
-    "sha256": "5a89005af96a98a555542dfdb29281bf5f2779a6f60f0cbb967fed9ca137f859",
-    "local_receipt_sha256": "dfe6b7a88826788dec6f9223d7949ab20f7c0bee04c052f0cac8d2c714cf2a5b",
-    "report_sha256": "844490a5b09e31eeaf19f6e697ba91691e4dcc3ec803f845d09aa8912e813ab2"
+    "sha256": "de83a5084e84cb9e4a483432ec7c50d3e3c6ebda93ba38bcddc37c33db14ff18",
+    "local_receipt_sha256": "a072fae966b72e105e741e60543c0f052de6a72b491ac1c2b52a7e08b2eaf911",
+    "report_sha256": "a27c6cbc41dff786d26c4f647222afbf4a737597bf9b0cd6648c6502d26e9007",
+    "gold_audit_sha256": "7fa5a2533624b18b53971a24e225b780e0108d13b598fb79524830ee00cae27d"
   },
   "external_models": {
     "claude_called": false,
