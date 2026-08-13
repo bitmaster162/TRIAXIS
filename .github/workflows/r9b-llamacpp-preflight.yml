@@ -1,0 +1,98 @@
+name: R9-B Qwen3.5 llama.cpp Backend Preflight
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r9b-llamacpp-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Freeze provenance
+        run: |
+          echo 'SOURCE_MODEL=Qwen/Qwen3.5-0.8B'
+          echo 'SOURCE_REVISION=2fc06364715b967f1860aea9cf38778875588b17'
+          echo 'GGUF_REPO=ggml-org/Qwen3.5-0.8B-GGUF'
+          echo 'GGUF_VARIANT=BF16'
+          echo 'LLAMA_CPP=bdffafa5df64e10cb6eef2f3bba4b4afc5f1c149'
+          echo 'NO_BENCHMARK_TASKS=1'
+          echo 'NO_HIDDEN_TESTS=1'
+          echo 'NO_SECRETS=1'
+
+      - name: Verify GGUF source revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --retry 3 \
+            'https://huggingface.co/ggml-org/Qwen3.5-0.8B-GGUF/resolve/main/.src_sha?download=true' \
+            -o /tmp/src_sha
+          cat /tmp/src_sha
+          grep -Fq '2fc06364715b967f1860aea9cf38778875588b17' /tmp/src_sha
+          echo 'SOURCE_REVISION_MATCH=PASS'
+
+      - name: Build pinned llama.cpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/ggml-org/llama.cpp.git /tmp/llama.cpp
+          git -C /tmp/llama.cpp checkout --quiet bdffafa5df64e10cb6eef2f3bba4b4afc5f1c149
+          cmake -S /tmp/llama.cpp -B /tmp/llama.cpp/build -DGGML_NATIVE=OFF -DGGML_OPENMP=ON -DLLAMA_CURL=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/llama.cpp/build -j2 --target llama-server
+          /tmp/llama.cpp/build/bin/llama-server --version
+
+      - name: Start BF16 source-equivalent server
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/llama.cpp/build/bin/llama-server \
+            -hf ggml-org/Qwen3.5-0.8B-GGUF:BF16 \
+            --host 127.0.0.1 --port 8080 -c 4096 -np 1 -t 4 --no-webui \
+            > /tmp/llama.log 2>&1 &
+          echo $! > /tmp/llama.pid
+          for i in $(seq 1 120); do
+            if curl -fsS http://127.0.0.1:8080/health >/tmp/health.json 2>/dev/null; then
+              cat /tmp/health.json
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/llama.log
+          exit 1
+
+      - name: Deterministic non-benchmark generation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, urllib.request, time
+          payload={
+            'model':'qwen3.5-0.8b',
+            'messages':[{'role':'user','content':'Return only the exact text: TRIAXIS_R9B_OK'}],
+            'temperature':0,
+            'max_tokens':32,
+            'chat_template_kwargs':{'enable_thinking':False},
+          }
+          req=urllib.request.Request('http://127.0.0.1:8080/v1/chat/completions',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})
+          t=time.time()
+          with urllib.request.urlopen(req,timeout=120) as r:
+            data=json.load(r)
+          text=data['choices'][0]['message']['content'].strip()
+          print('GENERATION_SECONDS=%.3f'%(time.time()-t))
+          print('OUTPUT='+repr(text))
+          if 'TRIAXIS_R9B_OK' not in text:
+            raise SystemExit('PREFLIGHT_OUTPUT_MISMATCH')
+          print('R9B_BACKEND_PREFLIGHT=PASS')
+          PY
+
+      - name: Runtime tail
+        if: always()
+        run: tail -n 80 /tmp/llama.log || true
