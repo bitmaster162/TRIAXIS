@@ -1,0 +1,130 @@
+name: R8 LLMRouterBench Materialization
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8-router-materialize.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Freeze receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'TRIAXIS_R8_REMOTE_RAIL=1'
+          echo 'LLMROUTERBENCH_CODE_COMMIT=c77cb0506949d8f959e97967d2fefca0e8ff1b05'
+          echo 'ARCHIVE_SHA256=b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1'
+          echo 'NO_MODEL_API=1'
+          echo 'NO_SECRETS=1'
+
+      - name: Download and verify public result archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://huggingface.co/datasets/NPULH/LLMRouterBench/resolve/main/bench-release.tar.gz?download=true'
+          curl --fail --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 420 \
+            --output bench-release.tar.gz "$URL"
+          echo 'b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1  bench-release.tar.gz' | sha256sum -c -
+          ls -lh bench-release.tar.gz
+
+      - name: Extract and inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir extracted
+          tar -xzf bench-release.tar.gz -C extracted
+          python3 - <<'PY'
+          import json, os, pathlib, collections
+          root=pathlib.Path('extracted')
+          files=[p for p in root.rglob('*') if p.is_file()]
+          ext=collections.Counter(p.suffix.lower() or '<none>' for p in files)
+          top=collections.Counter((p.relative_to(root).parts[0] if p.relative_to(root).parts else '.') for p in files)
+          samples=[]
+          for p in files:
+              if len(samples)>=40:
+                  break
+              if p.suffix.lower() not in {'.json','.jsonl','.csv','.parquet','.txt'}:
+                  continue
+              rec={'path':str(p.relative_to(root)),'size':p.stat().st_size,'suffix':p.suffix.lower()}
+              try:
+                  if p.suffix.lower()=='.json':
+                      obj=json.loads(p.read_text(encoding='utf-8',errors='replace'))
+                      rec['json_type']=type(obj).__name__
+                      if isinstance(obj,dict): rec['keys']=sorted(map(str,obj.keys()))[:80]
+                      elif isinstance(obj,list) and obj and isinstance(obj[0],dict): rec['first_keys']=sorted(map(str,obj[0].keys()))[:80]
+                  elif p.suffix.lower()=='.jsonl':
+                      line=p.open(encoding='utf-8',errors='replace').readline()
+                      obj=json.loads(line) if line.strip() else None
+                      rec['first_type']=type(obj).__name__
+                      if isinstance(obj,dict): rec['first_keys']=sorted(map(str,obj.keys()))[:80]
+                  elif p.suffix.lower()=='.csv':
+                      header=p.open(encoding='utf-8',errors='replace').readline().strip()
+                      rec['header']=header[:1000]
+              except Exception as e:
+                  rec['inspect_error']=type(e).__name__
+              samples.append(rec)
+          report={
+            'schema':'triaxis.r8.router_archive_inventory/v1',
+            'file_count':len(files),
+            'total_bytes':sum(p.stat().st_size for p in files),
+            'extensions':dict(ext),
+            'top_level':dict(top),
+            'samples':samples,
+          }
+          pathlib.Path('R8_ROUTER_ARCHIVE_INVENTORY.json').write_text(json.dumps(report,indent=2,sort_keys=True),encoding='utf-8')
+          print('===R8_ROUTER_ARCHIVE_INVENTORY_BEGIN===')
+          print(json.dumps(report,indent=2,sort_keys=True))
+          print('===R8_ROUTER_ARCHIVE_INVENTORY_END===')
+          PY
+
+      - name: Schema census
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, collections
+          root=pathlib.Path('extracted')
+          keysets=collections.Counter()
+          parsed=0
+          errors=0
+          examples={}
+          for p in root.rglob('*'):
+              if not p.is_file() or p.suffix.lower() not in {'.json','.jsonl'}:
+                  continue
+              try:
+                  objs=[]
+                  if p.suffix.lower()=='.json':
+                      x=json.loads(p.read_text(encoding='utf-8',errors='replace'))
+                      if isinstance(x,dict): objs=[x]
+                      elif isinstance(x,list): objs=[o for o in x[:10] if isinstance(o,dict)]
+                  else:
+                      with p.open(encoding='utf-8',errors='replace') as f:
+                          for i,line in enumerate(f):
+                              if i>=10: break
+                              if line.strip():
+                                  o=json.loads(line)
+                                  if isinstance(o,dict): objs.append(o)
+                  for o in objs:
+                      ks=tuple(sorted(map(str,o.keys())))
+                      keysets[ks]+=1
+                      examples.setdefault(ks,str(p.relative_to(root)))
+                      parsed+=1
+              except Exception:
+                  errors+=1
+          rows=[]
+          for ks,n in keysets.most_common(30):
+              rows.append({'count':n,'keys':list(ks),'example':examples[ks]})
+          out={'schema':'triaxis.r8.router_schema_census/v1','parsed_objects_sampled':parsed,'parse_errors':errors,'top_keysets':rows}
+          pathlib.Path('R8_ROUTER_SCHEMA_CENSUS.json').write_text(json.dumps(out,indent=2,sort_keys=True),encoding='utf-8')
+          print('===R8_ROUTER_SCHEMA_CENSUS_BEGIN===')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          print('===R8_ROUTER_SCHEMA_CENSUS_END===')
+          PY
