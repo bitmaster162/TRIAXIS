@@ -161,17 +161,21 @@ The repair added a product-level setup gate before legacy CLI dispatch:
 
 B3's lifecycle scan did not predict this material product repair.
 
-### Gold 3 — fresh-process regression
+### Gold 3 — pre-legacy-dispatch regression
 
 Commit:
 `4812e740dcbdf2d76de6d873e1aa9f6d1fcb2252`
 
-`Add setup offline policy regression test`
+`Prove setup policy holds before legacy CLI invocation`
 
-The new subprocess regression proves:
-- default `cos setup --quick` does not construct fastembed;
-- setup does not create `.env`;
-- product dashboard output is produced.
+The regression strengthens the unknown-embedder case so:
+- legacy CLI itself must not run;
+- `legacy_entrypoint_called` remains false;
+- network/filesystem/memory effects remain false;
+- the isolated setup fixture retains the inert `ENV_FILE` compatibility symbol.
+
+This corroborates the second gold mechanism precisely:
+**policy validation must occur before legacy dispatch**, not merely before downstream writes.
 
 ## Final CI verification
 
