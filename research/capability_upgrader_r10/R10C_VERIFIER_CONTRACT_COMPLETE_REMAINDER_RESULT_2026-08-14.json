@@ -1,0 +1,206 @@
+{
+  "adjudication": {
+    "boundary": "Controller/instrument-validity evidence only. No model intelligence lift, EBRC novelty, benchmark-wide prevalence, or production qualification.",
+    "claim": "The unchanged prospective verifier-contract gate identified multiple previously unopened semantic mismatches of two distinct classes: numeric tolerance and non-unique constructive output.",
+    "status": "PASS",
+    "verifier_contract_gate_transfer": "REPRODUCED_USEFUL_CONTROLLER_FUNCTION_ON_BOUNDED_REMAINDER"
+  },
+  "aggregate": {
+    "mismatch_task_ids": [
+      "abc375_b",
+      "arc183_d"
+    ],
+    "no_mismatch_detected": 22,
+    "quarantine_non_unique_constructive": 1,
+    "quarantine_numeric_tolerance": 1,
+    "quarantined": 2,
+    "sample_size": 24
+  },
+  "combined_fresh_remainder": {
+    "claim_boundary": "DESCRIPTIVE_CENSUS_OF_THIS_BOUNDED_REMAINDER_ONLY; NO_BENCHMARK_WIDE_PREVALENCE_CLAIM",
+    "no_mismatch_detected": 41,
+    "quarantine_task_ids": [
+      "abc319_c",
+      "abc375_b",
+      "arc183_d"
+    ],
+    "quarantined": 3,
+    "r10a_count": 20,
+    "r10c_count": 24,
+    "scope": "EXPLICITLY_BOUNDED_44_FRESH_ELIGIBLE_ATCODER_REMAINDER_AFTER_PRIOR_EXPOSURE_EXCLUSIONS",
+    "total_count": 44
+  },
+  "date": "2026-08-14",
+  "epoch": "R10C_VERIFIER_CONTRACT_COMPLETE_REMAINDER_20260814",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "protocol": {
+    "cognitive_lift_credit": 0,
+    "editorials_used": false,
+    "gate_rule_unchanged": true,
+    "hidden_tests_used": false,
+    "model_outputs_generated": false,
+    "scope": "CONTROLLER_ONLY_NO_MODEL_INFERENCE"
+  },
+  "results": [
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_OR_MINUS_ONE",
+      "statement_url": "https://atcoder.jp/contests/abc320/tasks/abc320_c?lang=en",
+      "task_id": "abc320_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/abc322/tasks/abc322_c?lang=en",
+      "task_id": "abc322_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc328/tasks/abc328_b?lang=en",
+      "task_id": "abc328_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_DETERMINISTIC_GRID",
+      "statement_url": "https://atcoder.jp/contests/abc339/tasks/abc339_b?lang=en",
+      "task_id": "abc339_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc357/tasks/abc357_e?lang=en",
+      "task_id": "abc357_e"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc358/tasks/abc358_a?lang=en",
+      "task_id": "abc358_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/abc359/tasks/abc359_e?lang=en",
+      "task_id": "abc359_e"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc361/tasks/abc361_e?lang=en",
+      "task_id": "abc361_e"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/abc372/tasks/abc372_f?lang=en",
+      "task_id": "abc372_f"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc374/tasks/abc374_c?lang=en",
+      "task_id": "abc374_c"
+    },
+    {
+      "decision": "QUARANTINE_NUMERIC_TOLERANCE",
+      "mismatch_reason": "Official judge accepts absolute or relative error <= 1e-6; generic exact-output scoring is semantically incompatible.",
+      "output_contract": "NUMERIC_TOLERANCE_ABS_OR_REL_1E-6",
+      "statement_url": "https://atcoder.jp/contests/abc375/tasks/abc375_b?lang=en",
+      "task_id": "abc375_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc381/tasks/abc381_b?lang=en",
+      "task_id": "abc381_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_DETERMINISTIC_ORDERED_LIST",
+      "statement_url": "https://atcoder.jp/contests/abc384/tasks/abc384_c?lang=en",
+      "task_id": "abc384_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/abc387/tasks/abc387_b?lang=en",
+      "task_id": "abc387_b"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_YES_NO",
+      "statement_url": "https://atcoder.jp/contests/abc390/tasks/abc390_c?lang=en",
+      "task_id": "abc390_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_OR_MINUS_ONE",
+      "statement_url": "https://atcoder.jp/contests/arc182/tasks/arc182_d?lang=en",
+      "task_id": "arc182_d"
+    },
+    {
+      "decision": "QUARANTINE_NON_UNIQUE_CONSTRUCTIVE",
+      "mismatch_reason": "Official output contract accepts any valid solution when multiple solutions exist; exact expected-output equality is semantically incompatible.",
+      "output_contract": "MULTIPLE_VALID_CONSTRUCTIVE_OUTPUT",
+      "statement_url": "https://atcoder.jp/contests/arc183/tasks/arc183_d?lang=en",
+      "task_id": "arc183_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/arc184/tasks/arc184_c?lang=en",
+      "task_id": "arc184_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/arc186/tasks/arc186_c?lang=en",
+      "task_id": "arc186_c"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/arc186/tasks/arc186_d?lang=en",
+      "task_id": "arc186_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_MOD_998244353",
+      "statement_url": "https://atcoder.jp/contests/arc188/tasks/arc188_d?lang=en",
+      "task_id": "arc188_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_MATRIX_MOD_P",
+      "statement_url": "https://atcoder.jp/contests/arc190/tasks/arc190_d?lang=en",
+      "task_id": "arc190_d"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER",
+      "statement_url": "https://atcoder.jp/contests/arc194/tasks/arc194_a?lang=en",
+      "task_id": "arc194_a"
+    },
+    {
+      "decision": "NO_MISMATCH_DETECTED",
+      "output_contract": "UNIQUE_INTEGER_SEQUENCE",
+      "statement_url": "https://atcoder.jp/contests/arc195/tasks/arc195_d?lang=en",
+      "task_id": "arc195_d"
+    }
+  ],
+  "sample_freeze": {
+    "commit": "2ba5df8a09a5f56bda54448836e89bebc3071ee4",
+    "path": "research/capability_upgrader_r10/R10C_VERIFIER_CONTRACT_COMPLETE_REMAINDER_FREEZE_2026-08-14.json",
+    "statements_opened_after_freeze": true
+  }
+}
