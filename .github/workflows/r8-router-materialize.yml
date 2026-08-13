@@ -1,4 +1,4 @@
-name: R8-E LLMRouterBench Semantic Cluster Emulation ONNX
+name: R8-H Direct AtCoder Public Statements
 
 on:
   push:
@@ -11,51 +11,44 @@ permissions:
   contents: read
 
 jobs:
-  semantic-cluster:
+  public-statements:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - name: Frozen protocol
+      - name: Frozen source policy
         run: |
-          echo 'EVIDENCE_CLASS=MECHANISM_EMULATION_EXPLORATORY_OFFLINE_HELDOUT'
-          echo 'SPLIT=SHA256_QUERY_70_30_IDENTICAL_TO_R8C_R8D'
-          echo 'MECHANISM=AVENGERS_STYLE_SEMANTIC_EMBEDDING_PLUS_30_CLUSTERS_TOP1'
-          echo 'EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41'
-          echo 'BACKEND=QUANTIZED_ONNX_MEAN_POOLING'
-          echo 'NOT_OFFICIAL_AVENGERS_REPRODUCTION=1'
-          echo 'NO_LLM_API=1'
-      - name: Download verify benchmark
+          echo 'R8H_DIRECT_SOURCE=1'
+          echo 'SEARCH_ENGINE=DENY'
+          echo 'EDITORIAL_ENDPOINTS=DENY'
+          echo 'TASKS=abc391_d,abc338_b,abc357_b'
+      - name: Fetch exact official task URLs
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 420 \
-            --output bench-release.tar.gz \
-            'https://huggingface.co/datasets/NPULH/LLMRouterBench/resolve/main/bench-release.tar.gz?download=true'
-          echo 'b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1  bench-release.tar.gz' | sha256sum -c -
-          mkdir extracted
-          tar -xzf bench-release.tar.gz -C extracted
-          rm -f bench-release.tar.gz
-          df -h .
-      - name: Download frozen embedding artifacts
+          mkdir pages
+          curl --fail --location --retry 3 --output pages/abc391_d.html 'https://atcoder.jp/contests/abc391/tasks/abc391_d?lang=en'
+          curl --fail --location --retry 3 --output pages/abc338_b.html 'https://atcoder.jp/contests/abc338/tasks/abc338_b?lang=en'
+          curl --fail --location --retry 3 --output pages/abc357_b.html 'https://atcoder.jp/contests/abc357/tasks/abc357_b?lang=en'
+          sha256sum pages/*.html
+      - name: Extract public English statements only
         run: |
           set -euo pipefail
-          REV='1110a243fdf4706b3f48f1d95db1a4f5529b4d41'
-          BASE="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/resolve/${REV}"
-          mkdir -p embedding_model
-          curl -fL --retry 3 -o embedding_model/model.onnx "${BASE}/onnx/model_quint8_avx2.onnx?download=true"
-          curl -fL --retry 3 -o embedding_model/tokenizer.json "${BASE}/tokenizer.json?download=true"
-          curl -fL --retry 3 -o embedding_model/pooling.json "${BASE}/1_Pooling/config.json?download=true"
-          curl -fL --retry 3 -o embedding_model/sentence_bert_config.json "${BASE}/sentence_bert_config.json?download=true"
-          sha256sum embedding_model/*
-          ls -lh embedding_model
-      - name: Install lightweight frozen dependencies
-        run: |
-          set -euo pipefail
-          python3 -m pip install --no-cache-dir --disable-pip-version-check --quiet \
-            'scikit-learn==1.7.1' 'onnxruntime==1.22.1' 'tokenizers==0.21.4'
-          python3 -c "import sklearn, onnxruntime, tokenizers; print(sklearn.__version__, onnxruntime.__version__, tokenizers.__version__)"
-          df -h .
-      - name: Run R8-E
-        env:
-          TOKENIZERS_PARALLELISM: 'false'
-        run: python3 research/benchmark_rail_r8/r8e_semantic_cluster_router_probe.py
+          python3 -m pip install --disable-pip-version-check --quiet 'beautifulsoup4==4.13.4'
+          python3 - <<'PY'
+          from bs4 import BeautifulSoup
+          import json, pathlib
+          out=[]
+          for task in ['abc391_d','abc338_b','abc357_b']:
+              html=pathlib.Path(f'pages/{task}.html').read_text(encoding='utf-8',errors='replace')
+              soup=BeautifulSoup(html,'html.parser')
+              container=soup.select_one('span.lang-en')
+              if container is None:
+                  raise SystemExit(f'English statement missing: {task}')
+              # Remove any links/navigation/scripts; keep only visible task statement text.
+              for tag in container.select('script,style'):
+                  tag.decompose()
+              text='\n'.join(line.strip() for line in container.get_text('\n').splitlines() if line.strip())
+              out.append({'task_id':task,'statement_text':text})
+          print('===R8H_PUBLIC_STATEMENTS_BEGIN===')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          print('===R8H_PUBLIC_STATEMENTS_END===')
+          PY
