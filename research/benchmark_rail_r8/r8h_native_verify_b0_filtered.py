@@ -5,6 +5,8 @@ import sys
 import urllib.parse
 import urllib.request
 
+import duckdb
+
 SELECTED = ("abc391_d", "abc338_b", "abc357_b")
 TIMEOUT = 6
 DATASET = "livecodebench/code_generation_lite"
@@ -12,31 +14,38 @@ CONFIG = "release_v6"
 SPLIT = "test"
 
 
-def fetch_one(qid: str) -> dict:
-    params = urllib.parse.urlencode({
-        "dataset": DATASET,
-        "config": CONFIG,
-        "split": SPLIT,
-        "where": f'"question_id"=\'{qid}\'',
-        "offset": 0,
-        "length": 10,
-    })
-    url = "https://datasets-server.huggingface.co/filter?" + params
-    req = urllib.request.Request(url, headers={"User-Agent": "TRIAXIS-R8H/1.0"})
+def sql_string(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
+
+
+def fetch_selected_rows():
+    manifest_url = "https://datasets-server.huggingface.co/parquet?" + urllib.parse.urlencode({"dataset": DATASET})
+    req = urllib.request.Request(manifest_url, headers={"User-Agent": "TRIAXIS-R8H/1.0"})
     with urllib.request.urlopen(req, timeout=60) as response:
         payload = json.load(response)
-    rows = payload.get("rows") or []
-    matches = []
-    for item in rows:
-        row = item.get("row") if isinstance(item, dict) else None
-        if isinstance(row, dict) and str(row.get("question_id")) == qid:
-            matches.append(row)
-    if len(matches) != 1:
-        raise RuntimeError(f"FILTER_CARDINALITY:{qid}:{len(matches)}")
-    return matches[0]
+    urls = [
+        item["url"] for item in payload.get("parquet_files", [])
+        if item.get("config") == CONFIG and item.get("split") == SPLIT and item.get("url")
+    ]
+    if not urls:
+        raise RuntimeError("NO_RELEASE_V6_PARQUET_URLS")
+
+    con = duckdb.connect(database=":memory:")
+    con.execute("INSTALL httpfs")
+    con.execute("LOAD httpfs")
+    url_list = "[" + ",".join(sql_string(url) for url in urls) + "]"
+    id_list = ",".join(sql_string(qid) for qid in SELECTED)
+    query = f"SELECT * FROM read_parquet({url_list}, union_by_name=true) WHERE question_id IN ({id_list})"
+    cursor = con.execute(query)
+    columns = [desc[0] for desc in cursor.description]
+    rows = [dict(zip(columns, values)) for values in cursor.fetchall()]
+    by_id = {str(row.get("question_id")): row for row in rows}
+    if set(by_id) != set(SELECTED):
+        raise RuntimeError(f"PARQUET_CARDINALITY:{sorted(by_id)}")
+    return by_id, len(urls)
 
 
-def classify(result_list, metadata):
+def classify(result_list):
     if result_list and all(r is True or r == 1 for r in result_list):
         return "PASS"
     flat = []
@@ -65,10 +74,10 @@ def main():
     from lcb_runner.benchmarks.code_generation import CodeGenerationProblem
     from lcb_runner.evaluation.compute_code_generation_metrics import check_correctness
 
+    rows, shard_count = fetch_selected_rows()
     public_results = []
     for qid in SELECTED:
-        row = fetch_one(qid)
-        problem = CodeGenerationProblem(**row)
+        problem = CodeGenerationProblem(**rows[qid])
         sample = problem.get_evaluation_sample()
         result_list, metadata = check_correctness(sample, solutions[qid], timeout=TIMEOUT, debug=False)
         total = len(result_list)
@@ -78,14 +87,16 @@ def main():
             "reward": 1.0 if total > 0 and passed == total else 0.0,
             "passed": passed,
             "total": total,
-            "error_class": classify(result_list, metadata),
+            "error_class": classify(result_list),
         })
-        del row, problem, sample, metadata, result_list
+        del problem, sample, result_list, metadata
+    del rows
 
     out = {
-        "schema": "triaxis.r8h.native_b0_result/v3-filtered",
+        "schema": "triaxis.r8h.native_b0_result/v4-parquet",
         "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
-        "data_access": "Hugging Face Dataset Server server-side filter by frozen question_id",
+        "data_access": "official HF parquet manifest + DuckDB HTTP range reads/predicate pushdown",
+        "parquet_shard_count": shard_count,
         "livecodebench_commit": os.environ.get("LCB_COMMIT"),
         "release": CONFIG,
         "evaluator_details_disclosed": False,
