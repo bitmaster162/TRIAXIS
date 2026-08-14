@@ -27,11 +27,18 @@ import re
 import shutil
 import stat
 import tempfile
+import unicodedata
 import zipfile
 from pathlib import Path, PurePosixPath
 
 SCHEMA="triaxis.r16.clean_validation_intake/v1"
 REQUIRED_COMMAND="PYTHONPATH=src:. python -m unittest discover -s tests -v"
+
+MAX_ARCHIVE_MEMBERS=4096
+MAX_MEMBER_UNCOMPRESSED=256*1024*1024
+MAX_TOTAL_UNCOMPRESSED=512*1024*1024
+MAX_COMPRESSION_RATIO=500.0
+RATIO_GUARD_MIN_UNCOMPRESSED=1024*1024
 
 def sha256_file(path:Path)->str:
     h=hashlib.sha256()
@@ -68,18 +75,18 @@ def validate_member_topology(infos:list[zipfile.ZipInfo])->list[str]:
         raw=info.filename.replace("\\","/")
         # safe_member already validates traversal/absolute/symlink.
         norm=str(PurePosixPath(raw))
-        folded=norm.casefold()
+        portable=unicodedata.normalize("NFC",norm).casefold()
 
         if norm in seen_exact:
             errors.append(f"DUPLICATE_ARCHIVE_PATH:{norm}")
         else:
             seen_exact[norm]=info.filename
 
-        prior=seen_casefold.get(folded)
+        prior=seen_casefold.get(portable)
         if prior is not None and prior!=norm:
-            errors.append(f"CASEFOLD_ARCHIVE_COLLISION:{prior}:{norm}")
+            errors.append(f"PORTABLE_ARCHIVE_COLLISION:{prior}:{norm}")
         else:
-            seen_casefold[folded]=norm
+            seen_casefold[portable]=norm
 
         if info.is_dir():
             dirs.add(norm.rstrip("/"))
@@ -95,6 +102,48 @@ def validate_member_topology(infos:list[zipfile.ZipInfo])->list[str]:
             errors.append(f"FILE_PREFIX_COLLISION:{f}")
 
     return errors
+
+def validate_archive_budget(infos:list[zipfile.ZipInfo])->list[str]:
+    errors=[]
+    if len(infos)>MAX_ARCHIVE_MEMBERS:
+        errors.append(f"ARCHIVE_MEMBER_LIMIT:{len(infos)}:{MAX_ARCHIVE_MEMBERS}")
+
+    total=0
+    for info in infos:
+        if info.is_dir():
+            continue
+        if info.file_size<0 or info.compress_size<0:
+            errors.append(f"NEGATIVE_ZIP_SIZE:{info.filename}")
+            continue
+        total+=info.file_size
+        if info.file_size>MAX_MEMBER_UNCOMPRESSED:
+            errors.append(
+                f"MEMBER_UNCOMPRESSED_LIMIT:{info.filename}:{info.file_size}:{MAX_MEMBER_UNCOMPRESSED}"
+            )
+        if (
+            info.file_size>=RATIO_GUARD_MIN_UNCOMPRESSED
+            and info.file_size/max(1,info.compress_size)>MAX_COMPRESSION_RATIO
+        ):
+            errors.append(
+                f"COMPRESSION_RATIO_LIMIT:{info.filename}:"
+                f"{info.file_size/max(1,info.compress_size):.1f}:{MAX_COMPRESSION_RATIO}"
+            )
+    if total>MAX_TOTAL_UNCOMPRESSED:
+        errors.append(f"TOTAL_UNCOMPRESSED_LIMIT:{total}:{MAX_TOTAL_UNCOMPRESSED}")
+    return errors
+
+def copy_member_bounded(src,dst, *, declared_size:int)->None:
+    written=0
+    while True:
+        chunk=src.read(min(1024*1024,MAX_MEMBER_UNCOMPRESSED+1-written))
+        if not chunk:
+            break
+        written+=len(chunk)
+        if written>MAX_MEMBER_UNCOMPRESSED:
+            raise ValueError("MEMBER_STREAM_LIMIT")
+        dst.write(chunk)
+    if written!=declared_size:
+        raise ValueError(f"DECLARED_SIZE_MISMATCH:{declared_size}:{written}")
 
 def parse_sums(path:Path)->tuple[dict[str,str],list[str]]:
     entries={}
@@ -151,6 +200,7 @@ def inspect(zip_path:Path, *, expected_head:str)->dict:
             if not ok:
                 errors.append(f"{err}:{info.filename}")
         errors.extend(validate_member_topology(infos))
+        errors.extend(validate_archive_budget(infos))
         if errors:
             return {
               "schema":SCHEMA,"status":"FAIL","green":False,
@@ -165,9 +215,20 @@ def inspect(zip_path:Path, *, expected_head:str)->dict:
             rel=info.filename.replace("\\","/")
             dest=out/PurePosixPath(rel)
             dest.parent.mkdir(parents=True,exist_ok=True)
-            with zf.open(info) as src, dest.open("wb") as dst:
-                shutil.copyfileobj(src,dst)
+            try:
+                with zf.open(info) as src, dest.open("wb") as dst:
+                    copy_member_bounded(src,dst,declared_size=info.file_size)
+            except Exception as e:
+                errors.append(f"EXTRACTION_FAILURE:{rel}:{type(e).__name__}:{e}")
+                continue
             files.append(rel)
+
+        if errors:
+            return {
+              "schema":SCHEMA,"status":"FAIL","green":False,
+              "archive_sha256":archive_sha,
+              "errors":sorted(errors),"warnings":[]
+            }
 
         sums_files=[f for f in files if PurePosixPath(f).name=="SHA256SUMS"]
         if len(sums_files)!=1:
