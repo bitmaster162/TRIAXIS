@@ -1,0 +1,18 @@
+{
+  "MERGE_PERMISSION": "DENY",
+  "adversarial_matrix": "122/122 PASS",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "date": "2026-08-14",
+  "deploy_permission": "DENY",
+  "epoch": "R16E_NEXT_20_SEPARATE_REF_WITNESSED_SUBJECT_TRANSACTIONS_20260814",
+  "full_freeze_sha256": "c4367578fa5371fc6d61607affb5300516659c0d5fa303e0f29d85b37bf60a76",
+  "independence_boundary": "SEPARATE_GIT_REF_SAME_PROVIDER_NOT_PHYSICAL_INDEPENDENCE",
+  "predecessor_r16d_closure_sha256": "455b4c381140392ed8a5d1acf6c9eeb4d221fe617b219a82d787eb3b2935e980",
+  "schema": "triaxis.r16e.freeze_anchor/v1",
+  "status": "FROZEN_BEFORE_FIRST_SUBJECT_TRANSACTION",
+  "subject_ref": "research/decision-closure-ebd-v0.3",
+  "witness_ref": "research/measurement-witness-r16e",
+  "witness_tests": "9/9 PASS",
+  "witness_tool_sha256": "4f83ca65d7686c8f27c6f6073eec724762211c1b2f8d7e933cb6af4d2a265b95"
+}
