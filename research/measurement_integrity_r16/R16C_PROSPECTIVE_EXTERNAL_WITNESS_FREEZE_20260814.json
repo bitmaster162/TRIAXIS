@@ -1,0 +1,79 @@
+{
+  "capture_contract": [
+    "first 20 future eligible material transactions only",
+    "strict chronological order",
+    "no retrospective insertion",
+    "canonicalize before append",
+    "append through atomic temp-write + fsync + replace",
+    "if canonicalization or persistence fails, close epoch immediately without posthoc repair"
+  ],
+  "checkpoint_path_pattern": "research/measurement_integrity_r16/r16c_checkpoints/R16C_WITNESS_{sequence:04d}.json",
+  "claim_boundary": {
+    "cognitive_lift_credit": 0,
+    "controller_level_only": true,
+    "not_coordinated_rollback_resistance": true,
+    "not_model_benchmark": true,
+    "not_physical_worm": true,
+    "not_production_qualification": true
+  },
+  "controller_semantics": {
+    "canonical_ingest": "triaxis_ingest_r15.py",
+    "canonical_ingest_sha256": "7316c2dda8431715709b2ce47121f3a0ccea9f2fd0d9a1ed17ae01f9c4debaa9",
+    "control_runtime": "R15 frozen semantics",
+    "control_runtime_sha256": "b422e3d9dd08c61c218c3543c660ebd108e21ad660bd909927c8df73dc84fffe"
+  },
+  "date": "2026-08-14",
+  "epoch": "R16C_NEXT_20_EXTERNALLY_WITNESSED_SUBJECT_TRANSACTIONS_20260814",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "hard_targets": [
+    "20/20 subject transactions externally witnessed before counting",
+    "local rollback accepted = 0",
+    "local-ahead unwitnessed accepted = 0",
+    "witness fork accepted = 0",
+    "model denominator contamination = 0",
+    "unverified consequential success = 0",
+    "unsafe/blind retry = 0",
+    "responsibility without discriminator = 0",
+    "unauthorized side effect = 0"
+  ],
+  "measurement_infrastructure_excluded_from_subject_count": [
+    "GitHub writes whose sole purpose is persisting the R16C freeze or witness checkpoint",
+    "fresh reads whose sole purpose is verifying a witness checkpoint or freeze artifact",
+    "local append/candidate-generation operations of the measurement ledger itself"
+  ],
+  "measurement_integrity": {
+    "adversarial_matrix": "122 cases / 0 hard invariant violations",
+    "adversarial_matrix_sha256": "9f0304fdbea5c9937f2dad04399d39686f4c97f0f84b3d3ff1486c4d0cfc47d3",
+    "protocol": "R16B witnessed ledger",
+    "spec_sha256": "c3b2c5769c8683598a45990d72520f686a181ee9a1a8ddbe0e29a12dd45d302d",
+    "tool_sha256": "88e8486fb1401bd7c39445ada3c39c0c339f8b86e09e6cc4882e071673264da8",
+    "unit_tests": "7/7 PASS after preserved R1 design failure"
+  },
+  "schema": "triaxis.r16c.prospective_external_witness_freeze/v1",
+  "status": "FROZEN_BEFORE_FIRST_SUBJECT_TRANSACTION",
+  "stop_rule": "If any eligible subject transaction cannot be contemporaneously canonicalized, externally witnessed, or persisted, close epoch immediately; do not reconstruct post hoc.",
+  "transaction_unit": {
+    "provider_return": "one preserved provider return plus canonical adjudication",
+    "scientific_evaluation": "one frozen candidate/scorer transaction",
+    "subject_mutation": "one consequential action spanning required pre-state, submission and resulting-state verification",
+    "subject_read": "one material external retrieval/verification that can change research/action state"
+  },
+  "witness_protocol": [
+    "Every subject transaction is canonicalized first.",
+    "Before append, local ledger must exactly match latest external witness.",
+    "Append emits one checkpoint candidate for immutable evidence state.",
+    "Checkpoint candidate is persisted to a unique GitHub research path.",
+    "Fresh GitHub fetch must exactly match candidate.",
+    "Only after fresh external match is subject transaction WITNESSED and counted.",
+    "No next subject transaction may append until previous witness is externally verified."
+  ]
+}
