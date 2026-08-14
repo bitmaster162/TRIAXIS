@@ -1,0 +1,18 @@
+{
+  "MERGE_PERMISSION": "DENY",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "date": "2026-08-14",
+  "deploy_permission": "DENY",
+  "epoch": "R16F_NEXT_20_EXACT_PAYLOAD_SEPARATE_REF_WITNESSED_TRANSACTIONS_20260814",
+  "full_freeze_sha256": "7e6f5a8deb624bacef535f887633f381cd3821e424b5026343d7c7b9962dc77e",
+  "predecessor_r16e_closure_sha256": "f1ddd9cfbd8aabd8c20ea838ad0f667ae1e62bb7888b961a84ebf66052e84316",
+  "publish_payload_tool_sha256": "23224e5bc2f404b5e9b05b75c7bbf845cb10051ae5b1838cc7e085e0927ceb7f",
+  "schema": "triaxis.r16f.freeze_anchor/v1",
+  "status": "FROZEN_BEFORE_FIRST_COUNTED_TRANSACTION",
+  "subject_head": "55d981d00f003e0d7bf73636cdffbb85f17b380e",
+  "subject_ref": "research/decision-closure-ebd-v0.3",
+  "witness_head_before_anchor": "3ef5abaec3391fcd17ab4e2b188a5aba5913df50",
+  "witness_ref": "research/measurement-witness-r16e",
+  "witness_tool_sha256": "4f83ca65d7686c8f27c6f6073eec724762211c1b2f8d7e933cb6af4d2a265b95"
+}
