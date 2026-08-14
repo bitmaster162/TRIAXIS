@@ -1,0 +1,9 @@
+{
+  "epoch": "R16E_NEXT_20_SEPARATE_REF_WITNESSED_SUBJECT_TRANSACTIONS_20260814",
+  "ledger_count": 1,
+  "ledger_sha256": "676b7cedaf4a3947e9664425661d5a5ac2b6db9762748e19dd0c50342841bea7",
+  "previous_witness_sha256": null,
+  "schema": "triaxis.r16b.external_witness/v1",
+  "sequence": 1,
+  "witness_target": "github:research/measurement-witness-r16e:research/measurement_integrity_r16/r16e_checkpoints/R16E_WITNESS_0001.json"
+}
