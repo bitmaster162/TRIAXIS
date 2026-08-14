@@ -52,6 +52,50 @@ def safe_member(info:zipfile.ZipInfo)->tuple[bool,str|None]:
         return False,"SYMLINK_FORBIDDEN"
     return True,None
 
+def validate_member_topology(infos:list[zipfile.ZipInfo])->list[str]:
+    """Reject archive-name ambiguity before extraction.
+
+    Rules are intentionally portable across common case-sensitive and
+    case-insensitive filesystems.
+    """
+    errors=[]
+    seen_exact={}
+    seen_casefold={}
+    files=set()
+    dirs=set()
+
+    for info in infos:
+        raw=info.filename.replace("\\","/")
+        # safe_member already validates traversal/absolute/symlink.
+        norm=str(PurePosixPath(raw))
+        folded=norm.casefold()
+
+        if norm in seen_exact:
+            errors.append(f"DUPLICATE_ARCHIVE_PATH:{norm}")
+        else:
+            seen_exact[norm]=info.filename
+
+        prior=seen_casefold.get(folded)
+        if prior is not None and prior!=norm:
+            errors.append(f"CASEFOLD_ARCHIVE_COLLISION:{prior}:{norm}")
+        else:
+            seen_casefold[folded]=norm
+
+        if info.is_dir():
+            dirs.add(norm.rstrip("/"))
+        else:
+            files.add(norm)
+
+    # A regular file cannot also be a directory ancestor of another member.
+    for f in sorted(files):
+        prefix=f.rstrip("/")+"/"
+        if f in dirs:
+            errors.append(f"FILE_DIRECTORY_COLLISION:{f}")
+        if any(x.startswith(prefix) for x in files|dirs):
+            errors.append(f"FILE_PREFIX_COLLISION:{f}")
+
+    return errors
+
 def parse_sums(path:Path)->tuple[dict[str,str],list[str]]:
     entries={}
     errors=[]
@@ -106,6 +150,7 @@ def inspect(zip_path:Path, *, expected_head:str)->dict:
             ok,err=safe_member(info)
             if not ok:
                 errors.append(f"{err}:{info.filename}")
+        errors.extend(validate_member_topology(infos))
         if errors:
             return {
               "schema":SCHEMA,"status":"FAIL","green":False,
