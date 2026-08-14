@@ -1,0 +1,9 @@
+{
+  "epoch": "R16F_NEXT_20_EXACT_PAYLOAD_SEPARATE_REF_WITNESSED_TRANSACTIONS_20260814",
+  "ledger_count": 2,
+  "ledger_sha256": "454dd431bc308995240e92eca56840947c3b3510676017ae01da091b906f9525",
+  "previous_witness_sha256": "b1afa38063c975f742fb6e914743d3369bac4ff62c4c08e81e2c82b5e6380532",
+  "schema": "triaxis.r16b.external_witness/v1",
+  "sequence": 2,
+  "witness_target": "github:research/measurement-witness-r16e:research/measurement_integrity_r16/r16f_checkpoints/R16F_WITNESS_0002.json"
+}
