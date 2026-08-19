@@ -1,0 +1,26 @@
+name: P0 Trading Shadow Verify
+
+on:
+  push:
+    branches:
+      - agent/trading-shadow-audit-p0-r1
+  pull_request:
+    branches:
+      - research/decision-closure-ebd-v0.3
+
+permissions:
+  contents: read
+
+jobs:
+  offline-trading-shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile adapter
+        run: python -m py_compile research/trading_shadow_p0/triaxis_trade_audit_p0.py
+      - name: Run offline adapter tests
+        run: python -m unittest research.trading_shadow_p0.test_triaxis_trade_audit_p0 -v
