@@ -1,0 +1,268 @@
+{
+  "effects": {
+    "backend_write": false,
+    "capital_effect": false,
+    "current_truth_apply": false,
+    "deploy": false,
+    "executor_dispatch": false,
+    "external_message": false,
+    "human_gate_write": false,
+    "merge": false,
+    "order": false,
+    "runtime_activation": false,
+    "signal": false
+  },
+  "findings": [
+    {
+      "detail": "Immutable release manifest records control_center_authority as SUCCESS_HISTORICAL_EXACT_HEAD, but fresh GitHub evidence on exact PR head 9c3f364... exposes CI failure before steps; current exact-head classification is CI_BLOCKED_PRE_JOB.",
+      "id": "F1_CONTROL_CENTER_AUTHORITY_CI_CLASSIFICATION_MISMATCH",
+      "impact": "release manifest evidence state is not fully fresh/accurate; qualification receipt undercounts blocked CI surfaces (6 recorded vs 7 on fresh review).",
+      "severity": "MATERIAL",
+      "status": "CONFIRMED"
+    },
+    {
+      "detail": "TradingOS qualifier verifies hash-bound manifest structure and allowed labels but performs no live GitHub read. Its cross_repo_snapshot_bound=true is therefore a manifest-consistency claim unless paired with an independent fresh-read receipt.",
+      "id": "F2_QUALIFIER_DOES_NOT_LIVE_VERIFY_GITHUB",
+      "impact": "final qualification must consume an independently retained live-review snapshot or rename/narrow the claim.",
+      "severity": "SEMANTIC",
+      "status": "CONFIRMED"
+    },
+    {
+      "detail": "ContinuityOS history PR #94 remains open/draft/unmerged and exact-head CI is green, but fresh GitHub mergeable=false.",
+      "id": "F3_CONTINUITYOS_HISTORY_NOT_CURRENTLY_MERGEABLE",
+      "impact": "does not invalidate P0 architecture review, but independently reinforces merge_ready=false and requires reconciliation before any future merge gate.",
+      "severity": "CONDITION",
+      "status": "CONFIRMED"
+    }
+  ],
+  "fresh_surfaces": [
+    {
+      "ci_evidence": {
+        "job": "validate",
+        "run_id": 31738572949,
+        "steps_exposed": false,
+        "workflow": "CI"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "head_sha": "9c3f3642211501867b8f089decb3b9b6166de350",
+      "id": "control_center_authority",
+      "manifest_ci_classification": "SUCCESS_HISTORICAL_EXACT_HEAD",
+      "manifest_match": false,
+      "mergeable": true,
+      "merged": false,
+      "pr": 30,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32312496096,
+        "workflow": "P0 Unified Shadow Projection"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "frozen_input_sha": "da0ee7970bd834e7349a9df137489a22e19e9dee",
+      "head_sha": "e2458c38ff3460b5e2f735519a7fd3f906b1e1f1",
+      "id": "control_center_p0",
+      "manifest_input_lineage_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 77,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32281613717,
+        "workflow": "P0 HANRI Evidence Sync"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "head_sha": "bbe72360bbce09a8911c5d37b80955bbb7ce9b9f",
+      "id": "hanri_p0",
+      "manifest_head_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 78,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32312342378,
+        "workflow": "P0 Shadow Verify"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "frozen_input_sha": "80d7e24c983529e837daaae49338cf71f9007425",
+      "head_sha": "88812a8a01a94671d04c4bc371263ef5052c5ac8",
+      "id": "tradingos_p0",
+      "manifest_input_lineage_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 24,
+      "repo": "bitmaster162/tradingos",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32293015863,
+        "workflow": "review-gates"
+      },
+      "draft": true,
+      "fresh_ci_classification": "SUCCESS_EXACT_HEAD",
+      "head_sha": "d5901dd186e24c167a50bfca34f0db93b882b3bc",
+      "id": "sct_p0",
+      "manifest_head_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 91,
+      "repo": "bitmaster162/continuityos",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_ids": [
+          32296543504,
+          32296543516,
+          32296543498
+        ],
+        "workflows": [
+          "review-gates",
+          "P0 Unified Shadow Continuity",
+          "CodeQL"
+        ]
+      },
+      "draft": true,
+      "fresh_ci_classification": "SUCCESS_EXACT_HEAD",
+      "head_sha": "93b4528b59b2ab92d8184598a114faa47446fe2b",
+      "id": "continuityos_history_p0",
+      "manifest_head_match": true,
+      "mergeable": false,
+      "merged": false,
+      "pr": 94,
+      "repo": "bitmaster162/continuityos",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32275006127,
+        "workflow": "P0 Trading Shadow Verify"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "head_sha": "fd32bd76f99f52f0148e5987e122491571bf9315",
+      "id": "triaxis_p0",
+      "manifest_head_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 8,
+      "repo": "bitmaster162/TRIAXIS",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32273788605,
+        "workflow": "P0 Shadow Verify"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "head_sha": "8d17e99e2a9a46efeabde05b39b156b70181b3cc",
+      "id": "visionassist_p0",
+      "manifest_head_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 2,
+      "repo": "bitmaster162/VisionAssist",
+      "state": "open"
+    },
+    {
+      "ci_evidence": {
+        "run_id": 32295724388,
+        "workflow": "P0 Shadow Intake"
+      },
+      "draft": true,
+      "fresh_ci_classification": "CI_BLOCKED_PRE_JOB",
+      "head_sha": "086378e56129159c51133d63917d26ea7a3e76c1",
+      "id": "return_broker_p0",
+      "manifest_head_match": true,
+      "mergeable": true,
+      "merged": false,
+      "pr": 2,
+      "repo": "bitmaster162/control-return-broker",
+      "state": "open"
+    }
+  ],
+  "independent_counts": {
+    "current_nonmergeable_surface_count": 1,
+    "fresh_ci_blocked_surface_count": 7,
+    "fresh_ci_green_surface_count": 2,
+    "surface_count": 9
+  },
+  "required_repairs": [
+    "Rebuild the immutable release manifest as R1.1 (or later) with control_center_authority fresh CI classification set to CI_BLOCKED_PRE_JOB and blocked-surface count/list recomputed.",
+    "Make live cross-repo verification an independently retained input/receipt to final qualification, or narrow the qualifier field from cross_repo_snapshot_bound to manifest_snapshot_hash_bound.",
+    "Record ContinuityOS history PR #94 mergeable=false as an explicit current merge-gate condition; do not treat green CI as mergeability.",
+    "Re-run independent final review against the corrected immutable manifest without changing the frozen R1-R9 implementation input."
+  ],
+  "review_mode": "INDEPENDENT_FRESH_GITHUB_READ_NO_SHARED_QUALIFIER_CODE",
+  "review_sha256": "842ffe757a0ba1c6a384ac33d867dc543383b206a7fb247b13b8103602dd6155",
+  "reviewed_at": "2026-08-20T06:58:00+07:00",
+  "reviewer_role": "INDEPENDENT_ADVERSARIAL_FINAL_REVIEW",
+  "schema": "triaxis.p0_independent_final_review_qualification.v1",
+  "source_release": {
+    "control_center_frozen_r9_sha": "da0ee7970bd834e7349a9df137489a22e19e9dee",
+    "control_center_projection_head_sha": "e2458c38ff3460b5e2f735519a7fd3f906b1e1f1",
+    "manifest_sha256": "653660ea74d0401f4934dca7c250611937f98c0015fe136f4a1b9998ed28dacb",
+    "qualification_head_sha": "88812a8a01a94671d04c4bc371263ef5052c5ac8",
+    "qualification_receipt_sha256": "9938c0c0f110e2309a08f5231ce976f6a4c65a57e7e9581b9f4fd95c69e1a6c2",
+    "qualified_frozen_input_sha": "80d7e24c983529e837daaae49338cf71f9007425",
+    "tradingos_pr": 24,
+    "tradingos_repo": "bitmaster162/tradingos"
+  },
+  "verdict": {
+    "action": "WAIT",
+    "architecture_assessment": "PASS_WITH_CONDITIONS",
+    "audit_status": "REVISE",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "current_truth_promotion_allowed": false,
+    "decision": "HOLD",
+    "deploy_ready": false,
+    "execution_authority": "NONE",
+    "final_qualification": "NOT_FINAL_QUALIFIED",
+    "merge_ready": false,
+    "production_qualified": false,
+    "release_evidence_package": "REVISION_REQUIRED",
+    "release_ready": false,
+    "runtime_ready": false,
+    "semantic_acceptance": "NOT_PERFORMED"
+  },
+  "wrapper_lineage": {
+    "control_center_projection_wrapper": {
+      "ahead_by": 1,
+      "allowed_scope": [
+        ".github/workflows/p0-unified-shadow-projection.yml",
+        "control_center/scripts/release_qualification_projection_p0.py",
+        "control_center/scripts/test_release_qualification_projection_p0.py",
+        "docs/P0_RELEASE_QUALIFICATION_PROJECTION_R1.md"
+      ],
+      "behind_by": 0,
+      "status": "PASS"
+    },
+    "tradingos_qualification_wrapper": {
+      "ahead_by": 1,
+      "allowed_scope": [
+        ".github/workflows/p0-shadow-verify.yml",
+        "docs/P0_RELEASE_QUALIFICATION_R1.md",
+        "evidence/p0_release_candidate_manifest_r1.json",
+        "evidence/p0_release_qualification_receipt_r1.json",
+        "tests/test_p0_release_qualification.py",
+        "tools/p0_release_qualification.py"
+      ],
+      "behind_by": 0,
+      "status": "PASS"
+    }
+  }
+}
