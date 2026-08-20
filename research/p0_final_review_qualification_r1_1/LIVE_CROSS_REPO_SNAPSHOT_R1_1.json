@@ -1,0 +1,227 @@
+{
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "counts": {
+    "ci_blocked_surface_count": 7,
+    "ci_green_surface_count": 2,
+    "nonmergeable_surface_count": 0,
+    "surface_count": 9
+  },
+  "effects": {
+    "backend_write": false,
+    "capital_effect": false,
+    "current_truth_apply": false,
+    "deploy": false,
+    "executor_dispatch": false,
+    "external_message": false,
+    "human_gate_write": false,
+    "merge": false,
+    "order": false,
+    "runtime_activation": false,
+    "signal": false
+  },
+  "execution_authority": "NONE",
+  "frozen_implementation_inputs": {
+    "control_center_r9_sha": "da0ee7970bd834e7349a9df137489a22e19e9dee",
+    "tradingos_r1_r9_sha": "80d7e24c983529e837daaae49338cf71f9007425"
+  },
+  "release_wrappers_observed": {
+    "control_center_release_projection_r1_head": "e2458c38ff3460b5e2f735519a7fd3f906b1e1f1",
+    "tradingos_release_r1_head": "88812a8a01a94671d04c4bc371263ef5052c5ac8"
+  },
+  "review_findings": {
+    "continuityos_history_current_mergeability": "MERGEABLE_TRUE_ON_FRESH_READ",
+    "control_center_authority_ci_corrected_to_blocked_pre_job": true,
+    "live_snapshot_is_independent_input_not_release_authority": true
+  },
+  "review_mode": "FRESH_GITHUB_READ_NO_SHARED_QUALIFIER_CODE",
+  "reviewed_at": "2026-08-20T07:05:00+07:00",
+  "reviewer_role": "INDEPENDENT_ADVERSARIAL_LIVE_CROSSREPO_REVIEW",
+  "schema": "triaxis.p0_live_crossrepo_snapshot.v1",
+  "snapshot_sha256": "42d9564b3a8f2f2c00e9ae21d4128fbe09be34c44a9a41848ca8da8a8d7075f1",
+  "source_independence": {
+    "execution_authority": "NONE",
+    "generated_outside_control_center_projection": true,
+    "generated_outside_tradingos_qualifier": true,
+    "live_github_reads_performed": true,
+    "self_approval_authority": false
+  },
+  "surfaces": [
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "validate",
+        "logs_url": null,
+        "run_id": 31738572949,
+        "steps_exposed": false,
+        "workflow": "CI"
+      },
+      "draft": true,
+      "freshness": "PROVIDER_CAPTURE_STALE_2026-08-12",
+      "head_sha": "9c3f3642211501867b8f089decb3b9b6166de350",
+      "id": "control_center_authority",
+      "mergeable": true,
+      "merged": false,
+      "pr": 30,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-shadow-projection",
+        "logs_url": null,
+        "run_id": 32312496096,
+        "steps_exposed": false,
+        "workflow": "P0 Unified Shadow Projection"
+      },
+      "draft": true,
+      "frozen_input_sha": "da0ee7970bd834e7349a9df137489a22e19e9dee",
+      "head_sha": "e2458c38ff3460b5e2f735519a7fd3f906b1e1f1",
+      "id": "control_center_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 77,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "archiveos_freshness": "STALE",
+      "archiveos_status": "BLOCKED_REVERIFY",
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-hanri-evidence-sync",
+        "logs_url": null,
+        "run_id": 32281613717,
+        "steps_exposed": false,
+        "workflow": "P0 HANRI Evidence Sync"
+      },
+      "draft": true,
+      "head_sha": "bbe72360bbce09a8911c5d37b80955bbb7ce9b9f",
+      "id": "hanri_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 78,
+      "repo": "bitmaster162/control-center",
+      "state": "open"
+    },
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-shadow-e2e",
+        "logs_url": null,
+        "run_id": 32312342378,
+        "steps_exposed": false,
+        "workflow": "P0 Shadow Verify"
+      },
+      "draft": true,
+      "frozen_input_sha": "80d7e24c983529e837daaae49338cf71f9007425",
+      "head_sha": "88812a8a01a94671d04c4bc371263ef5052c5ac8",
+      "id": "tradingos_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 24,
+      "repo": "bitmaster162/tradingos",
+      "state": "open"
+    },
+    {
+      "ci_classification": "SUCCESS_EXACT_HEAD",
+      "ci_evidence": {
+        "conclusion": "success",
+        "run_id": 32293015863,
+        "workflow": "review-gates"
+      },
+      "draft": true,
+      "head_sha": "d5901dd186e24c167a50bfca34f0db93b882b3bc",
+      "id": "sct_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 91,
+      "repo": "bitmaster162/continuityos",
+      "state": "open"
+    },
+    {
+      "ci_classification": "SUCCESS_EXACT_HEAD",
+      "ci_evidence": {
+        "conclusions": [
+          "success",
+          "success",
+          "success"
+        ],
+        "run_ids": [
+          32296543504,
+          32296543516,
+          32296543498
+        ],
+        "workflows": [
+          "review-gates",
+          "P0 Unified Shadow Continuity",
+          "CodeQL"
+        ]
+      },
+      "draft": true,
+      "head_sha": "93b4528b59b2ab92d8184598a114faa47446fe2b",
+      "id": "continuityos_history_p0",
+      "mergeability_note": "FRESH_READ_TRUE_PREVIOUS_REVIEW_FALSE_WAS_TRANSIENT_OR_RECOMPUTED",
+      "mergeable": true,
+      "merged": false,
+      "pr": 94,
+      "repo": "bitmaster162/continuityos",
+      "state": "open"
+    },
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-trading-shadow",
+        "logs_url": null,
+        "run_id": 32275006127,
+        "steps_exposed": false,
+        "workflow": "P0 Trading Shadow Verify"
+      },
+      "draft": true,
+      "head_sha": "fd32bd76f99f52f0148e5987e122491571bf9315",
+      "id": "triaxis_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 8,
+      "repo": "bitmaster162/TRIAXIS",
+      "state": "open"
+    },
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-vision-shadow",
+        "logs_url": null,
+        "run_id": 32273788605,
+        "steps_exposed": false,
+        "workflow": "P0 Shadow Verify"
+      },
+      "draft": true,
+      "head_sha": "8d17e99e2a9a46efeabde05b39b156b70181b3cc",
+      "id": "visionassist_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 2,
+      "repo": "bitmaster162/VisionAssist",
+      "state": "open"
+    },
+    {
+      "ci_classification": "CI_BLOCKED_PRE_JOB",
+      "ci_evidence": {
+        "job": "offline-shadow-intake",
+        "logs_url": null,
+        "run_id": 32295724388,
+        "steps_exposed": false,
+        "workflow": "P0 Shadow Intake"
+      },
+      "draft": true,
+      "head_sha": "086378e56129159c51133d63917d26ea7a3e76c1",
+      "id": "return_broker_p0",
+      "mergeable": true,
+      "merged": false,
+      "pr": 2,
+      "repo": "bitmaster162/control-return-broker",
+      "state": "open"
+    }
+  ]
+}
