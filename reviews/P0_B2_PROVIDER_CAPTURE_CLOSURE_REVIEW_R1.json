@@ -1,0 +1,59 @@
+{
+  "schema": "triaxis.p0_b2_provider_capture_closure_review.v1",
+  "reviewed_at_bkk": "2026-08-20T09:51:00+07:00",
+  "subject": {
+    "repo": "bitmaster162/control-center",
+    "pr": 80,
+    "branch": "agent/p0-b2-provider-capture-closure-r1",
+    "commit_sha": "a0a38659fbf82755550e4aa08c17bc8926950e6b",
+    "receipt_schema": "control_center.p0_b2_provider_capture_closure_post_merge.v1",
+    "receipt_sha256": "c4140f919dc5c671d4528458a375eddbf181745707c15b1db4a6fd6e99d64152"
+  },
+  "independent_checks": {
+    "control_center_authority_branch": {
+      "branch": "gpt/github-ready-r1",
+      "expected_sha": "02ec1f3bf7483b0a70017ce73e45ddb5f6d9467a",
+      "fresh_read": "IDENTICAL"
+    },
+    "subject_receipt_self_hash_verified": true,
+    "provider_capture_source_binding_verified": true,
+    "provider_capture_freshness_window_verified": true,
+    "second_raw_readback_root_count": 5,
+    "second_raw_readback_exact_hash_match_count": 5,
+    "second_raw_readback_exact_size_match_count": 5,
+    "post_merge_topology_snapshot_bound": true,
+    "post_merge_independent_topology_review_bound": true,
+    "current_truth_write_observed": false
+  },
+  "closure_protocol_adjudication": {
+    "B2A_PROVIDER_CAPTURE": "PASS",
+    "B2B_RELEASE_PACKAGE_CONSUMPTION": "PASS_FOR_POST_MERGE_EVIDENCE_PACKAGE",
+    "B2": "CLOSED_FOR_POST_MERGE_EVIDENCE_PACKAGE_ONLY"
+  },
+  "verdict": "PASS_WITH_CONDITIONS",
+  "qualification": "B2_PROVIDER_CAPTURE_CLOSURE_QUALIFIED",
+  "conditions": [
+    "B1_CI_PREJOB_REMAINS_OPEN",
+    "B3_ARCHIVEOS_REMAINS_OPEN_HOST_BOUND",
+    "B4_LIVE_WRITER_DURABILITY_REMAINS_OPEN",
+    "B5_EXACT_RUNTIME_DEPLOYMENT_REMAINS_OPEN",
+    "NO_CURRENT_TRUTH_PROMOTION",
+    "NO_PRODUCTION_QUALIFICATION"
+  ],
+  "promotion": {
+    "system_current_truth_promoted": false,
+    "production_qualified": false,
+    "deploy_ready": false,
+    "runtime_ready": false,
+    "decision": "HOLD",
+    "action": "WAIT"
+  },
+  "safety": {
+    "execution_authority": "NONE",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "review_hash_basis": "RFC8259_JSON_SORT_KEYS_COMPACT_UTF8_EXCLUDING_REVIEW_SHA256",
+  "review_sha256": "dd3c478e7ac52da16965e994b65e08fe72b65ab70e5fdc5cb46283f14ec31df7"
+}
