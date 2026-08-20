@@ -1,0 +1,78 @@
+{
+  "action": "WAIT",
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "conditions": [
+    "NO_PROVIDER_FRESHNESS_REVERIFY",
+    "NO_ARCHIVEOS_REVERIFY",
+    "NO_RUNTIME_STATE_VERIFICATION",
+    "NO_PRODUCTION_RELEASE_VERIFICATION",
+    "NO_DEPLOYMENT_VERIFICATION"
+  ],
+  "decision": "HOLD",
+  "deploy_ready": false,
+  "execution_authority": "NONE",
+  "independent_checks": {
+    "all_subject_branches_equal_expected_merged_commit": true,
+    "control_center_authority_unchanged_by_evidence_branch": true,
+    "control_center_current_truth_promotion_performed": false,
+    "runtime_or_deploy_verification_performed": false,
+    "snapshot_self_hash_verified": true,
+    "surface_branch_equality_checks": 9,
+    "surface_branch_equality_pass": 9,
+    "surface_count": 9
+  },
+  "production_qualified": false,
+  "qualification": "POST_MERGE_GITHUB_TOPOLOGY_RESEALED",
+  "review_sha256": "3d665fd4e0243f05639d48f7677bf8750280311e92507cd73ab69bb1f720f3e9",
+  "reviewed_at": "2026-08-20T08:59:00+07:00",
+  "runtime_ready": false,
+  "schema": "triaxis.p0_post_merge_global_readback_review.v1",
+  "subject": {
+    "branch": "agent/p0-post-merge-global-reseal-r1",
+    "commit_sha": "f39c6ba7d3bec958d39c4066934aed82fcc9057e",
+    "repo": "bitmaster162/control-center",
+    "snapshot_schema": "control_center.p0_post_merge_global_readback.v1",
+    "snapshot_sha256": "4714f3cac0b73fb98354370abf8790717f7ac1c24909dbb35f8a2e5dfd2ae93f"
+  },
+  "surfaces": [
+    [
+      "control_center_authority",
+      "02ec1f3bf7483b0a70017ce73e45ddb5f6d9467a"
+    ],
+    [
+      "control_center_p0",
+      "2b93f04e6130f43a39e07710e61d047667c427b7"
+    ],
+    [
+      "hanri_p0",
+      "50f0b09a66aa48b85a080d647694b444dbd5c931"
+    ],
+    [
+      "tradingos_p0",
+      "074cc974625be9d12c33831bd3b04ce2a98d52ab"
+    ],
+    [
+      "sct_p0",
+      "b3d764aabfebc9419d36e035e36c9f0d732fb092"
+    ],
+    [
+      "continuityos_history_p0",
+      "c2c3ab8fa4164633bbe10c51e6c7166da028e5e1"
+    ],
+    [
+      "triaxis_review_lane",
+      "4f0c3738cb5d3402e6059d78e4cdbddca30522e4"
+    ],
+    [
+      "visionassist_p0",
+      "436e7562f960ff8c412c52bd8e9ca68ac3cd0ee6"
+    ],
+    [
+      "return_broker_p0",
+      "e4851f85fc10098227dbd91cf03b016aeac5f0b4"
+    ]
+  ],
+  "system_current_truth_promoted": false,
+  "verdict": "PASS_WITH_CONDITIONS"
+}
