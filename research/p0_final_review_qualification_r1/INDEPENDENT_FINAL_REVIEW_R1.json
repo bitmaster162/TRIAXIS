@@ -28,11 +28,11 @@
       "status": "CONFIRMED"
     },
     {
-      "detail": "ContinuityOS history PR #94 remains open/draft/unmerged and exact-head CI is green, but fresh GitHub mergeable=false.",
-      "id": "F3_CONTINUITYOS_HISTORY_NOT_CURRENTLY_MERGEABLE",
-      "impact": "does not invalidate P0 architecture review, but independently reinforces merge_ready=false and requires reconciliation before any future merge gate.",
-      "severity": "CONDITION",
-      "status": "CONFIRMED"
+      "detail": "ContinuityOS history PR #94 remains open/draft/unmerged and exact-head CI is green. A later fresh read now reports mergeable=true, so the earlier mergeable=false observation is treated as transient GitHub mergeability state rather than a durable defect.",
+      "id": "F3_CONTINUITYOS_HISTORY_MERGEABILITY_TRANSIENT",
+      "impact": "merge_ready remains false by policy and owner gate, but current fresh mergeability no longer adds an independent blocker.",
+      "severity": "CONDITION_RESOLVED_ON_FRESH_READ",
+      "status": "SUPERSEDED_BY_FRESH_READ"
     }
   ],
   "fresh_surfaces": [
@@ -123,23 +123,15 @@
     },
     {
       "ci_evidence": {
-        "run_ids": [
-          32296543504,
-          32296543516,
-          32296543498
-        ],
-        "workflows": [
-          "review-gates",
-          "P0 Unified Shadow Continuity",
-          "CodeQL"
-        ]
+        "run_ids": [32296543504,32296543516,32296543498],
+        "workflows": ["review-gates","P0 Unified Shadow Continuity","CodeQL"]
       },
       "draft": true,
       "fresh_ci_classification": "SUCCESS_EXACT_HEAD",
       "head_sha": "93b4528b59b2ab92d8184598a114faa47446fe2b",
       "id": "continuityos_history_p0",
       "manifest_head_match": true,
-      "mergeable": false,
+      "mergeable": true,
       "merged": false,
       "pr": 94,
       "repo": "bitmaster162/continuityos",
@@ -195,7 +187,7 @@
     }
   ],
   "independent_counts": {
-    "current_nonmergeable_surface_count": 1,
+    "current_nonmergeable_surface_count": 0,
     "fresh_ci_blocked_surface_count": 7,
     "fresh_ci_green_surface_count": 2,
     "surface_count": 9
@@ -203,7 +195,6 @@
   "required_repairs": [
     "Rebuild the immutable release manifest as R1.1 (or later) with control_center_authority fresh CI classification set to CI_BLOCKED_PRE_JOB and blocked-surface count/list recomputed.",
     "Make live cross-repo verification an independently retained input/receipt to final qualification, or narrow the qualifier field from cross_repo_snapshot_bound to manifest_snapshot_hash_bound.",
-    "Record ContinuityOS history PR #94 mergeable=false as an explicit current merge-gate condition; do not treat green CI as mergeability.",
     "Re-run independent final review against the corrected immutable manifest without changing the frozen R1-R9 implementation input."
   ],
   "review_mode": "INDEPENDENT_FRESH_GITHUB_READ_NO_SHARED_QUALIFIER_CODE",
