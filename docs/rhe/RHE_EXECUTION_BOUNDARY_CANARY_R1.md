@@ -16,35 +16,13 @@ Primary path:
 
 The canary intentionally stops before any external executor/provider effect.
 
-## Why this is the first useful RHE canary
-
-TRIAXIS already contains:
-- action-envelope and policy binding;
-- PEP receipt correlation;
-- Cedar reference authorization;
-- SPIFFE/SPIRE workload identity support;
-- single-use/idempotent SQLite execution ledger;
-- fail-closed DENY/ERROR semantics.
-
-R1 tests that integrated boundary directly.
-
 ## Positive acceptance case
 
-A correctly verified workload with the expected:
-- human principal;
-- agent instance;
-- SPIFFE identity;
-- delegation grant;
-- task;
-- capability;
-- resource;
-- policy;
-
-must produce:
+A correctly verified workload with the expected human, agent, SPIFFE identity, delegation, task, capability, resource and policy must produce:
 
 `ALLOW token -> PREPARED`
 
-and the PREPARED row must have:
+and the PREPARED row must keep:
 - `outcome_sha256 = null`
 - `effect_id = null`
 - `receipt = null`
@@ -53,15 +31,12 @@ No call to `complete()` is part of the canary.
 
 ## Idempotency semantics
 
-A same-token/same-workload retry is allowed to return the same PREPARED row.
+A same-token/same-workload retry may return the same PREPARED row. It must not create a second row or external effect.
 
-This is not treated as an unsafe replay because it creates no second row and no external effect.
-
-A different workload presenting the token must be rejected before it can mutate the prepared ledger state.
+A different workload presenting the token must be rejected before ledger mutation.
 
 ## Negative controls
 
-The canary covers:
 - invalid delegation grant;
 - invalid task;
 - unauthorized capability;
@@ -69,7 +44,7 @@ The canary covers:
 - claimed agent-instance spoof;
 - claimed SPIFFE-ID spoof;
 - unverified workload identity;
-- untrusted workload-identity provider;
+- untrusted workload-identity provider at authorization issuance;
 - PDP invocation failure;
 - cross-workload token replay.
 
@@ -77,15 +52,13 @@ Expected invariant for every negative path:
 
 `NO NEW PREPARED ROW`
 
-Identity failures must occur before PEP/Cedar invocation where applicable.
+## New PI-002 provenance finding
 
-## Cedar evidence
+Static review found that the existing ledger PREPARED API can trust a caller-supplied `VerifiedWorkloadIdentity` object when registry/provider provenance is omitted. PR #15's positive path uses the stronger registry + exact provider-instance path, but passing this canary alone would not prove weaker product call paths are impossible.
 
-The deterministic positive path uses a Cedar-compatible PDP adapter to test the product PEP contract without external dependencies.
-
-An optional local-Cedar test uses the existing TRIAXIS Cedar fixture when a compatible Cedar binary is available.
-
-The repository already contains a previously accepted real SPIRE + real X509-SVID + Cedar + PREPARED integration suite; R1 does not rebuild that environment from scratch.
+See:
+- `RHE_PI002_EXECUTION_IDENTITY_PROVENANCE_FINDING_R1.md`
+- `RHE_PI002_EXECUTION_IDENTITY_PROVENANCE_WORK_ORDER_R1.md`
 
 ## Architecture minimization
 
@@ -98,8 +71,6 @@ Normal R1 runtime does not require:
 - trading/capital/deployment APIs.
 
 Historical FINAL89/V036/JIT artifacts are not runtime authority for this canary.
-
-See `RHE_REVIEW_ADJUDICATION_R1.md`.
 
 ## Safety invariants
 
@@ -117,10 +88,10 @@ See `RHE_REVIEW_ADJUDICATION_R1.md`.
 `MERGE=DENY`
 
 until all are true:
-1. actual PR diff receives adversarial review;
+1. actual current PR diff receives adversarial review;
 2. focused canary tests pass in a compatible runtime;
 3. PI-001 and PI-002 regression suites pass;
-4. optional full regression is reviewed if available;
-5. no product-source mutation is introduced without a new bounded gate.
+4. execution-time identity provenance contract is resolved and independently reviewed;
+5. no product-source mutation is introduced into PR #15 without a new bounded gate.
 
 No deploy or external execution is authorized by this document.
