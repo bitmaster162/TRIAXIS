@@ -1,12 +1,13 @@
 """Strict RHE execution-preparation boundary over the legacy SQLite ledger.
 
-This module makes execution-time workload-identity provenance explicit.  Callers
+This module makes execution-time workload-identity provenance explicit. Callers
 cannot provide a preconstructed ``VerifiedWorkloadIdentity`` to this boundary;
 the exact provider instance registered in the trusted provider registry is
 queried immediately before the PREPARED transition.
 
-The boundary performs no external effect itself.  It only obtains current
-identity evidence and delegates to ``SQLiteExecutionLedger.prepare_for_workload``.
+The boundary performs no external effect itself. It only validates a SPIFFE-
+bound authorization token, obtains current identity evidence, and delegates to
+``SQLiteExecutionLedger.prepare_for_workload``.
 """
 
 from __future__ import annotations
@@ -14,7 +15,11 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from .action_assurance import ExecutionLedgerError, SQLiteExecutionLedger
+from .action_assurance import (
+    ExecutionLedgerError,
+    SQLiteExecutionLedger,
+    validate_authorization_token,
+)
 
 
 class TrustedWorkloadExecutionBoundary:
@@ -64,11 +69,37 @@ class TrustedWorkloadExecutionBoundary:
         observed_state_witness: Mapping[str, Any],
         evaluation_tick: int,
     ) -> dict[str, Any]:
-        """Fetch trusted current identity and prepare exactly one ledger nonce.
+        """Validate token, fetch trusted current identity, then enter PREPARED.
 
         Provider trust is rechecked on every call so a registry/configuration
         change fails closed rather than relying on constructor-time trust.
         """
+
+        token_result = validate_authorization_token(
+            token_value,
+            evaluation_tick,
+            require_allow=True,
+        )
+        if token_result["status"] != "PASS":
+            raise ExecutionLedgerError(
+                "invalid_authorization_token",
+                str(token_result["errors"]),
+            )
+        token = token_result["token"]
+
+        workload_meta = (
+            token.get("workload_identity")
+            or token.get("authorization_provenance")
+            or {}
+        )
+        identity_mode = workload_meta.get("identity_mode") or (
+            "spiffe_workload" if workload_meta.get("spiffe_id") else None
+        )
+        if identity_mode != "spiffe_workload":
+            raise ExecutionLedgerError(
+                "SPIFFE_WORKLOAD_TOKEN_REQUIRED",
+                "strict RHE execution boundary requires a SPIFFE-bound token",
+            )
 
         if not self._registry.is_provider_trusted(
             self._provider_id, self._provider
@@ -78,11 +109,8 @@ class TrustedWorkloadExecutionBoundary:
                 f"untrusted workload identity provider '{self._provider_id}'",
             )
 
-        request_id = ""
-        if isinstance(token_value, Mapping):
-            nonce = token_value.get("nonce")
-            if isinstance(nonce, str):
-                request_id = f"prepare:{nonce}"
+        nonce = token.get("nonce")
+        request_id = f"prepare:{nonce}" if isinstance(nonce, str) else ""
 
         try:
             current_identity = self._provider.fetch_and_verify_identity(
@@ -106,7 +134,7 @@ class TrustedWorkloadExecutionBoundary:
             )
 
         return self._ledger.prepare_for_workload(
-            token_value=token_value,
+            token_value=token,
             observed_state_witness=observed_state_witness,
             evaluation_tick=evaluation_tick,
             current_workload_identity=current_identity,
