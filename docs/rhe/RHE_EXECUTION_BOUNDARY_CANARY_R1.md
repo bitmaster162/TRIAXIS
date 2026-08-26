@@ -1,84 +1,126 @@
-# TRIAXIS RHE Execution Boundary Canary R1
+# TRIAXIS RHE — Execution Boundary Canary R1
 
-## Status
+Status: `DRAFT / TEST-ONLY / ZERO EXTERNAL EFFECT`
 
-`CANDIDATE / NO MERGE / NO DEPLOY / NO EXTERNAL EXECUTION`
+Branch: `product/rhe-execution-boundary-canary-r1`
 
-Baseline:
-
-- repository: `bitmaster162/TRIAXIS`
-- branch: `main`
-- baseline HEAD: `ae280d905c63e4ba0bcadb4633f01a1fb9657920`
-- `src/triaxis/action_assurance.py` blob: `d1c637855dc1625910e95fdb3b2dcee61652ba56`
-- `src/triaxis/authorization/pep.py` blob: `57c1d7de35de4fb72a01acb3b27bc4171b839cbe`
-- `src/triaxis/identity/contract.py` blob: `50f89d6bb26cfd39c597e69e16775e970f24c085`
-- accepted post-PI002 regression evidence: `607 / 607 PASS`
+Baseline: `main @ ae280d905c63e4ba0bcadb4633f01a1fb9657920`
 
 ## Purpose
 
-This canary proves the existing TRIAXIS product boundary instead of timestamping a synthetic JSON payload.
+Prove the existing TRIAXIS product execution boundary, not another timestamping ceremony.
 
-Positive path:
+Primary path:
 
-`verified workload identity -> authorize_action -> PEP -> Cedar decision -> ALLOW token -> identity-aware SQLiteExecutionLedger.prepare_for_workload -> PREPARED -> STOP`
+`verified workload identity -> authorize_action -> PEP -> Cedar-compatible decision -> ALLOW token -> identity-aware SQLite ledger -> PREPARED -> STOP`
 
-The canary MUST NOT call:
+The canary intentionally stops before any external executor/provider effect.
 
-- an external executor or tool;
-- `SQLiteExecutionLedger.complete`;
-- trading/capital/deployment paths;
-- AWS IAM, Secrets Manager, S3, RFC3161, or Object Lock.
+## Why this is the first useful RHE canary
 
-## What is tested
+TRIAXIS already contains:
+- action-envelope and policy binding;
+- PEP receipt correlation;
+- Cedar reference authorization;
+- SPIFFE/SPIRE workload identity support;
+- single-use/idempotent SQLite execution ledger;
+- fail-closed DENY/ERROR semantics.
 
-1. Positive deterministic product-boundary path reaches exactly `PREPARED`.
-2. Same-token / same-workload retry is idempotent and does not create a second row/effect.
-3. Cross-workload replay of an already authorized token is rejected and cannot mutate the ledger row.
-4. Claimed workload identity mismatch fails before PEP/PDP evaluation.
-5. Unverified workload identity fails before PEP/PDP evaluation.
-6. Wrong delegation grant, task, capability, or target returns DENY and never prepares the ledger.
-7. PDP exception is converted by PEP to ERROR/DENY and never prepares the ledger.
-8. Optional local real-Cedar anchor reaches exactly PREPARED when the Cedar binary is available.
+R1 tests that integrated boundary directly.
 
-## Existing real-runtime anchor
+## Positive acceptance case
 
-The canary does not duplicate SPIRE provisioning. The accepted PI-002 test already covers:
+A correctly verified workload with the expected:
+- human principal;
+- agent instance;
+- SPIFFE identity;
+- delegation grant;
+- task;
+- capability;
+- resource;
+- policy;
 
-`REAL SPIRE -> Workload API -> X509-SVID -> SPIFFE mapping -> CompoundPrincipal -> REAL Cedar -> PEP -> token -> SQLite PREPARED`
+must produce:
 
-in:
+`ALLOW token -> PREPARED`
 
-`tests/test_pi002_spire_integration.py::test_real_spire_primary_positive_e2e`
+and the PREPARED row must have:
+- `outcome_sha256 = null`
+- `effect_id = null`
+- `receipt = null`
 
-R1 therefore adds a compact regression canary around the existing execution boundary rather than another environment-management ceremony.
+No call to `complete()` is part of the canary.
 
-## Replay semantics clarified
+## Idempotency semantics
 
-TRIAXIS currently implements:
+A same-token/same-workload retry is allowed to return the same PREPARED row.
 
-- identical token + identical workload + identical nonce: idempotent return of existing `PREPARED` row;
-- conflicting token/nonce: rejected;
-- same authorized token presented by a different verified workload identity: rejected before ledger mutation.
+This is not treated as an unsafe replay because it creates no second row and no external effect.
 
-Therefore the RHE requirement is **no duplicate effect**, not “every repeated API call must error.”
+A different workload presenting the token must be rejected before it can mutate the prepared ledger state.
 
-## Success criteria
+## Negative controls
 
-- deterministic canary suite: PASS;
-- optional real-Cedar test: PASS when Cedar is installed, otherwise explicit SKIP;
-- ledger positive terminal state: exactly `PREPARED`;
-- external effects: `0`;
-- `can_trade=false`;
-- `capital_permission=DENY`;
-- `deploy_permission=DENY`.
+The canary covers:
+- invalid delegation grant;
+- invalid task;
+- unauthorized capability;
+- wrong execution target;
+- claimed agent-instance spoof;
+- claimed SPIFFE-ID spoof;
+- unverified workload identity;
+- untrusted workload-identity provider;
+- PDP invocation failure;
+- cross-workload token replay.
 
-## Next gate
+Expected invariant for every negative path:
 
-Independent code review can be delegated to Manus.
+`NO NEW PREPARED ROW`
 
-Do not use Claude for routine regression review.
+Identity failures must occur before PEP/Cedar invocation where applicable.
 
-No merge until:
-1. canary tests pass in a compatible local/CI environment;
-2. diff is reviewed;
-3. owner explicitly selects merge.
+## Cedar evidence
+
+The deterministic positive path uses a Cedar-compatible PDP adapter to test the product PEP contract without external dependencies.
+
+An optional local-Cedar test uses the existing TRIAXIS Cedar fixture when a compatible Cedar binary is available.
+
+The repository already contains a previously accepted real SPIRE + real X509-SVID + Cedar + PREPARED integration suite; R1 does not rebuild that environment from scratch.
+
+## Architecture minimization
+
+Normal R1 runtime does not require:
+- AWS IAM mutation;
+- Secrets Manager marker;
+- signer-secret retrieval;
+- RFC3161;
+- S3 Object Lock;
+- trading/capital/deployment APIs.
+
+Historical FINAL89/V036/JIT artifacts are not runtime authority for this canary.
+
+See `RHE_REVIEW_ADJUDICATION_R1.md`.
+
+## Safety invariants
+
+- `external_execution=false`
+- `can_trade=false`
+- `capital_permission=DENY`
+- `deploy_permission=DENY`
+- `AWS_effects=0`
+- `SecretsManager_effects=0`
+- `RFC3161_calls=0`
+- `ObjectLock_writes=0`
+
+## Merge gate
+
+`MERGE=DENY`
+
+until all are true:
+1. actual PR diff receives adversarial review;
+2. focused canary tests pass in a compatible runtime;
+3. PI-001 and PI-002 regression suites pass;
+4. optional full regression is reviewed if available;
+5. no product-source mutation is introduced without a new bounded gate.
+
+No deploy or external execution is authorized by this document.
