@@ -1,7 +1,7 @@
 """TRIAXIS RHE execution-boundary canary R1.
 
 Purpose: exercise the real TRIAXIS identity -> PEP -> Cedar-compatible decision
--> single-use ledger boundary and STOP at PREPARED.  This test performs no
+-> single-use ledger boundary and STOP at PREPARED. This test performs no
 external provider, trading, capital, deployment, or execution effect.
 """
 
@@ -35,7 +35,6 @@ from triaxis.identity import (
     VerifiedWorkloadIdentity,
 )
 from triaxis.policy_lifecycle import POLICY_BUNDLE_CONTRACT_ID, seal_policy
-
 
 VALID_HUMAN = "alice@triaxis.dev"
 VALID_AGENT = "agent_inst_001"
@@ -219,9 +218,7 @@ def action_envelope(
 
     req_hash = assured_action_request_sha256(action)
     attestation_raw["assured_action_request_sha256"] = req_hash
-    action["assurance_attestation"] = seal_contract(
-        attestation_raw, "attestation_sha256"
-    )
+    action["assurance_attestation"] = seal_contract(attestation_raw, "attestation_sha256")
     action["assured_action_request_sha256"] = req_hash
     action["scope_sha256"] = action_scope_sha256(action)
     return seal_contract(action, "action_sha256")
@@ -273,7 +270,6 @@ def test_canary_positive_reaches_exactly_prepared_and_stops(tmp_path):
     action = action_envelope(policy)
     provider, registry = registered_provider()
     pdp = CanaryPDP()
-
     token, pep = authorize(action, policy, provider, registry, pdp)
 
     assert token["outcome"] == "ALLOW"
@@ -294,14 +290,12 @@ def test_canary_positive_reaches_exactly_prepared_and_stops(tmp_path):
             provider_id=PROVIDER_ID,
             provider_instance=provider,
         )
-
         assert row["state"] == "PREPARED"
         assert row["token_sha256"] == token["token_sha256"]
         assert row["outcome_sha256"] is None
         assert row["effect_id"] is None
         assert row["receipt"] is None
 
-        # Same-token/same-workload retry is idempotent: no second effect or row.
         retry = ledger.prepare_for_workload(
             token_value=token,
             observed_state_witness=action["state_witness"],
@@ -322,17 +316,13 @@ def test_canary_real_cedar_reaches_prepared_when_local_binary_is_available(tmp_p
     policy = policy_bundle()
     action = action_envelope(policy)
     provider, registry = registered_provider()
-
     pdp = CedarLocalReferencePDP(
-        policy_filepath=Path(
-            "src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar"
-        )
+        policy_filepath=Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
     )
     if not pdp.cedar_ready:
         pytest.skip(f"local Cedar binary unavailable: {pdp.provider_version}")
 
     token, pep = authorize(action, policy, provider, registry, pdp)
-
     assert token["outcome"] == "ALLOW"
     assert pep.last_receipt is not None
     assert pep.last_receipt.is_verified_allow
@@ -366,13 +356,10 @@ def test_canary_real_cedar_reaches_prepared_when_local_binary_is_available(tmp_p
 )
 def test_canary_policy_dimension_negatives_fail_closed(tmp_path, field, bad_value):
     policy = policy_bundle()
-    kwargs = {field: bad_value}
-    action = action_envelope(policy, **kwargs)
+    action = action_envelope(policy, **{field: bad_value})
     provider, registry = registered_provider()
     pdp = CanaryPDP()
-
     token, pep = authorize(action, policy, provider, registry, pdp)
-
     assert token["outcome"] == "DENY"
     assert pep.last_receipt is not None
     assert not pep.last_receipt.is_verified_allow
@@ -384,9 +371,20 @@ def test_canary_claimed_workload_identity_mismatch_fails_before_pep(tmp_path):
     action = action_envelope(policy, agent_instance_id="spoofed_agent")
     provider, registry = registered_provider()
     pdp = CanaryPDP()
-
     token, pep = authorize(action, policy, provider, registry, pdp)
+    assert token["outcome"] == "DENY"
+    assert any(e["code"] == "WORKLOAD_IDENTITY_MISMATCH" for e in token["errors"])
+    assert pep.last_receipt is None
+    assert pdp.calls == 0
+    assert_denied_never_prepares(token, action, tmp_path)
 
+
+def test_canary_claimed_spiffe_identity_mismatch_fails_before_pep(tmp_path):
+    policy = policy_bundle()
+    action = action_envelope(policy, spiffe_id="spiffe://triaxis.local/agent/spoofed")
+    provider, registry = registered_provider()
+    pdp = CanaryPDP()
+    token, pep = authorize(action, policy, provider, registry, pdp)
     assert token["outcome"] == "DENY"
     assert any(e["code"] == "WORKLOAD_IDENTITY_MISMATCH" for e in token["errors"])
     assert pep.last_receipt is None
@@ -398,20 +396,26 @@ def test_canary_unverified_workload_identity_fails_before_pep(tmp_path):
     policy = policy_bundle()
     action = action_envelope(policy)
     provider, registry = registered_provider(
-        verified_identity(
-            status="DENIED",
-            reason="WORKLOAD_ATTESTATION_SELECTOR_MISMATCH",
-        )
+        verified_identity(status="DENIED", reason="WORKLOAD_ATTESTATION_SELECTOR_MISMATCH")
     )
     pdp = CanaryPDP()
-
     token, pep = authorize(action, policy, provider, registry, pdp)
-
     assert token["outcome"] == "DENY"
-    assert any(
-        e["code"] == "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH"
-        for e in token["errors"]
-    )
+    assert any(e["code"] == "WORKLOAD_ATTESTATION_SELECTOR_MISMATCH" for e in token["errors"])
+    assert pep.last_receipt is None
+    assert pdp.calls == 0
+    assert_denied_never_prepares(token, action, tmp_path)
+
+
+def test_canary_untrusted_identity_provider_fails_before_pep(tmp_path):
+    policy = policy_bundle()
+    action = action_envelope(policy)
+    provider = DeterministicWorkloadIdentityProvider(verified_identity())
+    registry = TrustedWorkloadIdentityProviderRegistry(allow_test_mocks=True)
+    pdp = CanaryPDP()
+    token, pep = authorize(action, policy, provider, registry, pdp)
+    assert token["outcome"] == "DENY"
+    assert any(e["code"] == "UNTRUSTED_IDENTITY_PROVIDER" for e in token["errors"])
     assert pep.last_receipt is None
     assert pdp.calls == 0
     assert_denied_never_prepares(token, action, tmp_path)
@@ -421,9 +425,7 @@ def test_canary_pdp_exception_is_deny_and_never_prepares(tmp_path):
     policy = policy_bundle()
     action = action_envelope(policy)
     provider, registry = registered_provider()
-
     token, pep = authorize(action, policy, provider, registry, ExplodingPDP())
-
     assert token["outcome"] == "DENY"
     assert pep.last_receipt is not None
     assert pep.last_receipt.decision == DecisionState.ERROR
@@ -436,7 +438,6 @@ def test_canary_cross_workload_replay_is_rejected(tmp_path):
     action = action_envelope(policy)
     provider, registry = registered_provider()
     token, _ = authorize(action, policy, provider, registry)
-
     assert token["outcome"] == "ALLOW"
 
     with SQLiteExecutionLedger(tmp_path / "replay.sqlite") as ledger:
@@ -469,6 +470,4 @@ def test_canary_cross_workload_replay_is_rejected(tmp_path):
                 provider_id=PROVIDER_ID,
                 provider_instance=provider,
             )
-
-        # Rejected replay cannot mutate the already prepared record.
         assert ledger.get(action["nonce"]) == first
