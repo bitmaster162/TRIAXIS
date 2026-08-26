@@ -5,9 +5,10 @@ cannot provide a preconstructed ``VerifiedWorkloadIdentity`` to this boundary;
 the exact provider instance registered in the trusted provider registry is
 queried immediately before the PREPARED transition.
 
-The boundary performs no external effect itself. It only validates a SPIFFE-
-bound authorization token, obtains current identity evidence, and delegates to
-``SQLiteExecutionLedger.prepare_for_workload``.
+The boundary performs no external effect itself. It validates a SPIFFE-bound
+authorization token, obtains current identity evidence, binds the current
+provider/mapping authority to the token's issuance-time workload metadata, and
+then delegates stable workload correlation to the legacy SQLite ledger.
 """
 
 from __future__ import annotations
@@ -71,8 +72,10 @@ class TrustedWorkloadExecutionBoundary:
     ) -> dict[str, Any]:
         """Validate token, fetch trusted current identity, then enter PREPARED.
 
-        Provider trust is rechecked on every call so a registry/configuration
-        change fails closed rather than relying on constructor-time trust.
+        Provider trust is rechecked on every call. The current provider identity
+        and identity-mapping digest must equal the values bound into the token at
+        authorization issuance. Certificate fingerprint equality is deliberately
+        not required so normal SVID rotation remains possible.
         """
 
         token_result = validate_authorization_token(
@@ -131,6 +134,28 @@ class TrustedWorkloadExecutionBoundary:
             raise ExecutionLedgerError(
                 "EXECUTION_WORKLOAD_IDENTITY_MISMATCH",
                 str(reason),
+            )
+
+        token_identity_provider = workload_meta.get("identity_provider")
+        token_mapping_sha = workload_meta.get("identity_mapping_sha256")
+        current_identity_provider = getattr(
+            current_identity, "identity_provider", None
+        )
+        current_mapping_sha = getattr(
+            current_identity, "identity_mapping_sha256", None
+        )
+
+        if (
+            not isinstance(token_identity_provider, str)
+            or not token_identity_provider
+            or current_identity_provider != token_identity_provider
+            or not isinstance(token_mapping_sha, str)
+            or not token_mapping_sha
+            or current_mapping_sha != token_mapping_sha
+        ):
+            raise ExecutionLedgerError(
+                "EXECUTION_WORKLOAD_IDENTITY_PROVENANCE_MISMATCH",
+                "current workload provider or identity mapping does not match token authorization provenance",
             )
 
         return self._ledger.prepare_for_workload(
