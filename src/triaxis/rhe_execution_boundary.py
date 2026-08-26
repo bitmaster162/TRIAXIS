@@ -7,8 +7,9 @@ queried immediately before the PREPARED transition.
 
 The boundary performs no external effect itself. It validates a SPIFFE-bound
 authorization token, obtains current identity evidence, binds the current
-provider/mapping authority to the token's issuance-time workload metadata, and
-then delegates stable workload correlation to the legacy SQLite ledger.
+provider/mapping authority and trusted registry configuration to the token's
+issuance-time workload metadata, and then delegates stable workload correlation
+to the legacy SQLite ledger.
 """
 
 from __future__ import annotations
@@ -72,10 +73,10 @@ class TrustedWorkloadExecutionBoundary:
     ) -> dict[str, Any]:
         """Validate token, fetch trusted current identity, then enter PREPARED.
 
-        Provider trust is rechecked on every call. The current provider identity
-        and identity-mapping digest must equal the values bound into the token at
-        authorization issuance. Certificate fingerprint equality is deliberately
-        not required so normal SVID rotation remains possible.
+        Provider trust is rechecked on every call. The current provider identity,
+        identity-mapping digest, and registry mapping/trust-domain configuration
+        must equal the authorization-time values. Certificate fingerprint equality
+        is deliberately not required so normal SVID rotation remains possible.
         """
 
         token_result = validate_authorization_token(
@@ -112,6 +113,19 @@ class TrustedWorkloadExecutionBoundary:
                 f"untrusted workload identity provider '{self._provider_id}'",
             )
 
+        get_provider_config = getattr(self._registry, "get_provider_config", None)
+        if not callable(get_provider_config):
+            raise ExecutionLedgerError(
+                "EXECUTION_WORKLOAD_IDENTITY_PROVENANCE_MISMATCH",
+                "trusted provider registry configuration is unavailable",
+            )
+        provider_config = get_provider_config(self._provider_id)
+        if not isinstance(provider_config, Mapping):
+            raise ExecutionLedgerError(
+                "EXECUTION_WORKLOAD_IDENTITY_PROVENANCE_MISMATCH",
+                "trusted provider registry configuration is missing",
+            )
+
         nonce = token.get("nonce")
         request_id = f"prepare:{nonce}" if isinstance(nonce, str) else ""
 
@@ -138,12 +152,16 @@ class TrustedWorkloadExecutionBoundary:
 
         token_identity_provider = workload_meta.get("identity_provider")
         token_mapping_sha = workload_meta.get("identity_mapping_sha256")
+        token_trust_domain = workload_meta.get("trust_domain")
         current_identity_provider = getattr(
             current_identity, "identity_provider", None
         )
         current_mapping_sha = getattr(
             current_identity, "identity_mapping_sha256", None
         )
+        current_trust_domain = getattr(current_identity, "trust_domain", None)
+        registry_mapping_sha = provider_config.get("mapping_sha256")
+        registry_trust_domain = provider_config.get("expected_trust_domain")
 
         if (
             not isinstance(token_identity_provider, str)
@@ -152,10 +170,15 @@ class TrustedWorkloadExecutionBoundary:
             or not isinstance(token_mapping_sha, str)
             or not token_mapping_sha
             or current_mapping_sha != token_mapping_sha
+            or registry_mapping_sha != token_mapping_sha
+            or not isinstance(token_trust_domain, str)
+            or not token_trust_domain
+            or current_trust_domain != token_trust_domain
+            or registry_trust_domain != token_trust_domain
         ):
             raise ExecutionLedgerError(
                 "EXECUTION_WORKLOAD_IDENTITY_PROVENANCE_MISMATCH",
-                "current workload provider or identity mapping does not match token authorization provenance",
+                "current workload provider, mapping, or registry trust configuration does not match token authorization provenance",
             )
 
         return self._ledger.prepare_for_workload(
