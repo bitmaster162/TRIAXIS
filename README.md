@@ -49,6 +49,14 @@ Generate the legacy digest-only end-to-end example:
 PYTHONPATH=src:. python examples/build_operational_assurance_example.py
 ```
 
+Generate the current authenticated, risk-mediated reference example:
+
+```bash
+PYTHONPATH=src:. python examples/build_authenticated_assurance_example.py
+```
+
+The authenticated example uses ephemeral local keys, a deterministic in-process risk adapter, a signed risk-mediation receipt, and disposable local SQLite state. It demonstrates the current authenticated PREPARED contract but does not invoke a provider or establish repository-wide complete mediation.
+
 Score a benchmark result file:
 
 ```bash
