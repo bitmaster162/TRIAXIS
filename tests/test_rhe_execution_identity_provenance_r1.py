@@ -92,7 +92,7 @@ def issue_token(provider, registry, *, issuer_id: str = "issuer_001"):
         policy,
         evaluation_tick=150,
         issuer_id=issuer_id,
-        trusted_assurance_issuers={issuer_id: "dev.domain"},
+        trusted_assurance_issuers={"issuer_001": "dev.domain"},
         authorization_mode="cedar_reference",
         pep=pep,
         identity_mode="spiffe_workload",
