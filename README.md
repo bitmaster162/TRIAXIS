@@ -71,7 +71,7 @@ The v3.14 branch adds an independent challenge-bound transparency-witness quorum
 
 ## v3.15 Persistent Policy Transparency Gossip
 
-The v3.15 layer persists the highest verified floor per transparency witness and rejects cross-session rollback or same-version fork claims. See `release/TRIAXIS_CONTROL_STACK_v3.15_RC1_PERSISTENT_POLICY_TRANSPARENCY_GOSSIP.md`.
+The v3.15 layer persists the highest verified floor per transparency witness and rejects cross-session rollback or same-version fork claims. See `release/TRIAXIS_CONTROL_STACK_v3.15_RC1_POLICY_TRANSPARENCY_GOSSIP.md`.
 
 ## v3.16 External Policy Transparency Gossip Head
 
