@@ -16,8 +16,17 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from .integrity import canonical_sha256, materialize_json, seal_mapping
+from .integrity import (
+    canonical_sha256,
+    materialize_json,
+    seal_mapping,
+    verify_sealed_mapping,
+)
 from .risk_authority import (
+    CriticalDomain,
+    EffectScope,
+    RISK_CLASSES,
+    Reversibility,
     RiskAssessment,
     RiskAuthorityError,
     RiskDowngradeError,
@@ -34,6 +43,10 @@ def _is_sha256(value: Any) -> bool:
         and len(value) == 64
         and all(ch in "0123456789abcdef" for ch in value)
     )
+
+
+def _receipt_error(code: str, path: str, message: str) -> dict[str, str]:
+    return {"code": code, "path": path, "message": message}
 
 
 class RiskMediationError(RuntimeError):
@@ -194,6 +207,263 @@ def risk_subject_sha256(
 
     subject = value if isinstance(value, RiskSubject) else risk_subject_from_action(value)
     return canonical_sha256(subject.to_mapping())
+
+
+def _token_risk_subject_sha256(token: Mapping[str, Any]) -> str:
+    return canonical_sha256(
+        {
+            "subject_id": token.get("subject_id"),
+            "object_id": token.get("object_id"),
+            "capability": token.get("capability"),
+            "tool_id": token.get("tool_id"),
+            "execution_target": token.get("execution_target"),
+            "payload_sha256": token.get("payload_sha256"),
+            "state_witness_sha256": token.get("state_witness_sha256"),
+        }
+    )
+
+
+def validate_risk_mediation_receipt(
+    value: Any,
+    *,
+    authorization_token_value: Mapping[str, Any] | None = None,
+    evaluation_tick: int | None = None,
+) -> dict[str, Any]:
+    """Validate one sealed mediation receipt and, when supplied, its exact token.
+
+    The receipt is not an authorization decision and is not authenticated by
+    this function. Callers crossing a trust boundary must first verify the
+    receipt's signed envelope and then use this validator for semantic binding.
+    """
+
+    errors: list[dict[str, str]] = []
+    if not isinstance(value, Mapping):
+        return {
+            "status": "BLOCK",
+            "errors": [
+                _receipt_error(
+                    "RISK_MEDIATION_RECEIPT_INVALID_TYPE",
+                    "risk_mediation_receipt",
+                    "mapping required",
+                )
+            ],
+        }
+    try:
+        receipt = materialize_json(value)
+    except Exception as exc:
+        return {
+            "status": "BLOCK",
+            "errors": [
+                _receipt_error(
+                    "RISK_MEDIATION_RECEIPT_MATERIALIZATION_FAILED",
+                    "risk_mediation_receipt",
+                    type(exc).__name__,
+                )
+            ],
+        }
+    if not isinstance(receipt, dict):
+        return {
+            "status": "BLOCK",
+            "errors": [
+                _receipt_error(
+                    "RISK_MEDIATION_RECEIPT_INVALID_TYPE",
+                    "risk_mediation_receipt",
+                    "object required",
+                )
+            ],
+        }
+
+    if receipt.get("contract_id") != RISK_MEDIATION_RECEIPT_CONTRACT_ID:
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_CONTRACT_MISMATCH",
+                "risk_mediation_receipt.contract_id",
+                RISK_MEDIATION_RECEIPT_CONTRACT_ID,
+            )
+        )
+    if not verify_sealed_mapping(receipt, "receipt_sha256"):
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_DIGEST_MISMATCH",
+                "risk_mediation_receipt.receipt_sha256",
+                "canonical digest mismatch",
+            )
+        )
+
+    adapter_id = receipt.get("adapter_id")
+    adapter_version = receipt.get("adapter_version")
+    if not isinstance(adapter_id, str) or not adapter_id:
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                "risk_mediation_receipt.adapter_id",
+                "non-empty adapter_id required",
+            )
+        )
+    if type(adapter_version) is not int or adapter_version < 1:
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                "risk_mediation_receipt.adapter_version",
+                "integer >= 1 required",
+            )
+        )
+    if not _is_sha256(receipt.get("risk_subject_sha256")):
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                "risk_mediation_receipt.risk_subject_sha256",
+                "lowercase SHA-256 required",
+            )
+        )
+    if not _is_sha256(receipt.get("authorization_token_sha256")):
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                "risk_mediation_receipt.authorization_token_sha256",
+                "lowercase SHA-256 required",
+            )
+        )
+
+    critical_domains = receipt.get("critical_domains")
+    if (
+        not isinstance(critical_domains, list)
+        or not all(isinstance(item, str) for item in critical_domains)
+        or critical_domains != sorted(set(critical_domains))
+    ):
+        errors.append(
+            _receipt_error(
+                "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                "risk_mediation_receipt.critical_domains",
+                "sorted unique string array required",
+            )
+        )
+
+    derived_risk = receipt.get("derived_risk")
+    claimed_risk = receipt.get("claimed_risk")
+    effective_risk = receipt.get("effective_risk")
+    for field, observed in (
+        ("derived_risk", derived_risk),
+        ("claimed_risk", claimed_risk),
+        ("effective_risk", effective_risk),
+    ):
+        if observed not in RISK_CLASSES:
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_RECEIPT_FIELD_INVALID",
+                    f"risk_mediation_receipt.{field}",
+                    "R0-R4 required",
+                )
+            )
+
+    if not errors:
+        try:
+            facts = RiskFacts(
+                effect_scope=EffectScope(receipt.get("effect_scope")),
+                reversibility=Reversibility(receipt.get("reversibility")),
+                critical_domains=frozenset(
+                    CriticalDomain(item) for item in critical_domains
+                ),
+            )
+            assessment = assess_risk(facts, claimed_risk=claimed_risk)
+        except (TypeError, ValueError, RiskAuthorityError) as exc:
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_RECEIPT_FACTS_INVALID",
+                    "risk_mediation_receipt",
+                    str(exc),
+                )
+            )
+        else:
+            if (
+                assessment.derived_risk != derived_risk
+                or assessment.effective_risk != effective_risk
+                or list(assessment.critical_domains) != critical_domains
+            ):
+                errors.append(
+                    _receipt_error(
+                        "RISK_MEDIATION_RECEIPT_ASSESSMENT_MISMATCH",
+                        "risk_mediation_receipt",
+                        "receipt risk assessment is not self-consistent",
+                    )
+                )
+
+    validated_token: dict[str, Any] | None = None
+    if authorization_token_value is not None:
+        if type(evaluation_tick) is not int or evaluation_tick < 0:
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_EVALUATION_TICK_REQUIRED",
+                    "evaluation_tick",
+                    "integer >= 0 required when validating token binding",
+                )
+            )
+        else:
+            from .action_assurance import validate_authorization_token
+
+            token_result = validate_authorization_token(
+                authorization_token_value,
+                evaluation_tick,
+                require_allow=False,
+            )
+            if token_result.get("status") != "PASS":
+                errors.append(
+                    _receipt_error(
+                        "RISK_MEDIATION_AUTHORIZATION_TOKEN_INVALID",
+                        "authorization_token",
+                        str(token_result.get("errors", [])),
+                    )
+                )
+            else:
+                token = token_result.get("token")
+                if isinstance(token, dict):
+                    validated_token = token
+                else:
+                    errors.append(
+                        _receipt_error(
+                            "RISK_MEDIATION_AUTHORIZATION_TOKEN_INVALID",
+                            "authorization_token",
+                            "validated token mapping required",
+                        )
+                    )
+
+    if validated_token is not None:
+        if (
+            receipt.get("authorization_token_sha256")
+            != validated_token.get("token_sha256")
+        ):
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_TOKEN_BINDING_MISMATCH",
+                    "risk_mediation_receipt.authorization_token_sha256",
+                    "receipt is not bound to current authorization token",
+                )
+            )
+        if receipt.get("risk_subject_sha256") != _token_risk_subject_sha256(
+            validated_token
+        ):
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_EFFECT_BINDING_MISMATCH",
+                    "risk_mediation_receipt.risk_subject_sha256",
+                    "receipt is not bound to current token effect subject",
+                )
+            )
+        if receipt.get("effective_risk") != validated_token.get("risk_class"):
+            errors.append(
+                _receipt_error(
+                    "RISK_MEDIATION_RISK_BINDING_MISMATCH",
+                    "risk_mediation_receipt.effective_risk",
+                    "receipt effective risk differs from token risk",
+                )
+            )
+
+    return {
+        "status": "PASS" if not errors else "BLOCK",
+        "errors": errors,
+        "receipt": receipt,
+        "token": validated_token,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -416,4 +686,5 @@ __all__ = [
     "TrustedRiskFactsAdapterRegistry",
     "risk_subject_from_action",
     "risk_subject_sha256",
+    "validate_risk_mediation_receipt",
 ]

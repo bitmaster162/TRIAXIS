@@ -1,8 +1,10 @@
 """Authenticated + SPIFFE-bound RHE PREPARED boundary.
 
-This module composes two existing TRIAXIS controls without replacing either:
-1) v3.6 Ed25519 authentication of the authorization token and observed state;
-2) the strict RHE workload-provenance boundary that performs a fresh trusted
+This module composes existing TRIAXIS controls without replacing any of them:
+1) v3.6 Ed25519 authentication of the authorization token;
+2) authenticated Risk Authority mediation bound to that exact token;
+3) v3.6 Ed25519 authentication of observed state;
+4) the strict RHE workload-provenance boundary that performs a fresh trusted
    workload identity fetch immediately before the PREPARED transition.
 
 No external effect is performed here.
@@ -16,7 +18,10 @@ from .action_assurance import (
     STATE_WITNESS_CONTRACT_ID,
     ExecutionLedgerError,
 )
-from .authenticated_action_assurance import validate_authenticated_authorization
+from .authenticated_action_assurance import (
+    validate_authenticated_authorization,
+    validate_authenticated_risk_mediation,
+)
 from .crypto_trust import (
     PURPOSE_STATE_WITNESS,
     TrustKeyRegistry,
@@ -26,7 +31,7 @@ from .rhe_execution_boundary import TrustedWorkloadExecutionBoundary
 
 
 class AuthenticatedTrustedWorkloadExecutionBoundary:
-    """Require issuer-authenticated token/state and fresh trusted workload identity."""
+    """Require authenticated token/risk/state and fresh trusted workload identity."""
 
     def __init__(
         self,
@@ -55,8 +60,10 @@ class AuthenticatedTrustedWorkloadExecutionBoundary:
         signed_token_value: Mapping[str, Any],
         signed_observed_state_value: Mapping[str, Any],
         evaluation_tick: int,
+        *,
+        signed_risk_mediation_receipt_value: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Verify signed token/state, then enter the strict workload PREPARED path."""
+        """Verify token -> mediation -> state, then enter strict workload PREPARED."""
 
         token_result = validate_authenticated_authorization(
             signed_token_value,
@@ -85,6 +92,25 @@ class AuthenticatedTrustedWorkloadExecutionBoundary:
             raise ExecutionLedgerError(
                 "invalid_authenticated_authorization",
                 "authenticated authorization did not yield a token mapping",
+            )
+
+        if not isinstance(signed_risk_mediation_receipt_value, Mapping):
+            raise ExecutionLedgerError(
+                "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+                "authenticated risk mediation receipt required before workload fetch or PREPARED",
+            )
+        mediation_result = validate_authenticated_risk_mediation(
+            signed_risk_mediation_receipt_value,
+            authorization_token_value=token,
+            registry=self._crypto_registry,
+            evaluation_tick=evaluation_tick,
+            expected_signer_id=self._expected_token_signer_id,
+            expected_trust_domain=self._expected_token_trust_domain,
+        )
+        if mediation_result["status"] != "PASS":
+            raise ExecutionLedgerError(
+                "invalid_authenticated_risk_mediation",
+                str(mediation_result["errors"]),
             )
 
         state_result = verify_contract_envelope(
