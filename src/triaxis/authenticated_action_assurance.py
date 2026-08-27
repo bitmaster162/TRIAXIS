@@ -60,16 +60,25 @@ def authorize_authenticated_action(
     gate_signer_id: str,
     gate_trust_domain: str,
     gate_private_key_b64: str,
+    authorization_mode: str | Any = "legacy",
+    pep: Any = None,
+    identity_mode: str = "explicit_reference",
+    workload_identity_provider: Any = None,
+    trusted_provider_registry: Any = None,
+    provider_id: str = "spiffe_spire_local",
+    allow_unregistered_providers: bool = False,
     risk_adapter: RiskFactsAdapter | None = None,
     trusted_risk_adapter_registry: TrustedRiskFactsAdapterRegistry | None = None,
     risk_adapter_id: str | None = None,
     risk_adapter_version: int | None = None,
 ) -> dict[str, Any]:
-    """Authorize authenticated inputs, optionally with mandatory pre-signing risk mediation.
+    """Authorize authenticated inputs, optionally with mandatory risk mediation.
 
-    Legacy callers that omit risk mediation retain the historical signed-token
-    behavior, but the authenticated PREPARED boundaries in this lane require a
-    separately authenticated mediation receipt before the token is usable.
+    Risk mediation wraps the exact existing ``authorize_action`` configuration,
+    including Cedar/PEP and workload-identity modes. It does not replace the
+    selected authorization implementation. Legacy callers that omit mediation
+    retain historical signed-token issuance behavior, while authenticated
+    PREPARED boundaries require a separately authenticated mediation receipt.
     """
 
     action = materialize_json(action_value)
@@ -171,25 +180,32 @@ def authorize_authenticated_action(
     if signer is not None:
         trusted_assurance[signer.signer_id] = signer.trust_domain
 
+    def _authorize_existing(
+        exact_action: Mapping[str, Any],
+        *,
+        evaluation_tick: int,
+    ) -> Mapping[str, Any]:
+        return authorize_action(
+            exact_action,
+            policy,
+            evaluation_tick,
+            gate_signer_id,
+            trusted_assurance,
+            authorization_mode=authorization_mode,
+            pep=pep,
+            identity_mode=identity_mode,
+            workload_identity_provider=workload_identity_provider,
+            trusted_provider_registry=trusted_provider_registry,
+            provider_id=provider_id,
+            allow_unregistered_providers=allow_unregistered_providers,
+        )
+
     risk_mediation_receipt: dict[str, Any] | None = None
 
     if not errors and risk_mediation_complete:
-        def _authorizer(
-            mediated_action: Mapping[str, Any],
-            *,
-            evaluation_tick: int,
-        ) -> Mapping[str, Any]:
-            return authorize_action(
-                mediated_action,
-                policy,
-                evaluation_tick,
-                gate_signer_id,
-                trusted_assurance,
-            )
-
         try:
             mediated = RiskMediatedAuthorizationBoundary(
-                authorizer=_authorizer,
+                authorizer=_authorize_existing,
                 risk_adapter=risk_adapter,
                 trusted_registry=trusted_risk_adapter_registry,
                 adapter_id=risk_adapter_id,
@@ -200,13 +216,7 @@ def authorize_authenticated_action(
             )
         except RiskMediationError as exc:
             errors.append(_error(exc.code, "risk_mediation", str(exc)))
-            token = authorize_action(
-                action,
-                policy,
-                evaluation_tick,
-                gate_signer_id,
-                trusted_assurance,
-            )
+            token = _authorize_existing(action, evaluation_tick=evaluation_tick)
         except (TypeError, ValueError) as exc:
             errors.append(
                 _error(
@@ -215,24 +225,12 @@ def authorize_authenticated_action(
                     str(exc),
                 )
             )
-            token = authorize_action(
-                action,
-                policy,
-                evaluation_tick,
-                gate_signer_id,
-                trusted_assurance,
-            )
+            token = _authorize_existing(action, evaluation_tick=evaluation_tick)
         else:
             token = mediated.authorization
             risk_mediation_receipt = mediated.risk_mediation_receipt
     else:
-        token = authorize_action(
-            action,
-            policy,
-            evaluation_tick,
-            gate_signer_id,
-            trusted_assurance,
-        )
+        token = _authorize_existing(action, evaluation_tick=evaluation_tick)
 
     if errors:
         token = dict(token)
