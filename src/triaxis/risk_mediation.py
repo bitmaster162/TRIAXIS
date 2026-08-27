@@ -3,8 +3,8 @@
 This module is deliberately side-effect free. It does not replace TRIAXIS
 Cedar/PEP authorization. Instead it places a mandatory trusted risk-fact
 observation in front of an injected authorization callable and verifies that
-the resulting authorization token is bound to the authoritative effective
-risk before returning it.
+the resulting TRIAXIS authorization token is valid and bound to the
+authoritative effective risk before returning it.
 
 Repository-wide complete mediation is achieved only when effect-capable
 runtime entry points are wired to this boundary and direct authorization
@@ -16,12 +16,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from .integrity import (
-    canonical_sha256,
-    materialize_json,
-    seal_mapping,
-    verify_sealed_mapping,
-)
+from .integrity import canonical_sha256, materialize_json, seal_mapping
 from .risk_authority import (
     RiskAssessment,
     RiskAuthorityError,
@@ -50,6 +45,49 @@ class RiskMediationError(RuntimeError):
 
 
 @dataclass(frozen=True, slots=True)
+class RiskSubject:
+    """Exact bounded effect subject visible to a trusted risk-fact adapter.
+
+    Caller-controlled risk metadata and all non-subject action fields are
+    intentionally absent, so they cannot influence fact selection through
+    this interface.
+    """
+
+    subject_id: str
+    object_id: str
+    capability: str
+    tool_id: str
+    execution_target: str
+    payload_sha256: str
+    state_witness_sha256: str
+
+    def __post_init__(self) -> None:
+        for field in (
+            "subject_id",
+            "object_id",
+            "capability",
+            "tool_id",
+            "execution_target",
+        ):
+            if not isinstance(getattr(self, field), str) or not getattr(self, field):
+                raise ValueError(f"{field} must be non-empty")
+        for field in ("payload_sha256", "state_witness_sha256"):
+            if not _is_sha256(getattr(self, field)):
+                raise ValueError(f"{field} must be lowercase SHA-256")
+
+    def to_mapping(self) -> dict[str, str]:
+        return {
+            "subject_id": self.subject_id,
+            "object_id": self.object_id,
+            "capability": self.capability,
+            "tool_id": self.tool_id,
+            "execution_target": self.execution_target,
+            "payload_sha256": self.payload_sha256,
+            "state_witness_sha256": self.state_witness_sha256,
+        }
+
+
+@dataclass(frozen=True, slots=True)
 class RiskFactObservation:
     """Risk facts returned by one exact trusted adapter generation."""
 
@@ -70,19 +108,19 @@ class RiskFactObservation:
 
 
 class RiskFactsAdapter(Protocol):
-    """Bounded adapter that deterministically observes consequence facts."""
+    """Bounded adapter that observes consequence facts from an exact subject only."""
 
     adapter_id: str
     adapter_version: int
 
     def observe_risk_facts(
         self,
-        action_value: Mapping[str, Any],
+        risk_subject: RiskSubject,
     ) -> RiskFactObservation: ...
 
 
 class TrustedRiskFactsAdapterRegistry:
-    """Immutable in-process trust binding for exact adapter objects and versions."""
+    """Immutable-by-convention in-process trust binding for adapter instances."""
 
     def __init__(self, bindings: Mapping[str, tuple[int, object]]) -> None:
         if not isinstance(bindings, Mapping):
@@ -116,14 +154,8 @@ class TrustedRiskFactsAdapterRegistry:
         )
 
 
-def risk_subject_sha256(action_value: Mapping[str, Any]) -> str:
-    """Digest exact effect semantics independently of caller risk metadata.
-
-    The subject deliberately excludes ``risk_class`` so the adapter observes
-    consequence facts before caller risk claims are evaluated. It includes the
-    authenticated state-witness digest because reversibility or criticality may
-    depend on the state against which the action was authorized.
-    """
+def risk_subject_from_action(action_value: Mapping[str, Any]) -> RiskSubject:
+    """Extract the only action semantics exposed to the risk-fact adapter."""
 
     try:
         action = materialize_json(action_value)
@@ -135,46 +167,33 @@ def risk_subject_sha256(action_value: Mapping[str, Any]) -> str:
     if not isinstance(action, dict):
         raise RiskMediationError("RISK_ACTION_INVALID", "action mapping required")
 
-    for field in (
-        "subject_id",
-        "object_id",
-        "capability",
-        "tool_id",
-        "execution_target",
-    ):
-        if not isinstance(action.get(field), str) or not action.get(field):
-            raise RiskMediationError(
-                "RISK_ACTION_INVALID",
-                f"{field} must be non-empty",
-            )
-    if not _is_sha256(action.get("payload_sha256")):
-        raise RiskMediationError(
-            "RISK_ACTION_INVALID",
-            "payload_sha256 must be lowercase SHA-256",
-        )
-
     state_witness = action.get("state_witness")
     state_witness_sha256 = (
         state_witness.get("witness_sha256")
         if isinstance(state_witness, Mapping)
         else None
     )
-    if not _is_sha256(state_witness_sha256):
-        raise RiskMediationError(
-            "RISK_ACTION_INVALID",
-            "state witness digest required",
+    try:
+        return RiskSubject(
+            subject_id=action.get("subject_id"),
+            object_id=action.get("object_id"),
+            capability=action.get("capability"),
+            tool_id=action.get("tool_id"),
+            execution_target=action.get("execution_target"),
+            payload_sha256=action.get("payload_sha256"),
+            state_witness_sha256=state_witness_sha256,
         )
+    except (TypeError, ValueError) as exc:
+        raise RiskMediationError("RISK_ACTION_INVALID", str(exc)) from exc
 
-    material = {
-        "subject_id": action["subject_id"],
-        "object_id": action["object_id"],
-        "capability": action["capability"],
-        "tool_id": action["tool_id"],
-        "execution_target": action["execution_target"],
-        "payload_sha256": action["payload_sha256"],
-        "state_witness_sha256": state_witness_sha256,
-    }
-    return canonical_sha256(material)
+
+def risk_subject_sha256(
+    value: Mapping[str, Any] | RiskSubject,
+) -> str:
+    """Digest exact effect semantics independently of caller risk metadata."""
+
+    subject = value if isinstance(value, RiskSubject) else risk_subject_from_action(value)
+    return canonical_sha256(subject.to_mapping())
 
 
 @dataclass(frozen=True, slots=True)
@@ -223,8 +242,14 @@ class RiskMediatedAuthorizationBoundary:
         self,
         action_value: Mapping[str, Any],
         *authorizer_args: Any,
+        evaluation_tick: int,
         **authorizer_kwargs: Any,
     ) -> RiskMediatedAuthorizationResult:
+        if type(evaluation_tick) is not int or evaluation_tick < 0:
+            raise RiskMediationError(
+                "INVALID_EVALUATION_TICK",
+                "evaluation_tick must be integer >= 0",
+            )
         try:
             action = materialize_json(action_value)
         except (TypeError, ValueError, RuntimeError) as exc:
@@ -245,10 +270,10 @@ class RiskMediatedAuthorizationBoundary:
                 "adapter id/version/instance is not trusted",
             )
 
-        subject_sha256 = risk_subject_sha256(action)
-        adapter_input = materialize_json(action)
+        risk_subject = risk_subject_from_action(action)
+        subject_sha256 = risk_subject_sha256(risk_subject)
         try:
-            observation = self._risk_adapter.observe_risk_facts(adapter_input)
+            observation = self._risk_adapter.observe_risk_facts(risk_subject)
         except Exception as exc:
             raise RiskMediationError(
                 "RISK_FACT_ADAPTER_FAILURE",
@@ -294,6 +319,7 @@ class RiskMediatedAuthorizationBoundary:
         authorization_raw = self._authorizer(
             authorization_action,
             *authorizer_args,
+            evaluation_tick=evaluation_tick,
             **authorizer_kwargs,
         )
         try:
@@ -314,11 +340,26 @@ class RiskMediatedAuthorizationBoundary:
                 "AUTHORIZATION_TOKEN_DIGEST_MISSING",
                 "sealed authorization token digest required",
             )
-        if not verify_sealed_mapping(authorization, "token_sha256"):
+
+        from .action_assurance import validate_authorization_token
+
+        token_result = validate_authorization_token(
+            authorization,
+            evaluation_tick,
+            require_allow=False,
+        )
+        if token_result.get("status") != "PASS":
             raise RiskMediationError(
-                "AUTHORIZATION_TOKEN_DIGEST_INVALID",
-                "authorization token canonical digest mismatch",
+                "AUTHORIZATION_TOKEN_CONTRACT_INVALID",
+                str(token_result.get("errors", [])),
             )
+        token = token_result.get("token")
+        if not isinstance(token, dict):
+            raise RiskMediationError(
+                "AUTHORIZATION_TOKEN_CONTRACT_INVALID",
+                "validated token mapping required",
+            )
+        authorization = token
 
         token_subject = {
             "subject_id": authorization.get("subject_id"),
@@ -339,6 +380,7 @@ class RiskMediatedAuthorizationBoundary:
                 "AUTHORIZATION_RISK_BINDING_MISMATCH",
                 "authorization token risk differs from mediated effective risk",
             )
+
         receipt = seal_mapping(
             {
                 "contract_id": RISK_MEDIATION_RECEIPT_CONTRACT_ID,
@@ -370,6 +412,8 @@ __all__ = [
     "RiskMediatedAuthorizationBoundary",
     "RiskMediatedAuthorizationResult",
     "RiskMediationError",
+    "RiskSubject",
     "TrustedRiskFactsAdapterRegistry",
+    "risk_subject_from_action",
     "risk_subject_sha256",
 ]
