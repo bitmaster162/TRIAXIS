@@ -1,0 +1,63 @@
+name: RHE PR25 Authenticated Example Risk Mediation R1
+
+on:
+  push:
+    branches:
+      - ci/rhe-authenticated-example-risk-mediation-r1-pr25-5391c876-validation
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-validation:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONPATH: src:.
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Checkout exact ephemeral branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install declared dependencies only
+        run: python -m pip install --disable-pip-version-check -r requirements.txt pytest
+
+      - name: Verify frozen PR25 authority and CI-only delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=f39bc38765c9d2b5cbb634459e19779d13194ab8
+          PR25=5391c87671b3aa365a5ca0ad823cf393b9c3d716
+          WORKFLOW=.github/workflows/rhe-pr25-authenticated-example-risk-mediation-r1.yml
+          git cat-file -e "${BASE}^{commit}"
+          git cat-file -e "${PR25}^{commit}"
+          test "$(git rev-parse HEAD^)" = "${PR25}"
+          test "$(git merge-base "${BASE}" "${PR25}")" = "${BASE}"
+          mapfile -t pr_changed < <(git diff --name-only "${BASE}" "${PR25}" | sort)
+          test "${#pr_changed[@]}" -eq 3
+          test "${pr_changed[0]}" = "README.md"
+          test "${pr_changed[1]}" = "examples/build_authenticated_assurance_example.py"
+          test "${pr_changed[2]}" = "tests/test_authenticated_assurance_example_rhe_r1.py"
+          test -z "$(git diff --name-only "${BASE}" "${PR25}" -- src)"
+          mapfile -t ci_changed < <(git diff --name-only "${PR25}" HEAD | sort)
+          test "${#ci_changed[@]}" -eq 1
+          test "${ci_changed[0]}" = "${WORKFLOW}"
+          test "$(cat requirements.txt)" = $'cryptography>=46,<47\npyOpenSSL==26.2.0'
+
+      - name: Run target plus PR24 hardening and prior six RHE suites
+        run: |
+          python -m pytest -q \
+            tests/test_authenticated_assurance_example_rhe_r1.py \
+            tests/test_rhe_complete_mediation_hardening_r1.py \
+            tests/test_risk_authority_r1.py \
+            tests/test_risk_mediation_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_testfix_r1.py \
+            tests/test_authenticated_rhe_execution_boundary_r1.py \
+            tests/test_v360_cryptographic_authenticity.py
