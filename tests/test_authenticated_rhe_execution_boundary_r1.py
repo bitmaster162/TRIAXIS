@@ -23,7 +23,7 @@ from triaxis.risk_mediation import (
     risk_subject_sha256,
 )
 from tests.test_rhe_execution_identity_provenance_r1 import (
-    issue_token,
+    issue_token as issue_workload_token,
     make_boundary,
     registered_provider,
 )
@@ -33,6 +33,10 @@ GATE_SIGNER_ID = "gate:rhe"
 GATE_TRUST_DOMAIN = "domain:rhe-gate"
 STATE_KEY_ID = "key:rhe-state"
 STATE_TRUST_DOMAIN = "domain:rhe-state"
+
+
+def issue_token(provider, registry):
+    return issue_workload_token(provider, registry, issuer_id=GATE_SIGNER_ID)
 
 
 def make_risk_receipt(token, action, **overrides):
