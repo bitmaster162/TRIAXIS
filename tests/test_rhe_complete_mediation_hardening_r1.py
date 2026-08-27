@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from triaxis.action_assurance import ExecutionLedgerError
+from triaxis.action_assurance import ExecutionLedgerError, SQLiteExecutionLedger
 from triaxis.authenticated_action_assurance import (
     AuthenticatedSQLiteExecutionLedger,
     validate_authenticated_authorization,
@@ -74,6 +74,12 @@ def test_authenticated_ledger_raw_and_inherited_workload_prepare_are_fail_closed
                     action["state_witness"],
                     6,
                     None,
+                ),
+                lambda: SQLiteExecutionLedger.prepare(
+                    ledger,
+                    result["token"],
+                    action["state_witness"],
+                    6,
                 ),
             ):
                 with pytest.raises(ExecutionLedgerError) as exc_info:
