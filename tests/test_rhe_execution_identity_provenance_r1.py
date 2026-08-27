@@ -79,7 +79,7 @@ def registered_provider(identity: VerifiedWorkloadIdentity | None = None):
     return provider, registry
 
 
-def issue_token(provider, registry):
+def issue_token(provider, registry, *, issuer_id: str = "issuer_001"):
     action, policy = make_negative_action_envelope(
         agent_instance_id=AGENT_ID,
         spiffe_id=SPIFFE_ID,
@@ -91,7 +91,7 @@ def issue_token(provider, registry):
         action,
         policy,
         evaluation_tick=150,
-        issuer_id="issuer_001",
+        issuer_id=issuer_id,
         trusted_assurance_issuers={"issuer_001": "dev.domain"},
         authorization_mode="cedar_reference",
         pep=pep,

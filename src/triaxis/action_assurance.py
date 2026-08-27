@@ -675,6 +675,8 @@ class ExecutionLedgerError(RuntimeError):
 class SQLiteExecutionLedger:
     """Durable single-use token ledger with explicit unknown-outcome recovery."""
 
+    _requires_authenticated_prepare = False
+
     def __init__(self, path: str | Path) -> None:
         self.path = str(path)
         self._conn = sqlite3.connect(self.path, isolation_level=None)
@@ -750,6 +752,31 @@ class SQLiteExecutionLedger:
         )
 
     def prepare(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+        current_workload_identity: Any = None,
+        trusted_provider_registry: Any = None,
+        provider_id: str = "spiffe_spire_local",
+        provider_instance: Any = None,
+    ) -> dict[str, Any]:
+        if getattr(self, "_requires_authenticated_prepare", False):
+            raise ExecutionLedgerError(
+                "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+                "raw prepare disabled on authenticated ledger; use prepare_authenticated",
+            )
+        return self._prepare_legacy(
+            token_value=token_value,
+            observed_state_witness=observed_state_witness,
+            evaluation_tick=evaluation_tick,
+            current_workload_identity=current_workload_identity,
+            trusted_provider_registry=trusted_provider_registry,
+            provider_id=provider_id,
+            provider_instance=provider_instance,
+        )
+
+    def _prepare_legacy(
         self,
         token_value: Mapping[str, Any],
         observed_state_witness: Mapping[str, Any],

@@ -453,11 +453,20 @@ def validate_authenticated_authorization(
     token = signed_result.get("inner_contract")
     token_result = validate_authorization_token(token, evaluation_tick, require_allow=True) if isinstance(token, Mapping) else {"status": "BLOCK", "errors": []}
     errors = list(signed_result["errors"]) + list(token_result.get("errors", []))
+    verified_signer = signed_result.get("verified_signer")
+    if isinstance(token, Mapping) and verified_signer is not None and verified_signer.signer_id != token.get("issuer_id"):
+        errors.append(
+            _error(
+                "authorization_token_signer_mismatch",
+                "signed_token",
+                "verified signer does not match token issuer_id",
+            )
+        )
     return {
         "status": "PASS" if not errors else "BLOCK",
         "errors": errors,
         "token": token,
-        "verified_signer": signed_result.get("verified_signer"),
+        "verified_signer": verified_signer,
     }
 
 
@@ -504,9 +513,33 @@ def validate_authenticated_risk_mediation(
 class AuthenticatedSQLiteExecutionLedger(SQLiteExecutionLedger):
     """Execution ledger requiring authenticated token, mediation receipt and state."""
 
+    _requires_authenticated_prepare = True
+
     def __init__(self, path: str | Path, registry: TrustKeyRegistry) -> None:
         super().__init__(path)
         self.registry = registry
+
+    def prepare(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+        current_workload_identity: Any = None,
+        trusted_provider_registry: Any = None,
+        provider_id: str = "spiffe_spire_local",
+        provider_instance: Any = None,
+    ) -> dict[str, Any]:
+        """Reject the inherited unauthenticated PREPARED entrypoint.
+
+        Authenticated ledgers may only reach the parent implementation after
+        signed authorization, signed risk mediation and signed state checks in
+        ``prepare_authenticated``.
+        """
+        from .action_assurance import ExecutionLedgerError
+        raise ExecutionLedgerError(
+            "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+            "raw prepare disabled on authenticated ledger; use prepare_authenticated",
+        )
 
     def prepare_authenticated(
         self,
@@ -564,7 +597,7 @@ class AuthenticatedSQLiteExecutionLedger(SQLiteExecutionLedger):
         if signer is None or signer.signer_id != state.get("adapter_id"):
             from .action_assurance import ExecutionLedgerError
             raise ExecutionLedgerError("state_signer_mismatch", "state signer is not adapter")
-        return super().prepare(token, state, evaluation_tick)
+        return super()._prepare_legacy(token, state, evaluation_tick)
 
 
 __all__ = [
