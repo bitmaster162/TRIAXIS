@@ -1,15 +1,19 @@
 """Review-hardening controls for the RHE R1 zero-effect canary.
 
 These tests close proof gaps in the original canary without changing product
-source: exact DENY-preparation failure semantics, whole-ledger no-mutation, and
-physical idempotency of same-token retry.
+source: exact DENY-preparation failure semantics, whole-ledger no-mutation,
+physical idempotency of same-token retry, and an opt-in mandatory Cedar gate.
 """
 
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 import pytest
 
 from triaxis.action_assurance import ExecutionLedgerError, SQLiteExecutionLedger
+from triaxis.authorization import CedarLocalReferencePDP
 from tests.test_rhe_execution_boundary_canary_r1 import (
     CanaryPDP,
     action_envelope,
@@ -121,3 +125,18 @@ def test_authorization_token_is_bound_to_exact_action_semantics():
     assert different_action["scope_sha256"] != token["scope_sha256"]
     assert different_action["assured_action_request_sha256"] != token["assured_action_request_sha256"]
     assert different_action["capability"] != token["capability"]
+
+
+def test_real_cedar_is_mandatory_when_gate_is_enabled():
+    """CI can opt into a hard failure instead of an optional Cedar skip."""
+
+    if os.environ.get("TRIAXIS_REQUIRE_CEDAR") != "1":
+        pytest.skip("TRIAXIS_REQUIRE_CEDAR is not enabled")
+
+    pdp = CedarLocalReferencePDP(
+        policy_filepath=Path("src/triaxis/authorization/fixtures/cedar_pi001_policy.cedar")
+    )
+    assert pdp.cedar_ready, (
+        "TRIAXIS_REQUIRE_CEDAR=1 but local Cedar is unavailable: "
+        f"{pdp.provider_version}"
+    )
