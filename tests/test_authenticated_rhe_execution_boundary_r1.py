@@ -18,6 +18,7 @@ from triaxis.crypto_trust import (
     make_trust_key_record,
     sign_contract_envelope,
 )
+from triaxis.rhe_execution_boundary import TrustedWorkloadExecutionBoundary
 from triaxis.risk_mediation import (
     RISK_MEDIATION_RECEIPT_CONTRACT_ID,
     risk_subject_sha256,
@@ -516,5 +517,62 @@ def test_signed_same_token_same_workload_retry_is_idempotent(tmp_path):
         )
         assert second == first
         assert ledger.get(token["nonce"]) == first
+    finally:
+        ledger.close()
+
+
+def test_authenticated_composition_blocks_retained_lower_public_prepare(tmp_path):
+    provider, workload_registry = registered_provider()
+    token, action = issue_token(provider, workload_registry)
+    crypto_registry, _, _, signed_token, signed_risk, signed_state = make_crypto_material(token, action)
+    ledger, workload_boundary = make_boundary(tmp_path, provider, workload_registry)
+    boundary = AuthenticatedTrustedWorkloadExecutionBoundary(
+        workload_boundary,
+        crypto_registry=crypto_registry,
+        expected_token_signer_id=GATE_SIGNER_ID,
+        expected_token_trust_domain=GATE_TRUST_DOMAIN,
+    )
+    calls_before = provider.calls
+    try:
+        with pytest.raises(ExecutionLedgerError) as exc_info:
+            workload_boundary.prepare(token, action["state_witness"], 150)
+        assert exc_info.value.code == "RISK_MEDIATION_AUTHENTICATION_REQUIRED"
+        assert provider.calls == calls_before
+        assert ledger.get(token["nonce"]) is None
+
+        with pytest.raises(ExecutionLedgerError) as exc_info:
+            TrustedWorkloadExecutionBoundary.prepare(
+                workload_boundary,
+                token,
+                action["state_witness"],
+                150,
+            )
+        assert exc_info.value.code == "RISK_MEDIATION_AUTHENTICATION_REQUIRED"
+        assert provider.calls == calls_before
+        assert ledger.get(token["nonce"]) is None
+
+        row = boundary.prepare(
+            signed_token,
+            signed_state,
+            150,
+            signed_risk_mediation_receipt_value=signed_risk,
+        )
+        assert provider.calls == calls_before + 1
+        assert row["state"] == "PREPARED"
+        assert row["token_sha256"] == token["token_sha256"]
+    finally:
+        ledger.close()
+
+
+def test_standalone_legacy_workload_boundary_still_prepares(tmp_path):
+    provider, workload_registry = registered_provider()
+    token, action = issue_token(provider, workload_registry)
+    issuance_calls = provider.calls
+    ledger, workload_boundary = make_boundary(tmp_path, provider, workload_registry)
+    try:
+        row = workload_boundary.prepare(token, action["state_witness"], 150)
+        assert provider.calls == issuance_calls + 1
+        assert row["state"] == "PREPARED"
+        assert row["token_sha256"] == token["token_sha256"]
     finally:
         ledger.close()

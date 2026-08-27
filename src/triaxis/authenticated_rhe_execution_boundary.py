@@ -50,6 +50,7 @@ class AuthenticatedTrustedWorkloadExecutionBoundary:
         if not isinstance(expected_token_trust_domain, str) or not expected_token_trust_domain:
             raise ValueError("expected_token_trust_domain must be non-empty")
 
+        workload_boundary._require_authenticated_outer()
         self._workload_boundary = workload_boundary
         self._crypto_registry = crypto_registry
         self._expected_token_signer_id = expected_token_signer_id
@@ -140,7 +141,7 @@ class AuthenticatedTrustedWorkloadExecutionBoundary:
                 "state signer is not the state adapter",
             )
 
-        return self._workload_boundary.prepare(
+        return self._workload_boundary._prepare_after_authenticated_outer(
             token,
             state,
             evaluation_tick,

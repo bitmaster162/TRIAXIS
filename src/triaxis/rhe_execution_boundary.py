@@ -64,6 +64,12 @@ class TrustedWorkloadExecutionBoundary:
         self._registry = trusted_provider_registry
         self._provider_id = provider_id
         self._provider = provider_instance
+        self._authenticated_outer_required = False
+
+    def _require_authenticated_outer(self) -> None:
+        """Monotonically contain this instance behind an authenticated outer boundary."""
+
+        self._authenticated_outer_required = True
 
     def prepare(
         self,
@@ -72,6 +78,50 @@ class TrustedWorkloadExecutionBoundary:
         evaluation_tick: int,
     ) -> dict[str, Any]:
         """Validate token, fetch trusted current identity, then enter PREPARED.
+
+        Standalone legacy instances retain this public path. Once this exact
+        instance is bound into an authenticated outer boundary, public raw
+        prepare is disabled so callers cannot retain and invoke the lower
+        boundary to bypass authenticated token/risk/state mediation.
+        """
+
+        if self._authenticated_outer_required:
+            raise ExecutionLedgerError(
+                "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+                "public lower-boundary prepare disabled after authenticated composition binding",
+            )
+        return self._prepare_trusted_workload(
+            token_value,
+            observed_state_witness,
+            evaluation_tick,
+        )
+
+    def _prepare_after_authenticated_outer(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+    ) -> dict[str, Any]:
+        """Internal continuation after authenticated token/risk/state validation."""
+
+        if not self._authenticated_outer_required:
+            raise ExecutionLedgerError(
+                "AUTHENTICATED_OUTER_BINDING_REQUIRED",
+                "authenticated continuation requires a bound authenticated outer boundary",
+            )
+        return self._prepare_trusted_workload(
+            token_value,
+            observed_state_witness,
+            evaluation_tick,
+        )
+
+    def _prepare_trusted_workload(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+    ) -> dict[str, Any]:
+        """Fetch trusted current identity and enter PREPARED after caller gating.
 
         Provider trust is rechecked on every call. The current provider identity,
         identity-mapping digest, and registry mapping/trust-domain configuration
