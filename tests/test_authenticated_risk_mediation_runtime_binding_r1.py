@@ -230,6 +230,30 @@ def test_mediation_preserves_cedar_pep_as_selected_pdp():
     assert result["signed_risk_mediation_receipt"] is not None
 
 
+def test_risk_downgrade_blocks_before_cedar_pep_invocation():
+    fx = Fixture()
+    action = _cedar_action(fx)
+    pep = PolicyEnforcementPoint(pdp_adapter=MockCedarPDP())
+    result, adapter = _authorize_mediated(
+        fx,
+        action,
+        RiskFacts(
+            effect_scope=EffectScope.EXTERNAL,
+            reversibility=Reversibility.IRREVERSIBLE,
+        ),
+        authorization_mode="cedar_reference",
+        pep=pep,
+        identity_mode="explicit_reference",
+    )
+
+    assert result["status"] == "BLOCK"
+    assert result["token"]["outcome"] == "DENY"
+    assert result["signed_risk_mediation_receipt"] is None
+    assert adapter.calls == 1
+    assert pep.last_receipt is None
+    assert "RISK_DOWNGRADE_BLOCKED" in {row["code"] for row in result["errors"]}
+
+
 def test_caller_risk_downgrade_blocks_before_usable_allow():
     fx = Fixture()
     action = fx.action(risk="R2", nonce="nonce:risk-downgrade")
