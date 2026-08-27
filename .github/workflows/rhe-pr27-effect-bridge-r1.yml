@@ -1,0 +1,89 @@
+name: RHE PR27 Effect Bridge R1
+
+on:
+  push:
+    branches:
+      - ci/rhe-effect-bridge-r1-pr27-53094f25-validation
+
+permissions:
+  contents: read
+
+env:
+  PYTHONPATH: src:.
+  AWS_EC2_METADATA_DISABLED: "true"
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout exact CI child
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install declared dependencies and pytest
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pytest
+
+      - name: Authority and scope guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="12acef764c13abae41e173e80a773ae974bff470"
+          PR="53094f25a421954f115b657c4828301424bd9194"
+          WORKFLOW=".github/workflows/rhe-pr27-effect-bridge-r1.yml"
+
+          test "$(git rev-parse HEAD^)" = "$PR"
+          test "$(git merge-base "$BASE" "$PR")" = "$BASE"
+
+          mapfile -t PR_FILES < <(git diff --name-only "$BASE" "$PR")
+          test "${#PR_FILES[@]}" -eq 3
+          printf '%s\n' "${PR_FILES[@]}" | sort > /tmp/pr-files
+          cat > /tmp/expected-pr-files <<'EOF'
+          docs/rhe/AUTHENTICATED_TERMINAL_EFFECT_BRIDGE_R1.md
+          src/triaxis/provider_transparency_guard.py
+          tests/test_rhe_effect_bridge_r1.py
+          EOF
+          diff -u /tmp/expected-pr-files /tmp/pr-files
+
+          mapfile -t CI_FILES < <(git diff --name-only "$PR" HEAD)
+          test "${#CI_FILES[@]}" -eq 1
+          test "${CI_FILES[0]}" = "$WORKFLOW"
+
+          test "$(cat requirements.txt)" = $'cryptography>=46,<47\npyOpenSSL==26.2.0'
+
+          echo "BASE=$BASE"
+          echo "PR=$PR"
+          echo "CI_HEAD=$(git rev-parse HEAD)"
+          echo "PR scope and one-child CI topology PASS"
+
+      - name: Runtime versions
+        run: |
+          python --version
+          python - <<'PY'
+          import cryptography, OpenSSL, pytest
+          print("cryptography", cryptography.__version__)
+          print("pyOpenSSL", OpenSSL.__version__)
+          print("pytest", pytest.__version__)
+          PY
+
+      - name: Target plus composed RHE regression
+        run: |
+          python -m pytest -q \
+            tests/test_rhe_effect_bridge_r1.py \
+            tests/test_v3_32_provider_native_and_completion_transparency.py \
+            tests/test_v3_31_availability_closed_and_immutable_anchor.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_r1.py \
+            tests/test_authenticated_rhe_execution_boundary_r1.py \
+            tests/test_rhe_complete_mediation_hardening_r1.py \
+            tests/test_rhe_execution_identity_provenance_r1.py \
+            tests/test_risk_authority_r1.py \
+            tests/test_risk_mediation_r1.py \
+            tests/test_authenticated_assurance_example_rhe_r1.py \
+            tests/test_v360_cryptographic_authenticity.py
