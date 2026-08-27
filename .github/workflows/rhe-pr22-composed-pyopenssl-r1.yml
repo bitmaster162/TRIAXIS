@@ -1,0 +1,49 @@
+name: RHE PR22 Composed PyOpenSSL Validation
+
+on:
+  push:
+    branches:
+      - ci/rhe-pr22-composed-pyopenssl-r1
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-validation:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONPATH: src:.
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Checkout exact composed branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install declared dependencies only
+        run: python -m pip install --disable-pip-version-check -r requirements.txt pytest
+
+      - name: Verify frozen PR22 authority and composed-only delta
+        shell: bash
+        run: |
+          git cat-file -e 57bdeaa2420e1f930f4df233e0a61346bf1a2b11^{commit}
+          mapfile -t changed < <(git diff --name-only 57bdeaa2420e1f930f4df233e0a61346bf1a2b11 HEAD | sort)
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = ".github/workflows/rhe-pr22-composed-pyopenssl-r1.yml"
+          test "${changed[1]}" = "requirements.txt"
+          test "$(cat requirements.txt)" = $'cryptography>=46,<47\npyOpenSSL==26.2.0'
+
+      - name: Run bounded RHE Risk Authority suites
+        run: |
+          python -m pytest -q \
+            tests/test_risk_authority_r1.py \
+            tests/test_risk_mediation_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_testfix_r1.py \
+            tests/test_authenticated_rhe_execution_boundary_r1.py \
+            tests/test_v360_cryptographic_authenticity.py
