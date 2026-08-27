@@ -373,6 +373,35 @@ def authorize_authenticated_action(
                 risk_mediation_signature_errors.extend(mediation_auth["errors"])
                 signed_risk_mediation_receipt = None
 
+    if (
+        risk_mediation_requested
+        and signed_risk_mediation_receipt is None
+        and token.get("outcome") == "ALLOW"
+    ):
+        terminal_mediation_errors = list(risk_mediation_signature_errors)
+        if not terminal_mediation_errors:
+            terminal_mediation_errors = [
+                _error(
+                    "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+                    "signed_risk_mediation_receipt",
+                    "usable ALLOW requires authenticated risk mediation",
+                )
+            ]
+        token = _preauthorization_deny(terminal_mediation_errors)
+        signed_token = sign_contract_envelope(
+            token,
+            digest_field="token_sha256",
+            purpose=PURPOSE_AUTHORIZATION_TOKEN,
+            key_id=gate_key_id,
+            signer_id=gate_signer_id,
+            trust_domain=gate_trust_domain,
+            private_key_b64=gate_private_key_b64,
+            issued_at=evaluation_tick,
+            valid_until=max(evaluation_tick + 1, int(token.get("expires_at", evaluation_tick + 1))),
+        )
+        risk_mediation_receipt = None
+        risk_mediation_signature_errors = []
+
     result_errors = list(token.get("errors", [])) + risk_mediation_signature_errors
     mediated_required_and_missing = (
         risk_mediation_requested and signed_risk_mediation_receipt is None
