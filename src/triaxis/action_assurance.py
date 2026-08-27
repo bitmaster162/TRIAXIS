@@ -395,12 +395,10 @@ def authorize_action(
         if workload_identity_provider is None:
             errors.append(_error("CONFIG_ERROR", "workload_identity_provider", "workload_identity_provider instance required in spiffe_workload mode"))
         elif action_result["status"] == "PASS" and policy_result["status"] == "PASS" and action and policy:
-            # Enforce trusted provider boundary
             if trusted_provider_registry is not None:
                 if not trusted_provider_registry.is_provider_trusted(provider_id, workload_identity_provider):
                     errors.append(_error("UNTRUSTED_IDENTITY_PROVIDER", "workload_identity_provider", f"untrusted identity provider '{provider_id}'"))
             elif not allow_unregistered_providers:
-                # Require explicit trusted_provider_registry or allow_unregistered_providers=True
                 from .identity import SpiffeWorkloadIdentityProvider
                 if not isinstance(workload_identity_provider, SpiffeWorkloadIdentityProvider):
                     errors.append(_error("UNTRUSTED_IDENTITY_PROVIDER", "workload_identity_provider", "untrusted identity provider instance"))
@@ -517,9 +515,6 @@ def authorize_action(
         if policy_decision["outcome"] != "ALLOW":
             errors.extend(policy_decision["errors"])
 
-        # Independent approval threshold is enforced here rather than delegated
-        # to LLM reasoning. R3/R4 require two different trust domains; R4 must
-        # include a HUMAN approval.
         risk_index = RISK_CLASSES.index(action["risk_class"])
         domains = {str(item.get("trust_domain")) for item in action_result["approvals"]}
         if risk_index >= RISK_CLASSES.index("R3") and len(domains) < 2:
@@ -532,27 +527,11 @@ def authorize_action(
     expiry_sources = {
         "action_expires_at": action.get("expires_at") if action else None,
         "policy_valid_until": policy.get("valid_until") if policy else None,
-        "assurance_valid_until": (
-            assurance_attestation.get("valid_until")
-            if isinstance(assurance_attestation, Mapping)
-            else None
-        ),
-        "state_valid_until": (
-            action.get("state_witness", {}).get("valid_until")
-            if action and isinstance(action.get("state_witness"), Mapping)
-            else None
-        ),
-        "approval_expires_at": sorted(
-            item.get("expires_at")
-            for item in action_result.get("approvals", [])
-            if type(item.get("expires_at")) is int
-        ),
+        "assurance_valid_until": assurance_attestation.get("valid_until") if isinstance(assurance_attestation, Mapping) else None,
+        "state_valid_until": action.get("state_witness", {}).get("valid_until") if action and isinstance(action.get("state_witness"), Mapping) else None,
+        "approval_expires_at": sorted(item.get("expires_at") for item in action_result.get("approvals", []) if type(item.get("expires_at")) is int),
     }
-    expiry_candidates = [
-        value
-        for key, value in expiry_sources.items()
-        if key != "approval_expires_at" and type(value) is int
-    ] + list(expiry_sources["approval_expires_at"])
+    expiry_candidates = [value for key, value in expiry_sources.items() if key != "approval_expires_at" and type(value) is int] + list(expiry_sources["approval_expires_at"])
     effective_expires_at = min(expiry_candidates) if expiry_candidates else evaluation_tick
 
     token = {
@@ -564,16 +543,8 @@ def authorize_action(
         "decision_case_sha256": action.get("decision_case_sha256") if action else None,
         "evidence_report_sha256": action.get("evidence_report_sha256") if action else None,
         "assured_action_request_sha256": action.get("assured_action_request_sha256") if action else None,
-        "assurance_attestation_sha256": (
-            assurance_attestation.get("attestation_sha256")
-            if isinstance(assurance_attestation, Mapping)
-            else None
-        ),
-        "assurance_issuer_id": (
-            assurance_attestation.get("issuer_id")
-            if isinstance(assurance_attestation, Mapping)
-            else None
-        ),
+        "assurance_attestation_sha256": assurance_attestation.get("attestation_sha256") if isinstance(assurance_attestation, Mapping) else None,
+        "assurance_issuer_id": assurance_attestation.get("issuer_id") if isinstance(assurance_attestation, Mapping) else None,
         "subject_id": action.get("subject_id") if action else None,
         "object_id": action.get("object_id") if action else None,
         "capability": action.get("capability") if action else None,
@@ -584,16 +555,8 @@ def authorize_action(
         "policy_sequence": action.get("policy_sequence") if action else None,
         "policy_sha256": policy.get("policy_sha256") if policy else None,
         "policy_decision_sha256": policy_decision.get("decision_sha256") if policy_decision else None,
-        "state_witness_sha256": (
-            action.get("state_witness", {}).get("witness_sha256")
-            if action and isinstance(action.get("state_witness"), Mapping)
-            else None
-        ),
-        "state_version": (
-            action.get("state_witness", {}).get("version")
-            if action and isinstance(action.get("state_witness"), Mapping)
-            else None
-        ),
+        "state_witness_sha256": action.get("state_witness", {}).get("witness_sha256") if action and isinstance(action.get("state_witness"), Mapping) else None,
+        "state_version": action.get("state_witness", {}).get("version") if action and isinstance(action.get("state_witness"), Mapping) else None,
         "risk_class": action.get("risk_class") if action else None,
         "nonce": action.get("nonce") if action else None,
         "issued_at": evaluation_tick,
@@ -674,6 +637,8 @@ class ExecutionLedgerError(RuntimeError):
 
 class SQLiteExecutionLedger:
     """Durable single-use token ledger with explicit unknown-outcome recovery."""
+
+    _requires_authenticated_prepare = False
 
     def __init__(self, path: str | Path) -> None:
         self.path = str(path)
@@ -759,12 +724,36 @@ class SQLiteExecutionLedger:
         provider_id: str = "spiffe_spire_local",
         provider_instance: Any = None,
     ) -> dict[str, Any]:
+        if getattr(self, "_requires_authenticated_prepare", False):
+            raise ExecutionLedgerError(
+                "RISK_MEDIATION_AUTHENTICATION_REQUIRED",
+                "raw prepare disabled on authenticated ledger; use prepare_authenticated",
+            )
+        return self._prepare_legacy(
+            token_value=token_value,
+            observed_state_witness=observed_state_witness,
+            evaluation_tick=evaluation_tick,
+            current_workload_identity=current_workload_identity,
+            trusted_provider_registry=trusted_provider_registry,
+            provider_id=provider_id,
+            provider_instance=provider_instance,
+        )
+
+    def _prepare_legacy(
+        self,
+        token_value: Mapping[str, Any],
+        observed_state_witness: Mapping[str, Any],
+        evaluation_tick: int,
+        current_workload_identity: Any = None,
+        trusted_provider_registry: Any = None,
+        provider_id: str = "spiffe_spire_local",
+        provider_instance: Any = None,
+    ) -> dict[str, Any]:
         token_result = validate_authorization_token(token_value, evaluation_tick, require_allow=True)
         if token_result["status"] != "PASS":
             raise ExecutionLedgerError("invalid_authorization_token", str(token_result["errors"]))
         token = token_result["token"]
 
-        # Enforce workload identity ownership if token was authorized under spiffe_workload mode or current_workload_identity is passed
         wl_meta = token.get("workload_identity") or token.get("authorization_provenance") or {}
         token_identity_mode = wl_meta.get("identity_mode") or ("spiffe_workload" if wl_meta.get("spiffe_id") else None)
 
