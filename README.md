@@ -49,6 +49,14 @@ Generate the legacy digest-only end-to-end example:
 PYTHONPATH=src:. python examples/build_operational_assurance_example.py
 ```
 
+Generate the current authenticated, risk-mediated reference example:
+
+```bash
+PYTHONPATH=src:. python examples/build_authenticated_assurance_example.py
+```
+
+The authenticated example uses ephemeral local keys, a deterministic in-process risk adapter, a signed risk-mediation receipt, and disposable local SQLite state. It demonstrates the current authenticated PREPARED contract but does not invoke a provider or establish repository-wide complete mediation.
+
 Score a benchmark result file:
 
 ```bash
@@ -63,7 +71,7 @@ The v3.14 branch adds an independent challenge-bound transparency-witness quorum
 
 ## v3.15 Persistent Policy Transparency Gossip
 
-The v3.15 layer persists the highest verified floor per transparency witness and rejects cross-session rollback or same-version fork claims. See `release/TRIAXIS_CONTROL_STACK_v3.15_RC1_POLICY_TRANSPARENCY_GOSSIP.md`.
+The v3.15 layer persists the highest verified floor per transparency witness and rejects cross-session rollback or same-version fork claims. See `release/TRIAXIS_CONTROL_STACK_v3.15_RC1_PERSISTENT_POLICY_TRANSPARENCY_GOSSIP.md`.
 
 ## v3.16 External Policy Transparency Gossip Head
 
