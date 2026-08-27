@@ -298,7 +298,6 @@ class CryptographicAuthenticityTests(unittest.TestCase):
         self.assertEqual(result["status"], "BLOCK")
         self.assertIn("signing_key_revoked", {row["code"] for row in result["errors"]})
 
-
     def test_gate_private_key_mismatch_returns_deny(self):
         action = self.fx.action()
         wrong = generate_ed25519_keypair()
@@ -326,13 +325,15 @@ class CryptographicAuthenticityTests(unittest.TestCase):
                 with self.assertRaises(ExecutionLedgerError):
                     ledger.prepare_authenticated(forged_signed_token, signed_state, 6)
 
-    def test_authenticated_ledger_accepts_exact_signed_token_and_state(self):
+    def test_authenticated_ledger_requires_risk_mediation_before_prepared(self):
         result = self.fx.authorized()
         signed_state = self.fx.sign(self.fx.state(), field="witness_sha256", purpose=PURPOSE_STATE_WITNESS, key_id="key:state", signer="adapter:state", domain="domain:state", valid_until=40)
         with tempfile.TemporaryDirectory() as tmp:
             with AuthenticatedSQLiteExecutionLedger(Path(tmp) / "ledger.db", self.fx.registry) as ledger:
-                prepared = ledger.prepare_authenticated(result["signed_token"], signed_state, 6)
-        self.assertEqual(prepared["state"], "PREPARED")
+                with self.assertRaises(ExecutionLedgerError) as exc_info:
+                    ledger.prepare_authenticated(result["signed_token"], signed_state, 6)
+                self.assertEqual(exc_info.exception.code, "RISK_MEDIATION_AUTHENTICATION_REQUIRED")
+                self.assertIsNone(ledger.get(result["token"]["nonce"]))
 
 
 if __name__ == "__main__":
