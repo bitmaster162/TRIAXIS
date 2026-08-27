@@ -333,7 +333,7 @@ def test_trust_domain_change_before_prepare_is_rejected(tmp_path):
     try:
         with pytest.raises(ExecutionLedgerError) as exc_info:
             boundary.prepare(token, action["state_witness"], 150)
-        assert exc_info.value.code == "EXECUTION_WORKLOAD_IDENTITY_MISMATCH"
+        assert exc_info.value.code == "EXECUTION_WORKLOAD_IDENTITY_PROVENANCE_MISMATCH"
         assert ledger.get(token["nonce"]) is None
     finally:
         ledger.close()
