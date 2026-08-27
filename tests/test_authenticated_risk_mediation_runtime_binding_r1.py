@@ -1,8 +1,8 @@
 """Authenticated Risk Authority runtime-binding design tests.
 
-These tests are zero-effect. They exercise only deterministic in-process
-adapters, Ed25519 test keys and disposable SQLite state. No provider, network,
-deployment, trading or capital action is invoked here.
+These tests are zero-effect. They exercise deterministic in-process adapters,
+Ed25519 test keys, a mock Cedar PDP and disposable SQLite state. No real
+provider, network, deployment, trading or capital action is invoked here.
 """
 from __future__ import annotations
 
@@ -11,15 +11,23 @@ from pathlib import Path
 
 import pytest
 
-from triaxis.action_assurance import ExecutionLedgerError
+from triaxis.action_assurance import (
+    ExecutionLedgerError,
+    action_scope_sha256,
+    assured_action_request_sha256,
+    seal_contract,
+)
 from triaxis.authenticated_action_assurance import (
     AuthenticatedSQLiteExecutionLedger,
     authorize_authenticated_action,
     validate_authenticated_authorization,
     validate_authenticated_risk_mediation,
 )
+from triaxis.authorization import PolicyEnforcementPoint
 from triaxis.crypto_trust import (
+    PURPOSE_ASSURANCE_ATTESTATION,
     PURPOSE_AUTHORIZATION_TOKEN,
+    PURPOSE_POLICY_BUNDLE,
     PURPOSE_RISK_MEDIATION_RECEIPT,
     PURPOSE_STATE_WITNESS,
     generate_ed25519_keypair,
@@ -31,6 +39,7 @@ from triaxis.risk_mediation import (
     TrustedRiskFactsAdapterRegistry,
     risk_subject_sha256,
 )
+from tests.test_pi002_negative_controls import MockCedarPDP
 from tests.test_v360_cryptographic_authenticity import Fixture
 
 
@@ -76,7 +85,7 @@ def _signed_inputs(fx: Fixture, action, policy):
         "signed_assurance_attestation": fx.sign(
             action["assurance_attestation"],
             field="attestation_sha256",
-            purpose="ASSURANCE_ATTESTATION",
+            purpose=PURPOSE_ASSURANCE_ATTESTATION,
             key_id="key:assurance",
             signer="assurance:1",
             domain="domain:assurance",
@@ -94,7 +103,7 @@ def _signed_inputs(fx: Fixture, action, policy):
         "signed_policy_bundle": fx.sign(
             policy,
             field="policy_sha256",
-            purpose="POLICY_BUNDLE",
+            purpose=PURPOSE_POLICY_BUNDLE,
             key_id="key:policy",
             signer="policy-engine:1",
             domain="domain:policy",
@@ -104,7 +113,14 @@ def _signed_inputs(fx: Fixture, action, policy):
     }
 
 
-def _authorize_mediated(fx: Fixture, action, facts: RiskFacts, *, trusted_adapter=None):
+def _authorize_mediated(
+    fx: Fixture,
+    action,
+    facts: RiskFacts,
+    *,
+    trusted_adapter=None,
+    **authorization_kwargs,
+):
     policy = fx.policy()
     gate_pair = _install_mediation_gate(fx)
     adapter = StaticRiskAdapter(facts)
@@ -126,8 +142,33 @@ def _authorize_mediated(fx: Fixture, action, facts: RiskFacts, *, trusted_adapte
         trusted_risk_adapter_registry=registry,
         risk_adapter_id=adapter.adapter_id,
         risk_adapter_version=adapter.adapter_version,
+        **authorization_kwargs,
     )
     return result, adapter
+
+
+def _cedar_action(fx: Fixture):
+    action = dict(fx.action(risk="R2", nonce="nonce:risk-cedar"))
+    action.update(
+        {
+            "human_id": "human:1",
+            "agent_instance_id": "agent:test",
+            "delegation_grant_id": "grant:test",
+            "task_id": "task:test",
+        }
+    )
+    action["assured_action_request_sha256"] = assured_action_request_sha256(action)
+    attestation = dict(action["assurance_attestation"])
+    attestation["assured_action_request_sha256"] = action[
+        "assured_action_request_sha256"
+    ]
+    attestation["attestation_sha256"] = ""
+    action["assurance_attestation"] = seal_contract(
+        attestation, "attestation_sha256"
+    )
+    action["scope_sha256"] = action_scope_sha256(action)
+    action["action_sha256"] = ""
+    return seal_contract(action, "action_sha256")
 
 
 def test_mediated_authenticated_allow_returns_exact_signed_receipt():
@@ -162,6 +203,31 @@ def test_mediated_authenticated_allow_returns_exact_signed_receipt():
         expected_trust_domain="domain:risk-gate",
     )
     assert mediation["status"] == "PASS", mediation
+
+
+def test_mediation_preserves_cedar_pep_as_selected_pdp():
+    fx = Fixture()
+    action = _cedar_action(fx)
+    pep = PolicyEnforcementPoint(pdp_adapter=MockCedarPDP())
+    result, adapter = _authorize_mediated(
+        fx,
+        action,
+        RiskFacts(
+            effect_scope=EffectScope.EXTERNAL,
+            reversibility=Reversibility.REVERSIBLE,
+        ),
+        authorization_mode="cedar_reference",
+        pep=pep,
+        identity_mode="explicit_reference",
+    )
+
+    assert result["status"] == "PASS", result
+    assert result["token"]["outcome"] == "ALLOW"
+    assert adapter.calls == 1
+    assert pep.last_receipt is not None
+    assert pep.last_receipt.is_verified_allow
+    assert result["token"]["policy_decision_sha256"] == pep.last_receipt.decision_sha256
+    assert result["signed_risk_mediation_receipt"] is not None
 
 
 def test_caller_risk_downgrade_blocks_before_usable_allow():
