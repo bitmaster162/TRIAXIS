@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout exact CI branch
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,10 +30,10 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check -r requirements.txt pytest
 
-      - name: Verify parent authority
+      - name: Verify frozen authority and CI-only delta
         run: |
-          test "$(git rev-parse HEAD^)" = "57bdeaa2420e1f930f4df233e0a61346bf1a2b11"
-          git diff --name-only HEAD^ HEAD
+          git cat-file -e 57bdeaa2420e1f930f4df233e0a61346bf1a2b11^{commit}
+          test "$(git diff --name-only 57bdeaa2420e1f930f4df233e0a61346bf1a2b11 HEAD)" = ".github/workflows/rhe-pr22-ephemeral-validation.yml"
 
       - name: Run bounded RHE Risk Authority suites
         run: |
