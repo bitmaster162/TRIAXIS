@@ -26,7 +26,7 @@ from .crypto_trust import (
     sign_contract_envelope,
     verify_contract_envelope,
 )
-from .integrity import materialize_json
+from .integrity import canonical_sha256, materialize_json
 from .policy_lifecycle import POLICY_BUNDLE_CONTRACT_ID
 from .risk_mediation import (
     RISK_MEDIATION_RECEIPT_CONTRACT_ID,
@@ -76,9 +76,13 @@ def authorize_authenticated_action(
 
     Risk mediation wraps the exact existing ``authorize_action`` configuration,
     including Cedar/PEP and workload-identity modes. It does not replace the
-    selected authorization implementation. Legacy callers that omit mediation
-    retain historical signed-token issuance behavior, while authenticated
-    PREPARED boundaries require a separately authenticated mediation receipt.
+    selected authorization implementation. Pre-authorization authentication or
+    mediation failures return a local sealed DENY without invoking the selected
+    PDP or workload-identity provider.
+
+    Legacy callers that omit mediation retain historical signed-token issuance
+    behavior, while authenticated PREPARED boundaries require a separately
+    authenticated mediation receipt.
     """
 
     action = materialize_json(action_value)
@@ -200,9 +204,68 @@ def authorize_authenticated_action(
             allow_unregistered_providers=allow_unregistered_providers,
         )
 
+    def _preauthorization_deny(current_errors: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+        expiry_sources = {
+            "action_expires_at": action.get("expires_at") if isinstance(action, Mapping) else None,
+            "policy_valid_until": policy.get("valid_until") if isinstance(policy, Mapping) else None,
+            "assurance_valid_until": assurance.get("valid_until") if isinstance(assurance, Mapping) else None,
+            "state_valid_until": state.get("valid_until") if isinstance(state, Mapping) else None,
+            "approval_expires_at": sorted(
+                item.get("expires_at")
+                for item in approvals
+                if isinstance(item, Mapping) and type(item.get("expires_at")) is int
+            ),
+        }
+        candidates = [
+            value
+            for key, value in expiry_sources.items()
+            if key != "approval_expires_at" and type(value) is int
+        ] + list(expiry_sources["approval_expires_at"])
+        effective_expires_at = min(candidates) if candidates else evaluation_tick + 1
+        decision_sha256 = canonical_sha256(
+            {
+                "stage": "AUTHENTICATED_PREAUTHORIZATION_DENY",
+                "errors": list(current_errors),
+            }
+        )
+        token = {
+            "contract_id": AUTHORIZATION_TOKEN_CONTRACT_ID,
+            "issuer_id": gate_signer_id,
+            "outcome": "DENY",
+            "action_sha256": action.get("action_sha256") if isinstance(action, Mapping) else None,
+            "scope_sha256": action.get("scope_sha256") if isinstance(action, Mapping) else None,
+            "decision_case_sha256": action.get("decision_case_sha256") if isinstance(action, Mapping) else None,
+            "evidence_report_sha256": action.get("evidence_report_sha256") if isinstance(action, Mapping) else None,
+            "assured_action_request_sha256": action.get("assured_action_request_sha256") if isinstance(action, Mapping) else None,
+            "assurance_attestation_sha256": assurance.get("attestation_sha256") if isinstance(assurance, Mapping) else None,
+            "assurance_issuer_id": assurance.get("issuer_id") if isinstance(assurance, Mapping) else None,
+            "subject_id": action.get("subject_id") if isinstance(action, Mapping) else None,
+            "object_id": action.get("object_id") if isinstance(action, Mapping) else None,
+            "capability": action.get("capability") if isinstance(action, Mapping) else None,
+            "tool_id": action.get("tool_id") if isinstance(action, Mapping) else None,
+            "execution_target": action.get("execution_target") if isinstance(action, Mapping) else None,
+            "payload_sha256": action.get("payload_sha256") if isinstance(action, Mapping) else None,
+            "policy_id": action.get("policy_id") if isinstance(action, Mapping) else None,
+            "policy_sequence": action.get("policy_sequence") if isinstance(action, Mapping) else None,
+            "policy_sha256": policy.get("policy_sha256") if isinstance(policy, Mapping) else None,
+            "policy_decision_sha256": decision_sha256,
+            "state_witness_sha256": state.get("witness_sha256") if isinstance(state, Mapping) else None,
+            "state_version": state.get("version") if isinstance(state, Mapping) else None,
+            "risk_class": action.get("risk_class") if isinstance(action, Mapping) else None,
+            "nonce": action.get("nonce") if isinstance(action, Mapping) else None,
+            "issued_at": evaluation_tick,
+            "expires_at": effective_expires_at,
+            "expiry_sources": expiry_sources,
+            "errors": list(current_errors),
+            "token_sha256": "",
+        }
+        return seal_contract(token, "token_sha256")
+
     risk_mediation_receipt: dict[str, Any] | None = None
 
-    if not errors and risk_mediation_complete:
+    if errors:
+        token = _preauthorization_deny(errors)
+    elif risk_mediation_complete:
         try:
             mediated = RiskMediatedAuthorizationBoundary(
                 authorizer=_authorize_existing,
@@ -216,7 +279,7 @@ def authorize_authenticated_action(
             )
         except RiskMediationError as exc:
             errors.append(_error(exc.code, "risk_mediation", str(exc)))
-            token = _authorize_existing(action, evaluation_tick=evaluation_tick)
+            token = _preauthorization_deny(errors)
         except (TypeError, ValueError) as exc:
             errors.append(
                 _error(
@@ -225,19 +288,12 @@ def authorize_authenticated_action(
                     str(exc),
                 )
             )
-            token = _authorize_existing(action, evaluation_tick=evaluation_tick)
+            token = _preauthorization_deny(errors)
         else:
             token = mediated.authorization
             risk_mediation_receipt = mediated.risk_mediation_receipt
     else:
         token = _authorize_existing(action, evaluation_tick=evaluation_tick)
-
-    if errors:
-        token = dict(token)
-        token["outcome"] = "DENY"
-        token["errors"] = list(token.get("errors", [])) + errors
-        token = seal_contract(token, "token_sha256")
-        risk_mediation_receipt = None
 
     signed_token = sign_contract_envelope(
         token,
