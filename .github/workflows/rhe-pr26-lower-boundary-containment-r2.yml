@@ -1,0 +1,75 @@
+name: RHE PR26 lower-boundary containment R2 validation
+
+on:
+  push:
+    branches:
+      - ci/rhe-authenticated-composition-lower-boundary-containment-r2-a31e082-validation
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONPATH: src:.
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Authority and CI-only delta guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=46280e74b21d77eb2625b1b0c032b24a518d717e
+          PR26=a31e082fe5bdf510cd5389f8cec4045d29ae7ad5
+          test "$(git rev-parse HEAD^)" = "$PR26"
+          test "$(git merge-base "$BASE" "$PR26")" = "$BASE"
+
+          mapfile -t actual_pr < <(git diff --name-only "$BASE" "$PR26" | sort)
+          expected_pr=(
+            docs/rhe/AUTHENTICATED_COMPOSITION_LOWER_BOUNDARY_CONTAINMENT_R2.md
+            src/triaxis/authenticated_rhe_execution_boundary.py
+            src/triaxis/rhe_execution_boundary.py
+            tests/test_authenticated_rhe_execution_boundary_r1.py
+          )
+          mapfile -t expected_pr_sorted < <(printf '%s\n' "${expected_pr[@]}" | sort)
+          test "${#actual_pr[@]}" -eq 4
+          test "$(printf '%s\n' "${actual_pr[@]}")" = "$(printf '%s\n' "${expected_pr_sorted[@]}")"
+
+          mapfile -t actual_ci < <(git diff --name-only HEAD^ HEAD | sort)
+          test "${#actual_ci[@]}" -eq 1
+          test "${actual_ci[0]}" = ".github/workflows/rhe-pr26-lower-boundary-containment-r2.yml"
+
+          test "$(sed -n '1p' requirements.txt)" = "cryptography>=46,<47"
+          test "$(sed -n '2p' requirements.txt)" = "pyOpenSSL==26.2.0"
+          test "$(wc -l < requirements.txt | tr -d ' ')" -eq 2
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pytest
+      - name: Runtime versions
+        run: |
+          python --version
+          python - <<'PY'
+          import cryptography, OpenSSL, pytest
+          print(f"cryptography={cryptography.__version__}")
+          print(f"pyOpenSSL={OpenSSL.__version__}")
+          print(f"pytest={pytest.__version__}")
+          PY
+      - name: Target plus composed RHE regression stack
+        run: |
+          python -m pytest -q \
+            tests/test_authenticated_rhe_execution_boundary_r1.py \
+            tests/test_rhe_execution_identity_provenance_r1.py \
+            tests/test_rhe_complete_mediation_hardening_r1.py \
+            tests/test_authenticated_assurance_example_rhe_r1.py \
+            tests/test_risk_authority_r1.py \
+            tests/test_risk_mediation_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_testfix_r1.py \
+            tests/test_v360_cryptographic_authenticity.py
