@@ -1,0 +1,69 @@
+name: RHE PR24 Complete Mediation Hardening R1 FIX_R1 Revalidation
+
+on:
+  push:
+    branches:
+      - ci/rhe-complete-mediation-hardening-r1-pr24-4b6d844-fix1-validation
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-validation:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONPATH: src:.
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Checkout exact ephemeral branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install declared dependencies only
+        run: python -m pip install --disable-pip-version-check -r requirements.txt pytest
+
+      - name: Verify frozen PR24 FIX_R1 authority and CI-only delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=90737239f2c77ad51410a32b40f90d2e6b3b5e13
+          PRE_FIX=df1eeb583ef97defdd7c1eeadbccb5510b7b1c1b
+          PR24=4b6d8442fc435862db78f89f97b36949e5dcab39
+          WORKFLOW=.github/workflows/rhe-pr24-complete-mediation-hardening-r1-fix1.yml
+          git cat-file -e "${BASE}^{commit}"
+          git cat-file -e "${PRE_FIX}^{commit}"
+          git cat-file -e "${PR24}^{commit}"
+          test "$(git rev-parse HEAD^)" = "${PR24}"
+          test "$(git merge-base "${BASE}" "${PR24}")" = "${BASE}"
+          mapfile -t pr_changed < <(git diff --name-only "${BASE}" "${PR24}" | sort)
+          test "${#pr_changed[@]}" -eq 5
+          test "${pr_changed[0]}" = "docs/rhe/COMPLETE_MEDIATION_HARDENING_R1.md"
+          test "${pr_changed[1]}" = "src/triaxis/authenticated_action_assurance.py"
+          test "${pr_changed[2]}" = "tests/test_authenticated_rhe_execution_boundary_r1.py"
+          test "${pr_changed[3]}" = "tests/test_rhe_complete_mediation_hardening_r1.py"
+          test "${pr_changed[4]}" = "tests/test_rhe_execution_identity_provenance_r1.py"
+          mapfile -t fix_changed < <(git diff --name-only "${PRE_FIX}" "${PR24}" | sort)
+          test "${#fix_changed[@]}" -eq 2
+          test "${fix_changed[0]}" = "tests/test_authenticated_rhe_execution_boundary_r1.py"
+          test "${fix_changed[1]}" = "tests/test_rhe_execution_identity_provenance_r1.py"
+          mapfile -t ci_changed < <(git diff --name-only "${PR24}" HEAD | sort)
+          test "${#ci_changed[@]}" -eq 1
+          test "${ci_changed[0]}" = "${WORKFLOW}"
+          test "$(cat requirements.txt)" = $'cryptography>=46,<47\npyOpenSSL==26.2.0'
+
+      - name: Run target plus prior six RHE suites
+        run: |
+          python -m pytest -q \
+            tests/test_rhe_complete_mediation_hardening_r1.py \
+            tests/test_risk_authority_r1.py \
+            tests/test_risk_mediation_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_r1.py \
+            tests/test_authenticated_risk_mediation_runtime_binding_testfix_r1.py \
+            tests/test_authenticated_rhe_execution_boundary_r1.py \
+            tests/test_v360_cryptographic_authenticity.py
