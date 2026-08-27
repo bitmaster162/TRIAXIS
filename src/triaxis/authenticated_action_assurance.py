@@ -513,6 +513,8 @@ def validate_authenticated_risk_mediation(
 class AuthenticatedSQLiteExecutionLedger(SQLiteExecutionLedger):
     """Execution ledger requiring authenticated token, mediation receipt and state."""
 
+    _requires_authenticated_prepare = True
+
     def __init__(self, path: str | Path, registry: TrustKeyRegistry) -> None:
         super().__init__(path)
         self.registry = registry
@@ -595,7 +597,7 @@ class AuthenticatedSQLiteExecutionLedger(SQLiteExecutionLedger):
         if signer is None or signer.signer_id != state.get("adapter_id"):
             from .action_assurance import ExecutionLedgerError
             raise ExecutionLedgerError("state_signer_mismatch", "state signer is not adapter")
-        return super().prepare(token, state, evaluation_tick)
+        return super()._prepare_legacy(token, state, evaluation_tick)
 
 
 __all__ = [
