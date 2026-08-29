@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "profile_id": "TRIAXIS_CANON_PROFILE_R1",
+  "mode": "READ_ONLY_CONFORMANCE_PROFILE",
+  "baseline_main_sha": "a292ff969ef291238e8a28a443c090a86e7bd2e7",
+  "selected_decisions": [
+    "D004", "D010", "D012", "D020", "D021", "D028", "D040", "D041", "D043",
+    "D058", "D059", "D065", "D069", "D071", "D092", "D093", "D103", "D107",
+    "D112", "D120", "D123", "D127", "D129", "D130", "D131", "D134", "D136"
+  ],
+  "status_semantics": {
+    "VERIFIED_MAIN": "Requires executable/source/test/receipt evidence on current main or merged lineage.",
+    "VERIFIED_PROCESS": "Requires exact provider/GitHub process evidence but may not be runtime code.",
+    "PARTIAL_MAIN": "Some semantics are implemented on main, but the full canon rule is not proven.",
+    "PARTIAL_RESEARCH": "Research evidence exists, but it is not production/current runtime authority.",
+    "RESEARCH_ONLY": "Research-only evidence; never count as production implementation.",
+    "RESEARCH_ONLY_PARTIAL": "Partial research mechanism; never count as production implementation.",
+    "GAP": "Canon invariant was not found in bounded current TRIAXIS evidence.",
+    "GAP_OR_OUTSIDE": "May be missing or may belong to another subsystem boundary.",
+    "OUTSIDE_TRIAXIS_CORE": "Belongs to the cross-system Control Plane rather than TRIAXIS alone."
+  },
+  "fail_closed_rules": [
+    "Do not upgrade draft PR behavior to main.",
+    "Do not upgrade research hypotheses to production current.",
+    "Do not treat PREPARED as external effect completion.",
+    "Do not infer repository-wide complete mediation from one protected path.",
+    "Do not infer production qualification from component test PASS.",
+    "Do not mutate runtime/provider/trading/capital state from this profile."
+  ],
+  "entries": [
+    {"decision_id":"D004","status":"VERIFIED_MAIN","evidence":"src/triaxis/risk_authority.py","assertion":"Risk is consequence-derived and caller downgrade is rejected."},
+    {"decision_id":"D010","status":"PARTIAL_MAIN","evidence":"README.md and RHE execution-boundary lineage","assertion":"Reference effect paths preserve PREPARED/STOP ceilings, but D010 is broader than TRIAXIS-specific stopping semantics."},
+    {"decision_id":"D012","status":"VERIFIED_MAIN","evidence":"external heads, execution ledger, provider reconciliation, completion witnesses","assertion":"External durable evidence can dominate local state where the corresponding authority remains current."},
+    {"decision_id":"D020","status":"VERIFIED_MAIN","evidence":"src/triaxis/risk_authority.py","assertion":"Controls strengthen with consequence class; critical domains floor to R4."},
+    {"decision_id":"D021","status":"RESEARCH_ONLY","evidence":"research/decision-closure-ebd-v0.3","assertion":"Independent evidence and direct falsification are research mechanisms, not production authority."},
+    {"decision_id":"D028","status":"VERIFIED_PROCESS","evidence":"README.md and PR non-claims","assertion":"Unavailable integration/runtime capabilities remain explicit non-claims."},
+    {"decision_id":"D040","status":"VERIFIED_MAIN","evidence":"src/triaxis/action_assurance.py","assertion":"PREPARED/COMPLETED/UNKNOWN/reconciled states prevent collapsing preparation into verified effect."},
+    {"decision_id":"D041","status":"PARTIAL_MAIN","evidence":"bounded RHE fix lineage","assertion":"Reproduced failures are repaired by changed mechanisms and evidence rather than silent retry."},
+    {"decision_id":"D043","status":"VERIFIED_PROCESS","evidence":"bounded PR bodies and validation receipts","assertion":"Performed validation, absent validation, residuals, and non-goals are reported separately."},
+    {"decision_id":"D058","status":"VERIFIED_MAIN","evidence":"signed/digested assurance and state artifacts","assertion":"Artifacts and state are integrity-bound before use."},
+    {"decision_id":"D059","status":"VERIFIED_PROCESS","evidence":"exact baseline SHAs in bounded gates","assertion":"High-change work freezes an exact baseline before delta work."},
+    {"decision_id":"D065","status":"PARTIAL_MAIN","evidence":"rollback/fork/split-view controls","assertion":"State drift is detected in several subsystems, but no unified goal/intent/authority drift ledger is proven."},
+    {"decision_id":"D069","status":"VERIFIED_PROCESS","evidence":"exact-file bounded deltas","assertion":"Small deltas over verified bases are preserved rather than wholesale rebuilds."},
+    {"decision_id":"D071","status":"VERIFIED_MAIN","evidence":"authenticated in-process example and explicit non-claims","assertion":"Simulation/reference validation is not counted as real provider effect."},
+    {"decision_id":"D092","status":"PARTIAL_MAIN","evidence":"versioned control-stack releases and validation receipts","assertion":"Continuity is strongly versioned, but one universal inherited-component manifest is not proven for every modern increment."},
+    {"decision_id":"D093","status":"PARTIAL_MAIN","evidence":"release/receipt structure","assertion":"Historical receipts are preserved, but canonical-current promotion semantics are not a native TRIAXIS mechanism."},
+    {"decision_id":"D103","status":"GAP_OR_OUTSIDE","evidence":"not verified in bounded current evidence","assertion":"No generic auth/rate-limit friction adaptation mechanism is proven here."},
+    {"decision_id":"D107","status":"PARTIAL_MAIN","evidence":"credential-aware references and explicit integration requirements","assertion":"Secret-custody requirements exist, but full secret-store enforcement was not proven in this profile."},
+    {"decision_id":"D112","status":"VERIFIED_MAIN","evidence":"execution ledger/reconciliation semantics","assertion":"UNKNOWN/IN_FLIGHT/COMPLETED block replay; retry requires authoritative NO_EFFECT reconciliation where supported."},
+    {"decision_id":"D120","status":"OUTSIDE_TRIAXIS_CORE","evidence":"cross-system Control Plane","assertion":"TRIAXIS alone cannot prove the broader operator hub and subsystem dataflow."},
+    {"decision_id":"D123","status":"PARTIAL_RESEARCH","evidence":"research/decision-closure-ebd-v0.3","assertion":"Research uses state/context to evidence/instrument/verification hierarchy, but not the full operator rule."},
+    {"decision_id":"D127","status":"PARTIAL_MAIN","evidence":"completion witnesses and execution receipts","assertion":"Effect completion is evidenced, but generic delegated-agent return transport plus acceptance is not proven."},
+    {"decision_id":"D129","status":"RESEARCH_ONLY","evidence":"research benchmarks","assertion":"Outcome, evidence discipline, instrument validity, and confirmation quality are separated in research evidence."},
+    {"decision_id":"D130","status":"VERIFIED_PROCESS","evidence":"independent review and draft gates","assertion":"Review evidence does not itself authorize merge/deploy/effect mutation."},
+    {"decision_id":"D131","status":"OUTSIDE_TRIAXIS_CORE","evidence":"cross-system composition","assertion":"TRIAXIS is one governance component and cannot alone prove Control Center + ContinuityOS + Return Plane composition."},
+    {"decision_id":"D134","status":"GAP","evidence":"not found in bounded current evidence","assertion":"No generic parallel-agent lane owner/read-write-effect/return registry is proven inside TRIAXIS."},
+    {"decision_id":"D136","status":"RESEARCH_ONLY_PARTIAL","evidence":"bounded verifier-driven correction research","assertion":"Bounded correction exists in research, but no autonomous repair runtime with rollback/readback receipts is proven."}
+  ]
+}
