@@ -1,0 +1,24 @@
+{
+  "postfreeze_upgrade_performed": false,
+  "schema": "triaxis.avr_v38_postfreeze_editorial_audit/v0.1",
+  "score_changed": false,
+  "scoring_freeze_commit": "7887f83f435861fabc2ffc52adb7d558eeaba883",
+  "tasks": {
+    "arc202_b": {
+      "audit": "CORROBORATES",
+      "notes": "Official solution independently gives H even => 0; for odd H it reindexes rows into diagonal-down layers, forces layerwise consistent edge directions for odd W, requires a gcd condition for a single cycle, and handles even W by the analogous first-2H-moves argument. Complexity O(H log W) or similar.",
+      "official_editorial": "https://atcoder.jp/contests/arc202/editorial/13503"
+    },
+    "arc202_c": {
+      "audit": "CORROBORATES",
+      "notes": "Official solution defines factors F_d by R_n=prod_{d|n}F_d and proves that the LCM over selected repunits is exactly the product over the union of divisor-index factors. This matches frozen cyclotomic activation mechanism.",
+      "official_editorial": "https://atcoder.jp/contests/arc202/editorial/13504"
+    },
+    "arc202_d": {
+      "audit": "CORROBORATES_QUARANTINE",
+      "notes": "Official solution adds a stay move, separates axes, applies reflection on a doubled cycle, and uses special divide-and-conquer FFT to obtain O(T log^2 T). This confirms frozen O(T*H*W) exact DP is asymptotically non-claim-grade.",
+      "official_editorial": "https://atcoder.jp/contests/arc202/editorial/13505"
+    }
+  },
+  "version": "V38"
+}

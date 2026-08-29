@@ -1,0 +1,21 @@
+{
+  "schema": "triaxis.avr.v40.scoring_freeze/v0.1",
+  "batch": "V40",
+  "contest": "arc196",
+  "verifier_commit": "a7c315f4da4f55e02c771f07a8a9dc6cb4369d2b",
+  "verifier_sha256": "3ae27c563238f988c4c95ad3894afc620d710e7970fa96e37b15df6b989449fb",
+  "scores": {
+    "B": "PROVISIONAL_CLAIM_GRADE_M0_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+    "C": "PERFORMANCE_QUARANTINE",
+    "D": "PERFORMANCE_QUARANTINE"
+  },
+  "claim_grade_tasks_added_pre_audit": 1,
+  "M0_passes_added_pre_audit": 1,
+  "final_passes_added_pre_audit": 1,
+  "x1_activations": 0,
+  "clean_rescues_added": 0,
+  "harms_added": 0,
+  "editorial_opened_before_scoring_freeze": false,
+  "gold_opened_before_scoring_freeze": false,
+  "postfreeze_policy": "corroborate_or_downgrade_only"
+}

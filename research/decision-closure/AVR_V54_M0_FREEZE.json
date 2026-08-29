@@ -1,0 +1,24 @@
+{
+  "schema": "triaxis.avr.v54.m0_freeze/v0.1",
+  "batch": "V54",
+  "candidate_compile_before_freeze": false,
+  "candidate_execution_before_freeze": false,
+  "editorial_or_gold_opened": false,
+  "sources": {
+    "F": {
+      "path": "research/decision-closure/v54_arc179/arc179_f_m0.cpp",
+      "sha256": "843c7ad1a99c47ffd73b17be6934a52071cc422c9878341affef6c2c606e154b",
+      "architecture": "exact difference-state DP with optimal-score predecessor; correctness-first; performance-risk"
+    },
+    "E": {
+      "path": "research/decision-closure/v54_arc179/arc179_e_m0.cpp",
+      "sha256": "581c5d6daeee55f004d8180599d8a715cd607bb25f0ea4aec2bc1912065055d6",
+      "architecture": "exact per-left-endpoint two-state rectangle generation simulator; O(N^2) worst-case"
+    },
+    "D": {
+      "path": "research/decision-closure/v54_arc179/arc179_d_m0.cpp",
+      "sha256": "96082fc5134ba88550e9c121db5bb578502d5a8e67723222901bfd2830e6754d",
+      "architecture": "O(N) branching-core leaf theorem"
+    }
+  }
+}

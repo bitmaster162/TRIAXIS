@@ -1,0 +1,23 @@
+{
+  "schema": "triaxis.avr_v33_scoring_freeze/v0.1",
+  "batch": "V33",
+  "editorial_opened": false,
+  "scores": {
+    "arc210_d": {
+      "M0": "FAIL",
+      "X1": "NOT_ACTIVATED",
+      "claim_grade": true
+    },
+    "arc210_e": {
+      "M0": "PROVISIONAL_PASS",
+      "X1": "NOT_ACTIVATED_CEILING",
+      "claim_grade": "PENDING_POSTFREEZE_AUDIT"
+    },
+    "arc210_f": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "claim_grade": false
+    }
+  },
+  "promotion_rule": "post-freeze editorial may downgrade provisional pass but cannot create a rescue"
+}

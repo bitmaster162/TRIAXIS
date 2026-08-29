@@ -1,0 +1,70 @@
+{
+  "schema": "triaxis.avr.v47.m0_verifier/v0.1",
+  "batch": "V47",
+  "compile": {
+    "D": "PASS",
+    "E": "PASS",
+    "C": "PASS"
+  },
+  "tasks": {
+    "C": {
+      "provisional": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+      "official_samples": "PASS",
+      "independent_oracle": {
+        "method": "brute-force all honest/liar assignments and all confused assignments for generated small instances",
+        "cases": 1600,
+        "mismatches": 0
+      },
+      "proof_gate": "PASS: substitution Y_A=X_A xor L_A turns every testimony into bipartite XOR equation Y_A xor L_B=C; DSU parity is necessary and sufficient; recover X_i=Y_i xor L_i.",
+      "constraint_gate": {
+        "N": 200000,
+        "M": 200000,
+        "elapsed_s": 0.02,
+        "rss_kb": 9836,
+        "status": "PASS"
+      },
+      "complexity": "O((N+M) alpha(N))"
+    },
+    "E": {
+      "provisional": "PERFORMANCE_QUARANTINE",
+      "official_samples": "PASS",
+      "independent_oracle": {
+        "method": "separate Python descending-weight maximal inversion matching transition",
+        "cases": 5913,
+        "domain": "all permutations N=1..7",
+        "mismatches": 0
+      },
+      "constraint_gate": {
+        "official_N": 200000,
+        "official_time_limit_s": 2,
+        "witness_N": 20000,
+        "witness_permutation": "reverse",
+        "elapsed_s": 3.26,
+        "status": "FAIL"
+      },
+      "complexity": "O(N*T), frozen exact synchronous simulation"
+    },
+    "D": {
+      "provisional": "PERFORMANCE_QUARANTINE",
+      "official_sample1": "PASS",
+      "official_sample2": "NOT_RUN_MANIFEST_FACTORIAL",
+      "independent_oracle": {
+        "method": "independent enumeration of all realizable (a,b) pairs for N=2 and all compatible A/B partial constraints",
+        "cases": 84,
+        "mismatches": 0
+      },
+      "constraint_gate": {
+        "official_N": 3000,
+        "witness_N5_elapsed_s": 0.73,
+        "witness_N6_timeout_s": 5.0,
+        "status": "FAIL"
+      },
+      "complexity": "Theta((N!)^3 * poly(N)) plus dedup"
+    }
+  },
+  "x1": {
+    "activated": false,
+    "reason": "No frozen claim-grade-eligible correctness failure. D and E are correct on bounded independent checks but fail official constraint safety."
+  },
+  "editorial_opened_before_verifier": false
+}

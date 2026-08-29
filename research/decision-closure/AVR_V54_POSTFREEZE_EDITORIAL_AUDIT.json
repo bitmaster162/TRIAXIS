@@ -1,0 +1,24 @@
+{
+  "schema": "triaxis.avr.v54.postfreeze_editorial_audit/v0.1",
+  "batch": "V54",
+  "opened_after_scoring_freeze": true,
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false,
+  "tasks": {
+    "D": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "official_editorial": "https://atcoder.jp/contests/arc179/editorial/10155",
+      "audit": "official gives an O(N) subtree/reroot DP via gate-subtree decomposition and 2e-d journeys; it is more general than the frozen closed form and does not explicitly state it. No contradiction found; additional postfreeze exact random state-space checks through N=20 also matched. Frozen PASS unchanged."
+    },
+    "E": {
+      "frozen_score": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc179/editorial/10154",
+      "audit": "official independently uses uniqueness of accumulated area to determine orientation transitions, then a 2xN graph/2x2 matrices and segment tree O(N log N); corroborates correctness structure and frozen scalability quarantine."
+    },
+    "F": {
+      "frozen_score": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc179/editorial/10153",
+      "audit": "official characterizes flatten times by V=2a-b >=0 and V divisible by 6, maximizes score by LNDS, and constructs X in O(N log N); corroborates existence of scalable architecture while frozen exact difference-state DP remains performance-quarantined."
+    }
+  }
+}

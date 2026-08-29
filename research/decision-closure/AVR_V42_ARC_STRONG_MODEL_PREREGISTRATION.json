@@ -1,0 +1,59 @@
+{
+  "schema": "triaxis.avr.v42.prereg/v0.1",
+  "batch": "V42",
+  "model_line": "GPT-5.6 Sol",
+  "contest": {
+    "id": "arc194",
+    "name": "AtCoder Regular Contest 194 (Div. 2)",
+    "ended": "2025-03-09T23:00:00+09:00",
+    "rated_range": "1200-2399"
+  },
+  "selection_basis": "direct official AtCoder Top page metadata/score table only; select top three scores; score ties broken by lexicographically smaller task letter",
+  "selected_tasks": [
+    {
+      "task": "B",
+      "score": 600
+    },
+    {
+      "task": "D",
+      "score": 700
+    },
+    {
+      "task": "E",
+      "score": 900
+    }
+  ],
+  "pre_statement_guards": {
+    "selected_task_statements_opened": false,
+    "selected_task_editorials_opened": false,
+    "gold_or_submissions_opened": false,
+    "search_snippet_statement_leakage": false
+  },
+  "protocol": {
+    "all_m0_sources_freeze_before_compile_or_run": true,
+    "x1_max_per_actual_frozen_correctness_failure": 1,
+    "x1_optional": true,
+    "no_x1_for_qualitatively_new_asymptotic_architecture": true,
+    "x1_requires_trigger_plus_independent_regression_plus_constraint_and_proof_gate": true,
+    "scoring_freeze_before_editorial_or_gold": true,
+    "postfreeze_audit_downgrade_or_corroborate_only": true
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  },
+  "baseline": {
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_head": "7b7ea7bcae8fd950f8622e399c3fc68418acf50d",
+    "ahead": 229,
+    "behind": 0,
+    "pr": 7
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "triaxis.avr.v53.arc_strong_model_result/v0.1",
+  "batch": "V53",
+  "contest": "arc180",
+  "preselection_protocol_exclusion": "arc181",
+  "tasks": {
+    "F": {
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": 0
+    },
+    "E": {
+      "final": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+      "x1": 0
+    },
+    "D": {
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": 0
+    }
+  },
+  "source_binding": "PASS_AFTER_REPAIR",
+  "source_binding_repairs": [
+    "E",
+    "D"
+  ],
+  "candidate_execution_before_binding_pass": false,
+  "batch_delta": {
+    "claim_grade_tasks": 2,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 1,
+    "protocol_exclusions": 1
+  },
+  "research_status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED"
+}

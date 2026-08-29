@@ -1,0 +1,39 @@
+{
+  "schema": "triaxis.avr.v50.scoring_freeze/v0.1",
+  "batch": "V50",
+  "editorial_opened_before_freeze": false,
+  "gold_or_submissions_opened_before_freeze": false,
+  "tasks": {
+    "D": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "A": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1": {
+    "activations": 0,
+    "clean_rescues": 0,
+    "harms": 0
+  },
+  "delta": {
+    "claim_grade": 3,
+    "m0_pass": 3,
+    "final_pass": 3,
+    "quarantine": 0,
+    "protocol_excluded": 0
+  },
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 62,
+    "m0_pass": 47,
+    "final_pass": 52,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions_not_paired_harms": 2,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+    "status": "POSITIVE_NOT_CONFIRMATORY"
+  },
+  "postfreeze_rule": "official postfreeze audit is corroborate-or-downgrade only"
+}

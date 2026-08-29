@@ -1,0 +1,36 @@
+{
+  "schema": "toolbenchx.avr.native_prereg/v0.1",
+  "status": "PREREGISTERED_BEFORE_NATIVE_X2_RESULT",
+  "arms": {
+    "X0": "ToolBench-X baseline on tools_exception, no hint",
+    "X1": "ToolBench-X deferred_on_first_error targeted recovery hint positive control",
+    "X2": "AVR deterministic pre-diagnosis + native policy LLM, no hint, no oracle label"
+  },
+  "same_across_arms": [
+    "task subset",
+    "exception tools",
+    "FAIL_SEED",
+    "base model",
+    "max rounds",
+    "provider/API settings"
+  ],
+  "primary_metric": "exact_match_rate",
+  "secondary_metrics": [
+    "success_rate",
+    "newly_recovered_tasks",
+    "regressions",
+    "tool_calls",
+    "retries",
+    "fallbacks"
+  ],
+  "survival_gate": {
+    "x2_minus_x0_exact_match_pp_min": 5.0,
+    "x2_fraction_of_x1_gain_min": 0.25,
+    "max_regressions_per_recovery": 0.25,
+    "no_material_tool_call_budget_inflation": true
+  },
+  "x2_oracle_hazard_labels": false,
+  "x2_benchmark_recovery_hints": false,
+  "bridge_package_sha256": "abc6bf7f6cb7bbca69a19c03417146167e5f1fbec64a10d4cf66e111818f34b6",
+  "native_x2_result": "NOT_RUN"
+}

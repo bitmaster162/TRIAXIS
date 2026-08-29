@@ -1,0 +1,18 @@
+{
+  "schema": "triaxis.avr_v39_m0_freeze/v0.1",
+  "version": "V39",
+  "contest": "arc199",
+  "model": "GPT-5.6 Sol",
+  "source_sha256": {
+    "arc199_b_m0.cpp": "dc469e45e6beb441f6b12c8ca6b3dc9530ba41cbbd32bc6e21441a9d97bdf025",
+    "arc199_c_m0.cpp": "e4aeddfe6e0db25c3ea417b859c415824b64657577f64c4b7a7ed2bd4a59bfcf",
+    "arc199_d_m0.cpp": "f49db5ea6aeccbc2da939471a6a1d9650585ba95c37e389887cdabd23221e2d9"
+  },
+  "candidate_execution_before_freeze": false,
+  "editorial_or_gold_opened_before_freeze": false,
+  "notes": {
+    "B": "exact coefficient-state search, expected exponential constraint risk",
+    "C": "common-interval rooted-tree DP, intended scalable",
+    "D": "exact valid-matrix enumeration, expected exponential constraint risk"
+  }
+}

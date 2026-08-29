@@ -1,0 +1,31 @@
+{
+  "schema": "triaxis.avr_v31.m0_freeze/v0.1",
+  "status": "FROZEN_BEFORE_ANY_CANDIDATE_EXECUTION",
+  "timestamp_local": "2026-08-11T23:31:00+07:00",
+  "prereg_sha256": "bbce1a8f862c1c4235fd4151821a5761c70315fe2972d6ee4a0a4bc49768cfe2",
+  "selected_tasks": [
+    "arc214_d",
+    "arc214_e",
+    "arc214_f"
+  ],
+  "source_sha256": {
+    "arc214_d_m0.cpp": "4b197c7a9b43d6d13bed0493dabf689092cb7db3a1921f4de958b2cea59894b7",
+    "arc214_e_m0.cpp": "517dd1af283558e1ddf7c10cfb09791c04cfc6c0169c545e7849240cf3251d92",
+    "arc214_f_m0.cpp": "6a6d9f25c54bfd194c6aae405477c3c1b88514096e4d3a513933a13285d39d98"
+  },
+  "candidate_execution_before_freeze": false,
+  "editorial_or_accepted_solution_exposure_before_freeze": false,
+  "statement_sources": "official AtCoder task statements only",
+  "notes": {
+    "arc214_d": "constructive grid output candidate",
+    "arc214_e": "stable occurrence matching + parity-specific minimum adjacent-swap length candidate",
+    "arc214_f": "0-1 BFS on (cell,last_direction), charging wall on entry candidate"
+  },
+  "governance": {
+    "PRODUCTION_CHANGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "triaxis.avr.v42.result/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "tasks": {
+    "B": {
+      "score": 600,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "D": {
+      "score": 700,
+      "m0": "FAIL",
+      "failure": "DEPTH_PROFILE_TOO_COARSE_ROOTED_SUBTREE_MEMBERSHIP_INVARIANT_IGNORED",
+      "x1": "PASS",
+      "final": "CLAIM_GRADE_CLEAN_X1_RESCUE"
+    },
+    "E": {
+      "score": 900,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 3,
+    "clean_rescues": 1,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0
+  },
+  "aggregate_after_v42": {
+    "claim_grade_external_tasks": 45,
+    "m0_passes": 32,
+    "final_or_x1_passes": 37,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "rescues_needed_for_p_le_0_05_if_harms_zero": 1
+  },
+  "scientific_interpretation": "V42 adds one genuine fresh clean causal-lift rescue under the hardened V34+ trigger/regression/constraint/proof gates. The paired evidence improves from 4-0 (p=0.125) to 5-0 (p=0.0625) but remains non-confirmatory.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}

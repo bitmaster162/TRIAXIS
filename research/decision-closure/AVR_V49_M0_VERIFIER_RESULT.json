@@ -1,0 +1,109 @@
+{
+  "schema": "triaxis.avr.v49.m0_verifier/v0.1",
+  "batch": "V49",
+  "execution_order": {
+    "source_binding_pass_before_first_compile_run": true,
+    "all_three_compile": true
+  },
+  "tasks": {
+    "E": {
+      "samples": {
+        "expected": [
+          "4",
+          "417833302",
+          "495293602",
+          "0"
+        ],
+        "actual": [
+          "4",
+          "417833302",
+          "495293602",
+          "0"
+        ],
+        "pass": true
+      },
+      "independent_exact": {
+        "method": "direct enumeration of every candidate A string; explicit set of all length-M subsequences; count instances with unique missing X",
+        "candidate_cases": 315,
+        "enumerated_A_strings": 33543,
+        "mismatches": 0
+      },
+      "proof_gate": {
+        "status": "PASS",
+        "lemma": "Unique missing X iff A decomposes as B1 x1 B2 x2 ... x_{M-1} B_M; Bt excludes x_t and covers every other symbol; when x_t!=x_{t+1}, the distinguished x_{t+1} has an occurrence after the first complete cover of Bt.",
+        "counting": "F_l is the number of surjective length-l words over K-1 symbols; transition block count G_l=sum_{r<l}F_r*(K-2)^(l-1-r), hence G_l=F_{l-1}+(K-2)G_{l-1}; convolution over blocks is exact.",
+        "inductive_reason": "Greedy matching of X is forced to the separators. At the first position where any Y differs from X, the relevant block and transition condition supply a complete alphabet before the recursively universal suffix; conversely violation of a block condition creates an additional missing length-M word."
+      },
+      "constraint": {
+        "official": "N<=400, M,K<=N, TL=2s",
+        "complexity": "O(N(K-1)+M*S^2), S=N-(MK-1+transitions), with immediate zero if S<0",
+        "max_witness": "N=400,M=67,K=2,X constant",
+        "elapsed_sec": 0.0,
+        "rss_kb": 3588
+      },
+      "provisional": "CLAIM_GRADE_M0_PASS"
+    },
+    "A": {
+      "samples": {
+        "pass": true
+      },
+      "independent_exact": {
+        "method": "enumerate all binary N x N matrices for N=2..4; group by exact row/column margins and derive varying coordinates in each class",
+        "enumerated_matrices": 66064,
+        "query_checks": 32,
+        "mismatches": 0
+      },
+      "proof_gate": {
+        "status": "PASS",
+        "orientation": "Orient each K_{N,N} cell edge by its 0/1 value. A cell is non-fixed iff its directed edge lies on a directed cycle iff its endpoints are in the same SCC; balanced differences between equal-margin orientations decompose into alternating cycles.",
+        "components": "Every nontrivial SCC has a,b>=2 row/column vertices and contributes exactly a*b non-fixed cells. Conversely any collection of disjoint (a,b), a,b>=2, is realizable by strongly orienting each K_{a,b}, ordering SCCs, and orienting cross edges forward; leftover vertices are singletons.",
+        "dp": "Bitset DP over used row budget, column budget, and sum a*b is necessary and sufficient."
+      },
+      "constraint": {
+        "official": "N<=30,Q<=N^2+1,TL=2s",
+        "complexity": "O(N^4 * bitset(N^2)) small at N=30",
+        "max_witness": "N=30, all 901 distinct K queries",
+        "elapsed_sec": 0.0,
+        "rss_kb": 3712
+      },
+      "provisional": "CLAIM_GRADE_M0_PASS"
+    },
+    "B": {
+      "samples": {
+        "expected": [
+          "3",
+          "353820794"
+        ],
+        "actual": [
+          "3",
+          "353820794"
+        ],
+        "pass": true
+      },
+      "independent_exact": {
+        "method": "enumerate every permutation for N=1..7, group by directly computed previous-smaller descriptor A, compare executable candidate multiplicities",
+        "enumerated_permutations": 5913,
+        "descriptor_cases": 625,
+        "mismatches": 0
+      },
+      "proof_gate": {
+        "status": "PASS",
+        "cartesian": "A_i is exactly the previous-smaller stack trace. The frozen stack reconstruction uniquely determines the min-Cartesian tree.",
+        "count": "Permutations with that descriptor are exactly min-heap labelings of the reconstructed rooted tree; tree hook-length formula gives N!/product subtree_size."
+      },
+      "constraint": {
+        "official": "N<=300000,TL=2s",
+        "complexity": "O(N log MOD) due modular inverses, O(N) storage",
+        "max_witness": "N=300000, A_i=0 for all i",
+        "elapsed_sec": 0.05,
+        "rss_kb": 10352
+      },
+      "provisional": "CLAIM_GRADE_M0_PASS"
+    }
+  },
+  "x1": {
+    "activations": 0,
+    "reason": "No frozen claim-grade correctness failure."
+  },
+  "editorial_or_gold_opened_before_verifier": false
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "toolbenchx.native.avr_v13.execution_abort/v0.1",
+  "status": "EXECUTION_INCONCLUSIVE_ABORTED_BEFORE_ORACLE",
+  "reason": "CASE_TIMEOUT_CALL_COUNT_UNOBSERVABLE",
+  "preregistration_sha256": "64acd98a01e127c4bfd29fdacb05a9b2b7d920b10cd1eef24409beb8204e045f",
+  "subset_freeze_sha256": "a7c147815851d3e6f081334fe313b0c85b367449887fc001a38d62c1f83f1dcc",
+  "runner_sha256": "f61a78273774de5fdb3bdb76e03be966939a244b19998e009fb3fc663b8ad333",
+  "progress": {"C0_completed_or_timed_out": 16, "C1_started": false},
+  "timeouts": [
+    {"case_id": "f910eeda7504", "elapsed_sec": 30.0, "calls": null},
+    {"case_id": "9a62861648f1", "elapsed_sec": 30.0, "calls": null}
+  ],
+  "timeout_count": 2,
+  "oracle_opened": false,
+  "hints_opened": false,
+  "adjudication": "Do not score. Do not reuse partial C0 as confirmatory evidence. Repair only timeout call-count observability, preserve controller/subset/30s cap, then restart both arms from zero."
+}

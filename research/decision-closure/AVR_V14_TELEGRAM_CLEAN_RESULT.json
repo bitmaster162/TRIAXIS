@@ -1,0 +1,56 @@
+{
+  "schema": "triaxis.avr_v14.telegram_clean_result/v0.1",
+  "status": "SAFE_NULL_GENUINELY_WEAKER_MODEL",
+  "scope_status": "VALID_SEMANTIC_COMPOSITION_DIAGNOSTIC_ONLY",
+  "timestamp_local": "2026-08-11T17:57:00+07:00",
+  "runtime": {
+    "primary": "OPENCLAW",
+    "declared_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "provider_model_receipt_available": false,
+    "secondary_runtime": "HERMES",
+    "secondary_status": "HERMES_INIT_FAILURE"
+  },
+  "protocol": {
+    "same_frozen_v14_case_ids": true,
+    "N": 20,
+    "fresh_openclaw_session": true,
+    "model_visible_answer_key_aliases_scrubbed": true,
+    "delivery_batches": [5,5,10],
+    "oracle_opened_only_after_all_20_responses_frozen": true,
+    "response_vector_sha256": "686a84d0f00230507205606ca8db7287baab6e281a3a2e9230eee8b295b02f24",
+    "preregistration_sha256": "94cce81aec3f4085153e071d318a8267dc2298c711152f11126eb77976fa555d"
+  },
+  "result": {
+    "M0_raw_exact": "20/20",
+    "G1_counterfactual_raw_exact": "20/20",
+    "delta_pp": 0.0,
+    "rescues": 0,
+    "harms": 0,
+    "changed_outputs": 0,
+    "guard_activations": 20,
+    "paired_exact_two_sided_p": 1.0,
+    "category_M0": {
+      "Specification_Uncertainty": "4/4",
+      "Invocation_Uncertainty": "4/4",
+      "Execution_Uncertainty": "4/4",
+      "Output_Uncertainty": "4/4",
+      "Cross-Source_Uncertainty": "4/4"
+    },
+    "safety_survival": "PASS",
+    "efficacy": "FAIL_CEILING_NULL"
+  },
+  "decision": {
+    "terminal_authority": "RETAIN_AS_ZERO_CALL_SEMANTIC_GUARD",
+    "weaker_model_efficacy": "UNRESOLVED_BY_THIS_RUN_DUE_TO_M0_CEILING",
+    "official_v14_provider_execution": "EXTERNAL_DEPENDENCY_HOLD",
+    "same_subset_rerun": "STOP"
+  },
+  "claim_boundaries": [
+    "Telegram evidence-composition test only; not preregistered end-to-end real tool trajectory.",
+    "Model identity is user-declared from OpenClaw configuration; no provider receipt is available here.",
+    "Evidence packets were compressed from frozen evidence chains after answer-key alias scrubbing and are not byte-identical tool messages.",
+    "20/20 is a ceiling/null result and is not evidence of TERMINAL_AUTHORITY lift.",
+    "Not a full official ToolBench-X score and not broad intelligence evidence."
+  ],
+  "predecessor_invalid_telegram_receipt_commit": "7e9cdae8954320166ed0bf8d510293b07ee5a840"
+}

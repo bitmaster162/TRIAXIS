@@ -1,0 +1,39 @@
+{
+  "policy": "Editorial used only after scoring freeze; no rescue or upgrade manufactured post-freeze.",
+  "schema": "triaxis.avr_v32.postfreeze_editorial_audit/v0.1",
+  "scoring_freeze_commit": "50d6525e64527a9022ea06db7363b90f55e68b46",
+  "status": "NO_DOWNGRADE",
+  "tasks": {
+    "arc213_b": {
+      "downgrade": false,
+      "final": "CLAIM_GRADE_PASS",
+      "frozen": "PROVISIONAL_CLAIM_GRADE_PASS",
+      "official_corroboration": [
+        "Parity classes are valid independent sets.",
+        "When L is odd and R is even, the optimum is n/2 or n/2+1 according to parity/highest-differing-bit structure.",
+        "In the connected/perfect-matching branch, a perfect matching supplies the matching upper bound."
+      ]
+    },
+    "arc213_c": {
+      "downgrade": false,
+      "final": "PERFORMANCE_QUARANTINE",
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_corroboration": [
+        "Exact subproblem is minimum-cost size-4 matching between T-root branches and U-root branches.",
+        "Naively materializing O(N) edges per root is too slow.",
+        "Official solution reduces edges and uses HLD/DSU-on-tree style recoloring plus segment tree; O(N log^2 N)."
+      ]
+    },
+    "arc213_d": {
+      "downgrade": false,
+      "final": "PERFORMANCE_QUARANTINE",
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_corroboration": [
+        "f(P)=sum min(L_i,R_i), matching the frozen derivation.",
+        "The diagonal hypergeometric/binomial sum computed naively for every j is TLE.",
+        "Official solution accelerates the diagonal terms by divide-and-conquer plus convolution to O(N log^2 N)."
+      ]
+    }
+  },
+  "timestamp_local": "2026-08-12T00:08:57+07:00"
+}

@@ -1,0 +1,24 @@
+{
+  "M0_pass": "17/23",
+  "X1_pass": "20/23",
+  "claim_grade_external_tasks_total": 23,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "confirmatory": false,
+  "decision": "CONTINUE_V31_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; DO_NOT_WEAKEN_MODEL",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "paired_exact_two_sided_p": 0.25,
+  "partial_repairs_not_counted": 1,
+  "protocol_excluded_not_counted": 1,
+  "quarantined_tasks_not_counted": 3,
+  "schema": "triaxis.strong_model_external_rollup_v22_v30/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v30_delta": {
+    "M0_pass_added": 2,
+    "X1_pass_added": 2,
+    "claim_grade_tasks_added": 2,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "rescues_added": 0
+  }
+}

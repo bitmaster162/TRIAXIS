@@ -1,0 +1,27 @@
+{
+  "schema": "triaxis.strong_model_external_rollup_v22_v40/v0.1",
+  "claim_grade_external_tasks_total": 40,
+  "M0_pass": "28/40",
+  "X1_pass": "32/40",
+  "full_task_rescues": 4,
+  "harms": 0,
+  "x1_local_regressions_not_counted_as_paired_harms": 2,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks_not_counted": 16,
+  "protocol_excluded_not_counted": 2,
+  "paired_exact_two_sided_p": 0.125,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 2,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v40_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 1,
+    "X1_pass_added": 1,
+    "rescues_added": 0,
+    "harms_added": 0,
+    "quarantined_added": 2,
+    "protocol_excluded_added": 0
+  },
+  "methodological_delta": "V40 reinforces the anti-gaming constraint gate: independently correct solutions C and D remain quarantined because their frozen asymptotics violate official limits, while B counts as a ceiling M0 pass and does not trigger X1.",
+  "decision": "CONTINUE_V41_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; REQUIRE_TRIGGER_PLUS_REGRESSION_PLUS_CONSTRAINT_GLOBAL_GATES; TWO_ADDITIONAL_CLEAN_RESCUES_NEEDED_FOR_P_LE_0_05_IF_HARMS_STAY_ZERO"
+}

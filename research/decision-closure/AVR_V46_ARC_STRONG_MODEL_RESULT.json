@@ -1,0 +1,36 @@
+{
+  "schema": "triaxis.avr.v46.result/v0.1",
+  "batch": "V46",
+  "contest": "arc189",
+  "tasks": {
+    "E": {
+      "score": 800,
+      "m0": "FAIL",
+      "final": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+      "x1": null
+    },
+    "D": {
+      "score": 700,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "C": {
+      "score": 600,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0
+  },
+  "scientific_interpretation": "V46 adds two fresh strong-model ceiling passes and one clean scoreable M0 correctness failure. No X1 was manufactured because E required a qualitatively new global construction and optimality theorem. No causal-lift rescue evidence was added.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}

@@ -1,0 +1,36 @@
+{
+  "claim_boundary": "self-run/forensic/open-research bundle; non-independent; non-confirmatory; does not alter V55 strong-model rollup",
+  "date": "2026-08-12",
+  "governance": {
+    "auto_merge": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false
+  },
+  "local_package": {
+    "archive": "TRIAXIS_HARD_REAL_R1_20260812.zip",
+    "archive_sha256": "60a079c1d2aad6027ba92e06b002aeff9b372ea7c56a4ae158d0e515462c3e5b",
+    "report_sha256": "3c7177d26872734fdf564800b0014acb40aba7bf4a0b82c0c631198662008042",
+    "receipt_sha256_before_github_registration": "be125fd73d68af9a7b6202c3536e559c7a382b211b7d30c59549a736f4893bba"
+  },
+  "results": {
+    "agc077f": "T1_PARTIAL_STOP_FAIL_M0_CAUSAL_INVALID",
+    "continuityos": "FORENSIC_DIAGNOSIS_GOLD_MATCH",
+    "fresh_arc202": "M0_2_OF_2_PASS_NO_INCREMENTAL_LIFT",
+    "hadamard": "WARMUP_FAIL_TARGET_NOT_LAUNCHED",
+    "programbench": "FROZEN_BLOCKED_NO_DOCKER"
+  },
+  "schema": "triaxis.hard_real_r1.registration_receipt/v0.1",
+  "source_hashes": {
+    "AGC077_F_PREREG.json": "3b88e15ce7716ded51814287f21d777865e45f964ed48a3f9f25dfd2ca844cb4",
+    "AGC077_F_T1_STOP.json": "844f656c2186edf379a77d4cdec52fbe6f44ded7a2b11d06c952bbf74e288b25",
+    "ARC202_C_M0.cpp": "d5f4fd776be2feec65291d5082c0f5afbdf37b18904703b7f80d9d11a7109e98",
+    "ARC202_D_M0.cpp": "93617149df3768f0f44a9020c24edf9e9ecffbba52367f800e0684bc16e8de9a",
+    "ENGINEERING_REPLAY_PREREG.json": "aae1c3ed14552facd2b04bafd9c3d4a3adbf0b9be96f64b73c1d8584b9b638e5",
+    "HARD_MATH_PREREG.json": "164f6a932e49c9c5f6137dd887530df357ba544b96a662de4e89db619273152c",
+    "PROGRAMBENCH_HARD_LANE_PREREG.json": "6b98e007a16bdb96298f0a12733fa8145751d48c3aca2e6bc68335fea0abd220"
+  },
+  "status": "COMPLETE_WITH_MIXED_RESULTS"
+}

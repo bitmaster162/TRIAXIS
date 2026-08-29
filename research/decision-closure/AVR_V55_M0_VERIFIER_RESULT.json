@@ -1,0 +1,127 @@
+{
+  "schema": "triaxis.avr.v55.m0_verifier/v0.1",
+  "batch": "V55",
+  "contest": "arc177",
+  "first_execution_after_source_binding": true,
+  "source_binding_commit": "aaeca3194ae5d820cd52d01a1be5c6801f65eeab",
+  "official_samples": {
+    "D": {
+      "status": "PASS",
+      "cases": 4,
+      "outputs_match": true
+    },
+    "E": {
+      "status": "PASS",
+      "cases": 6,
+      "outputs": [6, 0, 26, 0, 1054, 428]
+    },
+    "F": {
+      "status": "FAIL",
+      "cases_passed": 2,
+      "cases_total": 3,
+      "failure": {
+        "sample": 2,
+        "expected": 6,
+        "m0": 4
+      }
+    }
+  },
+  "independent_correctness": {
+    "D": {
+      "oracle": "exact enumeration of all 2^N frozen fall-direction assignments with direct standing-pole chain simulation",
+      "random_cases": 640,
+      "N_range": "1..8",
+      "cases_per_N": 80,
+      "mismatches": 0,
+      "status": "PASS"
+    },
+    "E": {
+      "aggregation_oracle": "independent naive weak-order evaluation on random small contestant sets",
+      "random_cases": 150,
+      "mismatches": 0,
+      "global_reduction_proof": {
+        "potential_subset_sum_and_monotonic_boundary_hyperplanes": 121,
+        "primitive_nonnegative_monotone_extreme_rays": 125,
+        "maximum_primitive_ray_coordinate": 10,
+        "interior_integer_representative_bound": 50,
+        "interior_bound_argument": "a full-dimensional strict-order cone in R^5 has five linearly independent extreme rays; summing primitive spanning rays is strictly interior and every coordinate is at most 5*10",
+        "exhaustive_nondecreasing_positive_score_5tuples_q5_le_50": 3162510,
+        "unique_target_weak_signatures": 4672,
+        "bound12_candidate_signatures": 1362,
+        "uncovered_target_signatures": 0,
+        "coverage_criterion": "for every target weak signature, a bound-12 candidate never reverses any target strict comparison; additional ties are admissible because penalties can order equal-score contestants",
+        "status": "PASS"
+      },
+      "status": "PASS"
+    },
+    "F": {
+      "oracle": "exact Dijkstra on (chest_holder, resident_positions), with each distinct resident movable independently and zero-cost pickup/handoff when co-located",
+      "exhaustive_cases": 784,
+      "domain": "all L<=3, all A/J route strings, N<=2, all ordered resident position/coupon assignments",
+      "mismatches": 16,
+      "first_counterexample": {
+        "L": 3,
+        "S": "AJA",
+        "residents": [[1, "J"], [2, "A"]],
+        "exact": 2,
+        "m0": 1
+      },
+      "official_sample_2_exact": 6,
+      "official_sample_2_m0": 4,
+      "status": "FAIL"
+    }
+  },
+  "proof_gates": {
+    "D": {
+      "status": "PASS",
+      "invariant": "spatial gaps > H split independent components; inside a connected component, the earliest-index standing pole is the min-index Cartesian-tree root, one fall direction removes one side plus root, and recursion proceeds on the surviving child; terminal completion weights are determined by depth and child count"
+    },
+    "E": {
+      "status": "PASS",
+      "invariant": "only strict score comparisons constrain final ranking because penalties break score ties arbitrarily; every realizable strict-order cone has an integer representative with q5<=50, and exhaustive direct coverage shows a q5<=12 weak order coarsens every such representative"
+    },
+    "F": {
+      "status": "FAIL",
+      "failure_class": "RESOURCE_IDENTITY_RELAXATION",
+      "mechanism": "nearest-source switching treats carrier availability as reusable/fresh and loses distinct-resident identity and multiplicity; this underprices handoff chains"
+    }
+  },
+  "constraint_gates": {
+    "D": {
+      "official_N": 200000,
+      "complexity": "O(N log N)",
+      "max_style_N": 200000,
+      "time_s": 0.03,
+      "rss_kb": 17472,
+      "status": "PASS"
+    },
+    "E": {
+      "official_total_N": 300000,
+      "complexity": "finite 31-mask weak-order family plus per-test aggregation",
+      "large_N": 300000,
+      "large_time_s": 0.47,
+      "large_rss_kb": 6520,
+      "many_test_T": 100000,
+      "many_test_total_N": 200000,
+      "many_test_time_s": 0.08,
+      "many_test_rss_kb": 4020,
+      "status": "PASS"
+    },
+    "F": {
+      "official_L_max": 60000,
+      "official_N_max": 60000,
+      "runtime_not_material": true,
+      "status": "CORRECTNESS_FAIL"
+    }
+  },
+  "x1": {
+    "activated": false,
+    "eligible_frozen_failure_exists": true,
+    "reason": "F failure is structural: fixing distinct-resident identity/multiplicity requires a qualitatively new global resource/matching model rather than a bounded local correction; X1 is therefore disallowed by the preregistered repair rule"
+  },
+  "provisional_scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "CLAIM_GRADE_M0_PASS",
+    "F": "CLAIM_GRADE_M0_FAIL"
+  }
+}

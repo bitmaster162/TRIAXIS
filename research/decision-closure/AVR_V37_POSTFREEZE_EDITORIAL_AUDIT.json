@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr_v37_postfreeze_editorial_audit/v0.1",
+  "status": "NO_SCORE_DOWNGRADE",
+  "tasks": {
+    "arc204_b": {
+      "frozen": "PROVISIONAL_CLEAN_RESCUE",
+      "official_editorial": "https://atcoder.jp/contests/arc204/editorial/13679",
+      "corroboration": [
+        "minimum-swap operations on one permutation component correspond to a noncrossing tree",
+        "score counts equal residues modulo N on tree edges",
+        "official interval DP uses same-residue merge transitions",
+        "official complexity Theta(n^2 K), matching the frozen X1 asymptotic class"
+      ],
+      "final": "CLAIM_GRADE_CLEAN_X1_RESCUE"
+    },
+    "arc204_c": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc204/editorial/13680",
+      "corroboration": "official solution precomputes optimal zero placements from cycle-size statistics and answers queries in O(1); frozen exhaustive labeling is exact-small but non-scalable",
+      "final": "PERFORMANCE_QUARANTINE"
+    },
+    "arc204_d": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc204/editorial/13681",
+      "corroboration": "official solution derives a closed feasibility criterion and linear construction; frozen exact order search timed out on official sample 3 and is asymptotically unusable",
+      "final": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "postfreeze_upgrade_performed": false
+}

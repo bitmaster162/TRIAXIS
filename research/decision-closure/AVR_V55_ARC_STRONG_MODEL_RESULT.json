@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.avr.v55.result/v0.1",
+  "batch": "V55",
+  "contest": "ARC177",
+  "final_scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "CLAIM_GRADE_M0_PASS",
+    "F": "CLAIM_GRADE_M0_FAIL"
+  },
+  "x1_activations": 0,
+  "x1_note": "F had a genuine frozen correctness failure, but the repair was not admissible as X1 because restoring distinct-resident identity/multiplicity requires a qualitatively new global state model",
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 0,
+    "protocol_exclusions": 0
+  },
+  "aggregate_after_v55": {
+    "claim_grade_external_tasks": 73,
+    "m0": "54/73",
+    "final": "59/73",
+    "clean_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 28,
+    "protocol_excluded": 5,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  }
+}

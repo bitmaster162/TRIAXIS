@@ -1,0 +1,71 @@
+{
+  "abstract_gate": {
+    "question": "Is the proposed verifier/oracle semantically capable of judging this case?",
+    "steps": [
+      "bind case semantics",
+      "bind verifier/oracle semantics",
+      "identify mismatch/equivalence hazards",
+      "admit or quarantine before scoring",
+      "never convert quarantined instrumentation cases into model/testbench failures"
+    ]
+  },
+  "adjudication": {
+    "claim": "The same abstract instrument-applicability principle explains valid quarantines in both stdout judging and HDL mutation evaluation, but only the AtCoder/stdout line currently has prospective frozen transfer evidence.",
+    "cognitive_lift_credit": 0,
+    "cross_domain_abstract_applicability_support": "YES_RETROSPECTIVE",
+    "forbidden": [
+      "claiming R10-E is prospective",
+      "claiming native CorrectBench reproduction",
+      "claiming general verifier-gate universality",
+      "claiming model intelligence lift"
+    ],
+    "prospective_cross_domain_transfer": "UNRESOLVED"
+  },
+  "date": "2026-08-14",
+  "domain": "HDL mutation testing / CorrectBench-derived restricted oracle",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "historical_derived_evidence": {
+    "artifact": "CORRECTBENCH_DERIVED_MUTATION_RESCUE_v0_1.zip",
+    "artifact_sha256": "56260ce6ba6c1091455d1be3598a9bc5a953d8a33c44ca318d8b993360267cfe",
+    "quarantines": [
+      {
+        "case": "thermostat multi-driver mutant",
+        "class": "SIMULATION_SEMANTICS_MISMATCH",
+        "reason": "Second continuous driver requires native Verilog 4-state/multiple-driver semantics; restricted Python oracle is not authoritative."
+      },
+      {
+        "case": "mux9to1v explicit-default mutant",
+        "class": "MUTANT_EQUIVALENCE",
+        "reason": "Mutant is behaviorally equivalent to the reference for the relevant semantics; treating it as a distinct kill target would invalidate the measurement denominator."
+      }
+    ],
+    "restricted_oracle": "Python oracle restricted to unambiguous 2-state combinational semantics",
+    "scoreable_mutants": 28,
+    "selected_tasks": ["thermostat","kmap4","mux9to1v"]
+  },
+  "next_prospective_test": {
+    "failure": "false quarantine, missed frozen-rule mismatch, or no transferable rule beyond domain-specific heuristics",
+    "freeze_before": "any case-specific oracle/verifier payload retrieval",
+    "requirement": "Use a fresh non-AtCoder domain whose case metadata can be frozen before opening verifier-sensitive payloads.",
+    "success": "prospectively identify at least one real applicability mismatch with zero false quarantines in the frozen sample"
+  },
+  "official_domain_contract": {
+    "dataset_tasks": 156,
+    "eval2": "mutant-based functional evaluation using simulation",
+    "native_simulator": "Icarus Verilog",
+    "source_boundary": "Official CorrectBench repository/paper; native simulator is part of intended evaluation stack.",
+    "source_repo": "AutoBench/CorrectBench"
+  },
+  "prospective_credit": "DENY_BECAUSE_MUTANT_SOURCE_WAS_RETRIEVED_BEFORE_NEW_FREEZE",
+  "schema": "triaxis.r10e.cross_domain_applicability_audit/v1",
+  "status": "RETROSPECTIVE_MECHANISM_SUPPORT_ONLY"
+}

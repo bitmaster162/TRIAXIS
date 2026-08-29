@@ -1,0 +1,133 @@
+{
+  "claim_limits": [
+    "Not a full official ToolBench-X score.",
+    "Not evidence that TRIAXIS broadly improves intelligence.",
+    "Tests one post-execution semantic guard on a trigger-enriched subset.",
+    "The free provider endpoint may have service-level limitations and logging policies independent of TRIAXIS."
+  ],
+  "design": {
+    "G1": "same exact trajectory plus deterministic post-completeness TERMINAL_AUTHORITY guard",
+    "M0": "model-native final answer from the frozen trajectory",
+    "guard_extra_model_calls": 0,
+    "guard_extra_tool_calls": 0,
+    "guard_rule": "If and only if the required evidence chain is complete and a successful load-bearing raw tool result contains explicit final_value, final_answer, or canonical_answer, commit the last such explicit terminal value instead of recomposing it with upstream candidates.",
+    "model_visible_answer_keys_scrubbed": [
+      "answer",
+      "answer_text",
+      "benchmark_answer",
+      "correct_answer",
+      "expected",
+      "expected_answer",
+      "expected_output",
+      "expected_result",
+      "final_answer",
+      "final_value",
+      "gold",
+      "gold_answer",
+      "ground_truth",
+      "reference_answer",
+      "target_answer"
+    ],
+    "oracle_hidden_until_output_freeze": true,
+    "trajectory": "ONE_REAL_MODEL_TRAJECTORY_PER_CASE"
+  },
+  "execution": {
+    "exception_activation": "official-equivalent strict/no-hint behavior",
+    "freeze_before_oracle": true,
+    "no_posthoc_reruns_on_same_subset": true,
+    "raw_tool_outputs_private_to_controller": true,
+    "tool_errors_visible_to_model": true,
+    "tool_whitelist": "task-declared tools only",
+    "toolbench_fail_seed": "7"
+  },
+  "gates": {
+    "efficacy": [
+      "guard_activations >= 5",
+      "G1_VERIFIED_EXACT > M0_VERIFIED_EXACT",
+      "harms == 0",
+      "paired_exact_two_sided_p <= 0.05"
+    ],
+    "harm_label": "TERMINAL_AUTHORITY_FAIL_WEAKER_MODEL",
+    "null_label": "SAFE_NULL_GENUINELY_WEAKER_MODEL",
+    "pass_label": "WEAKER_MODEL_TERMINAL_AUTHORITY_PASS_WITH_CONDITIONS",
+    "safety_survival": [
+      "G1_VERIFIED_EXACT >= M0_VERIFIED_EXACT",
+      "harms == 0",
+      "G1 model_calls == M0 model_calls",
+      "G1 tool_calls == M0 tool_calls"
+    ]
+  },
+  "governance": {
+    "auto_merge": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false,
+    "research_only": true
+  },
+  "metrics": [
+    "M0_RAW_EXACT",
+    "G1_RAW_EXACT",
+    "M0_VERIFIED_EXACT",
+    "G1_VERIFIED_EXACT",
+    "rescues",
+    "harms",
+    "wrong_complete",
+    "model_calls",
+    "tool_calls",
+    "guard_activations",
+    "changed_outputs",
+    "paired_exact_two_sided_p"
+  ],
+  "objective": "Test whether the frozen zero-call TERMINAL_AUTHORITY semantic guard improves exact bounded commitments from a genuinely weaker real model on fresh trigger-targeted native ToolBench-X cases, without changing the model/tool trajectory.",
+  "pr": 7,
+  "preregistered_from_head": "cbe820f3bb2077eaac1c5cfa7af3b67b5e97556e",
+  "provider": {
+    "allow_fallbacks": false,
+    "cost_policy": "FAIL_CLOSED_ZERO_COST_ONLY",
+    "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+    "max_rounds_per_case": 10,
+    "max_tokens": 512,
+    "model": "nvidia/nemotron-nano-9b-v2:free",
+    "name": "OpenRouter",
+    "per_response_require_usage_cost_zero": true,
+    "preflight_require_free_model_metadata": true,
+    "reasoning": {
+      "effort": "none"
+    },
+    "require_exact_returned_model": "nvidia/nemotron-nano-9b-v2:free",
+    "seed": 7,
+    "temperature": 0
+  },
+  "repository": "bitmaster162/TRIAXIS",
+  "research_branch": "research/decision-closure-ebd-v0.3",
+  "schema": "triaxis.avr_v14.weaker_model_terminal_authority_prereg/v0.1",
+  "selection": {
+    "claim_boundary": "mechanism-targeted trigger-enriched subset, not representative full ToolBench-X",
+    "exclude_prompt_sufficient_numeric_shortcuts": true,
+    "fresh_disjoint_from": "exact v0.7-v0.13 exception task paths; v0.6 conservatively excluded by historical-answer mapping",
+    "hazard_families": [
+      "Specification_Uncertainty",
+      "Invocation_Uncertainty",
+      "Execution_Uncertainty",
+      "Output_Uncertainty",
+      "Cross-Source_Uncertainty"
+    ],
+    "min_required_tools": 3,
+    "min_unique_tools": 2,
+    "per_family": 4,
+    "rank": "sha256(PREREG_SHA256 + '|' + exception_path), ascending; first 4 eligible per family",
+    "require_explicit_terminal_marker_ast": true,
+    "target_n": 20
+  },
+  "stop_conditions": [
+    "Any positive or indeterminate monetary cost before or during model calls -> abort remaining requests.",
+    "Returned model identifier differs materially from frozen exact model -> abort.",
+    "Protocol parameter rejection -> PROTOCOL_INCOMPATIBLE; do not adapt mid-run.",
+    "Oracle/final_answer accidentally opened before output freeze -> invalidate run.",
+    "After scoring, stop this exact subset; no tweak-and-rerun."
+  ],
+  "timestamp": "2026-08-11T14:03:00+07:00",
+  "verified_exact_definition": "RAW_EXACT AND every required task tool has at least one successful raw execution in the trajectory."
+}

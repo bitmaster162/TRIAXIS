@@ -1,0 +1,17 @@
+{
+  "decision": {
+    "actual_multi_model_synergy_claim": "BLOCKED_UNTIL_REAL_EXTERNAL_MODEL_CALLS",
+    "architecture": "MINIMAL_FIRST_CAPABILITY_ROUTER",
+    "devil_default": "OFF",
+    "full_triaxis": "CONTROLLER_AUDIT_LAYER_PENDING_INCREMENTAL_LIFT",
+    "primary_next_surface": "REPO_SCALE_SOFTWARE_ENGINEERING"
+  },
+  "files": {
+    "CAPABILITY_REGISTRY.json": "c7002e005f696f4a2eea7416c238cf18a70a356f5c147181eed5895da5abbbb8",
+    "CAPABILITY_UPGRADER_SPEC.md": "a9ec8ba8589b0b560b21424d4c7980561d7291173ee27d78349dc8d675b393c4",
+    "R5_PREREG.json": "fc21b2206e44f8e0c9106cab45a4e4fd0b7d91a29a4cfb4ddc7d6e5bd2751764"
+  },
+  "governance": {"can_trade": false, "capital_permission": "DENY", "deploy": "DENY", "main_write": false, "merge": "DENY"},
+  "schema": "triaxis.capability_upgrader_r5.freeze_receipt/v0.1",
+  "status": "R5_ARCHITECTURE_AND_GAP_REGISTRY_FROZEN"
+}

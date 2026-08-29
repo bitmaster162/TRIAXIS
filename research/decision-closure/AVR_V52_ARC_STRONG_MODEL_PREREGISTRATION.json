@@ -1,0 +1,65 @@
+{
+  "schema": "triaxis.avr.v52.prereg/v0.1",
+  "batch": "V52",
+  "model_line": "GPT-5.6 Sol",
+  "contest": {
+    "id": "arc182",
+    "name": "AtCoder Regular Contest 182",
+    "ended": "2024-08-11T23:00:00+09:00",
+    "rated_range": "0-2799"
+  },
+  "selection_basis": "official AtCoder announcement/Top metadata only; selected top three scores",
+  "selected_tasks": [
+    {
+      "task": "F",
+      "score": 1000
+    },
+    {
+      "task": "E",
+      "score": 800
+    },
+    {
+      "task": "D",
+      "score": 700
+    }
+  ],
+  "pre_statement_guards": {
+    "selected_task_statements_opened": false,
+    "selected_task_editorials_opened": false,
+    "gold_or_submissions_opened": false,
+    "search_snippet_statement_leakage": false
+  },
+  "protocol_exclusion_before_selection": [
+    {
+      "contest": "arc183",
+      "reason": "narrow official announcement fallback search unexpectedly returned Tasks and editorial index for would-be-selected F/E/D before prereg; excluded conservatively"
+    }
+  ],
+  "protocol": {
+    "all_m0_sources_freeze_before_compile_or_run": true,
+    "source_binding_fetchback_before_execution": true,
+    "x1_max_per_actual_frozen_correctness_failure": 1,
+    "x1_optional": true,
+    "no_x1_for_qualitatively_new_asymptotic_architecture": true,
+    "scoring_freeze_before_editorial_or_gold": true,
+    "postfreeze_audit_downgrade_or_corroborate_only": true
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  },
+  "baseline": {
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_head": "50c1f03d3b46df1b4c8e15574cd9489a9736e62f",
+    "ahead": 347,
+    "behind": 0,
+    "pr": 7
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "triaxis.strong_model_rollup/v0.1",
+  "range": "V22-V42",
+  "model_line": "GPT-5.6 Sol",
+  "claim_grade_external_tasks": 45,
+  "m0_passes": 32,
+  "final_or_x1_passes": 37,
+  "clean_full_task_rescues": 5,
+  "paired_harms": 0,
+  "x1_local_regressions_not_counted_paired_harms": 2,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks_not_counted": 17,
+  "protocol_excluded": 2,
+  "paired_exact_two_sided_p": 0.0625,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED",
+  "v42_delta": {
+    "claim_grade": 3,
+    "m0_pass": 2,
+    "final_pass": 3,
+    "clean_rescue": 1,
+    "harm": 0
+  }
+}

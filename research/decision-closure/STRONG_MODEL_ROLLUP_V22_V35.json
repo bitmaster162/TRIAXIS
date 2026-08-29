@@ -1,0 +1,26 @@
+{
+  "M0_pass": "23/32",
+  "X1_pass": "26/32",
+  "claim_grade_external_tasks_total": 32,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "confirmatory": false,
+  "decision": "CONTINUE_V36_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; SEEK_BOUNDED_CORRECTABLE_FROZEN_FAILURES; REQUIRE_X1_TRIGGER_PLUS_REGRESSION_PLUS_CONSTRAINT_GLOBAL_GATES; DO_NOT_FORCE_X1",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "methodological_delta": "V35 supplied proof-equivalent and exhaustive/scalable corroboration for two fresh strong-model M0 passes while preserving the rule that exact local correctness without official-constraint scalability remains quarantine. No X1 was manufactured.",
+  "paired_exact_two_sided_p": 0.25,
+  "partial_repairs_not_counted": 1,
+  "protocol_excluded_not_counted": 1,
+  "quarantined_tasks_not_counted": 9,
+  "schema": "triaxis.strong_model_external_rollup_v22_v35/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v35_delta": {
+    "M0_pass_added": 2,
+    "X1_pass_added": 2,
+    "claim_grade_tasks_added": 2,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "rescues_added": 0
+  },
+  "x1_local_regressions_not_counted_as_paired_harms": 1
+}

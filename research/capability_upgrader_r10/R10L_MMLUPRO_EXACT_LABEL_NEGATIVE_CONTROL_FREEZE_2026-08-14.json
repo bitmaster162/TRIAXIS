@@ -1,0 +1,41 @@
+{
+  "claim_boundary": {
+    "accuracy_claim": false,
+    "benchmark_prevalence_claim": false,
+    "cognitive_lift_credit": 0,
+    "model_inference": false,
+    "novelty_claim": false
+  },
+  "date": "2026-08-14",
+  "domain": {
+    "benchmark": "MMLU-Pro",
+    "evaluator_candidates": [
+      "compute_accuracy.py",
+      "evaluate_from_api.py",
+      "evaluate_from_local.py"
+    ],
+    "evaluator_implementation_opened_before_freeze": false,
+    "official_repo": "TIGER-AI-Lab/MMLU-Pro",
+    "repo_branch": "main"
+  },
+  "epoch": "R10L_MMLUPRO_EXACT_LABEL_NEGATIVE_CONTROL_20260814",
+  "frozen_hypothesis": {
+    "candidate_instrument": "exact equality of canonical predicted option label and canonical gold option label",
+    "expected_gate_action": "ADMIT_IF_OFFICIAL_EVALUATOR_REDUCES_SCORING_TO_LABEL_EQUALITY_AFTER_ITS_OWN_PARSING",
+    "failure_condition": "QUARANTINE_IF_OFFICIAL_EVALUATOR_USES_SEMANTIC_EQUIVALENCE_OR_PARTIAL_CREDIT_BEYOND_CANONICAL_LABEL_EQUALITY",
+    "purpose": "false-positive resistance / negative control for Verifier Contract Gate",
+    "representation": "CANONICAL_MULTIPLE_CHOICE_LABEL"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "schema": "triaxis.r10l.mmlupro_exact_label_negative_control_freeze/v1",
+  "status": "FROZEN_BEFORE_EVALUATOR_IMPLEMENTATION_OPEN"
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.r8h.b0_output_freeze/v1",
+  "date": "2026-08-13",
+  "status": "FROZEN_BEFORE_NATIVE_VERIFIER",
+  "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
+  "sources": {
+    "evoagentbench_runner_commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "livecodebench_evaluator_commit": "28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+    "release": "release_v6",
+    "public_statement_workflow_commit": "c5a750da23a5b70c771b6f292f9dab4d251b947b",
+    "public_statement_run": 31713754648,
+    "public_statement_html_sha256": {
+      "abc391_d": "7c9da7d0e5af41f4e991ac3c4fa977314f57e044939537bf7307c227ef9c5611",
+      "abc338_b": "301c15efc32111dc1d33a6f331633689900129307ecdad8d5ade6a3f4703a667",
+      "abc357_b": "591220daaac996eaa73115ff6a5dd36f70c363fb1e07ccf2555a34ee151d2110"
+    }
+  },
+  "solutions": {
+    "abc391_d": "import sys\ninput=sys.stdin.readline\n\nN,W=map(int,input().split())\ncols=[[] for _ in range(W)]\nfor i in range(N):\n    x,y=map(int,input().split())\n    cols[x-1].append((y,i))\nfor col in cols:\n    col.sort()\n\nINF=10**30\ndeath=[INF]*N\nm=min(len(col) for col in cols)\nfor k in range(m):\n    t=max(cols[x][k][0] for x in range(W))\n    for x in range(W):\n        death[cols[x][k][1]]=t\n\nQ=int(input())\nout=[]\nfor _ in range(Q):\n    t,a=map(int,input().split())\n    out.append('Yes' if t < death[a-1] else 'No')\nprint('\\n'.join(out))\n",
+    "abc338_b": "s=input().strip()\ncnt=[0]*26\nfor ch in s:\n    cnt[ord(ch)-97]+=1\nmx=max(cnt)\nfor i,v in enumerate(cnt):\n    if v==mx:\n        print(chr(97+i))\n        break\n",
+    "abc357_b": "s=input().strip()\nupper=sum(ch.isupper() for ch in s)\nlower=len(s)-upper\nprint(s.upper() if upper>lower else s.lower())\n"
+  },
+  "rules": {
+    "hidden_tests_seen_by_model": false,
+    "verifier_runs_before_freeze": 0,
+    "corrections_used": 0,
+    "max_corrections_per_failed_task": 1
+  },
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "editorial_opened": false,
+  "schema": "triaxis.avr_v38_m0_verifier_result/v0.1",
+  "tasks": {
+    "arc202_b": {
+      "complexity": "O(H log H + H log W) dominated by factorials/gcd scan",
+      "constraint_smoke": {
+        "input": "H=199999,W=200000",
+        "rss_kb": 9580,
+        "seconds": 0.04
+      },
+      "independent_oracle": {
+        "cases": 8,
+        "mismatches": 0,
+        "range": "3<=H,W<=6 with H*W<=18",
+        "type": "direct enumeration of all +/- move words for small torus boards"
+      },
+      "official_samples": "PASS_ALL_3",
+      "proof_equivalent_invariant": [
+        "If H is even, row coordinate under -2 never reaches all H rows, so no tour.",
+        "For odd H, reindex rows so every move advances one layer. A Hamiltonian successor map must be a bijection from every layer to the next.",
+        "For odd W, a bijection y->y+/-1 on the W-cycle must be all + or all -, so the H-layer return map is translation by s=2p-H and is one W-cycle iff gcd(s,W)=1.",
+        "For even W, a layer bijection has one of four period-2 sign patterns. It flips parity; after odd H layers the return map flips parity, and its square translates Z_(W/2) by S=#all_plus-#all_minus. It is one W-cycle iff gcd(S,W/2)=1.",
+        "The coefficient count for even W is [x^S](x+x^-1+2)^H = C(2H,H+S)."
+      ],
+      "status": "CLAIM_GRADE_M0_PASS"
+    },
+    "arc202_c": {
+      "complexity": "O(M log M log MOD + sum tau(A_i)) with M=max A_i<=200000",
+      "constraint_smoke": [
+        {
+          "input": "N=200000, all A=200000",
+          "rss_kb": 8300,
+          "seconds": 0.1
+        },
+        {
+          "input": "N=200000, all A=166320 (high divisor count)",
+          "rss_kb": 7532,
+          "seconds": 0.13
+        }
+      ],
+      "independent_oracle": {
+        "A_i_max": 14,
+        "N_max": 8,
+        "mismatches": 0,
+        "random_cases": 500,
+        "type": "Python arbitrary-precision repunit gcd/lcm prefix oracle"
+      },
+      "official_samples": "PASS_ALL_3",
+      "proof_equivalent_invariant": [
+        "R_n = product_{d|n,d>1} Phi_d(10).",
+        "For any prime q, the cyclotomic indices d for which q divides Phi_d(10) lie on a divisibility chain (the standard q-power extension of ord_q(10), with the repunit denominator special case also chain-structured).",
+        "Therefore for a set of selected n, the q-adic valuation of the product of Phi_d(10) over the union of their divisor indices equals max v_q(R_n), hence exactly the LCM.",
+        "MOD=998244353 is prime and ord_MOD(10)=998244352>200000, so all required modular cyclotomic divisions are by nonzero residues."
+      ],
+      "status": "CLAIM_GRADE_M0_PASS"
+    },
+    "arc202_d": {
+      "constraint_analysis": {
+        "frozen_complexity": "O(T*H*W) time and O(H*W) memory",
+        "official_limits": "H,W,T<=300000; 15 sec; 1024 MiB",
+        "safe": false,
+        "two_int_buffers_bytes": 720000000000,
+        "worst_cells": 90000000000,
+        "worst_transition_scale": "~2.16e17 cell-steps before neighbor constant"
+      },
+      "independent_oracle": {
+        "H_W_max": 5,
+        "T_max": 5,
+        "mismatches": 0,
+        "random_cases": 400,
+        "type": "independent sparse-dictionary exact small-board walk DP"
+      },
+      "official_samples": "PASS_ALL_2",
+      "status": "PERFORMANCE_QUARANTINE",
+      "x1_activated": false,
+      "x1_reason": "constraint rescue would require a qualitatively new asymptotic algorithm, prohibited by do-not-force-X1 gate"
+    }
+  },
+  "v38_pre_editorial_delta": {
+    "M0_pass_added": 2,
+    "claim_grade_tasks_added": 2,
+    "final_pass_added": 2,
+    "harms_added": 0,
+    "quarantined_added": 1,
+    "rescues_added": 0
+  },
+  "version": "V38"
+}

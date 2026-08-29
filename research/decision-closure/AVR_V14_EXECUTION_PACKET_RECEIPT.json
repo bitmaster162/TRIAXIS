@@ -1,0 +1,25 @@
+{
+  "schema": "triaxis.avr_v14.execution_packet_receipt/v0.1",
+  "status": "EXTERNAL_DEPENDENCY_HOLD",
+  "experiment_ran": false,
+  "preregistration_sha256": "94cce81aec3f4085153e071d318a8267dc2298c711152f11126eb77976fa555d",
+  "subset_freeze_receipt_sha256": "8328f983a885a9da5a85d501d962950d78b86880817651358f9bcc4784aec538",
+  "execution_packet_zip_sha256": "0a791949c1ef8fafbb4ddc91de71be406ffecf1e0bea14871a3a742066ebe4c3",
+  "runner_sha256": "3db42edc3008929229d40bfd1a3baea3211c74ed615480b1ab95a396bdc0c707",
+  "selector_sha256": "fc51dfb039cbbb872e0cd1b43c8e53fd89325038f0376d78a25729d186d78c1a",
+  "scorer_sha256": "5ee24a10ec549b9cffb04cc3c104c64cb785ccf01036f2e6dc3b9a0088ebb532",
+  "powershell_sha256": "ed9cf720d8ff70d5c24b8862f7efd2c12639eb090ed246a7da2173efad38051b",
+  "selftest": {
+    "selection": 20,
+    "terminal_markers": 20,
+    "tool_schemas": 80,
+    "native_module_importable": 19,
+    "native_module_failures": 1,
+    "model_calls": 0,
+    "oracle_opened": false,
+    "missing_key_fail_closed": true
+  },
+  "external_dependency": "OPENROUTER_API_KEY unavailable in current ChatGPT runtime; no paid compute authorized or used.",
+  "next_action": "Execute RUN_V14.ps1 in an environment with the existing OpenRouter key and local ToolBench-X data; return the generated TRIAXIS_AVR_V14_WEAKER_MODEL_RETURN.zip.",
+  "claim_boundary": "No v0.14 model result exists yet."
+}

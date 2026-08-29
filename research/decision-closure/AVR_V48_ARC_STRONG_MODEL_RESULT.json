@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v48.result/v0.1",
+  "batch": "V48",
+  "contest": "ARC187",
+  "final": {
+    "E": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+    "D": "CLAIM_GRADE_M0_PASS",
+    "C": "CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activations": 0,
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_exclusions": 0
+  },
+  "interpretation": "V48 adds two strong-model ceiling passes and one fresh scoreable M0 failure. No bounded X1 was eligible, so no causal-lift evidence was added.",
+  "research_status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED",
+  "governance": {
+    "main_write": false,
+    "merge": false,
+    "deploy": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

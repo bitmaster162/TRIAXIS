@@ -1,0 +1,35 @@
+{
+  "policy": "downgrade/corroborate only",
+  "schema": "triaxis.avr_v35_postfreeze_editorial_audit/v0.1",
+  "score_change": false,
+  "tasks": {
+    "arc208_c": {
+      "audit": "CORROBORATED",
+      "notes": [
+        "Official solution reduces all possibilities to checking n=C xor X and a high-bit witness 2^50+(C-X)/2.",
+        "This matches the frozen M0 two-branch completeness structure; frozen C remains claim-grade PASS."
+      ],
+      "official_editorial": "https://atcoder.jp/contests/arc208/editorial/14209"
+    },
+    "arc208_d": {
+      "audit": "CORROBORATED",
+      "notes": [
+        "Official necessity is Y[Y[i]]=i.",
+        "For odd N, official proof forces exactly one diagonal occurrence of each color, equivalent to exactly one fixed point for the target involution.",
+        "For even N, official construction is round-robin plus 2x2 swaps that transfer two target loops at a time, structurally matching the frozen 1-factorization plus loop-factor trades.",
+        "Frozen D remains claim-grade PASS."
+      ],
+      "official_editorial": "https://atcoder.jp/contests/arc208/editorial/14210"
+    },
+    "arc208_e": {
+      "audit": "QUARANTINE_CONFIRMED",
+      "notes": [
+        "Official solution confirms the local Grundy recurrence/interval regularity but derives O(1) Grundy evaluation per pile through arithmetic skipping.",
+        "Frozen M0 walks every integer up to max(A), so exact small-case behavior is not official-constraint safe.",
+        "Frozen E remains PERFORMANCE_QUARANTINE; no post-freeze upgrade."
+      ],
+      "official_editorial": "https://atcoder.jp/contests/arc208/editorial/14211"
+    }
+  },
+  "version": "V35"
+}

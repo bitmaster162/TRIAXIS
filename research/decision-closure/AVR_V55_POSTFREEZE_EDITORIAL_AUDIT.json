@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.avr.v55.postfreeze_editorial_audit/v0.1",
+  "batch": "V55",
+  "contest": "arc177",
+  "scoring_freeze_commit": "942ae2b0aa2ccf712d93e789f18c7cd335cfa224",
+  "audit_policy": "post-freeze official material may corroborate or downgrade only",
+  "tasks": {
+    "D": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "official_editorial": "https://atcoder.jp/contests/arc177/editorial/9995?lang=en",
+      "official_mechanism": "split at adjacent spatial gaps > H; solve each connected group; monotonic-stack minima structure; aggregate group probabilities with segment tree/product",
+      "comparison": "CORROBORATES",
+      "note": "M0 expresses the same connected-group recursion with a min-index Cartesian tree and segment-tree product; independent exact-small verification already passed",
+      "postfreeze_score": "CLAIM_GRADE_M0_PASS"
+    },
+    "E": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "official_editorial": "https://atcoder.jp/contests/arc177/editorial/9965",
+      "official_mechanism": "rank changes lie on 121 {-1,0,1}-coefficient hyperplanes; it suffices to consider 113 representative nondecreasing integer score schemes; listed coordinates are at most 10; within score ties penalties optimally follow target-rank order",
+      "comparison": "CORROBORATES_STRONGLY",
+      "note": "M0 enumerates all nondecreasing positive score vectors through 12 and therefore contains the official 113 representatives; the independent pre-freeze hyperplane proof also independently found 121 relevant hyperplanes and established global coarsening coverage",
+      "postfreeze_score": "CLAIM_GRADE_M0_PASS"
+    },
+    "F": {
+      "frozen_score": "CLAIM_GRADE_M0_FAIL",
+      "official_editorial": "https://atcoder.jp/contests/arc177/editorial/9966",
+      "official_mechanism": "optimal DP state tracks current position, how many ordered A-coupon residents and J-coupon residents have been used, and current carrier type; resource multiplicity/identity is material",
+      "comparison": "CORROBORATES_FAILURE_DIAGNOSIS",
+      "note": "M0 discarded the b/r resident-usage state and relaxed each switch to a nearest-source activation, allowing effective resident reuse; official structure confirms this missing state is material",
+      "postfreeze_score": "CLAIM_GRADE_M0_FAIL",
+      "x1_remains_not_activated": true
+    }
+  },
+  "downgrades": 0,
+  "upgrades": 0,
+  "final_scores_unchanged": true
+}

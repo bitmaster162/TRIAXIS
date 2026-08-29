@@ -1,0 +1,53 @@
+{
+  "schema": "triaxis.avr.v52.scoring_freeze/v0.1",
+  "batch": "V52",
+  "editorial_opened_before_freeze": false,
+  "gold_or_submissions_opened_before_freeze": false,
+  "scores": {
+    "F": {
+      "m0": "PASS",
+      "final": "PASS",
+      "classification": "CLAIM_GRADE_M0_PASS",
+      "x1": 0
+    },
+    "E": {
+      "m0": "QUARANTINE",
+      "final": "QUARANTINE",
+      "classification": "PERFORMANCE_QUARANTINE",
+      "x1": 0
+    },
+    "D": {
+      "m0": "PASS",
+      "final": "PASS",
+      "classification": "CLAIM_GRADE_M0_PASS",
+      "x1": 0
+    }
+  },
+  "v52_delta": {
+    "claim_grade_tasks": 2,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 1,
+    "protocol_excluded": 1
+  },
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 67,
+    "m0_passes": 50,
+    "final_passes": 55,
+    "clean_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions": 3,
+    "partial_repairs": 1,
+    "quarantined_tasks": 25,
+    "protocol_excluded": 4,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "clean_rescues_needed_if_harms_zero": 1,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  },
+  "postfreeze_policy": "official audit may corroborate or downgrade only"
+}

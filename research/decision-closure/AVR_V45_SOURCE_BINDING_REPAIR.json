@@ -1,0 +1,24 @@
+{
+  "schema": "triaxis.avr.v45.source_binding_repair/v0.1",
+  "batch": "V45",
+  "reason": "manual GitHub transcription differed from pre-execution frozen local bytes for D and B",
+  "candidate_compile_before_repair": false,
+  "candidate_execution_before_repair": false,
+  "freeze_receipt_commit": "4126f65a3786e651815b5e65292b86bd0046e4ba",
+  "canonical_frozen_sha256": {
+    "arc190_d_m0.cpp": "325babcc971b97c9cc77bad4fad25766d4493bcffd99f51c4aa4284351149f73",
+    "arc190_e_m0.cpp": "af3d520d0fca73b601a7aeecf265968bbedb56ff1a50bc93d345bb607496752d",
+    "arc190_b_m0.cpp": "45d5ee590c742525abfe7e6dbd7d70c23e868df05e128a24734c88e74239ff16"
+  },
+  "initial_source_commits": {
+    "D": "8982842f7ac1dd915ba8593d82712b84b57636a1",
+    "E": "9d36dca4fdcdeaf254b59ebee949d98af8962778",
+    "B": "837907896267dc435359ee1074cae82903774a4f"
+  },
+  "binding_repair_commits": {
+    "D": "a5f63f88fc9412f76410e9c4f91d69f665e9389b",
+    "B": "2bbab4a023d1d13d52ed719efc921ddd1e2cd1cc"
+  },
+  "E_binding": "initial GitHub content visually/exactly matches frozen local source; no repair write needed",
+  "status": "SOURCE_BINDING_REPAIRED_BEFORE_ANY_COMPILE_OR_EXECUTION"
+}

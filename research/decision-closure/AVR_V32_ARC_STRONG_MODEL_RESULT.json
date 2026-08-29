@@ -1,0 +1,46 @@
+{
+  "broad_claim": "UNSUPPORTED",
+  "causal_interpretation": "V32 adds no causal-lift evidence. It adds one clean strong-model ceiling observation and two constraint-safety quarantines.",
+  "confirmatory": false,
+  "contest": "arc213",
+  "governance": {
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false
+  },
+  "hashes": {
+    "m0_freeze_sha256": "a4988ee970d2376b8ed88deb1c2711e5a3a1e15a849a5030e1f35c42b3fa84b5",
+    "postfreeze_audit_sha256": "8d7df71e1de0b71a4ea39475c8a45de4923604994326a695bbe2b3f6b1bb72b7",
+    "prereg_sha256": "be524dcdfd1ebd154295de8fb4fdcde410975623d3fc6e2ca235cd25815a2358",
+    "scoring_freeze_sha256": "660a2651e9ac754ff2e88cf4bdcdbe94ed20aaff2a9b11017e25efe8613986fa",
+    "verifier_sha256": "02e112a430e1d9de5f5457f0e45b80f3da0528ed30be8f75bb6c796fa5ab7b32"
+  },
+  "schema": "triaxis.avr_v32.arc_strong_model_result/v0.1",
+  "status": "ONE_CLAIM_GRADE_CEILING_TWO_PERFORMANCE_QUARANTINES",
+  "tasks": {
+    "arc213_b": {
+      "M0": "PASS",
+      "X1": "NOT_ACTIVATED_CEILING",
+      "claim_grade": true
+    },
+    "arc213_c": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED_REQUIRES_ASYMPTOTIC_REWRITE",
+      "claim_grade": false
+    },
+    "arc213_d": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED_REQUIRES_ASYMPTOTIC_REWRITE",
+      "claim_grade": false
+    }
+  },
+  "timestamp_local": "2026-08-12T00:08:57+07:00",
+  "v32_delta": {
+    "M0_pass": 1,
+    "X1_final_pass": 1,
+    "claim_grade_tasks": 1,
+    "harms": 0,
+    "quarantined": 2,
+    "rescues": 0
+  }
+}

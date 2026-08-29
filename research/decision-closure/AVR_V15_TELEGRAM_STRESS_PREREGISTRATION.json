@@ -1,0 +1,63 @@
+{
+  "schema": "triaxis.avr_v15.telegram_stress_preregistration/v0.1",
+  "status": "FROZEN_BEFORE_OPENCLAW_EXPOSURE",
+  "timestamp_local": "2026-08-11T18:05:00+07:00",
+  "test_type": "MECHANISM_STRESS_TEST_NOT_CONFIRMATORY",
+  "runtime": {
+    "primary": "OPENCLAW",
+    "declared_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "provider_model_receipt_required_for_provider_claim": true,
+    "provider_receipt_available": false
+  },
+  "selection": {
+    "N": 9,
+    "case_ids": [
+      "fe05cde47598",
+      "f9916b8656bf",
+      "a0528554ed8b",
+      "f040615b7079",
+      "a2dd8d2bc1af",
+      "5d43939de154",
+      "39dc5086664c",
+      "21cacf9743d1",
+      "53caa8ca31e7"
+    ],
+    "historical_composition_changed_cases": 4,
+    "historical_control_gate_activation_cases": 5,
+    "selection_basis": "Mechanism-targeted replay from v0.13 complete terminal-authority activations. Four selected cases historically changed under the frozen deterministic composer; five are complete gate-activation controls. Selection intentionally uses prior mechanism history and therefore cannot be treated as a fresh confirmatory benchmark.",
+    "network_dependent_nonreplayable_cases_excluded": true,
+    "no_replacement_after_openclaw_answers": true
+  },
+  "evidence": {
+    "source": "Native ToolBench-X exception-module replay using preserved v0.13 reconstructed runner semantics; repeated parallel branch for f040 reconstructed from the same native benchmark-exact branch values because the runner results map stores one value per tool name.",
+    "private_scrubbed_evidence_sha256": "a872de6fc44332f810bbd5099d417dd3f6c88e752a3d45261a010d43f420f2c4",
+    "model_visible_answer_key_aliases_scrubbed": true,
+    "scrubbed_aliases": ["final_value","final_answer","canonical_answer","answer","answer_text","benchmark_answer","correct_answer","expected","expected_answer","expected_output","expected_result","gold","gold_answer","ground_truth","reference_answer","target_answer"],
+    "oracle_values_not_shown_to_openclaw": true
+  },
+  "comparison": {
+    "M0": "OpenClaw native final commitment from scrubbed evidence",
+    "G1": "counterfactual deterministic TERMINAL_AUTHORITY commitment using private terminal answer key from the same evidence chain",
+    "guard_extra_model_calls": 0,
+    "guard_extra_tool_calls": 0
+  },
+  "metrics": ["M0_RAW_EXACT","G1_RAW_EXACT","rescues","harms","changed_outputs"],
+  "decision_labels": {
+    "positive": "WEAKER_MODEL_MECHANISM_STRESS_SIGNAL",
+    "null": "MECHANISM_STRESS_NULL",
+    "harm": "MECHANISM_STRESS_HARM"
+  },
+  "claim_boundaries": [
+    "Not a fresh/random confirmatory ToolBench-X sample.",
+    "Not a provider-verified model run unless a provider receipt is separately supplied.",
+    "Not a full official ToolBench-X score.",
+    "A positive result is mechanism stress evidence only, not broad intelligence evidence."
+  ],
+  "governance": {
+    "production_change": false,
+    "merge_permission": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

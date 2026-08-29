@@ -1,0 +1,68 @@
+{
+  "schema": "avr.terminal_authority.fixed_replication/v0.13",
+  "frozen_before_selection_and_execution": true,
+  "objective": "Larger fresh fixed-protocol replication of the already-frozen v0.12 terminal-authority semantic-composition gate. No new mechanism is introduced.",
+  "baseline": {
+    "C0": "Exact RECONSTRUCTED_RUNNER.py behavior preserved from the v0.12 evidence package, terminal_gate=false.",
+    "C1": "Same runner and same recovery/completeness/canonicalization behavior, terminal_gate=true.",
+    "runner_source_sha256": "f61a78273774de5fdb3bdb76e03be966939a244b19998e009fb3fc663b8ad333",
+    "baseline_provenance_limit": "C0 remains a regression-validated reconstruction of v0.11 rather than byte-identical v0.11 source."
+  },
+  "harness": {
+    "dataset": "Native ToolBench-X uploaded dataset bytes; dataset not redistributed in result package.",
+    "exception_activation": "official-equivalent correction v0.1",
+    "fail_seed": "7",
+    "case_wall_clock_timeout_sec": 30,
+    "process_isolation": true,
+    "oracle_policy": "Native final_answer and hint text remain unopened until both C0 and C1 outputs are frozen.",
+    "arms_matched": true
+  },
+  "selection": {
+    "sample_size": 40,
+    "hazard_balance": "8 cases per each of the five ToolBench-X hazard families.",
+    "freshness": "Exclude exact v0.7-v0.12 exception paths; conservatively exclude task files tied to already-revealed v0.6 answer strings.",
+    "eligibility": "Native multi-tool cases with at least 3 calls in tools_used and at least 2 distinct tools; no expected values or hints used for eligibility.",
+    "terminal_enrichment": "Within each hazard family, deterministically select up to the first 4 terminal-marker-AST candidates by SHA-256 rank, then fill to 8 with the earliest remaining eligible candidates by the same rank.",
+    "terminal_marker_detection": "Schema/AST key names only: final_value, final_answer, canonical_answer. Tool position/name alone cannot establish terminal authority.",
+    "ranking": "SHA-256(preregistration_sha256 + '|' + exception_path).",
+    "minimum_terminal_marker_cases": 10,
+    "insufficient_trigger_rule": "If fewer than 5 actual C1 terminal-authority activations occur after execution, efficacy adjudication is INCONCLUSIVE regardless of score."
+  },
+  "metrics": [
+    "RAW_EXACT",
+    "VERIFIED_EXACT",
+    "complete",
+    "wrong_complete",
+    "tool_calls",
+    "terminal_authority_activations",
+    "rescues",
+    "harms",
+    "discordant_pairs",
+    "exact_paired_two_sided_p"
+  ],
+  "safety_survival_gate": [
+    "C1 total tool calls == C0 total tool calls and per-case calls are identical.",
+    "Zero verified harms.",
+    "Zero new wrong-complete outputs caused by C1 semantic composition.",
+    "C1 VERIFIED_EXACT >= C0 VERIFIED_EXACT."
+  ],
+  "confirmatory_efficacy_gate": [
+    "At least 5 actual terminal-authority activations.",
+    "C1 VERIFIED_EXACT > C0 VERIFIED_EXACT.",
+    "Zero verified harms.",
+    "Exact paired two-sided McNemar/binomial p <= 0.05 over rescue/harm discordant pairs."
+  ],
+  "interpretation": {
+    "safety_pass_without_efficacy": "SAFE_NULL_REPLICATION; mechanism may remain a guard but no accuracy lift is credited.",
+    "efficacy_pass": "FIXED_PROTOCOL_REPLICATION_SIGNAL; still limited to deterministic controller architecture and selected trigger-enriched ToolBench-X subset.",
+    "safety_fail": "REJECT_OR_REVISE terminal-authority mechanism.",
+    "no_model_claim": "Do not attribute controller-level results to GPT-5.6 model intelligence lift."
+  },
+  "stop_rule": "Stop after scoring. Do not create a successor from this same mechanism unless a distinct failure class or independent model-provider replication target is established.",
+  "countermodel_default": false,
+  "can_trade": false,
+  "capital_permission": "DENY",
+  "deploy_permission": "DENY",
+  "auto_merge": false,
+  "merge_permission": "DENY"
+}

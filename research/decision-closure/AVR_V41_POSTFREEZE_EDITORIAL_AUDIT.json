@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v41.postfreeze_audit/v0.1",
+  "batch": "V41",
+  "contest": "arc195",
+  "scoring_freeze_commit": "1f2b0e50d34a2156460ebc4d20c4876f03a3243d",
+  "official_editorials": {
+    "C": {
+      "url": "https://atcoder.jp/contests/arc195/editorial/12524",
+      "finding": "Official necessary/sufficient conditions exactly match frozen M0: R must be even; if R=0 then B must be even; remaining cases constructible.",
+      "effect": "CORROBORATE"
+    },
+    "D": {
+      "url": "https://atcoder.jp/contests/arc195/editorial/12528",
+      "finding": "Official reduces the objective to swaps plus equal-value runs and proves an O(N) DP using an optimal set of pairwise nonadjacent swaps. Frozen exhaustive multiset-permutation baseline is exact on verified cases but asymptotically invalid.",
+      "effect": "CORROBORATE_QUARANTINE"
+    },
+    "E": {
+      "url": "https://atcoder.jp/contests/arc195/editorial/12525",
+      "finding": "Official independently derives expected distance using expected depths/LCA with O(N) preprocessing and O(1) queries. This corroborates the frozen O(N+Q) result by a different derivation.",
+      "effect": "CORROBORATE"
+    }
+  },
+  "final_scores": {
+    "C": "CLAIM_GRADE_M0_PASS",
+    "D": "PERFORMANCE_QUARANTINE",
+    "E": "CLAIM_GRADE_M0_PASS"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

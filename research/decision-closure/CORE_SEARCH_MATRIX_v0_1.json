@@ -1,0 +1,29 @@
+{
+  "schema": "triaxis.core_search/v0.1",
+  "arms": [
+    "K0_DIRECT",
+    "K1_EVIDENCE",
+    "K2_ORIGIN",
+    "K3_CONTEXT",
+    "K4_COMMITMENT",
+    "K5_VERIFY",
+    "K6_TRIALECTIC"
+  ],
+  "candidate_core": [
+    "INPUT_CONTEXT_BOUNDARY",
+    "EVIDENCE_ORIGIN",
+    "DUAL_STATE_COMMITMENT",
+    "SELECTIVE_VERIFIER",
+    "REOPEN_STOP"
+  ],
+  "optional_component": "TRIALECTIC_COUNTERMODEL",
+  "historical_sources": {
+    "EVIDENCE": "v2.3",
+    "ORIGIN": "v2.5",
+    "CONTEXT": "v2.8-v2.10",
+    "VERIFIER": "v3.0",
+    "DUAL_STATE": "EBRC",
+    "EXTERNALIZED_WEAK_MODEL_SUPPORT": "WMX"
+  },
+  "status": "PREREGISTERED_RESEARCH_HYPOTHESIS_NOT_VALIDATED"
+}

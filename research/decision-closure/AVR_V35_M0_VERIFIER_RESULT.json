@@ -1,0 +1,87 @@
+{
+  "delta_pre_editorial": {
+    "claim_grade_tasks": 2,
+    "harms": 0,
+    "m0_pass": 2,
+    "quarantined": 1,
+    "rescues": 0
+  },
+  "editorial_opened": false,
+  "schema": "triaxis.avr_v35_m0_verifier_result/v0.1",
+  "tasks": {
+    "arc208_c": {
+      "claim_grade": true,
+      "complexity": "O(T) time, O(1) extra memory",
+      "constraint_safe": true,
+      "final_pre_editorial": "PROVISIONAL_CLAIM_GRADE_PASS",
+      "independent_exhaustive": {
+        "cases": 65025,
+        "domain": "1<=C,X<256",
+        "mismatches": 0,
+        "oracle": "direct witness search X<n<=4096 plus output-condition validation"
+      },
+      "m0": "PASS",
+      "proof_equivalent_invariant": [
+        "Let y=n xor C. If y<n, remainder X forces y=X, hence witness n=C xor X>X.",
+        "If y>n and y-n>=n, the highest set bit of C toggles n upward; since X<n lies below that bit, C xor X>X gives a q=0 witness.",
+        "Otherwise 0<=y-n<n and X=y-n=C-2(n&C); therefore s=(C-X)/2 is a bit-subset of C, and n=2^30+s is a valid witness.",
+        "The two constructive branches are therefore complete."
+      ],
+      "sample": "valid witness outputs"
+    },
+    "arc208_d": {
+      "claim_grade": true,
+      "complexity": "O(N^2) output/time per case; total sum N^2<=500^2",
+      "constraint_safe": true,
+      "final_pre_editorial": "PROVISIONAL_CLAIM_GRADE_PASS",
+      "independent_exhaustive": {
+        "cases": 3413,
+        "domain": "all mappings Y for N=1..5",
+        "invalid_yes_matrices": 0,
+        "oracle": "independent exhaustive enumeration of all symmetric Latin squares and induced position-of-symbol-1 mappings",
+        "verdict_mismatches": 0
+      },
+      "m0": "PASS",
+      "proof_equivalent_invariant": [
+        "Because every row is a permutation and A is symmetric, the column of symbol 1 defines an involution Y.",
+        "For odd N, each color-factor involution has at least one fixed point; the N diagonal cells across N colors force exactly one fixed point per color, so Y must have exactly one fixed point.",
+        "Odd sufficiency: embed the target involution as one perfect matching of K_{N+1} using a ghost vertex, conjugate a round-robin 1-factorization so that matching is round 1, then replace each ghost edge by a loop.",
+        "Even sufficiency: complete Y to a perfect matching F0 by pairing its fixed vertices; conjugate a 1-factorization of K_N so F0 is round 1, add an all-loop factor, then on each paired fixed-vertex edge perform the symmetric 2x2 trade edge(color1)<->two loops(loop-color)."
+      ],
+      "sample": "valid matrix outputs / correct No",
+      "scalable_validation": {
+        "all_valid": true,
+        "cases": [
+          "N=500 fixed-count 0",
+          "N=500 fixed-count 2",
+          "N=500 fixed-count 250",
+          "N=500 fixed-count 500",
+          "N=499 fixed-count 1"
+        ],
+        "elapsed_seconds_for_five_cases_including_4.7MB_output": 0.0563
+      }
+    },
+    "arc208_e": {
+      "claim_grade": false,
+      "constraint_analysis": "Frozen algorithm advances the recurrence one integer at a time up to max(A) for each test case; A_i can be 1e18. Correct small-game behavior cannot override this asymptotic failure.",
+      "constraint_safe": false,
+      "final_pre_editorial": "PERFORMANCE_QUARANTINE",
+      "independent_exact": {
+        "cases": 2880,
+        "domain": "all single-pile X<Y<=8, A<=60 plus 1200 random multi-pile games",
+        "mismatches": 0,
+        "oracle": "recursive impartial-game Grundy solver"
+      },
+      "m0": "CORRECTNESS_PASS_CONSTRAINT_FAIL",
+      "performance_smoke": {
+        "case": "N=1, X=99991, Y=100003, A=5000000",
+        "elapsed_seconds": 0.06,
+        "rss_kb": 3604
+      },
+      "sample": "PASS",
+      "x1_activated": false,
+      "x1_reason": "Would require a new fast-forward/periodic number-theoretic algorithm, not a bounded correction."
+    }
+  },
+  "version": "V35"
+}

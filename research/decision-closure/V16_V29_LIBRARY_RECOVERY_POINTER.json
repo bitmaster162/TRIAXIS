@@ -1,0 +1,39 @@
+{
+  "schema": "triaxis.v16_v29_library_recovery_pointer/v0.1",
+  "status": "REGISTERED_BY_HASH_POINTER_NOT_INLINE_REUPLOAD",
+  "source": {
+    "requested_library_path": "/TRIAXIS_HANDOFFS/TRIAXIS_EBRC_FULL_HANDOFF_V29_20260811.zip",
+    "execution_copy_filename": "TRIAXIS_EBRC_FULL_HANDOFF_V29_20260811(1).zip",
+    "execution_copy_sha256": "5860b46e31f022de6fcef78e3db7e9e5df96ba532a2fa7d48a38000164bcb12e"
+  },
+  "reason": "Connector exposes one-file contents writes but no atomic multi-file commit primitive with parent-tree lookup. Register exact hashes for the available normative V16-V29 text/source backlog without creating 24 history-noise commits. Raw bytes remain in the handoff archive; binaries and historical ZIP packaging are intentionally excluded.",
+  "normative_text_source_files": [
+    {"path":"AVR_V16_RAW_COMPOSITION_RESULT_CORRECTED.json","sha256":"7c80fff020069ad542bb89659091381a436097504328f5f2f97becbc58f96646","bytes":811},
+    {"path":"AVR_V17_STRONG_MODEL_PILOT_ADJUDICATION.json","sha256":"548e01d74673a11dd58c1cb270fe4457553869f3987d84b05322224a2bcc12fb","bytes":1075},
+    {"path":"AVR_V18_STRONG_MODEL_CLEAN_PREREGISTRATION.json","sha256":"4befe1ce9177dc70fa4a9d69db93a18ed2b8e3879aa9699a4be3f8d1136cb951","bytes":2040},
+    {"path":"AVR_V18_TOOLBENCHX_CLEAN_PROVENANCE_ADJUDICATION.json","sha256":"0d6ec89296098e3fa944b65a74531ca6c530747283ccc3c3d9af8585f434f0b6","bytes":861},
+    {"path":"AVR_V20B_STRONG_MODEL_EXECUTABLE_RESULT.json","sha256":"7f101d902590786fe299f3a9a0f6b63b4358c562a0646874fb9577959767b067","bytes":1526},
+    {"path":"AVR_V22_ATCODER_STRONG_MODEL_PREREGISTRATION.json","sha256":"b742798a1b26b9f88349e6f4f14d8492580bf755076b420c20bc2e05a7a70b26","bytes":1483},
+    {"path":"AVR_V29_ARC_STRONG_MODEL_PREREGISTRATION.json","sha256":"f080d6d968d3d69e33beb74c1ddf9be992bd20bdd50a196d11fd132b2d17c400","bytes":1846},
+    {"path":"STRONG_MODEL_ROLLUP_V22_V28.json","sha256":"06fd0bc00fb641cd3c2dc76c972fd28deafbd5478c1092d1f8a97c4f4448a1c6","bytes":595},
+    {"path":"STRONG_MODEL_ROLLUP_V22_V29.json","sha256":"4a56894f39549b76d514c86d4666f3ef25ac7107e392a81a92f89353f19a9cfa","bytes":644},
+    {"path":"TRIAXIS_STRONG_MODEL_STATUS_V28.json","sha256":"a022c8fb49caf4baae3bf7a779c68c66325050ac4dd94cab7df1a21314f8fe6e","bytes":9982},
+    {"path":"V23_V27_RECOVERY_LEDGER.json","sha256":"cdf15aa9e5e0ee73ebf0b0994671193ded166d9b62e80899c51c506cf58e5720","bytes":3161},
+    {"path":"v21_atcoder_strong/V21_RESULT.json","sha256":"af2cf8f42923d87afadaf95ed35285aa541b57bd8ba6fd0a58b22284df379a2d","bytes":1745},
+    {"path":"v22_atcoder_strong/M0_FREEZE.json","sha256":"b95fde3114ac9099ec5e7167b1a6e98e609115930e4eeb52f604bf9da3287f9d","bytes":847},
+    {"path":"v22_atcoder_strong/V22_RESULT.json","sha256":"a330cc235e86b7ead9346a7edb0d5159769b9175580440e79ac334a8071b5723","bytes":3522},
+    {"path":"v22_atcoder_strong/X1_FREEZE.json","sha256":"7f19019eb41e9cc91f28d2228af9f778aba789da2f2aeda4d67cba2231fc23c5","bytes":689},
+    {"path":"v28_arc_strong/M0_FREEZE.json","sha256":"60b9720e8a7e0defe6511cb784a2402351c12b24bff75e125c6465598a4d030f","bytes":1217},
+    {"path":"v28_arc_strong/V28_RESULT.json","sha256":"aa3aa5decd23bec040d9f4ea2e5b957cb2a60227a04113714cd1d127e2e6f509","bytes":3974},
+    {"path":"v28_arc_strong/X1_FREEZE.json","sha256":"234ec05cbb7080d231c27c48c4f769f6a1e3b969f53895583e146c4d0ce0cd78","bytes":1144},
+    {"path":"v29_arc_strong/AMENDMENT_R1.json","sha256":"0ad9776ab9e9e289236dfc1ae3518e2a616a1b935f4a61ef5b6003634fa8120e","bytes":722},
+    {"path":"v29_arc_strong/M0_FREEZE.json","sha256":"e71e5dade1a379da00bff92de4924ab7e1ed68d5d442fe635c3fc9aec59b220d","bytes":912},
+    {"path":"v29_arc_strong/M0_VERIFIER_RESULT.json","sha256":"c1c91b01d503bcb2fcdaf520093a32b71ed5fc8a011aed3662cb1f669bb27470","bytes":433},
+    {"path":"v29_arc_strong/V29_RESULT.json","sha256":"a5433d04be86bef046542ae4d0b41143fd3e31de327790b435a00d5902cca97d","bytes":2374},
+    {"path":"v29_arc_strong/arc218_d.cpp","sha256":"a2923377f2aa66e23844ab5daeff61f2241fdbb9c9cba618440c47e8f6d1d490","bytes":835},
+    {"path":"v29_arc_strong/arc218_e.cpp","sha256":"cad35376828f8c5b1d595d27413d1143876c28db627910960f5494fe68ee28b9","bytes":1782}
+  ],
+  "file_count": 24,
+  "excluded_classes": ["compiled binaries","historical ZIP archives","handoff packaging metadata"],
+  "governance": {"production_change":false,"merge_permission":"DENY","deploy_permission":"DENY","can_trade":false,"capital_permission":"DENY"}
+}

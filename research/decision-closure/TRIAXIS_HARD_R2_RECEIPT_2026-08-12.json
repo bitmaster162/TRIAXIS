@@ -1,0 +1,54 @@
+{
+  "baseline_before_registration": {
+    "ahead_behind": "409/0",
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "pr7": "OPEN_DRAFT_UNMERGED",
+    "research": "c223ac50840bc2251cec9cb30dc3736411268d82"
+  },
+  "clean_results": {
+    "agc004_f": {
+      "M0": "CLAIM_GRADE_M0_PASS_WITHIN_R2",
+      "T1": "NOT_ACTIVATED_CEILING",
+      "harms": 0,
+      "rescues": 0,
+      "score": 2200
+    },
+    "agc013_f": {
+      "M0": "PERFORMANCE_FAIL_SEMANTICS_VALIDATED",
+      "T1": "CLAIM_GRADE_FULL_TASK_PASS_WITHIN_R2",
+      "harms": 0,
+      "rescues": 1,
+      "score": 2000
+    }
+  },
+  "date_local": "2026-08-12",
+  "descriptive": {
+    "M0_full_constraint_pass": "1/2",
+    "clean_tasks": 2,
+    "confirmatory": false,
+    "final_full_constraint_pass": "2/2",
+    "full_task_rescues": 1,
+    "harms": 0
+  },
+  "epistemic": {
+    "broad_intelligence_claim": "UNSUPPORTED",
+    "devil_default": "OFF",
+    "distinct_triaxis_causal_lift": "UNRESOLVED",
+    "mechanism_level_verifier_value": "SUPPORTED_ON_R2_SURFACE"
+  },
+  "excluded": {
+    "agc008_f": "PROTOCOL_INVALIDATED_PRE_M0_FREEZE_TOOL_EXPLORATION",
+    "agc014_f": "PROTOCOL_INVALIDATED_PRE_M0_FREEZE_TOOL_EXPLORATION"
+  },
+  "governance": {
+    "auto_merge": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false
+  },
+  "historical_rollup_policy": "V22-V55 unchanged; performance-only M0 failure is not automatically added to prior claim-grade denominator.",
+  "schema": "triaxis.hard_r2.receipt/v0.1",
+  "status": "COMPLETE_ONE_PERFORMANCE_RESCUE_ONE_DIRECT_CEILING"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "triaxis.avr.v47.scoring_freeze/v0.1",
+  "batch": "V47",
+  "frozen_before_editorial_or_gold": true,
+  "tasks": {
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "D": "PERFORMANCE_QUARANTINE",
+    "E": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activations": 0,
+  "clean_rescues": 0,
+  "harms": 0,
+  "v47_delta": {
+    "claim_grade_tasks": 1,
+    "m0_passes": 1,
+    "final_passes_provisional": 1,
+    "quarantines": 2,
+    "protocol_exclusions": 0
+  },
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 53,
+    "m0_passes": 39,
+    "final_passes": 44,
+    "clean_rescues": 5,
+    "paired_harms": 0,
+    "quarantined_tasks": 24,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false
+  },
+  "postfreeze_rule": "Official editorial/gold may only corroborate or downgrade; never upgrade a frozen failure/quarantine."
+}

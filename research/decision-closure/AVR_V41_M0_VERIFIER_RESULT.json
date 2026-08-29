@@ -1,0 +1,83 @@
+{
+  "schema": "triaxis.avr.v41.m0_verifier/v0.1",
+  "batch": "V41",
+  "contest": "arc195",
+  "samples": {
+    "C": {
+      "status": "PASS",
+      "cases": 3,
+      "output_validated": true
+    },
+    "D": {
+      "status": "PASS",
+      "outputs": [
+        3,
+        4,
+        8
+      ]
+    },
+    "E": {
+      "status": "PASS",
+      "sample_sets": 3
+    }
+  },
+  "independent_verification": {
+    "C": {
+      "oracle": "brute self-avoiding cycle search with type counts; executable construction validator",
+      "cases": 42,
+      "mismatches": 0,
+      "invalid_outputs": 0,
+      "range": "2<=R+B<=8"
+    },
+    "D": {
+      "oracle": "Dijkstra over actual legal adjacent-swap and prefix-delete state graph",
+      "cases": 1089,
+      "mismatches": 0,
+      "range": "alphabet size 3, lengths 2..6"
+    },
+    "E": {
+      "oracle": "full enumeration of all recursive-tree parent arrays and direct weighted distances",
+      "query_cases": 224,
+      "mismatches": 0,
+      "range": "N=2..7, 4 random weight vectors per N"
+    }
+  },
+  "constraint_gates": {
+    "C": {
+      "input": "R=200000,B=0",
+      "elapsed_seconds": 0.02,
+      "rss_kb": 5772,
+      "output_lines": 200001,
+      "status": "PASS"
+    },
+    "D": {
+      "witness": "N=11 all distinct",
+      "timeout_seconds": 2.2,
+      "exit_status": 124,
+      "frozen_complexity": "Theta(multinomial(A)*N^2) worst-case N!",
+      "official_N_max": 200000,
+      "status": "PERFORMANCE_QUARANTINE"
+    },
+    "E": {
+      "input": "N=200000,Q=200000",
+      "elapsed_seconds": 0.03,
+      "rss_kb": 7772,
+      "output_lines": 200000,
+      "frozen_complexity": "O(N+Q)",
+      "status": "PASS"
+    }
+  },
+  "proof_equivalent_gates": {
+    "C": "A closed cycle must contain an even number of red (checkerboard-flipping) steps. If R=0, diagonal steps also force B even. Explicit constructions realize every remaining case: an orthogonal detour plus a simple diagonal-lattice path when R>0, or a rectangle in the diagonal lattice when R=0.",
+    "D": "Any execution induces a stable final deletion order of original occurrences. Adjacent swaps equal its inversion distance from A, and delete operations equal the number of equal-value runs; conversely any stable target order is realizable with exactly those costs.",
+    "E": "For random recursive trees, P(k ancestor of x)=1/k for k<x; for k<u<v, P(k ancestor of both)=2/(k(k+1)), so edge k separates u,v with probability 2(k-1)/(k(k+1)). Edge u separates with (u-1)/u, u<k<v with 1/k, and edge v with 1. Prefix sums give each query."
+  },
+  "pre_editorial_classification": {
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "D": "PERFORMANCE_QUARANTINE",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activated": false,
+  "x1_reason": "No frozen claim-grade M0 correctness failure. D requires a qualitatively new asymptotic architecture, so X1 is prohibited by protocol.",
+  "editorial_or_gold_used": false
+}

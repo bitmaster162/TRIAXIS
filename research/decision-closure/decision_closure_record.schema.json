@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Decision Closure Record v0.1",
+  "type": "object",
+  "required": [
+    "case_id",
+    "status",
+    "action_choice",
+    "minimal_witness",
+    "flip_condition",
+    "next_discriminator",
+    "stop"
+  ],
+  "properties": {
+    "case_id": {"type": "string"},
+    "status": {"enum": ["ENOUGH", "NOT_ENOUGH"]},
+    "action_choice": {"type": ["string", "null"]},
+    "minimal_witness": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "flip_condition": {"type": ["string", "null"]},
+    "next_discriminator": {"type": ["string", "null"]},
+    "stop": {"type": "boolean"}
+  },
+  "additionalProperties": true
+}

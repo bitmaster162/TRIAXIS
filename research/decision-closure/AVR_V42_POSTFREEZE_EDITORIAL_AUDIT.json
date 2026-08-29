@@ -1,0 +1,38 @@
+{
+  "schema": "triaxis.avr.v42.postfreeze_audit/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "scoring_freeze_commit": "22687442a53873505982d37dc2e57a0c1cfa55b8",
+  "official_editorials": {
+    "B": {
+      "url": "https://atcoder.jp/contests/arc194/editorial/12408",
+      "finding": "Official lower-bounds cost by the number of larger elements initially to the left of each element, then achieves the bound by moving values N,N-1,... right to final positions using Fenwick preprocessing. This is equivalent to frozen M0.",
+      "effect": "CORROBORATE"
+    },
+    "D": {
+      "url": "https://atcoder.jp/contests/arc194/editorial/12410",
+      "finding": "Official converts the VPS to an ordered rooted tree, shows the operation is equivalent to arbitrary reordering of children, and counts modulo duplicate isomorphic subtrees using bottom-up labels in O(N log N). This directly corroborates frozen X1 and falsifies M0's coarser depth-profile assumption.",
+      "effect": "CORROBORATE_CLEAN_X1_RESCUE"
+    },
+    "E": {
+      "url": "https://atcoder.jp/contests/arc194/editorial/12411",
+      "finding": "Official compresses 0-runs into A packets of X plus residual 0s and 1-runs into B packets of Y plus residual 1s; reachability is characterized by residual 0/1 order and packet counts between residual symbols. Frozen per-particle residue signatures are an equivalent Ferrers row/column residue encoding.",
+      "effect": "CORROBORATE"
+    }
+  },
+  "postfreeze_e_equivalence_check": {
+    "method": "exhaustively mapped frozen signature key and official compressed-invariant key in both directions",
+    "range": "all binary strings N=1..10; all 1<=X,Y<=N",
+    "string_key_evaluations": 169978,
+    "collisions_disagreeing": 0,
+    "status": "PASS"
+  },
+  "final_scores": {
+    "B": "CLAIM_GRADE_M0_PASS",
+    "D": "CLAIM_GRADE_CLEAN_X1_RESCUE",
+    "E": "CLAIM_GRADE_M0_PASS"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false,
+  "downgrade": false
+}

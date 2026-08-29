@@ -1,0 +1,164 @@
+{
+  "claim_boundary": {
+    "CONTROLLER_ARCHITECTURE_EFFECTS": "MAY_BE_CLAIMED_ONLY_PER_FROZEN_EXPERIMENT",
+    "EBRC_NOVELTY": "REJECT_UNSUPPORTED",
+    "MODEL_LEVEL_AMPLIFICATION": "REQUIRES_MATCHED_INDEPENDENT_MODEL_PROVIDER_RUN",
+    "PRODUCTION_QUALIFIED": false,
+    "TRIAXIS_BROAD_INTELLIGENCE_LIFT": "UNSUPPORTED"
+  },
+  "components": [
+    {
+      "claim_boundary": "controller ablation only; deterministic controllers, not matched independent GPT-5.6 agents",
+      "component": "TASK_STATE_PROMPT_BINDING",
+      "decision": "DEFAULT",
+      "demotion_trigger": "fresh matched replication shows no benefit, material harms, or binding injects unsupported facts",
+      "evidence": [
+        "ToolBench-X v0.9: X0 raw 5/10 verified 3/10 @41 calls",
+        "X0B + binding raw 7/10 verified 7/10 @41 calls",
+        "binding increment: +2 raw gains, +4 verified gains, 0 harms, 0 extra calls",
+        "paired exact p for verified gains reported 0.125"
+      ],
+      "evidence_grade": "POSITIVE_CAUSAL_SMALL_N"
+    },
+    {
+      "claim_boundary": "project-side integrity criterion; VERIFIED_EXACT is not an official ToolBench-X metric",
+      "component": "EVIDENCE_CHAIN_COMPLETENESS",
+      "decision": "DEFAULT",
+      "demotion_trigger": "criterion rejects semantically sufficient answers because required evidence chain is mis-specified",
+      "evidence": [
+        "Historical ToolBench-X failure class INCOMPLETE_EVIDENCE_CHAIN_FALSE_FINISH",
+        "v0.9 binding converted several raw/lucky outputs into complete verified outputs without more calls"
+      ],
+      "evidence_grade": "MECHANISM_SUPPORTED"
+    },
+    {
+      "claim_boundary": "instrument-validity control only; cognitive lift credit 0; no benchmark-wide prevalence",
+      "component": "VERIFIER_INSTRUMENT_CONTRACT_GATE",
+      "decision": "DEFAULT_WHEN_APPLICABLE",
+      "demotion_trigger": "fresh false quarantine, missed direct contract mismatch covered by frozen rule, hidden/oracle dependence, or material overhead",
+      "evidence": [
+        "R8-L prospective unseen catch: abc324_f numeric tolerance",
+        "R10-A prospective catch: abc319_c numeric tolerance",
+        "R10-C bounded fresh remainder catches: abc375_b numeric tolerance; arc183_d non-unique constructive",
+        "R10-A+C: 44/44 explicitly bounded fresh eligible AtCoder remainder classified; 41 admitted, 3 quarantined",
+        "R10-G prospective BFCL domain transfer: AST/structured function-call semantics differs from raw exact serialized-string equality"
+      ],
+      "evidence_grade": "PROSPECTIVE_PROCEDURAL_TRANSFER_PLUS_CROSS_DOMAIN"
+    },
+    {
+      "claim_boundary": "external capability/control mechanism; not evidence that more tool calls always help",
+      "component": "SELECTIVE_EXTERNAL_EXECUTABLE_VERIFICATION",
+      "decision": "DEFAULT_ON_DEFICIT_NOT_ALWAYS_ON",
+      "demotion_trigger": "external verifier is semantically inapplicable, untrusted, unavailable, or costs more than the decision value",
+      "evidence": [
+        "blind hard quarry: standalone 1/8; executable verifier rescued all 7 frozen failures",
+        "CorrectBench-derived subset: frozen 16/28 -> 28/28 after one verifier-driven correction round",
+        "tool-trust control: instrument validation repaired 8/12 -> 12/12 in synthetic routing study"
+      ],
+      "evidence_grade": "STRONG_MECHANISM_SUPPORT"
+    },
+    {
+      "claim_boundary": "maximum one correction after concrete verified failure; no universal self-correction claim",
+      "component": "BOUNDED_VERIFIER_CONDITIONED_CORRECTION",
+      "decision": "CONDITIONAL",
+      "demotion_trigger": "fresh matched run shows harms, no rescues at material cost, or correction requires hidden/oracle leakage",
+      "evidence": [
+        "CorrectBench-derived published mutants: one correction rescued 12/12 escaped scoreable mutants",
+        "R9-B generic and targeted scaffolds harmed/failed weak Qwen; targeted skill denied",
+        "R9-C clean weak-model sanitized-verdict correction remains UNKNOWN because compute execution is billing-blocked"
+      ],
+      "evidence_grade": "MIXED_DOMAIN_SPECIFIC"
+    },
+    {
+      "claim_boundary": "targeted retry can remain conditional for isolated classified transient failures",
+      "component": "GENERIC_RECOVERY_RETRY_LAYER",
+      "decision": "OFF",
+      "evidence": [
+        "ToolBench-X v0.9 recovery above binding: 0 raw gains, 0 verified gains, 0 harms, +12 calls",
+        "near-chain-wide TimeoutError cases were not rescued by independent retry fan-out"
+      ],
+      "evidence_grade": "NULL_WITH_COST",
+      "reopen_trigger": "preregistered circuit-breaker/sentinel strategy produces clean incremental rescues with bounded cost and no harms"
+    },
+    {
+      "claim_boundary": "no result claim until frozen prospective execution exists",
+      "component": "CORRELATED_FAILURE_SENTINEL_RETRY",
+      "decision": "CONDITIONAL_RESEARCH_ONLY",
+      "demotion_trigger": "no rescues with material overhead or retry multiplication reappears",
+      "evidence": [
+        "v0.9 common-cause timeout observation motivates one sentinel retry rather than fan-out",
+        "historical AVR v0.10 was preregistered but not treated as confirmed in authoritative handoff"
+      ],
+      "evidence_grade": "MOTIVATED_NOT_CONFIRMED"
+    },
+    {
+      "claim_boundary": "at most one action-changing alternative when a material unresolved assumption exists and no direct discriminator settles it",
+      "component": "COUNTERMODEL_DEVIL",
+      "decision": "OFF_BY_DEFAULT",
+      "evidence": [
+        "prospective scoreable rollup 23/27 -> 25/27, rescues 4, harms 2, paired exact p=0.6875",
+        "trigger changed between batches; not a fixed confirmatory experiment",
+        "valid-but-divergent tool test showed 0 incremental Trialectic value"
+      ],
+      "evidence_grade": "MIXED_NONCONFIRMATORY",
+      "reopen_trigger": "fixed prospective trigger on independent model/fresh set shows reproducible net rescue with zero or tightly bounded harms"
+    },
+    {
+      "component": "MANDATORY_DEVIL_ANGEL_TRIALECTIC_MAJORITY_VOTE",
+      "decision": "REJECTED",
+      "evidence": [
+        "historical research repeatedly failed to support mandatory persona debate",
+        "valid-but-divergent tools: active semantic control 12/12; + Trialectic 12/12, 0 pp"
+      ],
+      "evidence_grade": "NO_INCREMENTAL_VALUE_OR_HARM_RISK",
+      "reopen_trigger": "requires new independent preregistered evidence; no default reconsideration"
+    },
+    {
+      "claim_boundary": "zero cognitive-lift credit; do not claim novelty; use as research/decision integrity control",
+      "component": "EBRC_PROVENANCE_CLOSURE_REOPEN_STOP",
+      "decision": "DEFAULT_AS_NONCOGNITIVE_CONTROL",
+      "demotion_trigger": "control causes material false closure or prevents reopening on material new evidence",
+      "evidence": [
+        "FC16 semantic split: epistemic uncertainty and operational closure must be separate; UNRESOLVED != OPEN",
+        "prior-art R10-B rejects broad EBRC novelty claim",
+        "provenance/instrument/closure receipts prevent invalid pooling and post-hoc protocol drift"
+      ],
+      "evidence_grade": "INTEGRITY_CONTROL_PRIOR_ART_BOUND"
+    }
+  ],
+  "date": "2026-08-14",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "minimal_runtime_policy": {
+    "default_path": [
+      "BIND_TASK_STATE",
+      "CHECK_EVIDENCE_COMPLETENESS_AND_SEMANTIC_APPLICABILITY",
+      "IF_REAL_DEFICIT_THEN_ROUTE_TO_VALID_EXTERNAL_CAPABILITY",
+      "VALIDATE_INSTRUMENT_CONTRACT",
+      "CANONICAL_COMMIT",
+      "STOP_WITH_MATERIAL_REOPEN_CONDITION_IF_NEEDED"
+    ],
+    "exception_path": [
+      "IF_EXTERNALLY_VERIFIED_FAILURE_THEN_AT_MOST_ONE_BOUNDED_CORRECTION",
+      "IF_CLASSIFIED_TRANSIENT_FAILURE_THEN_AT_MOST_ONE_TARGETED_OR_SENTINEL_RETRY",
+      "IF_MATERIAL_UNRESOLVED_ACTION_CHANGING_ASSUMPTION_AND_NO_DIRECT_DISCRIMINATOR_THEN_ONE_COUNTERMODEL"
+    ],
+    "never_default": [
+      "REPEATED_SAME_MODEL_DEBATE",
+      "GENERIC_RECOVERY_LOOP",
+      "PER_TOOL_RETRY_FANOUT",
+      "MANDATORY_PERSONAS",
+      "MAJORITY_VOTE"
+    ]
+  },
+  "schema": "triaxis.r10h.evidence_weighted_core_demotion_table/v1",
+  "status": "CURRENT_RESEARCH_CORE_ADJUDICATION"
+}

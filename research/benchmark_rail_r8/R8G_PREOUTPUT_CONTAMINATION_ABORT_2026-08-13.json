@@ -1,0 +1,23 @@
+{
+  "schema": "triaxis.r8g.preoutput_contamination_abort/v1",
+  "date": "2026-08-13",
+  "status": "ABORTED_PREOUTPUT_CONTAMINATION",
+  "prereg_commit": "604883233f2cbafb0fa97ebaf66269936053dfa0",
+  "selected_task_ids": ["abc394_g", "arc183_d", "arc195_d"],
+  "contamination_detected_before_B0": true,
+  "cause": "search engine returned solution/editorial-oriented pages despite official-source intent",
+  "B0_outputs_created": 0,
+  "verifier_runs": 0,
+  "scored_tasks": 0,
+  "claim_effect": "NONE",
+  "instrument_adjudication": "SEARCH_ENGINE_UNSUITABLE_FOR_BLIND_PUBLIC_STATEMENT_RETRIEVAL",
+  "next_instrument": "direct HTTP retrieval from exact atcoder.jp task URLs only",
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "triaxis.avr.v47.noop_incident/v0.1",
+  "batch": "V47",
+  "event": "ACCIDENTAL_DUPLICATE_PR_CREATE_ATTEMPT",
+  "github_response": "HTTP 422 Validation Failed: PR already exists for research/decision-closure-ebd-v0.3",
+  "state_change": false,
+  "existing_pr": 7,
+  "main_write": false,
+  "branch_write_from_incident": false,
+  "pr_metadata_change": false,
+  "effect_on_prereg_or_scoring": "NONE",
+  "note": "Occurred after clean metadata-only task selection and before prereg file creation. The rejected call exposed no task statement/editorial content and made no repository or PR change."
+}

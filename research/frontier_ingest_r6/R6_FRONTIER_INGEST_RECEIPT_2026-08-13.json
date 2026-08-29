@@ -1,0 +1,41 @@
+{
+  "schema": "triaxis.r6.frontier_ingest.receipt/v1",
+  "date_local": "2026-08-13",
+  "status": "FRONTIER_INGEST_COMPLETE_CONTROLLER_MECHANICS_PASS",
+  "frontier_epoch": "MODEL_POOL_EPOCH_2026-08-13",
+  "mechanism_counts": {
+    "IMPORT_NOW": 14,
+    "EXPERIMENT": 5,
+    "DORMANT_REJECT": 4
+  },
+  "selftest": {
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "claim": "mechanical controller validation only; no task-level capability-lift claim"
+  },
+  "claim_candidates": [
+    "failure-conditioned capability upgrading",
+    "heterogeneous donor portfolio",
+    "incremental donor attribution",
+    "complexity deletion as first-class operation",
+    "EBRC as non-cognitive controller"
+  ],
+  "deep_research_prompts": 4,
+  "research_registration": {
+    "repository": "bitmaster162/TRIAXIS",
+    "branch": "research/decision-closure-ebd-v0.3",
+    "parent_before_write": "f5a50f9a9cb3492a7dae3d13a397ffde14cd7a75",
+    "report_commit": "b522a68ab5e6aa7f4e3e8a2accfe3e0d925c9011",
+    "report_path": "research/frontier_ingest_r6/R6_FRONTIER_INGEST_REPORT_2026-08-13.md"
+  },
+  "governance": {
+    "main_write": false,
+    "production_change": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "external_model_calls": 0
+  }
+}

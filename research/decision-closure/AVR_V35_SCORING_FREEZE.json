@@ -1,0 +1,15 @@
+{
+  "editorial_opened_before_scoring_freeze": false,
+  "frozen_scores": {
+    "arc208_c": "M0_PASS_CLAIM_GRADE",
+    "arc208_d": "M0_PASS_CLAIM_GRADE",
+    "arc208_e": "PERFORMANCE_QUARANTINE"
+  },
+  "harms": 0,
+  "postfreeze_policy": "official editorial/gold may corroborate or downgrade only; cannot upgrade quarantined/failing tasks or manufacture rescue",
+  "rescues": 0,
+  "schema": "triaxis.avr_v35_scoring_freeze/v0.1",
+  "verifier_result_sha256": "b2ab21ce7f2d268ceddbd78da3a02cd85c9f22f883371bc1818092729a7760ec",
+  "version": "V35",
+  "x1_activations": 0
+}

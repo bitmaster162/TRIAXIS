@@ -1,0 +1,83 @@
+{
+  "current_bindings": {
+    "GEMINI_SPARK_REAL_TASKS": {
+      "claim_eligibility": "INDEPENDENT_PROVIDER_TASK_EVIDENCE if module/task frozen before output",
+      "controller": "TRIAXIS live module R10-O",
+      "execution_backend": "Gemini Spark",
+      "scientific_model": "Gemini model actually used by Spark"
+    },
+    "GPT56_SOL_CURRENT_CHAT": {
+      "claim_eligibility": "CONTROLLER/AUDIT_EVIDENCE_ONLY for TRIAXIS hypotheses designed/tuned in this conversation; NOT_CLEAN_INDEPENDENT_CONFIRMATION",
+      "controller": "TRIAXIS live adapter R10-O / current evolving research process",
+      "execution_backend": "ChatGPT connected-tool runtime",
+      "scientific_model": "GPT-5.6 Sol"
+    },
+    "MANUS_R9C": {
+      "claim_eligibility": "BACKEND_EXECUTION_EVIDENCE + QWEN_MODEL_RESULT; NOT_MANUS_MODEL_RESULT",
+      "controller": "TRIAXIS Manus execution adapter R10-O",
+      "execution_backend": "Manus Agent sandbox",
+      "scientific_model": "Qwen/Qwen3.5-0.8B@2fc06364715b967f1860aea9cf38778875588b17"
+    }
+  },
+  "date": "2026-08-14",
+  "entities": {
+    "arbiter": "The system/person that adjudicates receipts after outputs are frozen.",
+    "controller": "The TRIAXIS policy/module that routes evidence/actions around the scientific model.",
+    "execution_backend": "The environment/provider that supplies compute, filesystem, browser, network or sandbox.",
+    "scientific_model": "The model whose candidate answer/code is scientifically evaluated."
+  },
+  "evidence_classes": [
+    "INDEPENDENT_MODEL_EVIDENCE",
+    "BACKEND_EXECUTION_EVIDENCE",
+    "NONINDEPENDENT_MODEL_EVIDENCE",
+    "CONTROLLER_INTEGRITY_EVIDENCE",
+    "INSTRUMENT_EVIDENCE",
+    "INVALID_FOR_SCIENTIFIC_POOLING",
+    "UNKNOWN_HOLD"
+  ],
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "hard_rules": [
+    "Execution backend identity must never replace scientific model identity.",
+    "A model/provider that helped design or tune the evaluated controller in the same adaptive stream is not clean independent confirmation.",
+    "Changing the controller after observing the same task output creates a new stratum; old/new outputs must not be pooled as one frozen protocol.",
+    "A backend-only execution of a pinned external model can validate compute/instrument execution but cannot be relabeled as the backend provider's model capability.",
+    "Oracle/hidden-label exposure before candidate/task freeze invalidates blind/prospective model claims.",
+    "Protocol changes after outcome forbid confirmatory promotion from that run.",
+    "Provider agreement is not independent evidence if all providers consume a shared leaked oracle or common invalid instrument."
+  ],
+  "pooling_key": [
+    "task/sample freeze",
+    "scientific model + revision",
+    "controller version",
+    "prompt/protocol",
+    "instrument/scorer contract",
+    "correction/retry/countermodel budgets",
+    "oracle visibility state"
+  ],
+  "required_return_fields": [
+    "provider",
+    "scientific_model",
+    "execution_backend",
+    "controller_version",
+    "task_or_experiment_id",
+    "task_freeze_hash_or_authority",
+    "raw_output_or_artifact_hash",
+    "instrument_contract_status",
+    "failure_attribution_class",
+    "side_effects_performed",
+    "protocol_changed_after_output",
+    "oracle_or_hidden_label_seen_before_freeze",
+    "independence_relation_to_hypothesis_design"
+  ],
+  "schema": "triaxis.r10s.provider_evidence_separation/v1",
+  "status": "FROZEN_MULTI_PROVIDER_EVIDENCE_POLICY"
+}

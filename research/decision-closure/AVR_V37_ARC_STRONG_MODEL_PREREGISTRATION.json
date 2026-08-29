@@ -1,0 +1,121 @@
+{
+  "schema": "triaxis.avr_v37_arc_strong_model_preregistration/v0.1",
+  "version": "V37",
+  "contest": {
+    "platform": "AtCoder",
+    "contest_id": "arc204",
+    "title": "AtCoder Regular Contest 204 (Div. 1)",
+    "ended": "2025-08-17T23:30:00+09:00",
+    "selection_basis": "official contest Top score table only; Tasks/statements/editorials not opened before prereg freeze"
+  },
+  "selected_tasks": [
+    {
+      "letter": "B",
+      "score": 800,
+      "task_id": "arc204_b"
+    },
+    {
+      "letter": "C",
+      "score": 900,
+      "task_id": "arc204_c"
+    },
+    {
+      "letter": "D",
+      "score": 1000,
+      "task_id": "arc204_d"
+    }
+  ],
+  "freshness": {
+    "selected_tasks_fresh": true,
+    "known_contaminated_avoid": [
+      "arc217",
+      "arc215"
+    ],
+    "excluded_used_or_opened_through_v36": [
+      "arc226_a",
+      "arc226_b",
+      "abc470_f",
+      "abc468_f",
+      "abc468_g",
+      "abc470_g",
+      "abc469_e",
+      "abc469_f",
+      "abc469_g",
+      "abc467_e",
+      "abc467_f",
+      "abc467_g",
+      "abc466_e",
+      "abc466_f",
+      "abc466_g",
+      "abc464_e",
+      "abc464_f",
+      "abc464_g",
+      "arc223_b",
+      "arc223_c",
+      "arc223_d",
+      "arc221_c",
+      "arc221_d",
+      "arc221_e",
+      "arc218_c",
+      "arc218_d",
+      "arc218_e",
+      "arc216_b",
+      "arc216_c",
+      "arc216_d",
+      "arc214_d",
+      "arc214_e",
+      "arc214_f",
+      "arc213_b",
+      "arc213_c",
+      "arc213_d",
+      "arc210_d",
+      "arc210_e",
+      "arc210_f",
+      "arc209_c",
+      "arc209_d",
+      "arc209_e",
+      "arc208_c",
+      "arc208_d",
+      "arc208_e",
+      "arc207_c",
+      "arc207_d",
+      "arc207_e"
+    ]
+  },
+  "git_baseline": {
+    "repository": "bitmaster162/TRIAXIS",
+    "pr": 7,
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_branch": "research/decision-closure-ebd-v0.3",
+    "research_head_before_v37": "c9e763cb07b38d80eb105098c54b1efd56cdb00f",
+    "ahead": 176,
+    "behind": 0
+  },
+  "protocol": {
+    "model": "GPT-5.6 Sol",
+    "M0": "one-shot implementation from official statement only",
+    "freeze_all_M0_source_hashes_before_execution": true,
+    "independent_executable_verifier_after_M0_freeze": true,
+    "X1_max_per_task": 1,
+    "X1_only_for_actual_frozen_M0_failure": true,
+    "X1_feedback": "smallest frozen failing input + expected/actual only; no editorial/gold",
+    "freeze_X1_source_before_execution": true,
+    "x1_rescue_requires_trigger_repair_plus_independent_regression": true,
+    "constraint_gate": "small-case correctness cannot override asymptotic or memory unsafety at official constraints",
+    "global_state_gate": "bounded-small exhaustive alone is insufficient for candidates compressing persistent/global latent state; require proof-equivalent invariant or independent scalable/reference oracle beyond bounded-small",
+    "do_not_force_X1": true,
+    "scoring_freeze_before_editorial": true,
+    "postfreeze_editorial_audit": "downgrade-only; cannot manufacture rescue"
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}

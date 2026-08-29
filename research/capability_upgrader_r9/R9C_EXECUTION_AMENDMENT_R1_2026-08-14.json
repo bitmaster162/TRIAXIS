@@ -1,0 +1,88 @@
+{
+  "claim_boundary": "The failed run is an instrumentation coverage failure and carries no positive or negative evidence about the R9-C correction donor.",
+  "date": "2026-08-14",
+  "failed_execution": {
+    "cause": "The workflow bound the verifier to test6.jsonl only, but EvoAgentBench's frozen code_implementation domain is configured for LiveCodeBench release_v6, which cumulatively loads test.jsonl through test6.jsonl.",
+    "correction_arm_invoked": false,
+    "error": "TASK_ROWS_NOT_FOUND:['abc325_e', 'abc354_b', 'abc361_f', 'abc376_e']",
+    "failed_step": "Native hidden score W0 and emit sanitized failure queue",
+    "final_adjudication_emitted": false,
+    "hidden_verdicts_emitted": false,
+    "job_id": 94569261614,
+    "run_id": 31736489210,
+    "workflow_commit": "5663b9b95f247d51968cee36984960340dc863ef"
+  },
+  "frozen_w0": {
+    "artifact_id": 9195924126,
+    "artifact_name": "r9c-w0-raw-outputs",
+    "artifact_zip_sha256": "cbb542e0b69aa36003af6f0c5f67e8361b14af4a722865a55ebf97744e62ee06",
+    "json_sha256": "41509199b23c44a995a8fc780b37c9132cb4ea589fad92f5ac5046ce4980ef3f",
+    "regenerate_w0": false,
+    "reuse_required": true,
+    "task_order": [
+      "abc361_f",
+      "abc325_e",
+      "abc376_e",
+      "abc389_d",
+      "abc354_b",
+      "abc400_b"
+    ]
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "next_action": "Download and hash-verify the frozen W0 artifact from run 31736489210; load pinned LiveCodeBench release_v6 cumulatively; require all six frozen task rows; score W0 without exposing hidden tests; invoke at most one minimal sanitized-verdict correction only on W0 failures; freeze V1; reverify; adjudicate.",
+  "prereg": {
+    "commit": "939b2415af058c1a9c9b60ff1a6fbe8141826e4c",
+    "file": "research/capability_upgrader_r9/R9C_PREREG.json",
+    "sha256": "219197b74e2e404ee49cb2758ed68077f9843f19cd62951e024e62b6540ce0c6"
+  },
+  "recovery_invariants": {
+    "correction_budget_change": false,
+    "decode_change": false,
+    "model_change": false,
+    "model_revision_change": false,
+    "only_change": "Use canonical cumulative LiveCodeBench release_v6 dataset binding at the already-pinned HF revision, then resume from frozen W0.",
+    "prompt_change": false,
+    "sample_change": false,
+    "task_order_change": false,
+    "verifier_code_change": false,
+    "w0_output_change": false,
+    "w0_regeneration": false
+  },
+  "schema": "triaxis.r9c.execution_amendment/v1",
+  "scope": "VERIFIER_DATASET_BINDING_REPAIR_ONLY",
+  "source_binding": {
+    "evoagentbench_commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "evoagentbench_config": "benchmark/src/domains/code_implementation/code_implementation.yaml",
+    "evoagentbench_loader": "benchmark/src/domains/code_implementation/livecode.py",
+    "evoagentbench_release_version": "release_v6",
+    "evoagentbench_repo": "EverMind-AI/EvoAgentBench",
+    "hf_dataset": "livecodebench/code_generation_lite",
+    "hf_dataset_revision": "503416f80ac447d31f252d8434023786ce45dd0c",
+    "hf_release_version": "release_v6",
+    "livecodebench_commit": "28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+    "livecodebench_repo": "LiveCodeBench/LiveCodeBench",
+    "prior_incomplete_binding": {
+      "file": "test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5",
+      "status": "REJECT_AS_INCOMPLETE_RELEASE_V6_BINDING"
+    },
+    "release_v6_files": [
+      "test.jsonl",
+      "test2.jsonl",
+      "test3.jsonl",
+      "test4.jsonl",
+      "test5.jsonl",
+      "test6.jsonl"
+    ]
+  },
+  "status": "FROZEN_BEFORE_ANY_HIDDEN_VERDICT"
+}

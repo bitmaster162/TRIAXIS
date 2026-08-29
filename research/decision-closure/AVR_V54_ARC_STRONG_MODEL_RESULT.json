@@ -1,0 +1,35 @@
+{
+  "schema": "triaxis.avr.v54.result/v0.1",
+  "batch": "V54",
+  "contest": "ARC179",
+  "final_scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE",
+    "F": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activations": 0,
+  "delta": {
+    "claim_grade_tasks": 1,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 2,
+    "protocol_exclusions": 0
+  },
+  "aggregate_after_v54": {
+    "claim_grade_external_tasks": 70,
+    "m0": "52/70",
+    "final": "57/70",
+    "clean_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions": 3,
+    "quarantined_tasks": 28,
+    "protocol_excluded": 5,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  }
+}

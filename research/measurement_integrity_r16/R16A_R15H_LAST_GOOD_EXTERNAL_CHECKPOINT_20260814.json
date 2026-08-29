@@ -1,0 +1,9 @@
+{
+  "epoch": "R15H_NEXT_20_WRITABLE_LEDGER_TRANSACTIONS_20260814",
+  "ledger_count": 11,
+  "ledger_sha256": "4faa256e9ac1a7181516159649689d6585fc228fb30c958d09ca908f4f1a6b51",
+  "previous_checkpoint_sha256": null,
+  "schema": "triaxis.r16a.external_ledger_checkpoint/v1",
+  "sequence": 1,
+  "witness": "conversation-artifact checkpoint ZIP f601/47bf family"
+}

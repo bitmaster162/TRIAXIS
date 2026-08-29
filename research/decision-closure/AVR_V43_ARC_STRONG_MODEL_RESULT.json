@@ -1,0 +1,36 @@
+{
+  "schema": "triaxis.avr.v43.result/v0.1",
+  "batch": "V43",
+  "contest": "arc193",
+  "tasks": {
+    "B": {
+      "score": 800,
+      "m0_correctness": "VERIFIED",
+      "final": "PERFORMANCE_QUARANTINE_BORDERLINE",
+      "x1": null
+    },
+    "C": {
+      "score": 1000,
+      "m0_correctness": "VERIFIED_BOUNDED",
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": null
+    },
+    "D": {
+      "score": 1000,
+      "m0_correctness": "VERIFIED_BOUNDED_AND_OFFICIAL_SAMPLES",
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 0,
+    "m0_passes": 0,
+    "final_passes": 0,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 3,
+    "protocol_excluded": 0
+  },
+  "scientific_interpretation": "V43 is an anti-gaming negative/neutral batch: three frozen baselines were independently correct on bounded verification, but none met claim-grade constraint safety. No X1 was manufactured from performance failures. The paired rescue evidence remains unchanged.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}

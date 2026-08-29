@@ -1,0 +1,45 @@
+{
+  "schema": "triaxis.avr.v40.m0_verifier_result/v0.1",
+  "batch": "V40",
+  "contest": "arc196",
+  "candidate_execution_after_source_freeze": true,
+  "official_samples": {
+    "B": {"status": "PASS", "output": [2, 0, 2]},
+    "C": {"status": "PASS", "output": [1, 0, 240792]},
+    "D": {"status": "PASS", "sample1": ["Yes", "No"], "sample2": ["No", "Yes", "Yes"]}
+  },
+  "independent_verifier": {
+    "B": {"oracle": "enumerate all torus edge subsets and classify each induced tile pair", "cases": 656, "mismatches": 0},
+    "C": {"oracle": "enumerate every perfect W-B matching and test strong connectivity directly", "balanced_strings_total": 350, "N_max": 5, "mismatches": 0},
+    "D": {"oracle": "enumerate small integer town potentials and check selected person constraints directly", "query_cases": 229, "N_max": 5, "mismatches": 0}
+  },
+  "structural_gates": {
+    "B": {
+      "proof_equivalent_invariant": "Horizontal and vertical edge bits toggle exactly on A cells. Toroidal closure requires even A parity in every row and column. After fixing one base bit per row and column, each B cell is one affine XOR relation between a row and a column base bit; parity-DSU counts solutions.",
+      "complexity": "O(HW alpha(H+W)) time, O(H+W) memory",
+      "max_style": {"H": 1000, "W": 1000, "grid": "all B", "output": 2, "local_elapsed_sec": "~0.00", "local_rss_kb": 4744},
+      "constraint_safe": true
+    },
+    "C": {
+      "proof_equivalent_invariant": "At each cut, p equals the number of backward matching edges crossing that cut. Strong connectivity is equivalent to p>0 at every proper cut; the weighted sweep DP tracks p exactly.",
+      "complexity": "O(N^2) time, O(N) memory",
+      "constraint_safe": false,
+      "constraint_reason": "N<=200000 implies on the order of 4e10 DP-state transition opportunities in the frozen implementation."
+    },
+    "D": {
+      "proof_equivalent_invariant": "Using town prefix potentials, each person imposes endpoint equality and strict internal inequalities. After contracting equalities, feasibility is exactly acyclicity of the strict-inequality DAG.",
+      "complexity": "Per query rebuilds DSU/graph over N and scans internal vertices of selected intervals.",
+      "constraint_safe": false,
+      "constraint_reason": "Q,N up to 2e5 and 4e5; O(QN) initialization alone is about 8e10 operations before interval scans."
+    }
+  },
+  "pre_editorial_scores": {
+    "B": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "C": "PERFORMANCE_QUARANTINE",
+    "D": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activations": 0,
+  "x1_reason": "No frozen claim-grade correctness failure. C and D are correctness-capable but asymptotically unsafe; X1 cannot be used for a qualitatively new scalable architecture.",
+  "editorial_opened": false,
+  "gold_opened": false
+}
