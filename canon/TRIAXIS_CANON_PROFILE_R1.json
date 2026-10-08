@@ -51,7 +51,7 @@
     {"decision_id":"D123","status":"PARTIAL_RESEARCH","evidence":"research/decision-closure-ebd-v0.3","assertion":"Research uses state/context to evidence/instrument/verification hierarchy, but not the full operator rule."},
     {"decision_id":"D127","status":"PARTIAL_MAIN","evidence":"completion witnesses and execution receipts","assertion":"Effect completion is evidenced, but generic delegated-agent return transport plus acceptance is not proven."},
     {"decision_id":"D129","status":"RESEARCH_ONLY","evidence":"research benchmarks","assertion":"Outcome, evidence discipline, instrument validity, and confirmation quality are separated in research evidence."},
-    {"decision_id":"D130","status":"VERIFIED_PROCESS","evidence":"independent review and draft gates","assertion":"Review evidence does not itself authorize merge/deploy/effect mutation."},
+    {"decision_id":"D130","status":"VERIFIED_PROCESS","evidence":"draft PR #29 status and explicit no-merge/no-effect authority boundaries","assertion":"Review evidence does not itself authorize merge/deploy/effect mutation."},
     {"decision_id":"D131","status":"OUTSIDE_TRIAXIS_CORE","evidence":"cross-system composition","assertion":"TRIAXIS is one governance component and cannot alone prove Control Center + ContinuityOS + Return Plane composition."},
     {"decision_id":"D134","status":"GAP","evidence":"not found in bounded current evidence","assertion":"No generic parallel-agent lane owner/read-write-effect/return registry is proven inside TRIAXIS."},
     {"decision_id":"D136","status":"RESEARCH_ONLY_PARTIAL","evidence":"bounded verifier-driven correction research","assertion":"Bounded correction exists in research, but no autonomous repair runtime with rollback/readback receipts is proven."}
