@@ -1,0 +1,56 @@
+{
+  "schema": "triaxis.r5b.matched.receipt/v0.1",
+  "date_local": "2026-08-12",
+  "status": "COMPLETE_FULL_ROUTER_NULL_INCREMENTAL_VALUE",
+  "research_report_commit": "5bde36ca3f7d2a8870b2c6bbd1a5b756157695d4",
+  "experiments": {
+    "evidence_path_policy_collision": {
+      "failed_run_id": 31523224555,
+      "head_sha": "ebdfa7623f823b683831f68a63a9f14d571dd382",
+      "status": "UNSCORED_NO_REPAIR_GOLD"
+    },
+    "offer_blaster_active_tracking_r27": {
+      "failed_run_id": 31559825334,
+      "head_sha": "8023b53455d7effc578215af13267a85a70e320c",
+      "status": "SCORED",
+      "B1_immediate_repair": "VERIFIED",
+      "B2_immediate_repair": "VERIFIED",
+      "B2_incremental_material_repair_over_B1": 0,
+      "B2_incremental_verification_depth_over_B1": 1,
+      "B4_incremental_material_repair_over_B2": 0,
+      "B4_incremental_findings_over_B2": 0,
+      "B4_harms": 0,
+      "immediate_gold_commit": "9ff2bd8a59ff6932d9f2ddd48d5e0d374eb3e1c1",
+      "immediate_gold_ci_run": 31559880827,
+      "verification_gold_commit": "838c07f1020357adb711043ecb9cd78c559dd3e6",
+      "verification_gold_ci_runs": [31559925815, 31559955449]
+    }
+  },
+  "aggregate": {
+    "matched_scored_repo_replays": 1,
+    "matched_unscored_repo_replays": 1,
+    "B4_incremental_material_repairs": 0,
+    "B4_incremental_findings": 0,
+    "B4_harms": 0,
+    "status": "SECOND_COLLAPSE_SIGNAL"
+  },
+  "decision": {
+    "minimal_targeted_router": "RETAIN",
+    "D_REPO_BEHAVIOR": "RETAIN_CONDITIONALLY",
+    "full_triaxis": "CONTROLLER_AUDIT_LAYER_PENDING_POSITIVE_INCREMENTAL_LIFT",
+    "cognitive_complexity_promotion": "DENY",
+    "distinct_triaxis_causal_lift": "UNRESOLVED_BUT_FURTHER_WEAKENED",
+    "devil_default": "OFF"
+  },
+  "claim_boundary": "historical same-session matched diagnostic; non-independent and non-confirmatory; no external model calls",
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "editorial_opened": false,
+  "schema": "triaxis.avr_v36_m0_verifier_result/v0.1",
+  "second_x1_forbidden": true,
+  "tasks": {
+    "arc207_c": {
+      "constraint_safety": "M0 O(N), but correctness fail dominates",
+      "failure_class": "GREEDY_PREMATURE_CUT_MISSES_ALTERNATE_LAST_OR_STATE",
+      "frozen_counterexample": {
+        "A": [
+          2,
+          1,
+          4,
+          4
+        ],
+        "N": 4,
+        "actual": 2,
+        "expected": 3
+      },
+      "m0_status": "FAIL",
+      "oracle": "enumerate every partition mask and maximize valid nondecreasing segment-OR count",
+      "sample_status": "PASS_ALL_3",
+      "search": "lexicographic exhaustive arrays with N increasing and values in {1,2,3,4}; first mismatch",
+      "witness_partition": [
+        [
+          2,
+          1
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ]
+      ]
+    },
+    "arc207_d": {
+      "constraint_safety": "O(sum NM) input + O(1) core minimax; official sum NM<=1e6",
+      "exhaustive_cases_nm_le_8": 776,
+      "m0_status": "PROVISIONAL_CLAIM_GRADE_PASS",
+      "mismatches": 0,
+      "oracle": "exact full rectangle minimax recurrence, no central compression",
+      "random_exact_cases_n_m_le_8": 1200,
+      "sample_status": "PASS_ALL_4"
+    },
+    "arc207_e": {
+      "all_pairs_plan": "N=2..7; verifier stopped at first mismatch by preregistered falsification rule",
+      "constraint_safety": "M0 O(N log N), but correctness fail dominates",
+      "failure_class": "CONTRACTION_TO_SINGLE_ROOT_IS_TOO_RESTRICTIVE;_VALID_EARLY_TERMINATION_EXISTS",
+      "frozen_counterexample": {
+        "N": 3,
+        "actual": "-1",
+        "expected": "REACHABLE",
+        "s": "001",
+        "t": "011",
+        "witness_ops": [
+          [
+            3,
+            2
+          ]
+        ]
+      },
+      "m0_status": "FAIL",
+      "oracle": "full state graph over binary strings; edges are all legal operations; reachability depth <=N+1",
+      "sample_status": "M0 produced syntactically valid sample answers"
+    }
+  },
+  "version": "V36",
+  "x1_eligible": [
+    "arc207_c",
+    "arc207_e"
+  ],
+  "x1_max_per_task": 1
+}

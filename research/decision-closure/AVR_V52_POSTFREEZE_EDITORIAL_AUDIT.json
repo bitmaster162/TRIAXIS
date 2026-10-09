@@ -1,0 +1,32 @@
+{
+  "schema": "triaxis.avr.v52.postfreeze_audit/v0.1",
+  "batch": "V52",
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false,
+  "tasks": {
+    "F": {
+      "frozen": "CLAIM_GRADE_M0_PASS",
+      "audit": "CORROBORATED",
+      "official": "https://atcoder.jp/contests/arc182/editorial/10675",
+      "notes": "official also identifies undirected component count with directed cycle count and analyzes affine iterations/reduction; independent frozen prime-power/CRT proof plus exhaustive verifier remains sufficient"
+    },
+    "E": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "audit": "CORROBORATED",
+      "official": "https://atcoder.jp/contests/arc182/editorial/10674",
+      "notes": "official uses floor_sum O(log M) contribution decomposition, confirming a qualitatively scalable architecture absent from frozen O(K log N) simulator; no post-freeze upgrade"
+    },
+    "D": {
+      "frozen": "CLAIM_GRADE_M0_PASS",
+      "audit": "CORROBORATED",
+      "official": "https://atcoder.jp/contests/arc182/editorial/10673",
+      "notes": "official removes modulo via integer lift, preserves adjacent order/difference chamber, states L1 lower bound is attainable for M>=3, then minimizes absolute-value sum; matches frozen structure"
+    }
+  },
+  "protocol_exclusion": {
+    "contest": "ARC183",
+    "status": "RECORDED",
+    "reason": "pre-prereg search results exposed Tasks/editorial index for selected candidates"
+  },
+  "final_scores_unchanged": true
+}

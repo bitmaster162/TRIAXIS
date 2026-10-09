@@ -1,0 +1,44 @@
+name: R8-H Native Code Smoke
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-native-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Frozen contract
+        run: |
+          echo 'EVOAGENTBENCH=948a17288782d5120778da16b4cf1cad9305d8b4'
+          echo 'LIVECODEBENCH=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+          echo 'RELEASE=release_v6'
+          echo 'TASKS=abc391_d,abc338_b,abc357_b'
+          echo 'PUBLIC_RESULT_FIELDS=task_id,reward,passed,total,error_class'
+      - name: Prepare evaluator
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet \
+            'datasets==2.21.0' 'huggingface-hub==0.33.4' 'numpy==2.2.6' \
+            'pandas==2.2.3' 'tqdm==4.67.1'
+          git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
+          git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+      - name: Verify frozen B0
+        env:
+          LCB_REPO: ./LiveCodeBench
+          LCB_COMMIT: 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          HF_HUB_DISABLE_TELEMETRY: '1'
+          TOKENIZERS_PARALLELISM: 'false'
+        run: python research/benchmark_rail_r8/r8h_native_verify_b0.py

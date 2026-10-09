@@ -1,0 +1,80 @@
+{
+  "editorial_or_gold_seen": false,
+  "schema": "triaxis.avr_v32.m0_verifier_result/v0.1",
+  "status": "SCORING_READY_PRE_EDITORIAL",
+  "tasks": {
+    "arc213_b": {
+      "claim_grade_pending_postfreeze_downgrade_audit": true,
+      "evidence": {
+        "constraint_smoke": {
+          "q0_cases": 200000,
+          "q1_interval_length": 5000001,
+          "seconds": 0.041,
+          "q0_seconds": 0.073
+        },
+        "exhaustive_intervals_0_31": {
+          "intervals": 528,
+          "mismatches": 0,
+          "oracle": "general bipartite maximum matching; q1 independent-set validation",
+          "q0_q1_cases": 1056
+        },
+        "official_sample": "PASS",
+        "random_intervals_0_255": {
+          "cases": 300,
+          "mismatches": 0
+        }
+      },
+      "m0": "PASS_PROVISIONAL_CLAIM_GRADE",
+      "x1": "NOT_ACTIVATED_CEILING"
+    },
+    "arc213_c": {
+      "claim_grade": false,
+      "evidence": {
+        "official_limit": "sum N <= 100000; 4 sec",
+        "official_sample": "PASS",
+        "random_exact_tree_pairs": {
+          "N_range": "5..9",
+          "cases": 120,
+          "mismatches": 0,
+          "oracle": "independent brute over all 4-subsets"
+        },
+        "scaling_hub_chain_same_T_U": [
+          {"N": 12000, "seconds": 1.49},
+          {"N": 18000, "seconds": 3.25},
+          {"N": 24000, "seconds": 5.50}
+        ],
+        "static_complexity": "O(N^2 log N) worst-case across all k"
+      },
+      "m0": "PERFORMANCE_QUARANTINE",
+      "x1": "NOT_ACTIVATED_REQUIRES_ASYMPTOTIC_REWRITE"
+    },
+    "arc213_d": {
+      "claim_grade": false,
+      "evidence": {
+        "exhaustive_permutation_small": {
+          "all_N_K_pairs": "N=1..8, every K",
+          "mismatches": 0
+        },
+        "official_limit": "N <= 200000; 2 sec",
+        "official_samples": "3/3 PASS",
+        "scaling": [
+          {"N": 32000, "seconds": 1.75},
+          {"N": 64000, "seconds": 7.89}
+        ],
+        "static_complexity": "O(N^2)"
+      },
+      "m0": "PERFORMANCE_QUARANTINE",
+      "x1": "NOT_ACTIVATED_REQUIRES_ASYMPTOTIC_REWRITE"
+    }
+  },
+  "timestamp_local": "2026-08-12T00:07:21+07:00",
+  "timing_note": "Local active-runtime measurements are evidence for constraint unsafety in combination with static asymptotics, not universal benchmark claims.",
+  "v32_pre_editorial_delta": {
+    "claim_grade_tasks": 1,
+    "final_pass": 1,
+    "harms": 0,
+    "m0_pass": 1,
+    "quarantined": 2,
+    "rescues": 0
+  }
+}

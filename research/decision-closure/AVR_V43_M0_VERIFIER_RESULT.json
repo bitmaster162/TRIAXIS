@@ -1,0 +1,82 @@
+{
+  "schema": "triaxis.avr.v43.m0_verifier/v0.1",
+  "batch": "V43",
+  "contest": "arc193",
+  "official_samples": {
+    "B": {
+      "status": "PASS",
+      "outputs": [
+        14,
+        261339902
+      ]
+    },
+    "C": {
+      "status": "PARTIAL_PASS",
+      "sample1": 26,
+      "sample2": 1,
+      "sample3": "NOT_RUN_TO_COMPLETION_DUE_FROZEN_EXPONENTIAL_STATE_ENUMERATION"
+    },
+    "D": {
+      "status": "PASS",
+      "outputs": [
+        3,
+        -1,
+        5
+      ]
+    }
+  },
+  "independent_verification": {
+    "B": {
+      "oracle": "direct enumeration of every edge orientation image and, separately, every acyclic edge subset",
+      "cases": 248,
+      "range": "all spoke masks for N=3..7",
+      "mismatches": 0
+    },
+    "C": {
+      "oracle": "independent Python full-state reachability closure",
+      "cases": 8,
+      "range": "compact H,W,C including 2x3,C=2",
+      "mismatches": 0
+    },
+    "D": {
+      "oracle": "independent count-vector BFS over actual simultaneous magnet moves",
+      "cases": 1245,
+      "range": "all nonempty A,B for N=1..5",
+      "mismatches": 0
+    }
+  },
+  "constraint_gates": {
+    "B": {
+      "frozen_complexity": "O(N) time, O(1) DP state plus input string",
+      "official_limit": "N<=1e6, 2 sec",
+      "max_witness": "N=1000000, s=all ones",
+      "runs_seconds": [
+        2.24,
+        2.17,
+        2.14,
+        2.16
+      ],
+      "rss_kb_max": 4432,
+      "status": "PERFORMANCE_QUARANTINE_BORDERLINE",
+      "reason": "Repeated local frozen O2 runs exceed the official 2-second limit; protocol does not grant claim-grade constraint safety on a borderline-over-TL implementation."
+    },
+    "C": {
+      "frozen_complexity": "Theta((C+1)^(H*W) * H*W*C) state-transition enumeration in the worst case",
+      "official_limit": "H,W<=400,C<=1e9,4 sec",
+      "status": "PERFORMANCE_QUARANTINE"
+    },
+    "D": {
+      "frozen_complexity": "BFS over reachable multisets of M piece positions; no polynomial bound, state universe up to combinations with repetition",
+      "official_limit": "sum N<=1e6,2 sec",
+      "status": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "pre_editorial_classification": {
+    "B": "PERFORMANCE_QUARANTINE_BORDERLINE",
+    "C": "PERFORMANCE_QUARANTINE",
+    "D": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activated": false,
+  "x1_reason": "No frozen claim-grade M0 correctness failure. All observed M0s are exact on independent bounded verification; failures are constraint/performance failures, and protocol forbids using X1 to replace them with qualitatively new asymptotic architectures.",
+  "editorial_or_gold_used": false
+}

@@ -1,0 +1,30 @@
+{
+  "E00": "PASS_WITH_DRIFT_QUARANTINE",
+  "E01": {
+    "harness": "PASS_1000_1000",
+    "model_repeatability": "BLOCKED_NO_INDEPENDENT_API"
+  },
+  "E02": {
+    "B0": "4/8",
+    "B1": "8/8",
+    "evidence_class": "SAME_SESSION_SELF_DIAGNOSTIC_NON_CONFIRMATORY",
+    "harms": 0,
+    "rescues": 4
+  },
+  "date": "2026-08-13",
+  "external": {
+    "EvoAgentBench": "PREREGISTERED_NOT_EXECUTED",
+    "LLMRouterBench": "PREREGISTERED_ARCHIVE_PINNED_NOT_DOWNLOADED"
+  },
+  "governance": {
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy": "DENY",
+    "external_model_calls": 0,
+    "main_write": false,
+    "merge": "DENY",
+    "production_change": false
+  },
+  "schema": "triaxis.r8.receipt/v1",
+  "status": "E00_E02_RAIL_COMPLETE_EXTERNAL_BENCHMARKS_PREREGISTERED"
+}

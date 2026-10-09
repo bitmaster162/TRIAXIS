@@ -1,0 +1,119 @@
+{
+  "anti_patterns": [
+    "calling a scorer 'exact' without naming the representation layer",
+    "comparing raw model text when the benchmark first parses a canonical label",
+    "using exact string equality when the task allows numeric tolerance",
+    "using one reference serialization when multiple structured/constructive outputs are valid",
+    "using a 2-state oracle for semantics requiring native 4-state simulation",
+    "treating a parser failure as model reasoning failure without attribution"
+  ],
+  "claim_boundary": {
+    "cognitive_lift_credit": 0,
+    "model_accuracy_claim": false,
+    "novelty_claim": false,
+    "production_qualified": false
+  },
+  "date": "2026-08-14",
+  "gate_rule": {
+    "ADMIT": "candidate evaluator reaches the same canonical representation and uses an equivalence relation consistent with the authoritative task/evaluator contract",
+    "QUARANTINE": "candidate evaluator is materially stricter, looser, or semantically different on any reachable valid output",
+    "UNKNOWN_HOLD": "authoritative parser/canonicalizer/scorer semantics cannot be established without hidden or unavailable information"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "known_contract_cases": [
+    {
+      "authoritative_equivalence": "EXACT",
+      "candidate": "EXACT_NORMALIZED",
+      "canonical_representation": "normalized stdout/tokens",
+      "case": "ATCODER_UNIQUE_EXACT",
+      "expected": "ADMIT"
+    },
+    {
+      "authoritative_equivalence": "ABS_OR_REL_TOLERANCE",
+      "candidate": "EXACT_RAW_TEXT",
+      "canonical_representation": "numeric value",
+      "case": "ATCODER_FLOAT_TOLERANCE",
+      "expected": "QUARANTINE"
+    },
+    {
+      "authoritative_equivalence": "PROPERTY_VALID",
+      "candidate": "EXACT_REFERENCE_TEXT",
+      "canonical_representation": "constructed solution",
+      "case": "ATCODER_MULTIPLE_VALID_CONSTRUCTIVE",
+      "expected": "QUARANTINE"
+    },
+    {
+      "authoritative_equivalence": "STRUCTURAL_VALUE_EQUIVALENCE",
+      "candidate": "EXACT_SERIALIZED_STRING",
+      "canonical_representation": "structured function call/AST",
+      "case": "BFCL_SIMPLE_PYTHON",
+      "expected": "QUARANTINE"
+    },
+    {
+      "authoritative_equivalence": "EXACT_LABEL",
+      "candidate": "EXACT_CANONICAL_LABEL",
+      "canonical_representation": "canonical A-J answer label",
+      "case": "MMLU_PRO",
+      "expected": "ADMIT"
+    },
+    {
+      "authoritative_equivalence": "EXACT_LABEL_AFTER_PARSER",
+      "candidate": "EXACT_RAW_MODEL_TEXT",
+      "canonical_representation": "canonical A-J answer label",
+      "case": "MMLU_PRO_RAW_TEXT",
+      "expected": "QUARANTINE"
+    },
+    {
+      "authoritative_equivalence": "EXACT_STRIPPED_TEXT",
+      "candidate": "EXACT_STRIPPED_TEXT",
+      "canonical_representation": "stripped final_answer text",
+      "case": "TOOLBENCH_X_FINAL_ANSWER",
+      "expected": "ADMIT"
+    },
+    {
+      "authoritative_equivalence": "FUNCTIONAL_SIMULATION",
+      "candidate": "RESTRICTED_2STATE_PYTHON",
+      "canonical_representation": "native Verilog simulation behavior",
+      "case": "CORRECTBENCH_NATIVE_REQUIRED",
+      "expected": "QUARANTINE_OR_SCOPE_RESTRICT"
+    }
+  ],
+  "schema": "triaxis.r10m.evaluator_contract_stack_spec/v1",
+  "stack": [
+    {
+      "examples": ["unique exact answer","numeric tolerance","multiple valid constructive outputs","structured function call"],
+      "layer": "L0_TASK_SEMANTICS",
+      "question": "What outputs count as correct under the task itself?"
+    },
+    {
+      "examples": ["free-form text","stdout text","JSON-like call","choice-bearing explanation"],
+      "layer": "L1_RAW_OUTPUT_GRAMMAR",
+      "question": "What raw forms may the producer emit?"
+    },
+    {
+      "examples": ["strip whitespace","extract A-J label","parse AST/function call","numeric parse","no parser"],
+      "layer": "L2_PARSER_CANONICALIZER",
+      "question": "How does the authoritative evaluator map raw output into canonical state?"
+    },
+    {
+      "examples": ["string","label","number","AST","constructed object"],
+      "layer": "L3_CANONICAL_REPRESENTATION",
+      "question": "What object is actually compared/validated?"
+    },
+    {
+      "examples": ["exact equality","tolerance interval","structural equality","property validation"],
+      "layer": "L4_SCORER_EQUIVALENCE",
+      "question": "What equivalence relation defines correctness?"
+    }
+  ],
+  "status": "FORMALIZED_RESEARCH_CONTROL"
+}

@@ -1,0 +1,28 @@
+{
+  "M0_pass": "24/35",
+  "X1_pass": "27/35",
+  "claim_grade_external_tasks_total": 35,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "confirmatory": false,
+  "decision": "CONTINUE_V37_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; REQUIRE_X1_TRIGGER_PLUS_REGRESSION_PLUS_CONSTRAINT_GLOBAL_GATES; DO_NOT_FORCE_SECOND_X1; KEEP_STRONG_MODEL_LINE",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "methodological_delta": "V36 independently falsified two trigger-repair corrections at regression: C needed an explicit unfinished-current-block state, while E needed a general construction rather than a local early-exit recognizer. Trigger repair remains necessary but is not evidence of rescue without regression/global/constraint gates.",
+  "paired_exact_two_sided_p": 0.25,
+  "partial_repairs_not_counted": 1,
+  "protocol_excluded_not_counted": 1,
+  "quarantined_tasks_not_counted": 9,
+  "schema": "triaxis.strong_model_external_rollup_v22_v36/v0.1",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v36_delta": {
+    "M0_pass_added": 1,
+    "X1_pass_added": 1,
+    "claim_grade_tasks_added": 3,
+    "harms_added": 0,
+    "persistent_failures_added": 2,
+    "quarantined_added": 0,
+    "rescues_added": 0,
+    "x1_local_regressions": 1
+  },
+  "x1_local_regressions_not_counted_as_paired_harms": 2
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "triaxis.avr_v37_x1_freeze/v0.1",
+  "task": "arc204_b",
+  "trigger": {
+    "N": 2,
+    "K": 2,
+    "P_1based": [
+      2,
+      3,
+      4,
+      1
+    ],
+    "expected": 1,
+    "M0_actual": 2
+  },
+  "correction": "replace arbitrary spanning-tree assumption with exact monochromatic noncrossing-partition DP on each original permutation cycle",
+  "proof_invariant": "minimal swaps recursively split a cycle; equal-residue scored swaps are a noncrossing forest. Conversely any monochromatic noncrossing forest extends to a noncrossing spanning tree/minimal factorization. score=m-min_monochromatic_blocks.",
+  "source_sha256": "74d460e776a6ae841ac2831d2da6efb232a246551325fe7fa0d294aee5f129b4",
+  "complexity": "O(sum cycle_length^2 * K), memory O(max_cycle_length^2), with total NK<=5000 and K<=10",
+  "second_X1_forbidden": true,
+  "editorial_gold_used": false,
+  "x1_execution_before_freeze": false
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "triaxis.avr.v42.scoring_freeze/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "m0_verifier_commit": "3de1a04d01cbc491e55e545ad8993c51740a6b2d",
+  "x1_verifier_commit": "938535bbb699d3cfa03863c0a26e094dfbef3898",
+  "editorial_opened_before_freeze": false,
+  "proof_gates": {
+    "B": "Potential Phi=sum_k sum_{j=rank_k}^{k-1} j. Any adjacent swap at physical boundary i changes Phi by at most i: for an inverted adjacent pair a>b only rank_a changes by one in the filtered <=a order, by p<=i. Thus total cost >=Phi. Moving maxima N,N-1,... right greedily realizes exactly Phi, proving optimality.",
+    "D_X1": "Legal balanced substrings are exactly consecutive sibling subtrees (or roots); operations preserve unordered rooted-forest shape. Adjacent sibling swaps are constructible, so all and only ordered representations of that unordered forest are reachable.",
+    "E": "View a string as a Ferrers diagram with row lengths q_k=#ones before zero k. A move adds/removes an X-by-Y corner rectangle. Frozen signatures are row lengths mod Y and (equivalently) column heights mod X. If two Ferrers diagrams with equal residues differ, a rightmost excess Y-column strip has height difference divisible by X, yielding a removable X-by-Y corner rectangle; induction connects both to the same diagram."
+  },
+  "scores": {
+    "B": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "D_M0": "CLAIM_GRADE_M0_FAIL",
+    "D_X1": "PROVISIONAL_CLAIM_GRADE_CLEAN_X1_RESCUE_POSTFREEZE_DOWNGRADE_ONLY",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activated": 1,
+  "clean_rescues": 1,
+  "harms": 0,
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 3,
+    "clean_rescues": 1,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0
+  },
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 45,
+    "m0_passes": 32,
+    "final_or_x1_passes": 37,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "triaxis.avr_v34_postfreeze_editorial_audit/v0.1",
+  "version": "V34",
+  "scoring_freeze_sha256": "b38a53fb0bd1203e5c1ed90cfa2f8c9e1f796d1075f080769ef6f1cc03e3d067",
+  "audit_mode": "post-freeze downgrade/corroboration only",
+  "tasks": [
+    {
+      "task_id": "arc209_c",
+      "official_editorial_url": "https://atcoder.jp/contests/arc209/editorial/14549",
+      "official_structure": "Greedy satisfaction process; precompute f(k,1), f(k,X) and O(sqrt(max S)) relevant x-values, then binary lifting; O(N sqrt(maxS)+Q logN).",
+      "relation_to_frozen_candidate": "Frozen DP is exact but does not exploit the greedy jump structure and is asymptotically unsafe.",
+      "final": "PERFORMANCE_QUARANTINE"
+    },
+    {
+      "task_id": "arc209_d",
+      "official_editorial_url": "https://atcoder.jp/contests/arc209/editorial/14550",
+      "official_structure": "For >=2 unknowns, characterize the smallest index p with A_p=1; optimal writes use only 1 and p, with distinct phases before minimizing p, while minimizing p, and after p is fixed. Cases with <=1 unknown require exception handling.",
+      "relation_to_frozen_candidate": "M0/X1 lacked the global symbolic-p phase structure. The X1 regression N=2,A=[-1,1] lies in the official <=1-unknown exception class.",
+      "final": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1"
+    },
+    {
+      "task_id": "arc209_e",
+      "official_editorial_url": "https://atcoder.jp/contests/arc209/editorial/14551",
+      "official_structure": "Let d=N-K. Minimum deletions to destroy all ABC subsequences equals maximum number of independent ABC triples. Count at least d triples using a generating function / partial fractions, yielding O(d^4 + T*d) after precomputation.",
+      "relation_to_frozen_candidate": "Frozen RSK/shape sum matched exact small enumeration and samples but has O(N) summation per unique query; official solution confirms a radically smaller d<=100 state space.",
+      "final": "PERFORMANCE_QUARANTINE"
+    }
+  ],
+  "score_changed": false,
+  "rescues_after_audit": 0,
+  "harms_after_audit": 0
+}

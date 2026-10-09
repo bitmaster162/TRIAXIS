@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v47.postfreeze_audit/v0.1",
+  "batch": "V47",
+  "editorial_opened_after_scoring_freeze": true,
+  "tasks": {
+    "C": {
+      "frozen": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+      "official_editorial": "https://atcoder.jp/contests/arc188/editorial/11432",
+      "audit": "CORROBORATED",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "note": "Official uses the same 2N-vertex weighted Union-Find/potential construction: testimony edges V_A-U_B weighted C, then choose U_i-V_i weights as confusion bits."
+    },
+    "D": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc188/editorial/11435",
+      "audit": "CORROBORATED_QUARANTINE",
+      "final": "PERFORMANCE_QUARANTINE",
+      "note": "Official derives cycle/path structure and O(N^2), with O(N log N) possible; frozen (N!)^3 enumeration is not constraint-safe."
+    },
+    "E": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official_editorial": "https://atcoder.jp/contests/arc188/editorial/11434",
+      "audit": "CORROBORATED_QUARANTINE",
+      "final": "PERFORMANCE_QUARANTINE",
+      "note": "Official derives trajectory invariant t-j and a scalable heavy-to-light construction; frozen exact synchronous simulation remains O(N*T) and fails the official constraint gate."
+    }
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

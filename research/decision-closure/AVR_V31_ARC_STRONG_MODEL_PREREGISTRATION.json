@@ -1,0 +1,71 @@
+{
+  "schema": "triaxis.avr_v31.arc_strong_model_preregistration/v0.1",
+  "status": "FROZEN_BEFORE_SELECTED_STATEMENT_OPEN",
+  "timestamp_local": "2026-08-11T23:26:00+07:00",
+  "repository": "bitmaster162/TRIAXIS",
+  "pr": 7,
+  "git_baseline": {
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_branch": "research/decision-closure-ebd-v0.3",
+    "research_head_prewrite": "0705e3e828839bc1053374c7dba31012e15af58c",
+    "ahead": 108,
+    "behind": 0
+  },
+  "experiment": {
+    "version": "V31",
+    "model": "GPT-5.6 Sol",
+    "test_type": "FRESH_HARD_EXTERNAL_STRONG_MODEL_BATCH_NOT_CONFIRMATORY_ALONE",
+    "contest": "AtCoder Regular Contest 214",
+    "contest_id": "arc214",
+    "contest_completed": true,
+    "selection_source": "official contest top page score table only",
+    "selected_tasks": [
+      {
+        "task_id": "arc214_d",
+        "score": 700
+      },
+      {
+        "task_id": "arc214_e",
+        "score": 700
+      },
+      {
+        "task_id": "arc214_f",
+        "score": 900
+      }
+    ],
+    "selection_rule": "Choose three highest-score fresh tasks from a completed contest not used/opened in V21-V30, using contest/task metadata only; do not inspect selected statements before preregistration freeze.",
+    "statements_opened_before_freeze": false,
+    "editorial_or_accepted_solution_opened_before_freeze": false,
+    "fresh_against_v21_v30_used_list": true
+  },
+  "protocol": {
+    "M0": "one-shot GPT-5.6 Sol C++ implementation from official statement only",
+    "freeze_all_m0_source_hashes_before_any_candidate_execution": true,
+    "independent_executable_verifier_after_m0_freeze": true,
+    "max_x1_corrections_per_failed_task": 1,
+    "x1_feedback": "representative frozen failing input plus expected/actual only; no editorial/gold solution",
+    "quarantine_unsound_or_constraint_unsafe": true,
+    "post_scoring_editorial_audit_only": true,
+    "claim_grade_requires_correctness_and_constraint_safety": true
+  },
+  "aggregate_before_v31": {
+    "claim_grade_tasks": 23,
+    "M0_pass": 17,
+    "X1_pass": 20,
+    "full_task_rescues": 3,
+    "harms": 0,
+    "paired_exact_two_sided_p": 0.25,
+    "confirmatory": false
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}

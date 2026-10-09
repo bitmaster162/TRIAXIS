@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v43.postfreeze_audit/v0.1",
+  "batch": "V43",
+  "contest": "arc193",
+  "scoring_freeze_commit": "0b74afb63ce6215644e34441bcd932c366395f2d",
+  "official_editorials": {
+    "B": {
+      "url": "https://atcoder.jp/contests/arc193/editorial/12296",
+      "finding": "Official solves the indegree-sequence problem in O(N) with a direct direction-set DP. This corroborates that a scalable linear solution exists, but does not make the frozen implementation claim-grade because repeated max-style frozen O2 runs exceeded the 2-second limit.",
+      "effect": "CORROBORATE_QUARANTINE_NO_UPGRADE"
+    },
+    "C": {
+      "url": "https://atcoder.jp/contests/arc193/editorial/12297",
+      "finding": "Official reverses time, canonicalizes pictures by alternating maximal simultaneous row/column coloring operations, and counts standard procedures with O(N^2) DP states and O(N) transitions, O(N^3) overall for N=max(H,W). Frozen full-state BFS is qualitatively non-scalable.",
+      "effect": "CORROBORATE_QUARANTINE"
+    },
+    "D": {
+      "url": "https://atcoder.jp/contests/arc193/editorial/12241",
+      "finding": "Official reformulates each move as replacing a length-3 window by its maximum, defines exact-x feasibility P(x), checks P(x) greedily in O(N), proves the x->x-2 monotonicity beyond a boundary, and needs only P(m),P(m+1), giving O(N). Frozen multiset BFS is qualitatively non-scalable.",
+      "effect": "CORROBORATE_QUARANTINE"
+    }
+  },
+  "final_scores": {
+    "B": "PERFORMANCE_QUARANTINE_BORDERLINE",
+    "C": "PERFORMANCE_QUARANTINE",
+    "D": "PERFORMANCE_QUARANTINE"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

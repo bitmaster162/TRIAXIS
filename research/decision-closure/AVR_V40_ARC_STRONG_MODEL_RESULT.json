@@ -1,0 +1,43 @@
+{
+  "schema": "triaxis.avr.v40.arc_strong_model_result/v0.1",
+  "batch": "V40",
+  "contest": "arc196",
+  "tasks": {
+    "B": {
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": "NOT_ACTIVATED",
+      "independent_cases": 656,
+      "independent_mismatches": 0,
+      "constraint_safe": true
+    },
+    "C": {
+      "m0": "CORRECTNESS_CAPABLE",
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": "NOT_ACTIVATED",
+      "independent_cases": 350,
+      "independent_mismatches": 0,
+      "constraint_safe": false
+    },
+    "D": {
+      "m0": "CORRECTNESS_CAPABLE",
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": "NOT_ACTIVATED",
+      "independent_cases": 229,
+      "independent_mismatches": 0,
+      "constraint_safe": false
+    }
+  },
+  "v40_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 1,
+    "final_pass_added": 1,
+    "clean_rescues_added": 0,
+    "harms_added": 0,
+    "quarantined_added": 2,
+    "protocol_excluded_added": 0
+  },
+  "scientific_interpretation": "V40 adds no causal-lift evidence because no frozen claim-grade M0 correctness failure occurred. It adds one independently verified strong-model ceiling pass and two correctness-capable but constraint-unsafe quarantines. No X1 was forced.",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "governance_unchanged": true
+}

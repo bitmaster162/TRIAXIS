@@ -1,0 +1,25 @@
+{
+  "schema": "triaxis.avr.v48.postfreeze_editorial_audit/v0.1",
+  "batch": "V48",
+  "scoring_frozen_before_editorials": true,
+  "postfreeze_upgrade_performed": false,
+  "score_changed": false,
+  "tasks": {
+    "E": {
+      "official_editorial": "https://atcoder.jp/contests/arc187/editorial/11388",
+      "finding": "CORROBORATES_M0_FAILURE_AND_NO_X1",
+      "notes": "Official solution depends on run-length-compressed separation, preservation of existing-value order, number of missing values, circular distance and an even-N parity exception. This directly refutes the frozen frequency-only N!/m! hypothesis and requires a qualitatively new reachability/counting theorem."
+    },
+    "D": {
+      "official_editorial": "https://atcoder.jp/contests/arc187/editorial/11387",
+      "finding": "CORROBORATES_CLAIM_GRADE_PASS",
+      "notes": "Official solution also models pairs as interval endpoints, reduces to an overlapping non-nested interval frontier, and maintains the optimum under prefix insertions in O(N log N). Frozen envelope formulation is independently equivalent and passed exact oracle/constraint gates."
+    },
+    "C": {
+      "official_editorial": "https://atcoder.jp/contests/arc187/editorial/11386",
+      "finding": "CORROBORATES_CLAIM_GRADE_PASS",
+      "notes": "Official fixed-output count is a power of two determined by prefix-maximum/record updates and extends to O(N^2) DP for partial Q. This matches the frozen preimage-by-records derivation."
+    }
+  },
+  "downgrade": false
+}

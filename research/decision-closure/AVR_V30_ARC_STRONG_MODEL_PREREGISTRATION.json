@@ -1,0 +1,52 @@
+{
+  "schema": "triaxis.v30.arc_strong_model_preregistration/v0.1",
+  "status": "FROZEN_BEFORE_SELECTED_PROBLEM_STATEMENT_OPEN",
+  "timestamp_local": "2026-08-11T22:20:00+07:00",
+  "objective": "Fresh hard external replication: GPT-5.6 Sol M0 vs independent executable verifier with at most one bounded correction per failed task.",
+  "benchmark": {
+    "contest": "AtCoder Regular Contest++ 216",
+    "contest_end_jst": "2026-03-22T23:30:00+09:00",
+    "selected_tasks": ["arc216_b", "arc216_c", "arc216_d"],
+    "scores": [700, 800, 1000],
+    "selection": "contiguous B/C/D from official contest score table only; selected statements/editorials unopened at freeze"
+  },
+  "arms": {
+    "M0": "GPT-5.6 Sol one-shot implementation from official statement only; no candidate execution before all selected source hashes freeze.",
+    "X1": "Frozen M0 + independent executable failing evidence + at most one bounded correction per failed task."
+  },
+  "hard_rules": [
+    "No editorial, accepted submission, solution writeup, or gold code before M0 freeze.",
+    "No selected candidate execution before all M0 source hashes are frozen.",
+    "Independent verifier/reference oracle constructed only after M0 freeze.",
+    "At most one bounded correction per failed task.",
+    "Quarantine any task whose verifier cannot establish claim-grade correctness or whose complexity is not constraint-safe."
+  ],
+  "predecessor_rollup": {
+    "claim_grade_tasks": 21,
+    "M0_pass": "15/21",
+    "X1_pass": "18/21",
+    "full_rescues": 3,
+    "harms": 0,
+    "paired_exact_two_sided_p": 0.25
+  },
+  "contamination_exclusions": [
+    "ARC217 excluded from V30 because web search exposed statement snippets before any preregistration freeze."
+  ],
+  "github_baseline": {
+    "repo": "bitmaster162/TRIAXIS",
+    "pr": 7,
+    "base": "main",
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "head_branch": "research/decision-closure-ebd-v0.3",
+    "head_sha": "f06a17233339b81045d44831cc1c12cbbd4bb1c3",
+    "ahead_by": 99,
+    "behind_by": 0
+  },
+  "governance": {
+    "production_change": false,
+    "merge_permission": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,42 @@
+name: R8-H Native Code Smoke Pinned LFS
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-native-parquet.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-b0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Freeze
+        run: |
+          echo 'B0=b975656f11d89e86ef3fbfa30f139310ca6c980e'
+          echo 'LCB=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+          echo 'HF_DATASET_HEAD=0fe84c3912ea0c4d4a78037083943e8f0c4dd505'
+          echo 'TASKS=abc391_d,abc338_b,abc357_b'
+          echo 'DATA_ACCESS=PINNED_STAGED_LFS_REVERSE_RELEASE_ORDER'
+      - name: Prepare
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet \
+            'datasets==2.21.0' 'huggingface-hub==0.33.4' 'numpy==2.2.6' \
+            'pandas==2.2.3' 'tqdm==4.67.1'
+          git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
+          git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+      - name: Verify frozen B0
+        env:
+          LCB_REPO: ./LiveCodeBench
+          LCB_COMMIT: 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+        run: python research/benchmark_rail_r8/r8h_native_verify_b0_filtered.py

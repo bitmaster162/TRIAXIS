@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.avr.v55.m0_freeze/v0.1",
+  "batch": "V55",
+  "contest": "arc177",
+  "model_line": "GPT-5.6 Sol",
+  "execution_before_freeze": false,
+  "sources": {
+    "D": {
+      "path": "research/decision-closure/v55_arc177/arc177_d_m0.cpp",
+      "sha256": "dd683b9bb0326713caa5df303e3f61a4c0bc384e60f2d9928e5f4bb6acc2fb32",
+      "commit": "7dd33b925bce22a6f38535cfee1c1bf90a32eb2a",
+      "hypothesis": "split by spatial gaps > H; within each connected component, completion follows a random root-to-terminal walk on the min-index Cartesian tree"
+    },
+    "E": {
+      "path": "research/decision-closure/v55_arc177/arc177_e_m0.cpp",
+      "sha256": "69fa37bdd7ab17e6f858904d384ff2105c9702627b79eb5ca4298e297b0f9906",
+      "commit": "cf9c2aec21567c55f39af8e43ebacf3ac7ad0fd5",
+      "hypothesis": "enumerate weak subset-sum score orders represented by nondecreasing integer problem scores bounded by 12; optimize tie blocks exactly"
+    },
+    "F": {
+      "path": "research/decision-closure/v55_arc177/arc177_f_m0.cpp",
+      "sha256": "2850091b5013e32676bf87a57c660129ff7b4c485a865ef27021b218a8053114",
+      "commit": "1fe311a11485fb5f04c5c6c8caca78a5797e498e",
+      "hypothesis": "two-carrier-type forward DP with nearest initial-position mismatch-distance activation cost at each optional switch"
+    }
+  },
+  "known_pre_execution_risks": {
+    "D": "Cartesian-tree terminal-weight proof must be independently checked against exact state simulation",
+    "E": "score bound 12 has no completeness proof and may omit realizable weak orders",
+    "F": "fresh-carrier activation relaxation may mishandle resident identity/reuse constraints"
+  },
+  "protocol": {
+    "source_binding_fetchback_required_before_execution": true,
+    "scoring_freeze_before_editorial_or_gold": true,
+    "x1_only_after_genuine_frozen_correctness_failure": true
+  }
+}

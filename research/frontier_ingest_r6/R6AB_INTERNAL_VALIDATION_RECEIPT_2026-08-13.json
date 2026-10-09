@@ -1,0 +1,39 @@
+{
+  "schema": "triaxis.r6ab.internal_validation.receipt/v1",
+  "date_local": "2026-08-13",
+  "status": "INTERNAL_CONTROLLER_VALIDATION_PASS",
+  "result": {
+    "total": 18,
+    "passed": 18,
+    "failed": 0,
+    "historical_replay_controls": 3,
+    "synthetic_adversarial_controls": 14,
+    "simulated_interface_isolation_controls": 1
+  },
+  "historical_adjudication": {
+    "full_router_after_R4_R5B": "REJECTED_REPEATED_ZERO_INCREMENTAL_LIFT",
+    "D_REPO_BEHAVIOR": "CONDITIONAL_MATCHING_FINGERPRINT_ONLY",
+    "D_LONG_HORIZON_V2": "REJECTED"
+  },
+  "claim_boundary": [
+    "controller-mechanics validation only",
+    "historical replay is not independent efficacy evidence",
+    "gold-isolation control is interface simulation, not secure sandbox proof"
+  ],
+  "research_registration": {
+    "repository": "bitmaster162/TRIAXIS",
+    "branch": "research/decision-closure-ebd-v0.3",
+    "parent_before_R6AB": "2dae75ecaffb7fee0db22b2b64dacc359cd48251",
+    "report_commit": "b911be159c598b1bcbe9b2e53569700b6939fa86",
+    "report_path": "research/frontier_ingest_r6/R6AB_INTERNAL_VALIDATION_REPORT_2026-08-13.md"
+  },
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "external_model_calls": 0,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

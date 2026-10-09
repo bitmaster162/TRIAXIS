@@ -1,0 +1,36 @@
+{
+  "schema": "triaxis.avr.v41.result/v0.1",
+  "batch": "V41",
+  "contest": "arc195",
+  "tasks": {
+    "C": {
+      "score": 600,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "D": {
+      "score": 700,
+      "m0": "CORRECTNESS_VERIFIED_SMALL",
+      "final": "PERFORMANCE_QUARANTINE",
+      "x1": null
+    },
+    "E": {
+      "score": 900,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 2,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 1,
+    "protocol_excluded": 0
+  },
+  "scientific_interpretation": "V41 adds two fresh claim-grade ceiling passes and one exact-but-unscalable quarantine. No frozen claim-grade correctness failure occurred, so there is no causal-lift rescue evidence and no X1 was manufactured.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}

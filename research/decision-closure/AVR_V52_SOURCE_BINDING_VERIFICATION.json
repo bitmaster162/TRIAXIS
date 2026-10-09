@@ -1,0 +1,28 @@
+{
+  "schema": "triaxis.avr.v52.source_binding/v0.1",
+  "batch": "V52",
+  "verified_before_first_compile_or_run": true,
+  "candidate_compile_before_binding_verification": false,
+  "candidate_execution_before_binding_verification": false,
+  "status": "PASS_AFTER_REPAIR",
+  "files": {
+    "F": {
+      "sha256": "f0b4b91a5195b8d613dd8848b33d803fe7446bcef3d244b86ee73e8328c25868",
+      "github_blob_sha": "f489b60e031aec0bb3f86cb3d72fcf0b5bb7b12d",
+      "repair_required": false
+    },
+    "E": {
+      "sha256": "fc15295a15a69c1d79d9c1d86421d6a87484f5bbe9118467facae07ee0a5b67b",
+      "github_blob_sha": "09d19c76107fc679b9478e8da1a607d07e4b0024",
+      "repair_required": false
+    },
+    "D": {
+      "sha256": "1b87129245bf8935e7589613ff27f822ba659e38df771b18ec0fbfa0160e0ab7",
+      "github_blob_sha": "e3b47dce8be04fa86394c758e5f03ed1aa151a97",
+      "repair_required": true,
+      "initial_blob_sha": "bc41df1ba350487131b011a3b57efe18ec9402f5",
+      "repair_commit": "aaf47e2f7911ca3f84098ede0262c90a5dc55339",
+      "execution_before_repair": false
+    }
+  }
+}

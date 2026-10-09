@@ -1,0 +1,62 @@
+{
+  "schema": "triaxis.matched_r4.git_receipt/v0.1",
+  "date_local": "2026-08-12",
+  "status": "COMPLETE_COLLAPSE_SIGNAL",
+  "task": {
+    "id": "agc044_f",
+    "name": "Name-Preserving Clubs",
+    "score": 2400
+  },
+  "baseline_before_registration": {
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research": "a426ac166ce706671dd64d78c2ca21cb14f47c9e",
+    "ahead_behind": "413/0",
+    "pr7": "OPEN_DRAFT_UNMERGED"
+  },
+  "frozen_artifacts": {
+    "prereg_sha256": "0e740151788c8cad1e4a7bb44168cab840e582e1c175b5e8ae84a86b69493ca6",
+    "D0_initial_sha256": "7b96c9db8ed1229bcf48446d51ecc213449e652286e896f57fc967b5a9a2447d",
+    "M1_initial_sha256": "0dd0196b5c3ed839e29ef5a324d095cd6575bf583358886445ef05672188d4fd",
+    "T2_initial_sha256": "67a41cd6887358e1b721a3d0477e0b1402ebf983a0ea734f7047d719ca9f871f",
+    "correction_r1_freeze_sha256": "6412a509b97aa5001e3d36a29e9464549a6c51c78694dedc84ecc373778be256",
+    "pre_gold_result_sha256": "e48156a1af5650d13e874a991d09a0e90ea99f7c69b1158c4110a9f282ce052f",
+    "gold_audit_sha256": "c74b9a855bdbe0e0d98e17ac69b15ec61583bb8fc70f0e5fd964ff33eab298fd",
+    "local_full_report_sha256": "3d4fabe76f26562493435bcb1868cd30684901c3990cb1cd2a3805d14579950a",
+    "local_receipt_sha256": "a2c1acfdb2304a5b3b547279259b115adb4bd57a066c0debf37c867a88369a91",
+    "evidence_zip_sha256": "3ea5d4c0c5345483a24421d52b68b6abb661982dd206cbe7a5ea8cd832e99246"
+  },
+  "git_registration": {
+    "report_path": "research/decision-closure/TRIAXIS_MATCHED_R4_AGC044F_REPORT_2026-08-12.md",
+    "report_commit": "4faf1a924ccd8a50952f227b6b749c2582701ba8"
+  },
+  "result": {
+    "D0": "FAIL",
+    "M1": "PASS",
+    "T2": "PASS",
+    "M1_corrections": 1,
+    "T2_corrections": 1,
+    "T2_incremental_rescues_over_M1": 0,
+    "T2_incremental_harms_over_M1": 0,
+    "T2_incremental_algorithmic_value": "NONE",
+    "adjudication": "COLLAPSE_SIGNAL"
+  },
+  "epistemic": {
+    "minimal_proposer_verifier_gate": "RETAIN",
+    "ebrc_extra_state_task_lift_on_r4": "ZERO",
+    "distinct_triaxis_causal_lift": "UNRESOLVED_BUT_FURTHER_WEAKENED",
+    "broad_intelligence_claim": "UNSUPPORTED",
+    "devil_default": "OFF"
+  },
+  "historical_rollup": "V22_V55_UNCHANGED",
+  "claim_boundary": "single-task same-session self-causal diagnostic; matched correction/verifier budget, not exact FLOPs; non-independent; non-confirmatory",
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "triaxis.avr_v16.telegram_raw_composition_preregistration/v0.1",
+  "status": "FROZEN_BEFORE_OPENCLAW_EXPOSURE",
+  "timestamp_local": "2026-08-11T18:27:00+07:00",
+  "test_type": "RAW_EVIDENCE_COMPOSITION_STRESS_NOT_CONFIRMATORY",
+  "predecessor_head": "faec5a76791b1527a93a405966a2bf7bef7e9aa8",
+  "runtime": {
+    "primary": "OPENCLAW",
+    "declared_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "provider_receipt_available": false,
+    "fresh_session_required": true,
+    "memory_use_forbidden": true
+  },
+  "selection": {
+    "N": 8,
+    "case_ids": [
+      "eadf088f206e",
+      "669620506970",
+      "84bd69d841db",
+      "84c03d6f5e9d",
+      "4bf3d9e98b45",
+      "5e62c0143ff3",
+      "1fed2006f701",
+      "f21d934a0c23"
+    ],
+    "all_unseen_by_openclaw_before_v16": true,
+    "source": "v0.13 complete terminal-authority activation pool",
+    "rule": "Among cases not previously exposed to OpenClaw, require historical C1 verified-exact and successful local raw replay; exclude cases whose answer is not recoverable from model-visible primitive fields after strict summary scrub; take frozen-rank order until N=8.",
+    "post_answer_replacement_forbidden": true
+  },
+  "model_visible_evidence": {
+    "packet_sha256": "d8dff2819f641712c93bba67e8dbddffbfd4888a3db528628f2d7a1ecce44e41",
+    "strict_allowlist": true,
+    "removed_classes": [
+      "answer-key aliases",
+      "benchmark/gold/evidence hint strings",
+      "source/provider/confidence metadata",
+      "terminal semantic summaries",
+      "cross-tool copied aggregates"
+    ],
+    "primitive_fields_only": true,
+    "terminal_tool_execution_may_be_visible_but_answer-bearing fields are withheld": true
+  },
+  "private_controller": {
+    "oracle_vector_sha256": "b7b2717309212b49e42c57865462ba0eaee32910748d60bfd766dad9f3883b38",
+    "terminal_authority_uses_private_frozen_terminal_candidate": true,
+    "guard_extra_model_calls": 0,
+    "guard_extra_tool_calls": 0
+  },
+  "comparison": {
+    "M0": "OpenClaw final commitment from scrubbed primitive evidence",
+    "G1": "frozen TERMINAL_AUTHORITY commitment from private authoritative terminal candidate",
+    "score_after_all_8_M0_responses_frozen": true,
+    "metrics": [
+      "M0_RAW_EXACT",
+      "G1_RAW_EXACT",
+      "rescues",
+      "harms",
+      "changed_outputs"
+    ]
+  },
+  "decision_labels": {
+    "positive": "RAW_COMPOSITION_WEAKER_MODEL_RESCUE_SIGNAL",
+    "null": "RAW_COMPOSITION_CEILING_NULL",
+    "harm": "RAW_COMPOSITION_GUARD_HARM"
+  },
+  "claim_boundaries": [
+    "Mechanism stress test, not a fresh/random confirmatory ToolBench-X benchmark.",
+    "Cases come from a historically studied v0.13 activation pool, but all eight are new to OpenClaw in this experiment.",
+    "Provider/model identity is configuration-declared without provider receipt.",
+    "No broad intelligence claim is permitted."
+  ],
+  "governance": {
+    "production_change": false,
+    "auto_merge": false,
+    "merge_permission": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

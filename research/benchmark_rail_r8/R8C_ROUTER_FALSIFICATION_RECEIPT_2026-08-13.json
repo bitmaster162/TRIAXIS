@@ -1,0 +1,50 @@
+{
+  "schema": "triaxis.r8c.llmrouterbench_falsification/v1",
+  "date": "2026-08-13",
+  "evidence_class": "EXPLORATORY_OFFLINE_HELDOUT",
+  "source": {
+    "benchmark": "LLMRouterBench",
+    "code_commit": "c77cb0506949d8f959e97967d2fefca0e8ff1b05",
+    "archive_sha256": "b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1",
+    "workflow_commit": "dbf384e92d34e2162fc39618c1334a589d98c94f",
+    "workflow_run_id": 31709613610,
+    "workflow_job_id": 94478858957
+  },
+  "protocol": {
+    "pool": "official 20-model small pool",
+    "split": "SHA256(query identity) 70/30",
+    "train_rows": 9210,
+    "test_rows": 4002,
+    "datasets": 19,
+    "fingerprint_F0": "dataset identity + query length bin + code flag + MC flag + symbolic/math flag",
+    "minimum_bucket_train_n": 12,
+    "fingerprint_buckets": 68,
+    "test_outcomes_used_for_routing": false,
+    "live_model_calls": 0
+  },
+  "results": {
+    "best_single_weighted": 0.6361819090454772,
+    "dataset_router_weighted": 0.6715392303848076,
+    "fingerprint_F0_weighted": 0.6640429785107447,
+    "instance_oracle_weighted": 0.8718140929535232,
+    "F0_minus_dataset_weighted": -0.0074962518740629685,
+    "bootstrap95": [-0.014867566216891554, -0.0003748125937031484]
+  },
+  "adjudication": {
+    "DATASET_ROUTER": "STRONG_SIMPLE_BASELINE",
+    "FINGERPRINT_F0": "REJECTED",
+    "FINGERPRINT_F0_reason": "HELDOUT_NEGATIVE_INCREMENT_OVER_SIMPLER_ROUTER",
+    "BAYES_SELECTOR": "EXPERIMENT_UNRUN",
+    "LEARNED_ROUTER": "EXPERIMENT_UNRUN",
+    "FULL_TRIAXIS_ROUTER": "DENY_PROMOTION",
+    "ORACLE_GAP": "LARGE_ROUTING_OPPORTUNITY_REMAINS_BUT_CURRENT_FEATURES_FAIL"
+  },
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

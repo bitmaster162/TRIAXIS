@@ -1,0 +1,55 @@
+{
+  "schema": "triaxis.r8e.query_text_routing_closure/v1",
+  "date": "2026-08-13",
+  "evidence_class": "MECHANISM_EMULATION_EXPLORATORY_OFFLINE_HELDOUT",
+  "source": {
+    "benchmark": "LLMRouterBench",
+    "llmrouterbench_commit": "c77cb0506949d8f959e97967d2fefca0e8ff1b05",
+    "archive_sha256": "b79f8cde1a6f029c2efa663a3a3b6f7748defb22341fe59f328cebef6648c8f1",
+    "workflow_commit": "50515ae2c0e24897d01138610fe463f1d8427cf5",
+    "workflow_run_id": 31711731130,
+    "workflow_job_id": 94486146812,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  },
+  "results": {
+    "best_single_weighted": 0.6361819090454772,
+    "dataset_router_weighted": 0.6715392303848076,
+    "semantic_cluster_weighted": 0.6672913543228386,
+    "instance_oracle_weighted": 0.8718140929535232,
+    "semantic_minus_dataset": -0.004247876061969015,
+    "bootstrap95": [-0.012993503248375811, 0.004122938530734633]
+  },
+  "router_rollup": {
+    "challengers_tested": 4,
+    "survivors": 0,
+    "F0_delta_pp": -0.7496251874062969,
+    "TFIDF_5NN_delta_pp": -6.03448275862069,
+    "TFIDF_LINEAR_delta_pp": -9.770114942528736,
+    "SEMANTIC_CLUSTER_delta_pp": -0.4247876061969015
+  },
+  "adjudication": {
+    "SEMANTIC_CLUSTER_EMULATION": "REJECTED_FOR_PROMOTION_ON_THIS_EPOCH",
+    "QUERY_TEXT_ROUTING": "INVESTIGATIVE_CLOSED_ON_EPOCH_2026_08_13_A",
+    "DATASET_ROUTER": "RETAIN_AS_STRONG_SIMPLE_BASELINE",
+    "FULL_TRIAXIS_ROUTER": "DENY_PROMOTION"
+  },
+  "reopen_only_if": [
+    "materially different signal beyond query text taxonomy or semantic similarity",
+    "model-native uncertainty or disagreement",
+    "tool or environment state",
+    "measured failure or capability probe",
+    "repo/test/runtime evidence",
+    "independently validated materially different routing mechanism",
+    "new benchmark/model epoch"
+  ],
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "live_llm_calls": 0,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

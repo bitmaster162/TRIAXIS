@@ -1,0 +1,31 @@
+{
+  "schema": "triaxis.avr.v53.postfreeze_editorial_audit/v0.1",
+  "batch": "V53",
+  "scoring_freeze_sha256": "fba805b1bc1cef27c7a99ff36234955a2ab0403885a91e84056f96053b492b62",
+  "editorial_opened_after_scoring_freeze": true,
+  "tasks": {
+    "F": {
+      "frozen_score": "PERFORMANCE_QUARANTINE",
+      "official_audit": "CORROBORATES",
+      "official_structure": "generating function / tree decomposition followed by coefficient recurrence",
+      "official_complexity": "O(N^2)",
+      "effect": "confirms scalable architecture qualitatively different from frozen O(N^3); no postfreeze upgrade"
+    },
+    "E": {
+      "frozen_score": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+      "official_audit": "CORROBORATES",
+      "official_structure": "DP represented by set S_i of breakpoints; transition removes maximum S<=A_i and adds i; nonzero-cost solution modifies A_i in descending-value order",
+      "official_complexity": "O(N log N)",
+      "effect": "confirms frozen recurrence/implicit-treap state was the wrong global state representation; no postfreeze rescue"
+    },
+    "D": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "official_audit": "CORROBORATES",
+      "official_structure": "split by location of global maximum; middle case endpoints, side case singleton middle and sweep with segment tree; reverse for symmetric side",
+      "official_complexity": "O((N+Q) log N)",
+      "effect": "independently corroborates frozen decomposition and complexity"
+    }
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

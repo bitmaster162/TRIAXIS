@@ -1,0 +1,20 @@
+{
+  "schema": "triaxis.strong_model_rollup/v0.1",
+  "through_batch": "V48",
+  "claim_grade_external_tasks": 56,
+  "m0_passes": 41,
+  "m0_denominator": 56,
+  "final_passes": 46,
+  "final_denominator": 56,
+  "clean_full_task_rescues": 5,
+  "paired_harms": 0,
+  "x1_local_regressions_not_paired_harms": 2,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks": 24,
+  "protocol_excluded": 3,
+  "paired_exact_two_sided_p": 0.0625,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED"
+}

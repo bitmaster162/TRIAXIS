@@ -1,0 +1,24 @@
+{
+  "schema": "triaxis.avr.v53.m0_freeze/v0.1",
+  "batch": "V53",
+  "candidate_execution_before_freeze": false,
+  "compile_before_freeze": false,
+  "editorial_or_gold_opened": false,
+  "sources": {
+    "F": {
+      "path": "research/decision-closure/v53_arc180/arc180_f_m0.cpp",
+      "sha256": "9c2829c05016405ca27229c9409bc90df0949890134315509ed66054da3826de",
+      "declared_complexity": "O(N^3 + N^2 log MOD) exact expansion/integration DP"
+    },
+    "E": {
+      "path": "research/decision-closure/v53_arc180/arc180_e_m0.cpp",
+      "sha256": "6387e2cc31755c62470335fcb6d327e98d7988ec49009a81fe8483f77f3c0826",
+      "declared_complexity": "O(N log N) expected implicit treap"
+    },
+    "D": {
+      "path": "research/decision-closure/v53_arc180/arc180_d_m0.cpp",
+      "sha256": "f797d3e44368dcd48defa5a83f6f30b6f1730f23cbe973f4b6f14e2d97042e5c",
+      "declared_complexity": "O((N+Q) log N)"
+    }
+  }
+}

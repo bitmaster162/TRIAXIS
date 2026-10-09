@@ -1,0 +1,14 @@
+{
+  "clean_rescues": 0,
+  "editorial_opened_before_freeze": false,
+  "harms": 0,
+  "schema": "triaxis.avr_v38_scoring_freeze/v0.1",
+  "score_upgrade_after_freeze_forbidden": true,
+  "scores": {
+    "arc202_b": "CLAIM_GRADE_M0_PASS",
+    "arc202_c": "CLAIM_GRADE_M0_PASS",
+    "arc202_d": "PERFORMANCE_QUARANTINE"
+  },
+  "version": "V38",
+  "x1_activated": 0
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "triaxis.avr.v48.noop_incident/v0.1",
+  "batch": "V48",
+  "event": "Accidental duplicate pull-request creation action after metadata-only selection and before prereg file creation.",
+  "github_result": "HTTP 422 Validation Failed: PR already exists for research/decision-closure-ebd-v0.3.",
+  "repository_state_change": false,
+  "pr_state_change": false,
+  "main_write": false,
+  "impact_on_clean_task_evidence": "NONE; no statement/editorial/gold leakage and no repository mutation.",
+  "prevention": "No further create_pull_request action in V48; use create_file only."
+}

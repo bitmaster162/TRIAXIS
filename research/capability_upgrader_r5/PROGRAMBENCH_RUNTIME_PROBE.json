@@ -1,0 +1,29 @@
+{
+  "classification": "F4_INSTRUMENT_INVALID_OR_UNAVAILABLE",
+  "current_runtime": {
+    "arch": "x86_64",
+    "buildah": false,
+    "cap_sys_admin": false,
+    "docker": false,
+    "nerdctl": false,
+    "os": "Debian GNU/Linux 13",
+    "podman": false,
+    "uid": 0,
+    "user_namespace_unshare": true
+  },
+  "date": "2026-08-12",
+  "model_failure_claim_allowed": false,
+  "next_valid_rail": "Docker-capable Linux x86_64 environment; freeze same R5 arms before execution.",
+  "official_contract": {
+    "evaluation": "programbench eval pulls Docker task images",
+    "host": "Linux x86_64",
+    "inference_images": "Docker task_cleanroom_v6",
+    "inference_network": "must be disabled"
+  },
+  "schema": "triaxis.r5.programbench_runtime_probe/v0.1",
+  "status": "OFFICIAL_PROGRAMBENCH_BLOCKED_BY_CONTAINER_RUNTIME_CAPABILITY",
+  "attempts": [
+    {"action": "apt install docker.io", "result": "TIMEOUT_NO_DOCKER_INSTALLED"},
+    {"action": "static Docker tarball fetch", "result": "DOWNLOAD_UNAVAILABLE"}
+  ]
+}

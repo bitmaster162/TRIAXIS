@@ -1,0 +1,82 @@
+{
+  "schema": "triaxis.evolution_hidden_v02.freeze_receipt/v1",
+  "date": "2026-08-12",
+  "status": "FROZEN_VALIDATED_BLOCKED_BEFORE_EXTERNAL_MODEL_EXPOSURE",
+  "predecessor_v01_sha256": "4b2d65828cf6783deaa76975dcab70919e2f1057cfb26075e8428941e2356f13",
+  "predecessor_adjudication": "NARROW_TO_CONFORMANCE_DIAGNOSTIC_CONTRACT_TEACHES_MECHANISM",
+  "preregistration_sha256": "3ba311eebb179b239807353e42ab3c1b3721854905f7dbdff8c836344e055329",
+  "runner_sha256": "373e35e56af23cd8f15d91efc172fde84e0781e4032eb12f8a15d6e6e1b3cbe1",
+  "scorer_sha256": "93e102125609e48343a63aeb79e19605a5c59ed5c3c7019ea8248ace37fc03ed",
+  "subject_sha256": "a1d10c0ce201eec978db7b7e5c183635632e266bd5026f09ad19c73828b3a454",
+  "private_oracle_sha256": "b165cb8e0124b61fc10debcd435bc9b6005bfebe94cb744a825d8ff25bb2cad5",
+  "validation": {
+    "status": "PASS",
+    "cases": 20,
+    "answerable": 10,
+    "unanswerable": 10,
+    "arms": [
+      "H00_DIRECT",
+      "H01_SELF_CRITIQUE",
+      "H09_MVT_PROPOSER_VERIFIER",
+      "H13_EBRC_DUAL_STATE",
+      "H14_WMX_EBRC"
+    ],
+    "common_contract_mechanism_terms_absent": true,
+    "h00_mechanism_terms_absent": true,
+    "subject_sha256": "a1d10c0ce201eec978db7b7e5c183635632e266bd5026f09ad19c73828b3a454",
+    "oracle_sha256": "b165cb8e0124b61fc10debcd435bc9b6005bfebe94cb744a825d8ff25bb2cad5",
+    "runner_sha256": "373e35e56af23cd8f15d91efc172fde84e0781e4032eb12f8a15d6e6e1b3cbe1"
+  },
+  "scorer_controls": {
+    "perfect": {
+      "overall_final_accuracy": 1.0,
+      "answerable_accuracy": 1.0,
+      "unanswerable_null_accuracy": 1.0,
+      "overanswer_rate_on_unanswerable": 0.0,
+      "false_null_rate_on_answerable": 0.0,
+      "pair_integrity_rate": 1.0,
+      "pair_count": 10
+    },
+    "always_answer": {
+      "overall_final_accuracy": 0.0,
+      "answerable_accuracy": 0.0,
+      "unanswerable_null_accuracy": 0.0,
+      "overanswer_rate_on_unanswerable": 1.0,
+      "false_null_rate_on_answerable": 0.0,
+      "pair_integrity_rate": 0.0,
+      "pair_count": 10
+    },
+    "always_null": {
+      "overall_final_accuracy": 0.5,
+      "answerable_accuracy": 0.0,
+      "unanswerable_null_accuracy": 1.0,
+      "overanswer_rate_on_unanswerable": 0.0,
+      "false_null_rate_on_answerable": 1.0,
+      "pair_integrity_rate": 0.0,
+      "pair_count": 10
+    }
+  },
+  "execution_state": {
+    "status": "BLOCKED_BEFORE_EXTERNAL_MODEL_EXPOSURE",
+    "reason": "OPENROUTER_API_KEY is absent from the active ChatGPT container runtime",
+    "external_calls_made": 0,
+    "model_outputs_seen": false,
+    "paid_substitute_used": false,
+    "hf_job_used": false,
+    "next_action": "Run the frozen v0.2 package on the fixed OpenRouter free rail when OPENROUTER_API_KEY is available; do not edit preregistration after model exposure.",
+    "design_revision_before_model_exposure": "Added residual schema-cue/WMX-scope/equal-compute limitations and provider usage accounting before any external call."
+  },
+  "manifest_sha256": "41084d72399fd38200bc7165a49fd1dd23317c7b7a839fbc096bf4012e06b4d2",
+  "package_sha256": "f9fca7d3de6e798feda9dba682e7a8637c05efc6041666c6bd76db2b69cdcef7",
+  "package_name": "TRIAXIS_EVOLUTION_UMWP20_MECHANISM_HIDDEN_V02_20260812.zip",
+  "private_oracle_committed_to_git": false,
+  "external_calls_made": 0,
+  "model_outputs_seen": false,
+  "claim_grade_external_tasks_added": 0,
+  "strong_model_rollup_changed": false,
+  "residual_risks": [
+    "The shared schema permits answer=null, so the model can infer that a non-numeric outcome is representationally possible. The contract does not state when to use null or mention missing information/answerability; therefore this is mechanism-hidden, not latent-task-unaware.",
+    "UMWP20 exposes no external tool/verifier. H14 therefore tests compact-state/commitment orchestration only, not the full WMX externalized-verifier capability.",
+    "Different arm prompts have different input-token lengths; provider token usage must be reported and no confirmatory equal-compute claim is allowed."
+  ]
+}

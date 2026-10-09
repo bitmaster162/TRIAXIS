@@ -1,0 +1,43 @@
+{
+  "actions_reached": {
+    "AUTHORITY_POLICY_DENIED": 128,
+    "CAPABILITY_EXECUTION_FAILURE": 4,
+    "EVIDENCE_INCOMPLETE": 64,
+    "INFRASTRUCTURE_BLOCKED": 512,
+    "INSTRUMENT_CONTRACT_MISMATCH": 512,
+    "INSTRUMENT_IMPLEMENTATION_FAILURE": 256,
+    "MODEL_OUTPUT_CONTRACT_FAILURE": 32,
+    "MODEL_TASK_FAILURE": 10,
+    "MODEL_TOOL_USE_FAILURE": 8,
+    "NO_MODEL_EVIDENCE": 512,
+    "VALID_PASS": 10
+  },
+  "claim_boundary": "Denominator and causal attribution control only; cognitive lift credit 0.",
+  "date": "2026-08-14",
+  "decision": {
+    "FAILURE_ATTRIBUTION_GATE": "RETAIN",
+    "MODEL_DENOMINATOR_CONTAMINATION": "FORBIDDEN",
+    "next": "Use attribution class as an explicit required field in every future benchmark/result receipt, including R9-C when execution resumes."
+  },
+  "edge_cases": [
+    {"actual":"INFRASTRUCTURE_BLOCKED","expected":"INFRASTRUCTURE_BLOCKED","note":"GitHub billing before runner","pass":true},
+    {"actual":"NO_MODEL_EVIDENCE","expected":"NO_MODEL_EVIDENCE","note":"no candidate/no run","pass":true},
+    {"actual":"INSTRUMENT_CONTRACT_MISMATCH","expected":"INSTRUMENT_CONTRACT_MISMATCH","note":"float tolerance exact scorer","pass":true},
+    {"actual":"INSTRUMENT_IMPLEMENTATION_FAILURE","expected":"INSTRUMENT_IMPLEMENTATION_FAILURE","note":"TASK_ROWS_NOT_FOUND verifier binding","pass":true},
+    {"actual":"AUTHORITY_POLICY_DENIED","expected":"AUTHORITY_POLICY_DENIED","note":"effect denied by policy","pass":true},
+    {"actual":"EVIDENCE_INCOMPLETE","expected":"EVIDENCE_INCOMPLETE","note":"intermediate result only","pass":true},
+    {"actual":"MODEL_OUTPUT_CONTRACT_FAILURE","expected":"MODEL_OUTPUT_CONTRACT_FAILURE","note":"candidate violates required output grammar","pass":true},
+    {"actual":"MODEL_TOOL_USE_FAILURE","expected":"MODEL_TOOL_USE_FAILURE","note":"bad tool args","pass":true},
+    {"actual":"CAPABILITY_EXECUTION_FAILURE","expected":"CAPABILITY_EXECUTION_FAILURE","note":"tool timeout after valid invocation","pass":true},
+    {"actual":"MODEL_TASK_FAILURE","expected":"MODEL_TASK_FAILURE","note":"valid scorer says wrong","pass":true},
+    {"actual":"VALID_PASS","expected":"VALID_PASS","note":"valid scorer says correct","pass":true}
+  ],
+  "edge_cases_passed": 11,
+  "edge_cases_total": 11,
+  "exhaustive_states": 2048,
+  "hard_invariant_violations": 0,
+  "schema": "triaxis.r10n.failure_attribution_gate_selftest/v1",
+  "spec_sha256": "0a26fe227d59b921ea4cefbab72784273661370451c066186f7e44ea0beea28d",
+  "status": "PASS",
+  "violations_sample": []
+}

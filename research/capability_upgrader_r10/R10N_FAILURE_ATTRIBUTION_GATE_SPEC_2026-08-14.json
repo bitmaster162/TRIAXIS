@@ -1,0 +1,65 @@
+{
+  "claim_boundary": {
+    "cognitive_lift_credit": 0,
+    "model_accuracy_claim": false,
+    "novelty_claim": false,
+    "production_qualified": false
+  },
+  "classes": [
+    {"class":"NO_MODEL_EVIDENCE","definition":"No model candidate was actually produced/executed for the scored event.","denominator":"EXCLUDE_MODEL_QUALITY"},
+    {"class":"INFRASTRUCTURE_BLOCKED","definition":"Runner/provider/account/network/storage prevented execution before the scientific scoring event.","denominator":"EXCLUDE_MODEL_QUALITY"},
+    {"class":"INSTRUMENT_CONTRACT_MISMATCH","definition":"Scorer/verifier equivalence relation is semantically inapplicable to the authoritative task/evaluator contract.","denominator":"EXCLUDE_MODEL_QUALITY"},
+    {"class":"INSTRUMENT_IMPLEMENTATION_FAILURE","definition":"Intended valid verifier/parser/harness failed due implementation/data binding/runtime defect.","denominator":"EXCLUDE_MODEL_QUALITY"},
+    {"class":"EVIDENCE_INCOMPLETE","definition":"Observed output is intermediate/partial and terminal evidence chain required by the task is not complete.","denominator":"EXCLUDE_TASK_SUCCESS_UNTIL_RESOLVED"},
+    {"class":"MODEL_OUTPUT_CONTRACT_FAILURE","definition":"Authoritative output grammar/format was valid and known, instrument was valid, but the model output itself failed that required contract.","denominator":"INCLUDE_MODEL_QUALITY"},
+    {"class":"MODEL_TASK_FAILURE","definition":"Model candidate was scored by a valid applicable instrument and is semantically incorrect.","denominator":"INCLUDE_MODEL_QUALITY"},
+    {"class":"MODEL_TOOL_USE_FAILURE","definition":"Tool/capability was available and valid, but the model/controller supplied invalid selection/arguments or otherwise caused the tool-use failure.","denominator":"INCLUDE_CONTROLLER_OR_MODEL_QUALITY"},
+    {"class":"CAPABILITY_EXECUTION_FAILURE","definition":"Selected external capability/tool failed independently of candidate reasoning/arguments after valid invocation.","denominator":"SEPARATE_CAPABILITY_RELIABILITY"},
+    {"class":"AUTHORITY_POLICY_DENIED","definition":"Requested action could not legally/operationally execute because authority or policy denied it.","denominator":"EXCLUDE_MODEL_QUALITY_UNLESS_TASK_WAS_TO_RECOGNIZE_DENIAL"},
+    {"class":"VALID_PASS","definition":"Candidate passed the applicable authoritative contract.","denominator":"INCLUDE_MODEL_QUALITY"},
+    {"class":"UNKNOWN_HOLD","definition":"Available evidence is insufficient to attribute the event safely.","denominator":"EXCLUDE_PENDING_ADJUDICATION"}
+  ],
+  "date": "2026-08-14",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "hard_invariants": [
+    "No MODEL_TASK_FAILURE may be emitted when instrument_applicable=false.",
+    "No model-quality denominator entry when candidate_executed=false.",
+    "Infrastructure and billing blocks never count as model failures.",
+    "Applicable-instrument implementation failure never counts as model failure.",
+    "Unknown attribution is HOLD, not FAIL.",
+    "A valid pass requires candidate execution plus applicable functioning instrument.",
+    "If task/output grammar itself requires a format, candidate format violation may be a model output-contract failure; parser implementation defects are not."
+  ],
+  "historical_bindings": [
+    {"class":"INSTRUMENT_IMPLEMENTATION_FAILURE","event":"R9-C original run TASK_ROWS_NOT_FOUND before W0 verdict","model_evidence":"NONE"},
+    {"class":"INFRASTRUCTURE_BLOCKED","event":"R9-C recovery GitHub Actions billing/spending gate before first step","model_evidence":"NONE"},
+    {"class":"INSTRUMENT_CONTRACT_MISMATCH","event":"abc324_f/abc319_c/abc375_b exact scorer vs numeric tolerance","model_evidence":"QUARANTINE"},
+    {"class":"INSTRUMENT_CONTRACT_MISMATCH","event":"arc183_d exact reference scorer vs multiple valid constructive outputs","model_evidence":"QUARANTINE"},
+    {"class":"EVIDENCE_INCOMPLETE","event":"ToolBench-X v0.6 intermediate stand-up vs terminal HLD-90417","model_evidence":"NOT_TERMINAL_SUCCESS"},
+    {"class":"MODEL_TASK_FAILURE","event":"MMLU-Pro canonical label wrong after successful parser","model_evidence":"FAIL"}
+  ],
+  "priority_rules": [
+    "If no candidate exists because execution never started -> NO_MODEL_EVIDENCE or INFRASTRUCTURE_BLOCKED.",
+    "If authoritative evaluator contract is mismatched by the candidate instrument -> INSTRUMENT_CONTRACT_MISMATCH before any model verdict.",
+    "If intended evaluator is applicable but its implementation/data binding/runtime fails -> INSTRUMENT_IMPLEMENTATION_FAILURE.",
+    "If authority/policy forbids the requested effect -> AUTHORITY_POLICY_DENIED.",
+    "If external evidence chain is nonterminal/partial -> EVIDENCE_INCOMPLETE.",
+    "If a valid required output grammar is violated by candidate output -> MODEL_OUTPUT_CONTRACT_FAILURE.",
+    "If valid tool invocation fails independently of model/controller input -> CAPABILITY_EXECUTION_FAILURE.",
+    "If tool failure is caused by model/controller selection or arguments -> MODEL_TOOL_USE_FAILURE.",
+    "If applicable instrument scores candidate semantically wrong -> MODEL_TASK_FAILURE.",
+    "If applicable instrument scores candidate correct -> VALID_PASS.",
+    "Otherwise -> UNKNOWN_HOLD."
+  ],
+  "schema": "triaxis.r10n.failure_attribution_gate_spec/v1",
+  "status": "FORMALIZED_DENOMINATOR_CONTROL"
+}

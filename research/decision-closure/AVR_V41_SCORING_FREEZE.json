@@ -1,0 +1,19 @@
+{
+  "schema": "triaxis.avr.v41.scoring_freeze/v0.1",
+  "batch": "V41",
+  "contest": "arc195",
+  "verifier_commit": "8f60bd461336249fc4017ed18c007b4d1eec7aa7",
+  "editorial_opened_before_freeze": false,
+  "scores": {
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "D": "PERFORMANCE_QUARANTINE",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activated": 0,
+  "clean_rescues": 0,
+  "harms": 0,
+  "claim_grade_delta": 2,
+  "m0_pass_delta": 2,
+  "final_pass_provisional_delta": 2,
+  "quarantine_delta": 1
+}

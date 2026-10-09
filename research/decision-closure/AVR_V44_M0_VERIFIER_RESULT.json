@@ -1,0 +1,102 @@
+{
+  "schema": "triaxis.avr.v44.m0_verifier/v0.1",
+  "batch": "V44",
+  "contest": "arc192",
+  "samples": {
+    "E": {
+      "status": "PASS",
+      "outputs": [
+        192,
+        4519189,
+        675935675
+      ]
+    },
+    "B": {
+      "status": "PASS",
+      "outputs": [
+        "Fennec",
+        "Snuke",
+        "Snuke"
+      ]
+    },
+    "C": {
+      "status": "INTERACTIVE_NO_STATIC_SAMPLE_SCORING",
+      "mock_judge_used": true
+    }
+  },
+  "independent_verification": {
+    "E": {
+      "oracle": "direct cell-by-cell DP g=1+left+down with hole cells disabled",
+      "cases": 600,
+      "mismatches": 0,
+      "small_geometry_pool": "all W,H<=4 non-full-hole instances, 600 sampled"
+    },
+    "B": {
+      "oracle": "exact recursive minimax over unopened-mask plus total pass-token state",
+      "cases": 810,
+      "mismatches": 0,
+      "coverage": "all parity representatives A_i in {1,2} for N=1..8 plus 300 random A_i in 1..7"
+    },
+    "C": {
+      "oracle": "interactive subprocess with fixed hidden P,A; judge answers exact inclusive interval sums and checks final P,A and query budget",
+      "cases": 1605,
+      "mismatches": 0,
+      "max_queries_observed_small_random": 117,
+      "coverage": "all P with P1<P2 for N=3..6 times 3 deterministic A patterns, plus 300 random N<=60"
+    }
+  },
+  "proof_equivalent_gates": {
+    "E": [
+      "For a valid endpoint v, full-rectangle arbitrary-start DP F(v)=C(x+y+2,x+1)-1.",
+      "Every full path ending at a valid vertex that is invalid for the punctured rectangle has a unique first forbidden vertex h.",
+      "First-entry source weight H_h is 1 for starting at h, plus full unaffected predecessor DP from the left boundary x=L and bottom boundary y=D.",
+      "Suffix count from h to any valid endpoint is F(W-hx,H-hy)-F(R-hx,U-hy).",
+      "Double sums of F over rectangles collapse by hockey-stick identities; only O(width+height) weighted boundary loops remain."
+    ],
+    "B": [
+      "After first touching pile i, its remaining A_i-1 decrements are indistinguishable pass moves; state is unopened set plus total pass tokens T.",
+      "With two unopened piles, outcome is T mod 2. The three-unopened classification follows directly by one opening into that base.",
+      "For four unopened piles, direct recurrence gives outcome parity(T) XOR parity(number of even b_i), b_i=A_i-1.",
+      "For m>=5, opening any pile from T=0 produces the opposite parity class in the m-1 formula; for T>0 the pass move toggles it. Hence initial N>=4 winner iff the number of odd A_i is odd."
+    ],
+    "C": [
+      "Let a=P1<b=P2 and T=query(1,2). For p<a, q2>T and q1-q2=-(T-A_a); for a<p<b both q1,q2<T and d=q1-q2 is strictly increasing with p; for p>b, q1>T and d=T-A_b.",
+      "Therefore labels split into left/middle/right and their exact positional order is recovered by q1 descending, d ascending, q1 ascending respectively, with labels 1 and 2 inserted between groups.",
+      "Middle A values equal q1+q2-T. Consecutive left q1 differences and right q2 differences recover all non-anchor A values; nearest outside or nearest middle equations recover anchor A values.",
+      "The algorithm uses exactly 1+2(N-2)=2N-3 queries."
+    ]
+  },
+  "constraint_gates": {
+    "E": {
+      "input": "1000000 1000000 1 1000000 1 1000000",
+      "elapsed_seconds": 0.05,
+      "rss_kb": 32664,
+      "official_time_limit_seconds": 2,
+      "status": "PASS",
+      "frozen_complexity": "O(W+H) time / O(W+H) factorial tables"
+    },
+    "B": {
+      "input": "N=200000, all A=999999999",
+      "wall_with_python_input_generation_seconds": 0.72,
+      "official_time_limit_seconds": 2,
+      "status": "PASS",
+      "frozen_complexity": "O(N) time / O(N) input storage"
+    },
+    "C": {
+      "input": "N=5000 random hidden permutation and A",
+      "queries": 9997,
+      "query_limit": 10000,
+      "elapsed_with_python_mock_judge_seconds": 0.644,
+      "status": "PASS",
+      "frozen_complexity": "O(N log N) local work; 2N-3 queries"
+    }
+  },
+  "pre_editorial_classification": {
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "B": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activated": false,
+  "x1_reason": "No frozen M0 correctness failure and no constraint failure.",
+  "editorial_or_gold_used": false
+}

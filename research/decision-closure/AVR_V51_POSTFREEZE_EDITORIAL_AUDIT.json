@@ -1,0 +1,24 @@
+{
+  "schema": "triaxis.avr.v51.postfreeze_editorial_audit/v0.1",
+  "batch": "V51",
+  "scoring_frozen_before_editorial": true,
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false,
+  "tasks": {
+    "D": {
+      "official": "https://atcoder.jp/contests/arc184/editorial/11001",
+      "finding": "official counts maximal feasible operation sets and states a one-to-one correspondence with reachable remaining sets, then uses O(N^3) DP; this is not the frozen reduced-corner-chain uniqueness theorem",
+      "final": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1"
+    },
+    "E": {
+      "official": "https://atcoder.jp/contests/arc184/editorial/11009",
+      "finding": "official uses first-1-position invariant, cyclic orbits, standard forms with positions 2^x+1 zeroed, and modular coordinate differences within each standard form; structurally corroborates frozen canonical orbit solution",
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "C": {
+      "official": "https://atcoder.jp/contests/arc184/editorial/11008",
+      "finding": "official states each least-significant-1 group follows VMVM... and solves by recursive parity splitting in O(N log maxA); corroborates the orientation issue and shows the frozen/X1 residue-class theorem was incomplete",
+      "final": "CLAIM_GRADE_X1_FAILED_WITH_REGRESSION"
+    }
+  }
+}

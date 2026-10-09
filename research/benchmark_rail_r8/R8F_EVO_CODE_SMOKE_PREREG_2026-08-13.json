@@ -1,0 +1,57 @@
+{
+  "schema": "triaxis.r8f.evoagentbench_code_smoke_prereg/v1",
+  "date": "2026-08-13",
+  "status": "FROZEN_BEFORE_TASK_STATEMENTS",
+  "benchmark": {
+    "name": "EvoAgentBench",
+    "runner_commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "split_source_revision": "3ac46d860f2f89ff4000f03c9936b618d10570ad",
+    "domain": "code_implementation",
+    "source_benchmark": "LiveCodeBench release_v6",
+    "official_test_count": 86
+  },
+  "subset_selection": {
+    "method": "lowest SHA256(seed + NUL + task_id)",
+    "seed": "R8F_EVO_SMOKE_20260813",
+    "count": 3,
+    "selected": [
+      {
+        "task_id": "3762",
+        "selection_sha256": "029e8d601e67d62fad15b4c245f066e04e55c1c7be3f9020e25039863a8a1fc4"
+      },
+      {
+        "task_id": "arc186_d",
+        "selection_sha256": "063706dc8cb6f8322ed21aee268ac033f8ed27c95880dc65af62748985e81ce1"
+      },
+      {
+        "task_id": "abc378_c",
+        "selection_sha256": "09bfe89dd0d1cdaae0edaa2c71b7009066fbd54954cbcd1ddf2f2b2ff519a560"
+      }
+    ]
+  },
+  "arms": {
+    "B0": "current-session GPT-5.6 Sol solution from public task statement only; no evaluator/test access before output freeze",
+    "B1": "same frozen B0 plus native verifier failure signal and at most one verifier-conditioned correction"
+  },
+  "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
+  "primary_endpoint": "native LiveCodeBench pass/fail on all tests",
+  "rules": [
+    "freeze each B0 solution before first verifier run",
+    "do not expose hidden tests or expected output beyond public examples",
+    "B1 receives only the minimum verifier signal available from official adapter",
+    "at most one correction per failed task",
+    "no task replacement after seeing outcomes",
+    "all 3 selected tasks remain in denominator",
+    "do not claim model repeatability or independent GPT-5.6 result",
+    "do not call this full EvoAgentBench self-evolution; this is a native-verifier benchmark rail smoke"
+  ],
+  "promotion_effect": "none; smoke result can validate or falsify B1 verifier rescue mechanics but cannot promote capability memory",
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "triaxis.avr_v39_postfreeze_editorial_audit/v0.1",
+  "version": "V39",
+  "scoring_freeze_commit": "1bc3d211c2b87aff56f9d376c15227de9a41a1dc",
+  "postfreeze_upgrade_performed": false,
+  "score_changed": false,
+  "tasks": {
+    "B": {
+      "frozen": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT",
+      "official": "reachable coefficient subsets are all except the two alternating masks; general A solved by Gaussian elimination plus O(N^2) constructive operations",
+      "audit": "corroborates that a one-line output-order patch would not repair the frozen asymptotic defect",
+      "final": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT"
+    },
+    "C": {
+      "frozen": "PROVISIONAL_CLAIM_GRADE_M0_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+      "official": "root at vertex 1; every subtree vertex set must be contiguous in every normalized inverse order; determine common intervals in O(N^2 M) and use interval rooted-tree/forest DP in O(N^3)",
+      "audit": "direct structural and asymptotic corroboration of frozen common-interval DP",
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "D": {
+      "frozen": "PERFORMANCE_QUARANTINE",
+      "official": "canonical wonderful (R,C) representation and DP in O(H W min(H,W))",
+      "audit": "confirms frozen exponential enumerator was locally exact but asymptotically unusable",
+      "final": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "official_editorials": [
+    "https://atcoder.jp/contests/arc199/editorial/13176",
+    "https://atcoder.jp/contests/arc199/editorial/13177",
+    "https://atcoder.jp/contests/arc199/editorial/13178"
+  ]
+}

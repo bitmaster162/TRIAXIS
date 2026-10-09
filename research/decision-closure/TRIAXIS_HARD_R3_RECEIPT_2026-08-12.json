@@ -1,0 +1,55 @@
+{
+  "amendment_sha256": "9e08a1915679825147915b21b7843643abf91ec1afd99dd30aa4101fbcdefd9e",
+  "claim_boundary": "self-run; non-independent; non-confirmatory; no matched minimal-baseline arm in R3",
+  "clean_tasks": {
+    "agc025_f": {
+      "M0": "SEMANTIC_PASS_PERFORMANCE_FAIL",
+      "final": "STOP_PERFORMANCE_FAIL",
+      "paired_harm": 0,
+      "paired_rescue": 0,
+      "score": 2400
+    },
+    "agc051_f": {
+      "M0": "CORRECTNESS_FAIL",
+      "T1_R1": "CORRECTNESS_FAIL_FALSE_NEGATIVE",
+      "T1_R2": "PASS",
+      "final": "CLAIM_GRADE_CORRECTNESS_RESCUE_WITHIN_R3",
+      "intermediate_regression": 1,
+      "paired_harm": 0,
+      "paired_rescue": 1,
+      "score": 2400
+    }
+  },
+  "date_local": "2026-08-12",
+  "epistemic": {
+    "broad_intelligence_claim": "UNSUPPORTED",
+    "devil_default": "OFF",
+    "distinct_triaxis_causal_lift": "UNRESOLVED",
+    "executable_verifier_bounded_correction_value": "STRONGLY_SUPPORTED_ON_R3_SURFACE"
+  },
+  "excluded": {
+    "agc049_f": "PRE_M0_EDITORIAL_LEAKAGE",
+    "agc053_f": "PRE_SELECTION_STATEMENT_LEAKAGE"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "historical_rollup": "UNCHANGED_V22_V55",
+  "prereg_sha256": "c9ef10ceb9ec27f27623db9b122a38af747a4b26be80d768066a26c9368df1a4",
+  "raw_full_constraint_vector": {
+    "M0_pass": "0/2",
+    "final_pass": "1/2",
+    "paired_harms": 0,
+    "paired_rescues": 1,
+    "tasks": 2
+  },
+  "schema": "triaxis.hard_r3.receipt/v0.1",
+  "status": "COMPLETE_ONE_2400_CORRECTNESS_RESCUE_ONE_2400_HARD_STOP"
+}

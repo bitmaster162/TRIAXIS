@@ -1,0 +1,22 @@
+{
+  "schema": "triaxis.avr.v46.source_binding/v0.1",
+  "batch": "V46",
+  "method": "GitHub.fetch_file UTF-8 content exact-match against locally frozen source bytes before candidate compile/run",
+  "files": {
+    "arc189_e_m0.cpp": {
+      "expected_sha256": "e5533c501612cff507247c99548e785ea6ad35147e3473d3da4738f696f6e223",
+      "connector_content_exact_match": true
+    },
+    "arc189_d_m0.cpp": {
+      "expected_sha256": "24cb313a2c14a003753bccd34dc014181163ab9ef3d15eff8697a30346550e54",
+      "connector_content_exact_match": true
+    },
+    "arc189_c_m0.cpp": {
+      "expected_sha256": "633233f057ba0106779ff2444b9cd93677904cf6d00ee2cee0d2827507f8895d",
+      "connector_content_exact_match": true
+    }
+  },
+  "candidate_compile_before_binding_verification": false,
+  "candidate_execution_before_binding_verification": false,
+  "status": "PASS"
+}

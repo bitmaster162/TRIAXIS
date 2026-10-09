@@ -1,0 +1,17 @@
+{
+  "schema": "triaxis.avr.v51.x1_freeze/v0.1",
+  "batch": "V51",
+  "task": "C",
+  "feedback": {
+    "input": "6\n0 2 3 5 7 8\n",
+    "expected": "4",
+    "actual": "5"
+  },
+  "source": {
+    "path": "research/decision-closure/v51_arc184/arc184_c_x1.cpp",
+    "sha256": "a992a744ea355de9ef88448ae3b6b9a8ea053040108ca64008042f67c1b2c2c8"
+  },
+  "execution_before_freeze": false,
+  "editorial_or_gold_opened": false,
+  "second_x1_permitted": false
+}

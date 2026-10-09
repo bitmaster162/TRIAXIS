@@ -1,0 +1,21 @@
+{
+  "schema": "triaxis.avr.v51.source_binding/v0.1",
+  "batch": "V51",
+  "verified_before_first_compile_or_run": true,
+  "status": "PASS",
+  "repair_required": false,
+  "files": {
+    "D": {
+      "sha256": "e7935d1b14e5ddfd5cd59befea5fcc0c45c1eb76aae6ac2a3eca83b37a3224bc",
+      "github_blob_sha": "cbd9518d72c5872af4ca0a7f2ea9323018c8b6b0"
+    },
+    "E": {
+      "sha256": "28f8b57b5c5488219dfcc17f05fc4162614dba90ac59d3f4ef7174ef182fc75f",
+      "github_blob_sha": "36392984a17f054653392aa0c76cca885f2c5224"
+    },
+    "C": {
+      "sha256": "f42ef5e56c949e74da092de619d57677f1ed30676b7a9773772d89291287c1a9",
+      "github_blob_sha": "328848de8ecea9b99a7dc54c81637fb5717870e6"
+    }
+  }
+}

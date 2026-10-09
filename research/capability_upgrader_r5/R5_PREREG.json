@@ -1,0 +1,14 @@
+{
+  "arms": ["B0_BASE", "B1_MINIMAL_VERIFIER", "B2_SINGLE_TARGETED_DONOR", "B3_TWO_DONOR_COMPOSITION", "B4_FULL_CAPABILITY_ROUTER"],
+  "base_model": "GPT-5.6 Sol",
+  "budget_rule": "B1-B4 matched max correction rounds; donor-specific calls logged; exact compute reported.",
+  "collapse_rule": "If B4 does not beat simpler arms across replication set, collapse TRIAXIS cognitive core.",
+  "external_model_access": {"claude_fable_5": false, "gemini_3x": false},
+  "frozen_at": "2026-08-12T22:34:00+07:00",
+  "governance": {"AUTO_MERGE": false, "MERGE_PERMISSION": "DENY", "PRODUCTION_CHANGE": false, "TRIAXIS_IS_CONTESTANT": true, "TRIAXIS_IS_ORACLE": false, "can_trade": false, "capital_permission": "DENY", "deploy_permission": "DENY"},
+  "phase": "R5A_WEAKNESS_MINER_AND_ROUTER_FREEZE",
+  "primary_gap": "repo-scale software repair / behavioral reconstruction",
+  "promotion_rule": "Promote only reproducible verified lift over B1 without material regression/cost veto.",
+  "schema": "triaxis.capability_upgrader_r5.prereg/v0.1",
+  "secondary_gaps": ["long-horizon state drift", "fresh API/docs dependence", "multimodal evidence", "exact-compute verification"]
+}

@@ -1,0 +1,109 @@
+{
+  "causal_evidence": {
+    "correctbench_cross_domain": {
+      "hazards": [
+        "native Verilog 4-state/multiple-driver semantics required for one thermostat mutant",
+        "behaviorally equivalent mux mutant must not enter mutation denominator"
+      ],
+      "interpretation": "supports abstract instrument-applicability control, but source exposure before a new freeze prevents prospective transfer credit",
+      "status": "RETROSPECTIVE_ONLY_NO_PROSPECTIVE_CREDIT"
+    },
+    "toolbenchx_v09": {
+      "avr_binding_plus_recovery": {"calls":53,"raw_exact":"7/10","verified_exact":"7/10"},
+      "binding_increment": {"extra_calls":0,"raw_gains":2,"raw_harms":0,"verified_gains":4,"verified_harms":0},
+      "common_cause_observation": "Near-chain-wide TimeoutError patterns in two unresolved cases; independent retry fan-out spent calls and recovered no terminal answer.",
+      "recovery_increment_over_binding": {"extra_calls":12,"raw_gains":0,"raw_harms":0,"verified_gains":0,"verified_harms":0},
+      "source_schema": "toolbenchx.native.avr_v09.result/v0.1",
+      "x0_one_pass": {"calls":41,"raw_exact":"5/10","verified_exact":"3/10"},
+      "x0b_prompt_binding": {"calls":41,"raw_exact":"7/10","verified_exact":"7/10"}
+    },
+    "verifier_contract_gate": {
+      "bounded_fresh_remainder_census": {"boundary":"explicitly bounded fresh eligible AtCoder remainder only; not benchmark-wide prevalence","classified":44,"compatible":41,"quarantined":3},
+      "cognitive_lift_credit": 0,
+      "evidence_type": "procedural/instrument-validity control",
+      "prospective_catches": ["abc324_f: numeric tolerance","abc319_c: numeric tolerance","abc375_b: numeric tolerance","arc183_d: non-unique constructive output"]
+    }
+  },
+  "claim_boundary": {
+    "not_supported": [
+      "TRIAXIS broadly increases intelligence",
+      "AVR improves GPT-5.6 by a stated percentage",
+      "EBRC is novel",
+      "the ToolBench-X controller results are matched independent GPT-5.6 model results",
+      "the verifier-contract mismatch rate generalizes benchmark-wide",
+      "generic recovery should be default-on",
+      "production qualification"
+    ],
+    "supported": [
+      "measured controller effects on explicitly identified bounded experiments",
+      "prompt/state binding showed a positive causal signal in the 10-case ToolBench-X v0.9 controller ablation",
+      "verifier-contract validation prospectively prevented invalid exact-scoring assumptions on multiple fresh AtCoder tasks"
+    ]
+  },
+  "date": "2026-08-14",
+  "decision": {
+    "conditional_only": [
+      {"condition":"only after a concrete externally verified failure signal; fresh re-verification required","max_rounds":1,"mechanism":"ONE_BOUNDED_CORRECTION"},
+      {"condition":"only for a classified transient failure; no unchanged retry after deterministic schema/type/permission failure","mechanism":"TARGETED_RETRY_OR_ONE_SENTINEL_RETRY"},
+      {"condition":"only when a material unresolved assumption has one concrete plausible alternative that changes action and no direct discriminator already settles it","mechanism":"ONE_ACTION_CHANGING_COUNTERMODEL"}
+    ],
+    "default_core": [
+      "TASK_STATE_BINDING",
+      "EVIDENCE_CHAIN_COMPLETENESS",
+      "SEMANTIC_APPLICABILITY",
+      "VERIFIER_CONTRACT_GATE_WHEN_APPLICABLE",
+      "SELECTIVE_EXTERNAL_VERIFICATION_WHEN_A_REAL_CAPABILITY_OR_EVIDENCE_DEFICIT_EXISTS",
+      "CANONICAL_COMMIT",
+      "BOUNDED_STOP_REOPEN"
+    ],
+    "default_off_or_rejected": [
+      "GENERIC_RECOVERY_LOOPS",
+      "PER_TOOL_RETRY_FANOUT_UNDER_COMMON_CAUSE_FAILURE",
+      "MANDATORY_DEVIL",
+      "MANDATORY_ANGEL",
+      "MANDATORY_TRIALECTIC",
+      "MAJORITY_VOTE",
+      "REPEATED_SAME_MODEL_DELIBERATION_WITHOUT_NEW_EVIDENCE",
+      "GENERIC_SCAFFOLD",
+      "TARGETED_CODE_SKILL_FROM_R9B",
+      "QUERY_TEXT_ROUTING"
+    ],
+    "flags": {
+      "COGNITIVE_LIFT_CREDIT_FOR_EBRC_OR_GATES": 0,
+      "DEVIL_DEFAULT": "OFF",
+      "PRODUCTION_PROMOTION": "DENY",
+      "RECOVERY_DEFAULT": "OFF_EXCEPT_VERIFIED_FAILURE",
+      "VERIFIER_CONTRACT_GATE": "BOUNDED_DEFAULT_ON_WHEN_APPLICABILITY_PRECONDITIONS_HOLD"
+    }
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "interpretation": {
+    "deliberation_interpretation": "Additional same-model deliberation without new evidence is not progress and has no default role.",
+    "recovery_interpretation": "Recovery is not part of the unconditional minimal path. It is an exception mechanism triggered by an observed, classified, externally checkable failure.",
+    "semantic_gate_interpretation": "A correct model output cannot yield claim-grade evidence when the scoring instrument is semantically inapplicable; such cases must be quarantined rather than counted as model failures.",
+    "strongest_current_thesis": "Bind the actual task/state and required evidence first; use external falsifiable capability only for a real deficit; validate the measurement/verifier contract; commit once evidence is complete enough; stop."
+  },
+  "next_gate": {
+    "fallback_if_no_clean_domain_is_available": "Do not manufacture a transfer result; retain AtCoder-bounded status and stop.",
+    "priority": "FRESH_CROSS_DOMAIN_PROSPECTIVE_APPLICABILITY_TRANSFER",
+    "requirements": [
+      "new domain/source whose task/verifier semantics have not been opened before sample freeze",
+      "freeze task set and abstract mismatch taxonomy before case inspection",
+      "no hidden labels/oracle leakage before classification",
+      "zero false quarantines on the frozen sample",
+      "at least one real prospectively detected applicability mismatch for positive transfer evidence"
+    ]
+  },
+  "schema": "triaxis.r10f.minimal_controller_core_readjudication/v1",
+  "scope": "CONTROLLER_ARCHITECTURE_ONLY",
+  "status": "MINIMAL_CONTROLLER_CORE_V1_RETAIN"
+}

@@ -1,0 +1,44 @@
+{
+  "base_model": "GPT-5.6 Sol",
+  "claim_boundary": "Wave 1 is heterogeneous diagnostic evidence, not a single aggregate benchmark and not confirmatory.",
+  "date_local": "2026-08-12",
+  "lanes": {
+    "F1_F8_semantic_exact": {
+      "base": "CORRECTNESS_FAIL",
+      "classification": "historical_verified_rescue",
+      "donor": "D_VERIFY_EXACT + representation change",
+      "evidence": "AGC051 F R3",
+      "final": "PASS"
+    },
+    "F2_F5_state_repo": {
+      "base": "DEFECT FOUND",
+      "classification": "fresh_real_repo_no_escalation",
+      "donor": "NONE",
+      "evidence": "current okx-nft-bot global limiter",
+      "final": "REPRODUCED_DEFECT_CANDIDATE",
+      "verifier": "tiny object-identity executable probe"
+    },
+    "F6_freshness": {
+      "base": "3 material memory-only errors; 3 unresolved fields",
+      "classification": "fresh_docs_grounding_rescue",
+      "donor": "D_DOC_SKILL",
+      "evidence": "Claude Fable 5 current API facts",
+      "final": "material errors removed; unresolved syntax explicitly abstained"
+    },
+    "F9_stopping": {
+      "base": "search method failed warm-up",
+      "classification": "historical_compute_theatre_prevention",
+      "donor": "D_NEGATIVE_CONTROL",
+      "evidence": "Hadamard 428 negative control before 668",
+      "final": "668 correctly not launched"
+    }
+  },
+  "next_gap": "F5_REPO_SCALE where B0/B1 actually fail and a long-horizon/repo-behavior donor produces incremental rescue",
+  "router_observations": [
+    "A donor is not automatically useful: current OKX defect required no donor once B0+probe resolved it.",
+    "Freshness is a distinct capability failure: current-doc grounding repaired material API claims without pretending an external model participated.",
+    "Exact executable verification can force representation change on semantic failures.",
+    "Negative controls are a capability: they prevent expensive invalid escalation."
+  ],
+  "schema": "triaxis.r5a.wave1_receipt/v0.1"
+}

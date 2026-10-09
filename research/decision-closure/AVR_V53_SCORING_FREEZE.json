@@ -1,0 +1,51 @@
+{
+  "schema": "triaxis.avr.v53.scoring_freeze/v0.1",
+  "batch": "V53",
+  "editorial_opened_before_freeze": false,
+  "gold_or_submissions_opened_before_freeze": false,
+  "x1_activations": 0,
+  "tasks": {
+    "F": {
+      "frozen_score": "PERFORMANCE_QUARANTINE",
+      "claim_grade": false,
+      "reason": "exact small/original samples 1-5 pass, but official max sample does not complete within 5s under 2s TL; O(N^3) architecture"
+    },
+    "E": {
+      "frozen_score": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+      "claim_grade": true,
+      "reason": "official sample4 fail plus 422/873 exhaustive small valid-A mismatches; frozen DP theorem invalidated"
+    },
+    "D": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "claim_grade": true,
+      "reason": "all samples, 4874 direct-brute queries, proof and max-constraint gates pass"
+    }
+  },
+  "batch_delta": {
+    "claim_grade_tasks": 2,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 1,
+    "protocol_exclusions": 1
+  },
+  "aggregate_through_v53": {
+    "claim_grade_external_tasks": 69,
+    "m0_passes": 51,
+    "final_passes": 56,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions_not_paired_harms": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 26,
+    "protocol_excluded": 5,
+    "exact_paired_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_zero": 1,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED"
+  },
+  "postfreeze_rule": "official editorial/gold may corroborate or downgrade frozen scores only; no postfreeze upgrade or rescue"
+}

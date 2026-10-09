@@ -1,0 +1,83 @@
+{
+  "schema": "triaxis.r9c.contract_gate_result/v1",
+  "date": "2026-08-14",
+  "prereg_commit": "939b2415af058c1a9c9b60ff1a6fbe8141826e4c",
+  "prereg_sha256": "219197b74e2e404ee49cb2758ed68077f9843f19cd62951e024e62b6540ce0c6",
+  "gate_source": "R8-L_FROZEN_VERIFIER_CONTRACT_GATE",
+  "result": "PASS",
+  "sample_total": 6,
+  "admitted": 6,
+  "quarantined": 0,
+  "hidden_tests_opened": false,
+  "model_inference_started": false,
+  "tasks": [
+    {
+      "task_id": "abc361_f",
+      "official_url": "https://atcoder.jp/contests/abc361/tasks/abc361_f?lang=en",
+      "output_contract": "Print the answer as an integer.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "Unique deterministic integer count; no numeric tolerance, non-unique answer, property output, or special judge indicated."
+    },
+    {
+      "task_id": "abc325_e",
+      "official_url": "https://atcoder.jp/contests/abc325/tasks/abc325_e?lang=en",
+      "output_contract": "Print the answer as an integer.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "Unique deterministic minimum-time integer; no numeric tolerance, non-unique answer, property output, or special judge indicated."
+    },
+    {
+      "task_id": "abc376_e",
+      "official_url": "https://atcoder.jp/contests/abc376/tasks/abc376_e?lang=en",
+      "output_contract": "Print T lines; line i contains the answer for test case i.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "Each line is a unique deterministic minimum-value integer; no numeric tolerance, non-unique answer, property output, or special judge indicated."
+    },
+    {
+      "task_id": "abc389_d",
+      "official_url": "https://atcoder.jp/contests/abc389/tasks/abc389_d?lang=en",
+      "output_contract": "Print the answer.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "The requested answer is a unique deterministic count; no numeric tolerance, non-unique answer, property output, or special judge indicated."
+    },
+    {
+      "task_id": "abc354_b",
+      "official_url": "https://atcoder.jp/contests/abc354/tasks/abc354_b?lang=en",
+      "output_contract": "Print the answer on a single line.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "The rules select exactly one winner because usernames are distinct and T mod N selects one assigned index; exact string output is compatible with stdio comparison."
+    },
+    {
+      "task_id": "abc400_b",
+      "official_url": "https://atcoder.jp/contests/abc400/tasks/abc400_b?lang=en",
+      "output_contract": "Print X if X <= 1e9; otherwise print inf.",
+      "decision": "NO_MISMATCH_DETECTED",
+      "reason": "Unique deterministic integer-or-literal-string output; no numeric tolerance, non-unique answer, property output, or special judge indicated."
+    }
+  ],
+  "admitted_task_order": [
+    "abc361_f",
+    "abc325_e",
+    "abc376_e",
+    "abc389_d",
+    "abc354_b",
+    "abc400_b"
+  ],
+  "next_action": "Execute the exact preregistered R9-C workflow: W0 DIRECT -> freeze raw outputs -> pinned native hidden verifier -> at most one minimal sanitized-verdict-conditioned correction on W0 failures -> freeze correction outputs -> fresh native reverify.",
+  "blocked_execution": {
+    "workflow_path": ".github/workflows/r9c-weak-qwen-verifier-correction.yml",
+    "workflow_sha256": "c8edafa42cc948f6fe8039b339cc4d81f7bf59c2c133dc263aed5dfefc4f0624",
+    "status": "NOT_COMMITTED_CONNECTOR_WRITE_BLOCKED",
+    "model_inference_started": false,
+    "hidden_scoring_started": false
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

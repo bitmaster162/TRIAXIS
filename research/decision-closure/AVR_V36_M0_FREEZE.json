@@ -1,0 +1,29 @@
+{
+  "candidate_execution_before_freeze": false,
+  "editorial_opened_before_freeze": false,
+  "gold_opened_before_freeze": false,
+  "prereg": {
+    "git_commit": "63a1dd4608bf9dc722934585ef92cb1af1894f29",
+    "path": "research/decision-closure/AVR_V36_ARC_STRONG_MODEL_PREREGISTRATION.json",
+    "sha256": "8d4d3cc7e0548ed8e121415b94b7d4d5e7ba93fb3266335bd62c4679e3311004"
+  },
+  "schema": "triaxis.avr_v36_m0_freeze/v0.1",
+  "sources": [
+    {
+      "path": "research/decision-closure/v36_arc207/arc207_c_m0.cpp",
+      "sha256": "ca446a8a87100d004ee1e84ec09cf59ddff5db74f321c6e60e6c6cf0733429f0",
+      "task_id": "arc207_c"
+    },
+    {
+      "path": "research/decision-closure/v36_arc207/arc207_d_m0.cpp",
+      "sha256": "58960783c819259a9ee98bd6679056630b8d6a8a91a98f88945b835f5526d516",
+      "task_id": "arc207_d"
+    },
+    {
+      "path": "research/decision-closure/v36_arc207/arc207_e_m0.cpp",
+      "sha256": "28263086ca1d6c7608457ecade14f07aa923ad4c292024581d50a3ade17307e7",
+      "task_id": "arc207_e"
+    }
+  ],
+  "version": "V36"
+}

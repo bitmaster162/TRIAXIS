@@ -1,0 +1,91 @@
+{
+  "schema": "triaxis.avr.v42.m0_verifier/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "samples": {
+    "B": {
+      "status": "PASS",
+      "outputs": [
+        4,
+        6,
+        0
+      ]
+    },
+    "D": {
+      "status": "PASS",
+      "outputs": [
+        2,
+        1
+      ]
+    },
+    "E": {
+      "status": "PASS",
+      "outputs": [
+        "Yes",
+        "No"
+      ]
+    }
+  },
+  "independent_verification": {
+    "B": {
+      "oracle": "Dijkstra over the full permutation graph with adjacent-swap edge cost i",
+      "cases": 872,
+      "range": "all permutations for N=2..6",
+      "mismatches": 0
+    },
+    "D": {
+      "oracle": "full BFS of valid-parenthesis strings under every legal balanced-substring reverse+flip",
+      "tested_until_failure": 15,
+      "first_failure": {
+        "N": 8,
+        "S": "(()())()",
+        "expected": 2,
+        "actual": 3,
+        "exact_orbit": [
+          "(()())()",
+          "()(()())"
+        ],
+        "spurious_m0_counted_example": "(())(())"
+      }
+    },
+    "E": {
+      "oracle": "exact connected components of the binary-string rewrite graph; compared component equivalence against frozen signatures",
+      "pair_checks": 1397380,
+      "range": "N=1..8, X,Y<=min(4,N)",
+      "mismatches": 0
+    }
+  },
+  "constraint_gates": {
+    "B": {
+      "input": "N=200000 reverse permutation",
+      "elapsed_seconds": 0.01,
+      "rss_kb": 5740,
+      "status": "PASS",
+      "frozen_complexity": "O(N log N)"
+    },
+    "D": {
+      "frozen_complexity": "O(N) after factorial precompute",
+      "status": "CORRECTNESS_FAIL_BEFORE_CONSTRAINT_CREDIT"
+    },
+    "E": {
+      "input": "N=500000, X=137, Y=211, S=T max length",
+      "elapsed_seconds": 0.0,
+      "rss_kb": 8384,
+      "status": "PASS",
+      "frozen_complexity": "O(N)"
+    }
+  },
+  "pre_x1_classification": {
+    "B": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "D": "CLAIM_GRADE_M0_FAIL",
+    "E": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "d_failure_class": "DEPTH_PROFILE_TOO_COARSE_ROOTED_SUBTREE_MEMBERSHIP_INVARIANT_IGNORED",
+  "x1_eligible_task": "D",
+  "x1_feedback": {
+    "input": "8\n(()())()\n",
+    "expected": "2",
+    "actual": "3"
+  },
+  "editorial_or_gold_used": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "triaxis.avr.v52.result/v0.1",
+  "batch": "V52",
+  "contest": "ARC182",
+  "tasks": {
+    "F": "CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE",
+    "D": "CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activations": 0,
+  "source_binding": "PASS_AFTER_REPAIR",
+  "source_binding_repair": {
+    "task": "D",
+    "pre_execution": true,
+    "execution_before_repair": false
+  },
+  "delta": {
+    "claim_grade_tasks": 2,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 1,
+    "protocol_excluded": 1
+  },
+  "interpretation": "two fresh strong-model ceiling passes plus one anti-gaming performance quarantine; no causal-lift rescue evidence added"
+}

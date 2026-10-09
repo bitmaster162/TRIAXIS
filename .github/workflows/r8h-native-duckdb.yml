@@ -1,0 +1,289 @@
+name: R9 Qwen3.5 Weak Model Donor Smoke
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-native-duckdb.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  r9:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+      HF_HUB_DISABLE_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Freeze prereg provenance
+        run: |
+          echo 'R9_PREREG_SHA256=678741da709023ff69307467566b835abc2b47fed04de9874c1f79a4293919b9'
+          echo 'MODEL=Qwen/Qwen3.5-0.8B'
+          echo 'MODEL_REVISION=2fc06364715b967f1860aea9cf38778875588b17'
+          echo 'TRANSFORMERS_COMMIT=0cdd8a1908949037cf7718769ffc03dbdf9d9fd6'
+          echo 'EVOAGENTBENCH=948a17288782d5120778da16b4cf1cad9305d8b4'
+          echo 'LCB=28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+          echo 'TEST6_SHA256=bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5'
+          echo 'TASKS=abc394_a,abc395_c,abc394_g'
+          echo 'ARMS=W0_DIRECT,W1_GENERIC_CONTROL,W2_TARGETED_CODE_SKILL'
+          echo 'DECODE=GREEDY_MAX_NEW_TOKENS_768'
+          echo 'NO_SECRETS=1'
+          echo 'NO_PAID_MODEL_API=1'
+
+      - name: Install pinned CPU inference stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet \
+            --index-url https://download.pytorch.org/whl/cpu \
+            'torch==2.13.0' 'torchvision'
+          python -m pip install --disable-pip-version-check --quiet \
+            'git+https://github.com/huggingface/transformers.git@0cdd8a1908949037cf7718769ffc03dbdf9d9fd6' \
+            'accelerate' 'safetensors' 'requests' 'beautifulsoup4' 'pillow' \
+            'datasets==2.21.0' 'huggingface-hub>=0.34' 'numpy' 'pandas' 'tqdm'
+          python - <<'PY'
+          import torch, transformers
+          print('RUNTIME_TORCH=' + torch.__version__)
+          print('RUNTIME_TRANSFORMERS=' + transformers.__version__)
+          PY
+
+      - name: Generate matched Qwen outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/r9_generate.py <<'PY'
+          import hashlib, json, os, re, time
+          from pathlib import Path
+          import requests
+          import torch
+          from bs4 import BeautifulSoup
+          from transformers import AutoProcessor, AutoModelForMultimodalLM
+
+          MODEL='Qwen/Qwen3.5-0.8B'
+          REV='2fc06364715b967f1860aea9cf38778875588b17'
+          TASKS={
+            'abc394_a':'https://atcoder.jp/contests/abc394/tasks/abc394_a?lang=en',
+            'abc395_c':'https://atcoder.jp/contests/abc395/tasks/abc395_c?lang=en',
+            'abc394_g':'https://atcoder.jp/contests/abc394/tasks/abc394_g?lang=en',
+          }
+          ARMS={
+            'W0_DIRECT':'Solve the programming problem below. Return only valid Python 3 source code. No Markdown fences, explanation, or prose.',
+            'W1_GENERIC_CONTROL':'Solve the programming problem below. Before answering, internally restate the objective, identify assumptions, consider an alternative, check consistency, and verify instruction compliance. Do not reveal this analysis. Return only valid Python 3 source code.',
+            'W2_TARGETED_CODE_SKILL':'Solve the programming problem below. Before answering, internally classify the exact input/output contract, derive an invariant and algorithm that fit the constraints, verify time and memory complexity, test samples and boundary cases, and check indexing/numeric pitfalls. Do not reveal this analysis. Return only valid Python 3 source code.',
+          }
+          WANTED=('Problem Statement','Constraints','Input','Output')
+
+          def sha_text(s):
+              return hashlib.sha256(s.encode('utf-8')).hexdigest()
+
+          def statement(url):
+              r=requests.get(url,timeout=30,headers={'User-Agent':'TRIAXIS-R9/1.0'})
+              r.raise_for_status()
+              html=r.text
+              soup=BeautifulSoup(html,'html.parser')
+              eng=soup.select_one('#task-statement .lang-en') or soup.select_one('span.lang-en')
+              if eng is None:
+                  raise RuntimeError('ATCODER_ENGLISH_STATEMENT_NOT_FOUND:'+url)
+              pieces=[]
+              for h in eng.find_all('h3'):
+                  title=h.get_text(' ',strip=True)
+                  if title not in WANTED:
+                      continue
+                  body=[]
+                  for sib in h.next_siblings:
+                      if getattr(sib,'name',None)=='h3':
+                          break
+                      if hasattr(sib,'get_text'):
+                          t=sib.get_text('\n',strip=True)
+                      else:
+                          t=str(sib).strip()
+                      if t:
+                          body.append(t)
+                  pieces.append('### '+title+'\n'+'\n'.join(body))
+              out='\n\n'.join(pieces).strip()
+              missing=[x for x in WANTED if ('### '+x) not in out]
+              if missing:
+                  raise RuntimeError('STATEMENT_SECTION_MISSING:'+','.join(missing))
+              return out, sha_text(html), sha_text(out)
+
+          def extract_code(raw):
+              text=raw.strip()
+              m=re.search(r'```(?:python3?|py)?\s*\n(.*?)```',text,re.I|re.S)
+              code=(m.group(1) if m else text).strip()
+              lines=code.splitlines()
+              if lines and lines[0].strip().lower() in ('python','python3'):
+                  code='\n'.join(lines[1:]).strip()
+              return code
+
+          torch.set_num_threads(max(1,min(4,os.cpu_count() or 1)))
+          statements={}
+          for qid,url in TASKS.items():
+              s,hhtml,hs=statement(url)
+              statements[qid]={'text':s,'html_sha256':hhtml,'statement_sha256':hs,'url':url}
+              print(f'STATEMENT_RECEIPT {qid} {hs} HTML {hhtml}')
+
+          print('MODEL_LOAD_BEGIN')
+          t0=time.time()
+          processor=AutoProcessor.from_pretrained(MODEL,revision=REV)
+          model=AutoModelForMultimodalLM.from_pretrained(
+              MODEL,revision=REV,device_map='cpu',dtype='auto',low_cpu_mem_usage=True
+          )
+          model.eval()
+          print(f'MODEL_LOAD_SECONDS={time.time()-t0:.3f}')
+          print('MODEL_CLASS='+model.__class__.__name__)
+
+          records=[]
+          for qid in ('abc394_a','abc395_c','abc394_g'):
+              stmt=statements[qid]['text']
+              for arm in ('W0_DIRECT','W1_GENERIC_CONTROL','W2_TARGETED_CODE_SKILL'):
+                  prompt=ARMS[arm]+'\n\n'+stmt
+                  messages=[{'role':'user','content':[{'type':'text','text':prompt}]}]
+                  inputs=processor.apply_chat_template(
+                      messages,add_generation_prompt=True,tokenize=True,
+                      return_dict=True,return_tensors='pt',enable_thinking=False
+                  )
+                  inputs={k:v.to('cpu') if hasattr(v,'to') else v for k,v in inputs.items()}
+                  start=time.time()
+                  with torch.inference_mode():
+                      out=model.generate(
+                          **inputs,max_new_tokens=768,do_sample=False,num_beams=1,use_cache=True
+                      )
+                  input_len=inputs['input_ids'].shape[-1]
+                  gen=out[0][input_len:]
+                  raw=processor.decode(gen,skip_special_tokens=True)
+                  code=extract_code(raw)
+                  elapsed=time.time()-start
+                  rec={
+                    'task_id':qid,'arm':arm,
+                    'statement_sha256':statements[qid]['statement_sha256'],
+                    'prompt_sha256':sha_text(prompt),
+                    'raw_output':raw,'extracted_code':code,
+                    'raw_output_sha256':sha_text(raw),'code_sha256':sha_text(code),
+                    'generated_tokens':int(gen.shape[-1]),'generation_seconds':elapsed,
+                    'extractor':'first python/code fence else whole trimmed output; strip leading language label only'
+                  }
+                  records.append(rec)
+                  print(f'GEN {qid} {arm} TOKENS={rec["generated_tokens"]} SEC={elapsed:.3f} CODE_SHA={rec["code_sha256"]}')
+                  del out,gen,inputs
+
+          artifact={
+            'schema':'triaxis.r9.qwen_raw_outputs/v1',
+            'model':MODEL,'revision':REV,
+            'decode':{'do_sample':False,'num_beams':1,'max_new_tokens':768,'enable_thinking':False},
+            'statements':{k:{kk:vv for kk,vv in v.items() if kk!='text'} for k,v in statements.items()},
+            'arms':ARMS,'records':records
+          }
+          Path('r9_outputs.json').write_text(json.dumps(artifact,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
+          print('R9_OUTPUT_ARTIFACT_SHA256='+hashlib.sha256(Path('r9_outputs.json').read_bytes()).hexdigest())
+          PY
+          python /tmp/r9_generate.py
+
+      - name: Upload raw model outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: r9-qwen-raw-outputs
+          path: r9_outputs.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Prepare pinned LiveCodeBench verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/LiveCodeBench/LiveCodeBench.git LiveCodeBench
+          git -C LiveCodeBench checkout --quiet 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+          test "$(git -C LiveCodeBench rev-parse HEAD)" = '28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24'
+          curl -L --fail --retry 3 --retry-delay 2 \
+            'https://huggingface.co/datasets/livecodebench/code_generation_lite/resolve/503416f80ac447d31f252d8434023786ce45dd0c/test6.jsonl?download=true' \
+            -o /tmp/test6.jsonl
+          test "$(stat -c %s /tmp/test6.jsonl)" = '134303240'
+          echo 'bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5  /tmp/test6.jsonl' | sha256sum -c -
+
+      - name: Native hidden scoring
+        env:
+          LCB_REPO: ./LiveCodeBench
+          LCB_COMMIT: 28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, sys
+          TASKS=('abc394_a','abc395_c','abc394_g')
+          data=json.load(open('r9_outputs.json',encoding='utf-8'))
+          codes={(r['task_id'],r['arm']):r['extracted_code'] for r in data['records']}
+          rows={}
+          with open('/tmp/test6.jsonl','r',encoding='utf-8') as f:
+              for line in f:
+                  if not any(q in line for q in TASKS):
+                      continue
+                  row=json.loads(line)
+                  qid=str(row.get('question_id'))
+                  if qid in TASKS:
+                      rows[qid]=row
+          if set(rows)!=set(TASKS):
+              raise RuntimeError('R9_TASK_ROWS_NOT_FOUND:'+repr(sorted(set(TASKS)-set(rows))))
+
+          lcb=pathlib.Path(os.environ['LCB_REPO']).resolve()
+          sys.path.insert(0,str(lcb))
+          from lcb_runner.benchmarks.code_generation import CodeGenerationProblem
+          from lcb_runner.evaluation.compute_code_generation_metrics import check_correctness
+
+          def flatten(v):
+              out=[]
+              def w(x):
+                  if isinstance(x,(list,tuple)):
+                      for z in x:w(z)
+                  else:out.append(x)
+              w(v); return out
+          def classify(flat):
+              if flat and all(v is True or v==1 for v in flat):return 'PASS'
+              if any(v==-3 for v in flat):return 'TLE'
+              if any(v==-4 for v in flat):return 'RE'
+              if any(v==-2 for v in flat):return 'WA'
+              if any(v==-1 for v in flat):return 'CE_OR_TIMEOUT'
+              return 'FAIL'
+
+          results=[]
+          for qid in TASKS:
+              for arm in ('W0_DIRECT','W1_GENERIC_CONTROL','W2_TARGETED_CODE_SKILL'):
+                  problem=CodeGenerationProblem(**rows[qid])
+                  sample=problem.get_evaluation_sample()
+                  rl,meta=check_correctness(sample,codes[(qid,arm)],timeout=6,debug=False)
+                  flat=flatten(rl)
+                  total=len(flat); passed=sum(1 for v in flat if v is True or v==1)
+                  results.append({'task_id':qid,'arm':arm,'reward':1.0 if total and passed==total else 0.0,
+                                  'passed':passed,'total':total,'error_class':classify(flat)})
+                  del problem,sample,rl,meta
+          del rows
+          sums={arm:sum(int(r['reward']==1.0) for r in results if r['arm']==arm)
+                for arm in ('W0_DIRECT','W1_GENERIC_CONTROL','W2_TARGETED_CODE_SKILL')}
+          rescues=sum(1 for q in TASKS if next(r for r in results if r['task_id']==q and r['arm']=='W1_GENERIC_CONTROL')['reward']==0.0 and next(r for r in results if r['task_id']==q and r['arm']=='W2_TARGETED_CODE_SKILL')['reward']==1.0)
+          harms=sum(1 for q in TASKS if next(r for r in results if r['task_id']==q and r['arm']=='W1_GENERIC_CONTROL')['reward']==1.0 and next(r for r in results if r['task_id']==q and r['arm']=='W2_TARGETED_CODE_SKILL')['reward']==0.0)
+          out={'schema':'triaxis.r9.native_result/v1','model':'Qwen/Qwen3.5-0.8B',
+               'model_revision':'2fc06364715b967f1860aea9cf38778875588b17',
+               'prereg_sha256':'678741da709023ff69307467566b835abc2b47fed04de9874c1f79a4293919b9',
+               'livecodebench_commit':os.environ.get('LCB_COMMIT'),
+               'test6_sha256':'bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5',
+               'results':results,'task_pass_counts':sums,
+               'W2_vs_W1_rescues':rescues,'W2_vs_W1_harms':harms,
+               'hidden_test_content_disclosed':False}
+          print('===R9_SANITIZED_NATIVE_RESULT_BEGIN===')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          print('===R9_SANITIZED_NATIVE_RESULT_END===')
+          pathlib.Path('r9_native_result.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          PY
+
+      - name: Upload native result
+        uses: actions/upload-artifact@v4
+        with:
+          name: r9-native-result
+          path: r9_native_result.json
+          if-no-files-found: error
+          retention-days: 30

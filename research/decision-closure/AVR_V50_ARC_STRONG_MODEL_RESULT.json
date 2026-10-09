@@ -1,0 +1,38 @@
+{
+  "schema": "triaxis.avr.v50.result/v0.1",
+  "batch": "V50",
+  "contest": "ARC185",
+  "tasks": {
+    "D": {
+      "score": 800,
+      "m0": "PASS",
+      "x1": false,
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "E": {
+      "score": 800,
+      "m0": "PASS",
+      "x1": false,
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "A": {
+      "score": 600,
+      "m0": "PASS",
+      "x1": false,
+      "final": "CLAIM_GRADE_M0_PASS"
+    }
+  },
+  "delta": {
+    "claim_grade": 3,
+    "m0_pass": 3,
+    "final_pass": 3,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0,
+    "x1_activations": 0
+  },
+  "interpretation": "fresh strong-model ceiling batch; no frozen claim-grade correctness failure and therefore no new causal-lift rescue evidence",
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "broad_claim": "UNSUPPORTED"
+}

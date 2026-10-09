@@ -1,0 +1,29 @@
+{
+  "schema": "triaxis.avr_v37_scoring_freeze/v0.1",
+  "editorial_opened": false,
+  "tasks": {
+    "arc204_b": {
+      "M0": "FAIL",
+      "X1": "PROVISIONAL_CLAIM_GRADE_PASS",
+      "final_pre_editorial": "PROVISIONAL_CLEAN_RESCUE"
+    },
+    "arc204_c": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "final_pre_editorial": "PERFORMANCE_QUARANTINE"
+    },
+    "arc204_d": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "final_pre_editorial": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "v37_pre_editorial_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 0,
+    "final_pass_added": 1,
+    "clean_rescues_added": 1,
+    "harms_added": 0,
+    "quarantined_added": 2
+  }
+}

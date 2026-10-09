@@ -1,0 +1,121 @@
+{
+  "claim_boundary": {
+    "cognitive_lift_credit": 0,
+    "not_supported": [
+      "A real BFCL production pipeline was found to be using the bad exact-string scorer.",
+      "TRIAXIS improves BFCL model accuracy.",
+      "20 independent mismatch types were discovered.",
+      "benchmark-wide prevalence of scoring defects",
+      "EBRC novelty",
+      "production qualification"
+    ],
+    "supported": [
+      "The abstract verifier/instrument-applicability gate transfers beyond AtCoder/stdout semantics to BFCL structured AST evaluation.",
+      "Raw exact serialized-string equality is not a valid substitute for the official BFCL simple_python AST contract.",
+      "The transfer was frozen before opening BFCL possible_answer ground truth."
+    ]
+  },
+  "date": "2026-08-14",
+  "decision": {
+    "NEXT": "Test false-positive resistance: find a fresh domain/category where exact equality really is authoritative and require the gate to ADMIT rather than over-quarantine.",
+    "PRODUCTION_PROMOTION": "DENY",
+    "VERIFIER_CONTRACT_GATE": "RETAIN_AS_BOUNDED_DEFAULT_WHEN_AUTHORITATIVE_TASK_AND_EVALUATOR_CONTRACTS_ARE_AVAILABLE",
+    "VERIFIER_CONTRACT_GATE_DOMAIN_TRANSFER": "PASS"
+  },
+  "domain": {
+    "category": "simple_python",
+    "evaluator_blob_sha": "160fd75cfc8b2b7ef9f83a244f81da0fe0244e39",
+    "evaluator_path": "berkeley-function-call-leaderboard/bfcl_eval/eval_checker/ast_eval/ast_checker.py",
+    "ground_truth_blob_sha": "268c55641a21b51fc15730ce39ce906444a935a1",
+    "ground_truth_path": "berkeley-function-call-leaderboard/bfcl_eval/data/possible_answer/BFCL_v4_simple_python.json",
+    "name": "Berkeley Function Calling Leaderboard v4",
+    "official_repo": "ShishirPatil/gorilla",
+    "test_path": "berkeley-function-call-leaderboard/bfcl_eval/data/BFCL_v4_simple_python.json"
+  },
+  "epoch": "R10G_BFCL_AST_CONTRACT_TRANSFER_20260814",
+  "freeze": {
+    "case_ids": [
+      "simple_python_175",
+      "simple_python_43",
+      "simple_python_40",
+      "simple_python_293",
+      "simple_python_19",
+      "simple_python_35",
+      "simple_python_188",
+      "simple_python_268",
+      "simple_python_339",
+      "simple_python_149",
+      "simple_python_333",
+      "simple_python_294",
+      "simple_python_141",
+      "simple_python_98",
+      "simple_python_118",
+      "simple_python_176",
+      "simple_python_347",
+      "simple_python_100",
+      "simple_python_374",
+      "simple_python_223"
+    ],
+    "ground_truth_opened_before_freeze": false,
+    "path": "/mnt/data/R10G_BFCL_AST_CONTRACT_TRANSFER_FREEZE_2026-08-14.json",
+    "sample_size": 20,
+    "sha256": "4b899d5c0569a36455546b99d77292cafc3b8e97bde4b379a870a2d970e190f1"
+  },
+  "frozen_hypothesis_adjudication": {
+    "candidate_bad_instrument": "generic exact serialized-string equality",
+    "mismatch_class": "STRUCTURED_AST_EQUIVALENCE_VS_EXACT_STRING_EQUALITY",
+    "official_contract": "AST/structured function-call validation",
+    "reason": [
+      "Official BFCL routes simple categories through simple_function_checker rather than raw serialized-string equality.",
+      "The checker validates function name, required parameters, parameter types, and values structurally.",
+      "The checker standardizes string values by removing selected punctuation/spaces, lowercasing, and normalizing quotes.",
+      "Dictionary parameter validation is key/value based rather than dependent on serialization/key insertion order."
+    ],
+    "result": "CONFIRMED"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "sample_adjudication": {
+    "cases_bound_to_same_simple_python_ast_contract": 20,
+    "exact_string_substitute_inapplicable": 20,
+    "false_quarantine_detected": 0,
+    "note": "This is a domain-contract classification, not 20 independently different mismatch mechanisms."
+  },
+  "schema": "triaxis.r10g.bfcl_ast_contract_transfer_result/v1",
+  "status": "PROSPECTIVE_CROSS_DOMAIN_CONTRACT_TRANSFER_PASS",
+  "transfer": {
+    "abstract_gate": [
+      "bind task/domain output semantics",
+      "bind downstream evaluator semantics",
+      "test semantic applicability before scoring",
+      "reject/quarantine an evaluator substitute whose equivalence relation is stricter or different than the authoritative contract",
+      "do not count instrument-caused false negatives as model failures"
+    ],
+    "atcoder_specific_taxonomy_required": false,
+    "cross_domain_support": "YES",
+    "new_domain": "function-calling structured AST evaluation",
+    "previous_domain": "competitive-programming stdout / numerical / constructive output contracts"
+  },
+  "witness": {
+    "case_id": "simple_python_19",
+    "ground_truth": {
+      "math.gcd": {
+        "num1": [40],
+        "num2": [50]
+      }
+    },
+    "interpretation": "An exact-string scorer would create a false negative for a semantically identical structured call solely because parameter serialization order differs.",
+    "official_ast_semantics_equivalent": true,
+    "raw_exact_string_equal": false,
+    "serialization_a": "{\"math.gcd\":{\"num1\":40,\"num2\":50}}",
+    "serialization_b": "{\"math.gcd\":{\"num2\":50,\"num1\":40}}"
+  }
+}

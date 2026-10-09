@@ -1,0 +1,51 @@
+{
+  "schema": "triaxis.r5a.f5_repo_wave2.receipt/v0.1",
+  "date_local": "2026-08-12",
+  "status": "COMPLETE_HISTORICALLY_VERIFIED_INCREMENTAL_REPAIR_PREDICTION",
+  "research_report_commit": "1026a01f0f878d18c76e21745950051b77a117c7",
+  "experiment": {
+    "repo": "bitmaster162/okx-nft-bot",
+    "failing_run_id": 31529705896,
+    "failing_head": "f82c5dcda1d5592be0c9826b31e8d0cc71cf97d3",
+    "pre_gold_freeze_sha256": "fcff4b9c7eb80ef21dc624ebb52aa121a552949863fde04749f91f07b90bb144",
+    "B0": "VERIFIED_IMMEDIATE_WIRING_REPAIR_PREDICTION",
+    "B1_increment_over_B0": 0,
+    "B2": "HISTORICALLY_VERIFIED_INCREMENTAL_REPO_REPAIR_PREDICTION",
+    "B2_incremental_repairs_over_B1": 1,
+    "B2_harms": 0
+  },
+  "post_freeze_gold": {
+    "immediate_fix_commit": "80a9b76bda81b116df9eefd3a7cd46f95f9b7985",
+    "immediate_fix_ci_run": 31530070027,
+    "immediate_fix_ci": "success",
+    "repo_fix_pr": 41,
+    "repo_fix_merge_commit": "f8372978d4d8931cdc43faefd6e56e0465cbccc6",
+    "repo_fix_head": "ec77e5559156d372b56c0d2805d4a44f62de3beb",
+    "repo_fix_ci_run": 31560866847,
+    "repo_fix_ci": "success"
+  },
+  "capability_memory": {
+    "fingerprint": "F5_ERROR_PATH_SIDE_EFFECT_BYPASSES_ISOLATION_BOUNDARY",
+    "donor": "D_REPO_BEHAVIOR",
+    "status": "CONDITIONALLY_PROMOTE",
+    "verified_effect": "predicted a later real safety repair and its regression structure"
+  },
+  "epistemic": {
+    "D_REPO_BEHAVIOR": "SUPPORTED_FOR_HISTORICALLY_VERIFIED_INCREMENTAL_REPAIR_PREDICTION",
+    "full_triaxis_over_targeted_repo_donor": "NOT_DEMONSTRATED",
+    "distinct_triaxis_causal_lift": "UNRESOLVED",
+    "broad_frontier_synergy_claim": "UNSUPPORTED",
+    "devil_default": "OFF"
+  },
+  "claim_boundary": "historical replay with pre-gold freeze and future real fix+CI corroboration; same model/session; non-independent and non-confirmatory",
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

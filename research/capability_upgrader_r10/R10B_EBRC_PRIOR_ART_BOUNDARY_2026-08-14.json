@@ -1,0 +1,93 @@
+{
+  "adjudication": {
+    "broad_ebrc_novelty_claim": "REJECT_UNSUPPORTED",
+    "forbidden_claims": [
+      "EBRC is novel",
+      "TRIAXIS invented commitment/reconsideration",
+      "TRIAXIS invented provenance or assurance cases",
+      "TRIAXIS invented stop/reopen or value-of-computation control",
+      "TRIAXIS invented adversarial verifier audit trails",
+      "TRIAXIS broadly increases model intelligence"
+    ],
+    "permitted_claim_now": "The project may claim measured controller effects only where frozen prospective experiments show them (for example, prospective detection of verifier-contract mismatches).",
+    "reason": "Every broad primitive in the current EBRC formulation has strong antecedents in established agent commitment/reconsideration, metareasoning, provenance, assurance-case, dynamic-assurance, and agent-verifier/audit-trail work.",
+    "specific_integration_novelty": "UNRESOLVED_DO_NOT_CLAIM",
+    "surviving_research_wedge": "Treat TRIAXIS/EBRC as an empirically testable integration/control architecture: synchronized state/evidence binding + verifier semantic-contract validation + selective external verification + bounded commitment/reopen/stop + immutable receipts."
+  },
+  "date": "2026-08-14",
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "link_to_r10a": {
+    "interpretation": "R10-A supports a concrete procedural controller effect (prospective instrument-validity detection) and should be reported as such, not as novelty.",
+    "r10a_result_commit": "e50e2dfafc32e7f23af0c5f020aab5fd6b9db79f"
+  },
+  "prior_art_matrix": [
+    {
+      "ebrc_component": "bounded commitment + reconsider/reopen policy",
+      "implication": "Do not claim novelty for commitment strategies, runtime reconsideration, or environment-conditioned reconsideration.",
+      "overlap": "DIRECT",
+      "prior_art": "BDI intention reconsideration",
+      "source": "Schut & Wooldridge, Principles of Intention Reconsideration (Agents 2001), DOI 10.1145/375735.376326",
+      "url": "https://doi.org/10.1145/375735.376326"
+    },
+    {
+      "ebrc_component": "stop / reasoning budget / selective continuation",
+      "implication": "Do not claim novelty for deciding when to terminate computation or allocate reasoning.",
+      "overlap": "DIRECT",
+      "prior_art": "rational metareasoning / Value of Computation",
+      "source": "Callaway et al., Learning to select computations (2017)",
+      "url": "https://arxiv.org/abs/1711.06892"
+    },
+    {
+      "ebrc_component": "selective inference-time reasoning under cost",
+      "implication": "Do not claim novelty for selective reasoning based on Value of Computation.",
+      "overlap": "DIRECT",
+      "prior_art": "Rational Metareasoning for Large Language Models",
+      "source": "De Sabbata, Sumers, Griffiths (2024)",
+      "url": "https://arxiv.org/abs/2410.05563"
+    },
+    {
+      "ebrc_component": "provenance / derivation / primary source / revision / delegation",
+      "implication": "Do not claim novelty for provenance graphs, derivation chains, primary-source binding, revision, or delegation semantics.",
+      "overlap": "DIRECT",
+      "prior_art": "W3C PROV-O / PROV family",
+      "source": "W3C Recommendation, PROV-O (2013)",
+      "url": "https://www.w3.org/TR/prov-o/"
+    },
+    {
+      "ebrc_component": "claim supported by structured evidence and defeater analysis",
+      "implication": "Do not claim novelty for evidence-to-claim assurance arguments or confidence via identified/eliminated defeaters.",
+      "overlap": "DIRECT",
+      "prior_art": "assurance cases",
+      "source": "CMU/SEI, Toward a Theory of Assurance Case Confidence (2012)",
+      "url": "https://www.sei.cmu.edu/library/toward-a-theory-of-assurance-case-confidence/"
+    },
+    {
+      "ebrc_component": "runtime reevaluation / stale evidence / reopen under changing context",
+      "implication": "Do not claim novelty for continual reevaluation of assurance evidence as environment/system state changes.",
+      "overlap": "DIRECT_TO_STRONG",
+      "prior_art": "Dynamic Assurance Cases",
+      "source": "NASA NTRS, Dynamic Assurance of Autonomous Systems (2023/2024)",
+      "url": "https://ntrs.nasa.gov/citations/20230008541"
+    },
+    {
+      "ebrc_component": "external/adversarial verifier + evidence-linked audit trail",
+      "implication": "Do not claim novelty for integrating adversarial verifiers into agent workflows or machine-readable audit trails mapping decisions to evidence.",
+      "overlap": "DIRECT_TO_STRONG",
+      "prior_art": "NIST Building Evaluation Probes into Agentic AI",
+      "source": "NIST ITL AI Program (2026)",
+      "url": "https://www.nist.gov/programs-projects/building-evaluation-probes-agentic-ai"
+    }
+  ],
+  "question": "What, if anything, may TRIAXIS/EBRC claim beyond established prior mechanisms?",
+  "schema": "triaxis.r10b.prior_art_boundary/v1",
+  "scope": "EBRC_C5_PRIOR_ART_BOUNDARY_ONLY"
+}

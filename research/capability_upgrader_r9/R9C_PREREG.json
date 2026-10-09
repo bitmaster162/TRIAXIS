@@ -1,0 +1,152 @@
+{
+  "arms": {
+    "V1_MINIMAL_VERIFIER_CORRECTION": {
+      "eligibility": "Only admitted W0 failures.",
+      "feedback": "Only sanitized native verdict class (WA/TLE/RE/CE_OR_TIMEOUT/FAIL). No hidden input, expected output, failing case, stack trace derived from hidden input, or hidden test content.",
+      "max_corrections": 1,
+      "prompt_template": "Your previous Python submission failed the hidden native verifier with verdict <VERDICT>. You are not given hidden tests or expected outputs. Re-read the original problem and inspect your previous code. Return one corrected Python 3 program only; no Markdown, explanation, or prose."
+    },
+    "W0_DIRECT": {
+      "prompt_prefix": "Solve the programming problem below. Return only valid Python 3 source code. No Markdown fences, explanation, or prose."
+    }
+  },
+  "baseline_git": {
+    "branch": "research/decision-closure-ebd-v0.3",
+    "head_before_prereg": "2155e7b440f29701c0029072b6a58a4563563986",
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "pr": 7,
+    "repo": "bitmaster162/TRIAXIS",
+    "tree_before_prereg": "5b71f6f4c358e24e9ffe5ee8c83e135b3d152433"
+  },
+  "benchmark": {
+    "code_split_blob": "590137fc1e1f82034f7a3f5e7a448c055dc8c766",
+    "evoagentbench_commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "evoagentbench_repo": "EverMind-AI/EvoAgentBench",
+    "livecodebench_commit": "28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+    "test6_commit": "503416f80ac447d31f252d8434023786ce45dd0c",
+    "test6_sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5"
+  },
+  "claim_boundary": [
+    "This tests a selective verifier/correction donor policy, not another prompt scaffold.",
+    "EBRC/Verifier Contract Gate receives zero cognitive-lift credit.",
+    "Instrument mismatch is quarantine, not model failure.",
+    "No result from this smoke alone supports a universal self-correction claim."
+  ],
+  "date": "2026-08-14",
+  "decision_rule": {
+    "candidate_positive": "At least one valid prospective W0-fail -> V1-pass rescue, no selective-policy harm, and no material cost veto.",
+    "null_or_harm": "Reject/demote this donor; do not add prompt/architecture complexity to escape the result.",
+    "positive_smoke": "CONDITIONAL only; requires a fresh confirmatory replication before promotion."
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "model": {
+    "decode": {
+      "enable_thinking": false,
+      "max_tokens": 768,
+      "temperature": 0
+    },
+    "gguf_repo": "ggml-org/Qwen3.5-0.8B-GGUF",
+    "gguf_variant": "BF16",
+    "llama_cpp": "bdffafa5df64e10cb6eef2f3bba4b4afc5f1c149",
+    "repo": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17"
+  },
+  "primary_comparison": "V1_MINIMAL_VERIFIER_CORRECTION_POLICY vs W0_DIRECT",
+  "protocol": [
+    "Fetch direct upstream AtCoder English statement sections only: Problem Statement, Constraints, Input, Output.",
+    "Run the frozen Verifier Contract Gate before model generation; quarantine incompatible instruments symmetrically.",
+    "Generate W0 direct for admitted tasks with exact pinned model/backend/decode.",
+    "Freeze and upload all W0 raw/code outputs before any hidden scoring.",
+    "Run pinned native hidden verifier and emit only sanitized verdict classes/counts.",
+    "Only admitted W0 failures receive one V1 minimal verifier-conditioned correction.",
+    "Fresh native re-verification of V1 code.",
+    "Report paired rescues, harms under the selective policy, unchanged failures, invalid/quarantined denominator, completion-token delta and generation-runtime delta."
+  ],
+  "purpose": "Prospective weak/open-model test of a materially different donor family: executable native verifier signal followed by at most one minimal verifier-conditioned correction, compared with direct W0.",
+  "sample_freeze": {
+    "epoch": "R9C_WEAK_QWEN_MINIMAL_VERIFIER_CORRECTION_20260814",
+    "excluded_task_ids": [
+      "abc315_f",
+      "abc320_a",
+      "abc324_a",
+      "abc324_f",
+      "abc326_d",
+      "abc327_c",
+      "abc327_e",
+      "abc335_c",
+      "abc338_a",
+      "abc338_b",
+      "abc339_d",
+      "abc350_e",
+      "abc353_b",
+      "abc356_b",
+      "abc357_b",
+      "abc359_c",
+      "abc363_b",
+      "abc365_a",
+      "abc367_g",
+      "abc373_g",
+      "abc374_d",
+      "abc379_b",
+      "abc380_a",
+      "abc383_a",
+      "abc385_a",
+      "abc387_a",
+      "abc388_a",
+      "abc391_d",
+      "abc392_d",
+      "abc394_a",
+      "abc394_g",
+      "abc395_c",
+      "abc396_b",
+      "abc397_a",
+      "abc400_g"
+    ],
+    "exclusion_count": 35,
+    "hidden_tests_opened_before_freeze": false,
+    "population": "EvoAgentBench code_implementation held-out test IDs beginning with abc, excluding every abc task ID found anywhere in the cold-start evidence archive, including nested historical ZIPs.",
+    "selection": "6 smallest SHA256(epoch + ':' + task_id) among eligible IDs",
+    "statements_opened_before_freeze": false,
+    "task_order": [
+      "abc361_f",
+      "abc325_e",
+      "abc376_e",
+      "abc389_d",
+      "abc354_b",
+      "abc400_b"
+    ]
+  },
+  "schema": "triaxis.r9c.weak_qwen_minimal_verifier_correction/v1",
+  "status": "PREREGISTERED_BEFORE_R9C_MODEL_INFERENCE",
+  "verifier_contract_gate": {
+    "admission": "Only tasks with NO_MISMATCH_DETECTED under the frozen contract gate may enter W0 scoring.",
+    "frozen_rule_source": "R8-L prospective Verifier Contract Gate",
+    "non_unique_markers": [
+      "multiple correct",
+      "any valid",
+      "any of them",
+      "any solution",
+      "any one",
+      "どれを出力しても",
+      "複数存在"
+    ],
+    "numeric_tolerance_markers": [
+      "absolute or relative error",
+      "relative or absolute error",
+      "absolute error",
+      "relative error",
+      "絶対誤差",
+      "相対誤差"
+    ],
+    "property_or_special_judge": "If output validity is defined by a feasibility/property condition rather than one unique reference value and the pinned generic LCB stdio verifier cannot represent that semantics, QUARANTINE."
+  }
+}

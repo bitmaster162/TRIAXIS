@@ -1,0 +1,12 @@
+{
+  "schema": "triaxis.avr.v51.x1_source_binding/v0.1",
+  "batch": "V51",
+  "task": "C",
+  "verified_before_x1_execution": true,
+  "status": "PASS",
+  "repair_required": false,
+  "source": {
+    "sha256": "a992a744ea355de9ef88448ae3b6b9a8ea053040108ca64008042f67c1b2c2c8",
+    "github_blob_sha": "ea91bd316c33c7f8537b4633a4cc8c8d367c05e2"
+  }
+}

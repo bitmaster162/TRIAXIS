@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr_v37_arc_strong_model_result/v0.1",
+  "contest": "arc204",
+  "tasks": {
+    "arc204_b": {
+      "M0": "FAIL",
+      "X1": "PASS",
+      "final": "CLAIM_GRADE_CLEAN_X1_RESCUE"
+    },
+    "arc204_c": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "final": "PERFORMANCE_QUARANTINE"
+    },
+    "arc204_d": {
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "final": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "v37_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 0,
+    "final_pass_added": 1,
+    "clean_rescues_added": 1,
+    "harms_added": 0,
+    "quarantined_added": 2
+  },
+  "interpretation": "V37 adds one fresh claim-grade strong-model rescue. The rescue survived trigger repair, independent regression, proof-equivalent invariant, max-style constraint smoke, scoring freeze, and official downgrade-only audit."
+}

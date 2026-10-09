@@ -1,0 +1,20 @@
+{
+  "schema": "triaxis.r16d.freeze_anchor/v1",
+  "date": "2026-08-14",
+  "epoch": "R16D_NEXT_20_EXTERNALLY_WITNESSED_SUBJECT_TRANSACTIONS_20260814",
+  "status": "FROZEN_BEFORE_FIRST_SUBJECT_TRANSACTION",
+  "freeze_sha256": "b0777d16dd6c7168f9ab5c11451e6f9faf48af5ea9259ebfa759c3221a8f2303",
+  "witness_tool_sha256": "4f83ca65d7686c8f27c6f6073eec724762211c1b2f8d7e933cb6af4d2a265b95",
+  "witness_tests_sha256": "a0749d4ab244e8677a1d7cb1b2efe92634c21a4fc4172368649c92d7334c80c4",
+  "witness_tests": "9/9 PASS",
+  "adversarial_matrix_sha256": "0de2275c232d5a4dc2fc6376c2dce1399383a75eca23ed7c667758124022b12a",
+  "adversarial_matrix": "122 cases / 0 hard invariant violations",
+  "predecessor_r16c_closure_sha256": "06c2d3e63ff95f2ba2f82df67d5ead40971f345f97b6d41a39b9e872938829d6",
+  "controller_semantics": "R15 frozen",
+  "measurement_infrastructure_excluded_from_subject_count": true,
+  "stop_rule": "Any eligible subject transaction whose canonicalization, witness persistence, fresh external read, or local confirmation fails closes the epoch before counting that transaction.",
+  "MERGE_PERMISSION": "DENY",
+  "deploy_permission": "DENY",
+  "can_trade": false,
+  "capital_permission": "DENY"
+}

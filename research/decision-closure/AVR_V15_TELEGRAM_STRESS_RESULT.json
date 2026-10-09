@@ -1,0 +1,60 @@
+{
+  "schema": "triaxis.avr_v15.telegram_stress_result/v0.1",
+  "status": "MECHANISM_STRESS_NULL",
+  "timestamp_local": "2026-08-11T18:21:00+07:00",
+  "test_type": "MECHANISM_STRESS_TEST_NOT_CONFIRMATORY",
+  "preregistration_commit": "4705bdf1929a304489bdf7caf1d4f5d24b71a065",
+  "runtime": {
+    "primary": "OPENCLAW",
+    "declared_model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "provider_model_receipt_available": false
+  },
+  "protocol": {
+    "N": 9,
+    "all_responses_frozen_before_scoring": true,
+    "response_vector_sha256": "57622b97fbfb751b5a6d8933218e83078834801013ef1f88244da768a5b80be7",
+    "model_visible_answer_key_aliases_scrubbed": true,
+    "historical_composition_changed_cases": ["fe05cde47598","f9916b8656bf","a0528554ed8b","f040615b7079"],
+    "historical_control_gate_activation_cases": ["a2dd8d2bc1af","5d43939de154","39dc5086664c","21cacf9743d1","53caa8ca31e7"]
+  },
+  "result": {
+    "M0_RAW_EXACT": "9/9",
+    "G1_RAW_EXACT": "9/9",
+    "delta_pp": 0.0,
+    "rescues": 0,
+    "harms": 0,
+    "changed_outputs": 0,
+    "guard_activations": 9,
+    "paired_exact_two_sided_p": 1.0,
+    "historical_hazard_M0": "4/4",
+    "historical_hazard_G1": "4/4",
+    "historical_controls_M0": "5/5",
+    "historical_controls_G1": "5/5"
+  },
+  "interpretation": {
+    "primary": "OpenClaw reached the correct commitment on every mechanism-targeted replay, including all four cases that historically changed under the frozen deterministic composer. TERMINAL_AUTHORITY produced no incremental change on this runtime/evidence presentation.",
+    "safety": "No harms observed; zero-call guard remains behaviorally safe on this stress set.",
+    "efficacy": "No weaker-model lift demonstrated because M0 was already at ceiling.",
+    "implication": "For this declared Nemotron 550 OpenClaw configuration, terminal-authority composition appears redundant under compressed scrubbed evidence packets. This does not falsify the guard on weaker runtimes or end-to-end tool trajectories."
+  },
+  "decision": {
+    "terminal_authority": "RETAIN_AS_ZERO_CALL_SEMANTIC_GUARD",
+    "default_research_priority": "DEPRIORITIZE_SAME_RUNTIME_SAME_PRESENTATION",
+    "same_stress_set_rerun": "STOP",
+    "next_test": "Use a genuinely weaker or differently constrained runtime, or an end-to-end native tool trajectory without controller-compressed terminal summaries."
+  },
+  "claim_boundaries": [
+    "Not a fresh/random confirmatory ToolBench-X sample.",
+    "Not provider-verified model identity.",
+    "Not a full official ToolBench-X score.",
+    "Mechanism stress replay only; four hazard cases were selected using prior mechanism history.",
+    "9/9 is ceiling/null and is not evidence of TERMINAL_AUTHORITY lift."
+  ],
+  "governance": {
+    "production_change": false,
+    "merge_permission": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

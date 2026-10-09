@@ -1,0 +1,76 @@
+{
+  "claim_boundary": {
+    "accuracy_claim": false,
+    "benchmark_prevalence_claim": false,
+    "cognitive_lift_credit": 0,
+    "model_inference": false,
+    "novelty_claim": false,
+    "production_qualified": false
+  },
+  "date": "2026-08-14",
+  "decision": {
+    "NEXT": "test representation-layer failure modes explicitly: raw-output contract vs parser/canonicalizer contract vs scorer contract",
+    "VERIFIER_CONTRACT_GATE": "RETAIN_BOUNDED_DEFAULT_WHEN_AUTHORITATIVE_TASK_AND_EVALUATOR_CONTRACTS_ARE_AVAILABLE",
+    "VERIFIER_CONTRACT_GATE_FALSE_POSITIVE_RESISTANCE": "PASS"
+  },
+  "domain": {
+    "benchmark": "MMLU-Pro",
+    "evaluator_files": [
+      {
+        "blob_sha": "1efd664232599e53b1648e68a44bdbaeb49948e5",
+        "path": "compute_accuracy.py"
+      },
+      {
+        "blob_sha": "8e35e17c1fcfdcfe88318392930cb253e4a3d302",
+        "path": "evaluate_from_local.py"
+      }
+    ],
+    "official_repo": "TIGER-AI-Lab/MMLU-Pro",
+    "repo_commit_observed": "f418b116db00b065c2aea046518d8fcf74d39872"
+  },
+  "epoch": "R10L_MMLUPRO_EXACT_LABEL_NEGATIVE_CONTROL_20260814",
+  "freeze": {
+    "evaluator_implementation_opened_before_freeze": false,
+    "file": "R10L_MMLUPRO_EXACT_LABEL_NEGATIVE_CONTROL_FREEZE_2026-08-14.json",
+    "sha256": "313a49a2380ee7065becebe6bded11fa4acb119151bcfc0607c973680f6b7aa0"
+  },
+  "frozen_hypothesis_adjudication": {
+    "actual_gate_action": "ADMIT",
+    "candidate_instrument": "exact equality of parsed/canonical predicted option label and gold option label",
+    "expected_gate_action": "ADMIT",
+    "reason": [
+      "compute_accuracy.py parses an A-J canonical label and scores correctness with pred == e['answer'].",
+      "evaluate_from_local.py likewise extracts an A-J label and, when a prediction exists, scores correctness with each['pred'] == each['answer'].",
+      "No semantic-equivalence or partial-credit layer is applied after canonical label extraction in these scoring paths.",
+      "Therefore exact equality is authoritative at the canonical-label representation, even though raw model text itself is not scored by byte equality."
+    ],
+    "representation": "CANONICAL_MULTIPLE_CHOICE_LABEL",
+    "result": "PASS"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "negative_control": {
+    "false_quarantine": false,
+    "interpretation": "The gate can distinguish a representation where exact equality is semantically authoritative from domains where a stricter raw/string equality would be invalid.",
+    "overquarantine_signal": 0,
+    "purpose": "test false-positive resistance of Verifier Contract Gate"
+  },
+  "schema": "triaxis.r10l.mmlupro_exact_label_negative_control_result/v1",
+  "status": "NEGATIVE_CONTROL_PASS_NO_OVERQUARANTINE",
+  "updated_gate_rule": {
+    "examples": {
+      "AtCoder_float_or_constructive": "raw exact stdout may be inapplicable -> quarantine",
+      "BFCL_simple_python": "raw serialized call string equality inapplicable; AST/structured equivalence required",
+      "MMLU_Pro": "raw model text byte equality inapplicable, but exact canonical answer-label equality is authoritative after parser -> admit"
+    },
+    "rule": "Bind both the authoritative task semantics and the authoritative evaluator representation. Evaluate equivalence at the canonical representation actually scored by the benchmark; do not confuse raw generation serialization with canonical evaluator state."
+  }
+}

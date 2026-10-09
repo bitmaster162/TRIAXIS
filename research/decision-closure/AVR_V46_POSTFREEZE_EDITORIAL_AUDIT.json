@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v46.postfreeze_audit/v0.1",
+  "batch": "V46",
+  "contest": "arc189",
+  "scoring_freeze_commit": "35fb3397cf320bda79cac917e7d9414a731194dc",
+  "official_editorials": {
+    "E": {
+      "url": "https://atcoder.jp/contests/arc189/editorial/11562",
+      "finding": "Official result: N=2,3 impossible; N=5 optimum max label 4; all other feasible N use optimum max label 3 via a balanced four-set construction. It also proves max label <=2 is impossible. This confirms frozen E was not merely locally broken: its N-1 optimum hypothesis and inductive construction were globally wrong.",
+      "effect": "CORROBORATE_FROZEN_FAILURE_NO_UPGRADE"
+    },
+    "D": {
+      "url": "https://atcoder.jp/contests/arc189/editorial/11561",
+      "finding": "Official proves absorption order never hurts and explicitly notes Cartesian-tree O(N) or O(N log N) solutions. This corroborates the frozen Cartesian closure mechanism and constraint safety.",
+      "effect": "CORROBORATE"
+    },
+    "C": {
+      "url": "https://atcoder.jp/contests/arc189/editorial/11560",
+      "finding": "Official exactly reduces each color to the farthest ball's permutation-cycle path, then shortest common supersequence, LCS, and LIS in O(N log N).",
+      "effect": "CORROBORATE"
+    }
+  },
+  "final_scores": {
+    "E": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+    "D": "CLAIM_GRADE_M0_PASS",
+    "C": "CLAIM_GRADE_M0_PASS"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

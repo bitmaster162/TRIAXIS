@@ -1,0 +1,77 @@
+{
+  "schema": "triaxis.avr.v53.prereg/v0.1",
+  "batch": "V53",
+  "model_line": "GPT-5.6 Sol",
+  "preselection_exclusion": {
+    "contest": "arc181",
+    "reason": "pre-prereg narrow official search unexpectedly exposed tasks_print statement snippet/constraints/sample and editorial index for would-be-selected tasks",
+    "solutions_intentionally_opened": false,
+    "protocol_excluded": true
+  },
+  "contest": {
+    "id": "arc180",
+    "name": "AtCoder Regular Contest 180",
+    "ended": "2024-06-29T23:00:00+09:00",
+    "rated_range": "0-2799",
+    "scores": {
+      "A": 400,
+      "B": 600,
+      "C": 600,
+      "D": 700,
+      "E": 800,
+      "F": 1100
+    }
+  },
+  "selection_basis": "official announcement/top score metadata only; selected three highest-scoring tasks",
+  "selected_tasks": [
+    {
+      "task": "F",
+      "score": 1100
+    },
+    {
+      "task": "E",
+      "score": 800
+    },
+    {
+      "task": "D",
+      "score": 700
+    }
+  ],
+  "pre_statement_guards": {
+    "selected_task_statements_opened": false,
+    "selected_task_editorials_opened": false,
+    "gold_or_submissions_opened": false,
+    "search_statement_snippet_leakage_for_arc180_selected_tasks": false,
+    "tasks_index_names_seen": true,
+    "tasks_index_statement_text_seen": false
+  },
+  "protocol": {
+    "all_m0_sources_freeze_before_compile_or_run": true,
+    "source_binding_fetchback_before_execution": true,
+    "x1_max_per_actual_frozen_correctness_failure": 1,
+    "x1_optional": true,
+    "no_x1_for_qualitatively_new_asymptotic_architecture": true,
+    "trigger_repair_requires_independent_regression": true,
+    "no_second_x1": true,
+    "scoring_freeze_before_editorial_or_gold": true,
+    "postfreeze_audit_downgrade_or_corroborate_only": true
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  },
+  "baseline": {
+    "main": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_head": "47331ba4b0f7abcdf3ca0a1251bd6677961bd48a",
+    "ahead": 359,
+    "behind": 0,
+    "pr": 7
+  }
+}

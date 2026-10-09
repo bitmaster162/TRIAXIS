@@ -1,0 +1,37 @@
+{
+  "schema": "triaxis.evolution_hidden_v02.self_output_freeze/v1",
+  "status": "FROZEN_BEFORE_PRIVATE_ORACLE_SCORING",
+  "model": "GPT-5.6 Sol",
+  "same_session": true,
+  "independent": false,
+  "confirmatory": false,
+  "arms": {
+    "H00_DIRECT": {
+      "rows": 20,
+      "sha256": "cc4037d720cc322ff6a08d47b1aeb2ba28ca7c16f2c628d32255629715d4a933",
+      "null_answers": 10
+    },
+    "H01_SELF_CRITIQUE": {
+      "rows": 20,
+      "sha256": "5db64683bff56186e8c5d63c6ff9d877f724f6384d05f9770815ae0e9555e3df",
+      "null_answers": 10
+    },
+    "H09_MVT_PROPOSER_VERIFIER": {
+      "rows": 20,
+      "sha256": "7e3fc0d8c386ed6b28acaa5b1efafb521661705687a47e086d2a8a172b08df22",
+      "null_answers": 10
+    },
+    "H13_EBRC_DUAL_STATE": {
+      "rows": 20,
+      "sha256": "58bdd6bc4095d53d6908e1604c565fb3a564b8ae0c12e3d39d5741a5a598ef22",
+      "null_answers": 10
+    },
+    "H14_WMX_EBRC": {
+      "rows": 20,
+      "sha256": "61c681bcbd2ce585e5aa197ae9ec79a1309eeb892ba734245f49072d0bacd5a9",
+      "null_answers": 10
+    }
+  },
+  "oracle_read_before_freeze": false,
+  "frozen_at_utc": "2026-08-12T12:20:39.225444+00:00"
+}

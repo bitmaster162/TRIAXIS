@@ -1,0 +1,27 @@
+{
+  "schema": "triaxis.evolution_hidden_v02.self_adjudication/v1",
+  "date": "2026-08-12",
+  "model": "GPT-5.6 Sol",
+  "status": "DOUBLE_CEILING",
+  "evidence_class": "SELF_DIAGNOSTIC_NON_INDEPENDENT_NON_CONFIRMATORY",
+  "frozen_package_sha256": "f9fca7d3de6e798feda9dba682e7a8637c05efc6041666c6bd76db2b69cdcef7",
+  "oracle_exposure": "AFTER_ALL_ARM_OUTPUTS_FROZEN",
+  "same_session_cross_arm_contamination": true,
+  "known_aggregate_balance_before_outputs": "10 answerable / 10 unanswerable from validation receipt",
+  "arms": {
+    "H00_DIRECT": {"overall_final_accuracy": 1.0, "answerable_accuracy": 1.0, "unanswerable_null_accuracy": 1.0, "overanswer_rate_on_unanswerable": 0.0, "false_null_rate_on_answerable": 0.0, "pair_integrity_rate": 1.0, "pair_count": 10},
+    "H01_SELF_CRITIQUE": {"overall_final_accuracy": 1.0, "answerable_accuracy": 1.0, "unanswerable_null_accuracy": 1.0, "overanswer_rate_on_unanswerable": 0.0, "false_null_rate_on_answerable": 0.0, "pair_integrity_rate": 1.0, "pair_count": 10},
+    "H09_MVT_PROPOSER_VERIFIER": {"overall_final_accuracy": 1.0, "answerable_accuracy": 1.0, "unanswerable_null_accuracy": 1.0, "overanswer_rate_on_unanswerable": 0.0, "false_null_rate_on_answerable": 0.0, "pair_integrity_rate": 1.0, "pair_count": 10},
+    "H13_EBRC_DUAL_STATE": {"overall_final_accuracy": 1.0, "answerable_accuracy": 1.0, "unanswerable_null_accuracy": 1.0, "overanswer_rate_on_unanswerable": 0.0, "false_null_rate_on_answerable": 0.0, "pair_integrity_rate": 1.0, "pair_count": 10},
+    "H14_WMX_EBRC": {"overall_final_accuracy": 1.0, "answerable_accuracy": 1.0, "unanswerable_null_accuracy": 1.0, "overanswer_rate_on_unanswerable": 0.0, "false_null_rate_on_answerable": 0.0, "pair_integrity_rate": 1.0, "pair_count": 10}
+  },
+  "answer_vectors_identical_to_H00": {"H00_DIRECT": true, "H01_SELF_CRITIQUE": true, "H09_MVT_PROPOSER_VERIFIER": true, "H13_EBRC_DUAL_STATE": true, "H14_WMX_EBRC": true},
+  "rescues_over_H00": {"H01_SELF_CRITIQUE": 0, "H09_MVT_PROPOSER_VERIFIER": 0, "H13_EBRC_DUAL_STATE": 0, "H14_WMX_EBRC": 0},
+  "harms_vs_H00": {"H01_SELF_CRITIQUE": 0, "H09_MVT_PROPOSER_VERIFIER": 0, "H13_EBRC_DUAL_STATE": 0, "H14_WMX_EBRC": 0},
+  "incremental_component_value": "NOT_DEMONSTRATED",
+  "causal_distinct_TRAXIS_lift": "UNRESOLVED",
+  "benchmark_diagnosis": "GPT-5.6 Sol ceiling on UMWP20 even under mechanism-hidden common contract",
+  "claim_boundary": "This does not show protocol equivalence in general and is not external evidence. It shows that this self-run cannot attribute lift among these arms on this benchmark.",
+  "next_discriminator": "Run the frozen v0.2 externally on an actually weak model; preserve matched calls/output ceiling and report token usage.",
+  "governance": {"PRODUCTION_CHANGE": false, "MERGE_PERMISSION": "DENY", "deploy_permission": "DENY", "can_trade": false, "capital_permission": "DENY", "DEVIL_DEFAULT": "OFF"}
+}

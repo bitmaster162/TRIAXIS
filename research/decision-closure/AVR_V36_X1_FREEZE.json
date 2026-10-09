@@ -1,0 +1,37 @@
+{
+  "editorial_opened": false,
+  "schema": "triaxis.avr_v36_x1_freeze/v0.1",
+  "second_x1_forbidden": true,
+  "tasks": {
+    "arc207_c": {
+      "correction_class": "retain exact <=30-state last-OR frontier instead of one greedy state",
+      "feedback_only": {
+        "A": [
+          2,
+          1,
+          4,
+          4
+        ],
+        "N": 4,
+        "actual": 2,
+        "expected": 3
+      },
+      "sha256": "742640e80b93d9db957e123d04b6447e652fa463c8402d81f880487f785c06cb",
+      "source_path": "research/decision-closure/v36_arc207/arc207_c_x1.cpp"
+    },
+    "arc207_e": {
+      "correction_class": "bounded exact 0/1-operation early-termination recognizer, then unchanged M0 fallback",
+      "feedback_only": {
+        "N": 3,
+        "actual": "-1",
+        "expected": "REACHABLE_WITH_(3,2)",
+        "s": "001",
+        "t": "011"
+      },
+      "sha256": "4172069a45d87c161d42ec3d8b19eda4f71e225e117a958f1d5456b636f250ed",
+      "source_path": "research/decision-closure/v36_arc207/arc207_e_x1.cpp"
+    }
+  },
+  "version": "V36",
+  "x1_execution_before_freeze": false
+}

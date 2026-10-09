@@ -1,0 +1,42 @@
+{
+  "schema": "triaxis.avr.v55.scoring_freeze/v0.1",
+  "batch": "V55",
+  "contest": "arc177",
+  "scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "CLAIM_GRADE_M0_PASS",
+    "F": "CLAIM_GRADE_M0_FAIL"
+  },
+  "x1_activations": 0,
+  "x1_nonactivation": {
+    "task": "F",
+    "reason": "structural distinct-resident identity/multiplicity redesign required; not a bounded local correction"
+  },
+  "postfreeze_policy": "official editorial/gold may corroborate or downgrade only; no upgrade of frozen failures/quarantines",
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes": 2,
+    "clean_rescues": 0,
+    "paired_harms": 0,
+    "x1_local_regressions": 0,
+    "quarantines": 0,
+    "protocol_exclusions": 0
+  },
+  "aggregate": {
+    "claim_grade_external_tasks": 73,
+    "m0_passes": 54,
+    "final_passes": 59,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "x1_local_regressions": 3,
+    "partial_repairs_not_counted": 1,
+    "quarantined_tasks": 28,
+    "protocol_excluded": 5,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false,
+    "status": "POSITIVE_NOT_CONFIRMATORY",
+    "broad_claim": "UNSUPPORTED",
+    "rescues_needed_for_p_le_0_05_if_harms_zero": 1
+  }
+}

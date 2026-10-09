@@ -1,0 +1,66 @@
+{
+  "aggregate_before_v40": {
+    "M0_pass": "27/39",
+    "claim_grade_external_tasks_total": 39,
+    "clean_full_task_rescues": 4,
+    "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 2,
+    "final_pass": "31/39",
+    "harms": 0,
+    "paired_exact_two_sided_p": 0.125,
+    "status": "POSITIVE_NOT_CONFIRMATORY"
+  },
+  "batch": "V40",
+  "contest": {
+    "completed": true,
+    "contest_date_jst": "2025-04-06",
+    "id": "arc196",
+    "metadata_source": "https://atcoder.jp/contests/arc196",
+    "name": "AtCoder Regular Contest 196 (Div. 1)",
+    "rated_range": "1600-2999",
+    "selection_basis": "official Top page metadata/point table only"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "DEVIL_DEFAULT": "OFF",
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "model": "GPT-5.6 Sol",
+  "pre_statement_guards": {
+    "editorials_opened": false,
+    "gold_opened": false,
+    "search_snippet_statement_leakage": false,
+    "selected_task_statements_opened": false,
+    "submissions_opened": false
+  },
+  "protocol": {
+    "m0": "one-shot statement-only GPT-5.6 Sol implementation",
+    "performance_rule": "correct-but-constraint-unsafe => PERFORMANCE_QUARANTINE; no claim-grade rescue via qualitatively new asymptotic architecture",
+    "postfreeze": "official audit may corroborate or downgrade only; never upgrade",
+    "scoring": "freeze before editorial/gold",
+    "source_freeze": "freeze all selected M0 source hashes before any compile/run/execution",
+    "verifier": "independent executable verifier after M0 freeze; samples plus exact/random oracle where feasible; official-constraint and global-state gates mandatory",
+    "x1": "at most one correction per actual frozen M0 correctness failure; feedback limited to frozen failing input plus expected/actual; X1 optional and source-frozen before execution",
+    "x1_rescue_gate": "trigger repaired AND independent regression passes AND official-constraint safety AND proof/global-state gate where applicable"
+  },
+  "schema": "triaxis.avr.v40.arc_strong_model_preregistration/v0.1",
+  "selected_tasks": [
+    {
+      "score": 700,
+      "task": "B"
+    },
+    {
+      "score": 900,
+      "task": "C"
+    },
+    {
+      "score": 900,
+      "task": "D"
+    }
+  ]
+}

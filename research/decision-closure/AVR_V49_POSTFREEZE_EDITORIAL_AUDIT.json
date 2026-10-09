@@ -1,0 +1,25 @@
+{
+  "schema": "triaxis.avr.v49.postfreeze_editorial_audit/v0.1",
+  "batch": "V49",
+  "scoring_frozen_before_editorial": true,
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false,
+  "downgrade": false,
+  "tasks": {
+    "E": {
+      "status": "CORROBORATED",
+      "official_url": "https://atcoder.jp/contests/arc186/editorial/11256",
+      "finding": "Official derives the same recursive first-X split. Equal-adjacent case uses a block containing all K-1 other symbols; unequal-adjacent case adds a later distinguished X_{k+1} after complete coverage and convolves with (K-2)^r. This is the frozen F/G block DP."
+    },
+    "A": {
+      "status": "CORROBORATED",
+      "official_url": "https://atcoder.jp/contests/arc186/editorial/11252",
+      "finding": "Official uses the same orientation of K_{N,N}, proves non-fixed iff the edge is on a directed cycle, reduces to SCCs with at least two vertices from each side, and DPs by used row vertices, used column vertices, and a*b non-fixed-edge contribution."
+    },
+    "B": {
+      "status": "CORROBORATED_EQUIVALENT_REPRESENTATION",
+      "official_url": "https://atcoder.jp/contests/arc186/editorial/11253",
+      "finding": "Official starts from the identical previous-smaller monotone-stack trace and reduces to tree inequalities. The frozen min-Cartesian binary tree is the equivalent first-child/sibling-style encoding of those parent and ordered-sibling inequalities; exhaustive descriptor counts already verify equality."
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "claim_grade_tasks_added": 3,
+  "clean_rescues_added": 0,
+  "editorial_opened": false,
+  "final_pass_added": 1,
+  "m0_pass_added": 1,
+  "paired_harms_added": 0,
+  "postfreeze_rule": "editorial/gold may corroborate or downgrade only; cannot upgrade either C/E failure or manufacture rescue",
+  "quarantined_added": 0,
+  "schema": "triaxis.avr_v36_scoring_freeze/v0.1",
+  "scores": {
+    "arc207_c": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+    "arc207_d": "PROVISIONAL_CLAIM_GRADE_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+    "arc207_e": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1"
+  },
+  "version": "V36",
+  "x1_local_regressions_added": 1
+}

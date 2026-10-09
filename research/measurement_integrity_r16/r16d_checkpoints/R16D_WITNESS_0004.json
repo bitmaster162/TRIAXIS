@@ -1,0 +1,9 @@
+{
+  "epoch": "R16D_NEXT_20_EXTERNALLY_WITNESSED_SUBJECT_TRANSACTIONS_20260814",
+  "ledger_count": 4,
+  "ledger_sha256": "0c93353ed13fa00ecb250b8f6eaaebbe8193f1a4ec5e7d2e366daa47ffa99121",
+  "previous_witness_sha256": "cc0e5e9c40aa8ecb4825fef9260087c1a3b4ac0f22121d3dc346a705cdb232f5",
+  "schema": "triaxis.r16b.external_witness/v1",
+  "sequence": 4,
+  "witness_target": "github:research/measurement_integrity_r16/r16d_checkpoints/R16D_WITNESS_0004.json"
+}

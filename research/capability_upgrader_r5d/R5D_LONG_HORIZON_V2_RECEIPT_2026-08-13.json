@@ -1,0 +1,51 @@
+{
+  "artifacts": {
+    "CASE1_PRE_GOLD.json": "9da107dc7d436d0c530584bd15b92dbf2a03767d44ff324f8342feb081b72958",
+    "CASE2_GOLD.json": "8ab714a196e0e972dc26cd1389415a174ddd3b00bf367d7f5c41a1259aad5ef9",
+    "CASE2_PRE_GOLD.json": "3620a305b991e9ed5a71b64b44907df9a660c6e93199352c95dfb96c6f71961b",
+    "CASE3R_GOLD.json": "e77866c5dd3452aa7da6f3d5cc4e805e838d81ba57c4f3699aeb2096636b604d",
+    "CASE3R_PRE_GOLD.json": "37885f37da60c851b6109f0cc0bbc153681e30c95aa6760439122c8db4302505",
+    "CASE3_QUARANTINE.json": "b0561957bdcb7a0fdd2db2db95a398fec46a34f18156b962344f06778f877a63",
+    "CASE3_REPLACEMENT_SELECTION.json": "0072e25098ddc4a4da104764d729b7d21f4b6d099dec5f28dbfec84afbe36791",
+    "R5D_BATCH_AMENDMENT.json": "19bb2a85c6c200670fab6a5dab2d87022cf641da4c350fd23f143f9608965385",
+    "R5D_PREREG.json": "623a36df6876c284cbbba8ac18437f5efb4018d280f0448f16eb5ebeba04f389",
+    "R5D_REPORT.md": "1004ab50a0be0d44895db7223190e01c754ab731caff0879efabcccbc83f761d",
+    "R5D_RESULT.json": "9aea04915a649fae777d357906ec27a1e8de4f8daadfd839336f582d8fd09ecc"
+  },
+  "claim_boundary": "historical same-session, non-independent/non-confirmatory",
+  "counts": {
+    "B2_incremental_verified_rescues": 1,
+    "B3_V2_harms": 0,
+    "B3_V2_incremental_verified_rescues": 0,
+    "clean_scored_cases": 2,
+    "quarantined_cases": 1,
+    "unverified_cases": 1
+  },
+  "date_local": "2026-08-13",
+  "decision": {
+    "D_LONG_HORIZON_V2": "NOT_PROMOTED",
+    "D_REPO_BEHAVIOR": "RETAIN_CONDITIONALLY",
+    "full_triaxis_cognitive_complexity": "DENY_PROMOTION"
+  },
+  "external_models": {
+    "claude_called": false,
+    "gemini_called": false
+  },
+  "governance": {
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy": "DENY",
+    "merge": "DENY",
+    "production_change": false
+  },
+  "research_registration": {
+    "branch": "research/decision-closure-ebd-v0.3",
+    "main_baseline_before_write": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "report_commit": "8d33ed86614c57e97f3a3f24212aa44c8aafa2ef",
+    "report_path": "research/capability_upgrader_r5d/R5D_LONG_HORIZON_V2_REPORT_2026-08-13.md",
+    "repository": "bitmaster162/TRIAXIS",
+    "research_parent_before_write": "8ca7ff6c913cbbc741326b8196bc80bd5114206c"
+  },
+  "schema": "triaxis.r5d.receipt/v0.1",
+  "status": "COMPLETE_V2_NOT_PROMOTED"
+}

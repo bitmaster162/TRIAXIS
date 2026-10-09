@@ -1,0 +1,55 @@
+{
+  "schema": "triaxis.r8g.atcoder_native_smoke_prereg/v1",
+  "date": "2026-08-13",
+  "status": "FROZEN_BEFORE_TASK_STATEMENTS",
+  "benchmark": {
+    "name": "EvoAgentBench",
+    "runner_commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "domain": "code_implementation",
+    "source_benchmark": "LiveCodeBench release_v6",
+    "official_test_count": 86
+  },
+  "eligibility_filter": {
+    "platform": "AtCoder task IDs only: ^(abc|arc)[0-9]+_[a-z]$",
+    "predeclared_exclusions": ["abc378_c", "arc186_d"],
+    "exclusion_reason": "solution-oriented search content was exposed during aborted R8-F before B0"
+  },
+  "subset_selection": {
+    "method": "lowest SHA256(seed + NUL + task_id) among eligible IDs",
+    "seed": "R8G_ATCODER_BLIND_20260813",
+    "count": 3,
+    "selected": [
+      {"task_id": "abc394_g", "selection_sha256": "006e5db78a90144158b3e48cb5b6200d22d084e0a9e84f7f64fdc09be390501e"},
+      {"task_id": "arc183_d", "selection_sha256": "0bb475680a2313f368325b6b9a65f1ce5d9d9a7c6d64c487f36a66fe0a16f5cf"},
+      {"task_id": "arc195_d", "selection_sha256": "0cb5828cc31cf30cca064aa61905ef4104185bcc651c31009f9aded538f0751a"}
+    ]
+  },
+  "source_policy": {
+    "task_statement_source": "official atcoder.jp only",
+    "solution/editorial/search-result_sources": "DENY before B0 freeze",
+    "hidden_tests": "DENY",
+    "public_examples": "ALLOW"
+  },
+  "arms": {
+    "B0": "current-session GPT-5.6 Sol solution from official public statement only",
+    "B1": "same frozen B0 plus minimum native verifier failure signal and at most one correction"
+  },
+  "evidence_class": "REAL_HELDOUT_TASKS_NATIVE_VERIFIER_CURRENT_SESSION_NONINDEPENDENT_MODEL",
+  "rules": [
+    "all three selected tasks stay in denominator",
+    "freeze B0 code before verifier",
+    "one correction maximum on failed task",
+    "no hidden evaluator input/expected output shown to model",
+    "no task replacement after B0 begins",
+    "native pass/fail is authoritative",
+    "no capability-memory promotion from 3-task smoke"
+  ],
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

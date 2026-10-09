@@ -1,0 +1,26 @@
+{
+  "audit_status": "NO_SCORE_CHANGE",
+  "schema": "triaxis.avr_v36_postfreeze_editorial_audit/v0.1",
+  "scoring_frozen_before_editorial": true,
+  "tasks": {
+    "arc207_c": {
+      "decision": "NO_UPGRADE",
+      "finding": "Official solution keeps the left endpoint/current focused interval together with the previous interval OR; it then processes O(N log maxA) constant-OR start ranges with RMQ. This directly corroborates why M0 single greedy state and X1 completed-partition-only frontier were incomplete.",
+      "frozen_score": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+      "official_editorial": "https://atcoder.jp/contests/arc207/editorial/14164"
+    },
+    "arc207_d": {
+      "decision": "NO_DOWNGRADE",
+      "finding": "Official solution splits by N/M parity and states that the game is determined only by the center area, with O(1) decision after O(NM) input. This structurally corroborates the frozen central-core minimax.",
+      "frozen_score": "PROVISIONAL_CLAIM_GRADE_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+      "official_editorial": "https://atcoder.jp/contests/arc207/editorial/14165"
+    },
+    "arc207_e": {
+      "decision": "NO_UPGRADE",
+      "finding": "Official solution has special N=2/impossible cases, then a general <=N+1 construction that normalizes s1!=sN and emits target characters using two ends before final cleanup. This confirms the M0 contraction-to-one-root restriction and X1 one-step correction were not complete.",
+      "frozen_score": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+      "official_editorial": "https://atcoder.jp/contests/arc207/editorial/14167"
+    }
+  },
+  "version": "V36"
+}

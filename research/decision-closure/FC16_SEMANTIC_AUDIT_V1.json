@@ -1,0 +1,78 @@
+{
+  "schema": "fc16.semantic_audit/v1",
+  "date": "2026-08-09",
+  "finding": "The FC16 oracle conflates unresolved epistemic state with absence of a valid immediate bounded action.",
+  "frozen_score": {
+    "U1": {
+      "overall_status_accuracy": 0.5,
+      "true_close_accuracy": 1.0,
+      "false_closure_resistance": 0.0,
+      "witness_accuracy": 1.0,
+      "stop_accuracy": 0.5
+    },
+    "U2": {
+      "overall_status_accuracy": 0.5,
+      "true_close_accuracy": 1.0,
+      "false_closure_resistance": 0.0,
+      "witness_accuracy": 1.0,
+      "stop_accuracy": 0.5
+    }
+  },
+  "why_not_model_failure": [
+    "All 16 selected witness sets satisfy the frozen witness oracle.",
+    "On each trap case, the public action surface itself contains a bounded HOLD/DO-NOT/VERIFY action supported by the available evidence.",
+    "The frozen oracle nevertheless forces status=NOT_ENOUGH, action_choice=null, stop=false for every trap.",
+    "A decision can be closed for action now while remaining explicitly revisable under a future material observation."
+  ],
+  "trap_reclassification": [
+    {
+      "case_id": "F43WTLQWU",
+      "current_action": "Do not authorize action X yet",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Trusted timestamp proves extension E was signed before D expired."
+    },
+    {
+      "case_id": "FYX3QNKU7",
+      "current_action": "Do not alter subject records yet",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Known-good v7 control and implementation-independent reproduction validate the detector path."
+    },
+    {
+      "case_id": "FWS5G6KPN",
+      "current_action": "Do not count A and B as independent replications",
+      "closure": "TERMINAL_REJECT",
+      "reopen_trigger": null
+    },
+    {
+      "case_id": "FLPVGF22N",
+      "current_action": "Do not assert current serving state yet",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Fresh authenticated post-routing readback establishes serving state."
+    },
+    {
+      "case_id": "FPU4XEZYL",
+      "current_action": "Do not retry yet; query M1 for K77",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "M1 readback establishes whether the original mutation exists."
+    },
+    {
+      "case_id": "FRPWM2RSF",
+      "current_action": "Do not promote D7 yet",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Semantic owner explicitly approves exact digest D7."
+    },
+    {
+      "case_id": "FF9LD2E75",
+      "current_action": "Do not attribute cause yet; run a single-variable canary",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Valid single-variable intervention discriminates F from R2."
+    },
+    {
+      "case_id": "FE2VSUJ5H",
+      "current_action": "Do not assert authoritative absence yet; inspect S2",
+      "closure": "PROVISIONAL_CLOSED",
+      "reopen_trigger": "Direct S2 inspection completes authoritative scope."
+    }
+  ],
+  "governance": "Do not reinterpret the frozen FC16 score as protocol failure. Mark FC16 status/stop metrics INVALID_FOR_METHOD_COMPARISON; retain it as a benchmark-semantic falsification event."
+}

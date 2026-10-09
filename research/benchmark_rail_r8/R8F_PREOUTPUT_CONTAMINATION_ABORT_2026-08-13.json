@@ -1,0 +1,31 @@
+{
+  "schema": "triaxis.r8f.preoutput_contamination_abort/v1",
+  "date": "2026-08-13",
+  "status": "ABORTED_PREOUTPUT_CONTAMINATION",
+  "prereg_commit": "d6adea92f48b3145c59a89c8beec29b11d1c383f",
+  "selected_task_ids": ["3762", "arc186_d", "abc378_c"],
+  "contamination_detected_before_B0": true,
+  "contaminated_tasks": [
+    {
+      "task_id": "arc186_d",
+      "reason": "search result exposed solution-oriented problem analysis before B0 output freeze"
+    },
+    {
+      "task_id": "abc378_c",
+      "reason": "search result exposed explicit solution method before B0 output freeze"
+    }
+  ],
+  "B0_outputs_created": 0,
+  "verifier_runs": 0,
+  "scored_tasks": 0,
+  "claim_effect": "NONE",
+  "policy": "Do not silently treat contaminated tasks as blind. Abort the preregistered smoke before any model output and start a new independently preregistered subset.",
+  "governance": {
+    "main_write": false,
+    "merge": "DENY",
+    "deploy": "DENY",
+    "production_change": false,
+    "can_trade": false,
+    "capital_permission": "DENY"
+  }
+}

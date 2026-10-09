@@ -1,0 +1,14 @@
+{
+  "schema": "triaxis.avr_v37_m0_freeze/v0.1",
+  "candidate_execution_before_freeze": false,
+  "sources": {
+    "arc204_b_m0.cpp": "57bf7dbc6d18de85aa963b0e688327fff77b0f2e199f4cd9973a0a985661fe12",
+    "arc204_c_m0.cpp": "27d078bc8d2c102bec2d6cefddc578dd44600a91f9ec54530cba7d973ec744ce",
+    "arc204_d_m0.cpp": "98c404d7114ad6a8497abcc4133030a53ef2855213297ad088bbd78630769e06"
+  },
+  "notes": {
+    "B": "statement-only cycle/tree factorization hypothesis; intended O(NK)",
+    "C": "statement-only exact exhaustive optimizer; exact but intentionally uncompressed state because no constraint-safe theorem was derived before freeze",
+    "D": "statement-only exact order search using counts of remaining lower/upper outside-target elements; exact but exponential"
+  }
+}

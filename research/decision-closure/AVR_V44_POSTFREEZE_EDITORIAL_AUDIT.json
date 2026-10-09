@@ -1,0 +1,30 @@
+{
+  "schema": "triaxis.avr.v44.postfreeze_audit/v0.1",
+  "batch": "V44",
+  "contest": "arc192",
+  "scoring_freeze_commit": "5a9024de9e5aec49b821b624289918219e500896",
+  "official_editorials": {
+    "B": {
+      "url": "https://atcoder.jp/contests/arc192/editorial/12199",
+      "finding": "Official collapses visited indices into one pass-token variable X, reduces values to parity, handles N<=3 separately, and states that for N>=4 the parity of the number of odd A_i determines the winner. This matches the frozen M0 classification.",
+      "effect": "CORROBORATE"
+    },
+    "C": {
+      "url": "https://atcoder.jp/contests/arc192/editorial/12200",
+      "finding": "Official gives an independent <=2N-1 reconstruction by finding an endpoint with anchor queries, sorting sums from that endpoint, recovering adjacent A differences, and resolving reversal by P1<P2. This corroborates the identifiability and query-budget boundary; frozen M0 uses a different 2N-3 two-anchor derivation.",
+      "effect": "CORROBORATE"
+    },
+    "E": {
+      "url": "https://atcoder.jp/contests/arc192/editorial/12202",
+      "finding": "Official derives the same double hockey-stick path-sum identities and subtracts forbidden-region crossing paths via O((R-L)+(U-D)) boundary terms after O(W+H) factorial precomputation. Frozen M0 uses an equivalent unique-first-forbidden-vertex decomposition.",
+      "effect": "CORROBORATE"
+    }
+  },
+  "final_scores": {
+    "E": "CLAIM_GRADE_M0_PASS",
+    "B": "CLAIM_GRADE_M0_PASS",
+    "C": "CLAIM_GRADE_M0_PASS"
+  },
+  "score_changed": false,
+  "postfreeze_upgrade_performed": false
+}

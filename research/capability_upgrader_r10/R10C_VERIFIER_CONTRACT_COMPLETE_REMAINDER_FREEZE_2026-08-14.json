@@ -1,0 +1,76 @@
+{
+  "claim_boundary": {
+    "allowed": "descriptive contract-mismatch count on this explicitly bounded fresh remainder; procedural transfer evidence",
+    "cognitive_lift_credit": 0,
+    "forbidden": [
+      "benchmark-wide prevalence",
+      "model intelligence lift",
+      "EBRC novelty",
+      "production qualification"
+    ],
+    "model_inference": false
+  },
+  "date": "2026-08-14",
+  "epoch": "R10C_VERIFIER_CONTRACT_COMPLETE_REMAINDER_20260814",
+  "gate": {
+    "editorials_forbidden": true,
+    "frozen_before_statement_open": true,
+    "hidden_tests_forbidden": true,
+    "non_unique_constructive_or_property_output": "QUARANTINE if verifier relies on exact expected-output equality rather than property checking",
+    "numeric_tolerance": "QUARANTINE if pinned generic verifier lacks required tolerance semantics",
+    "otherwise": "NO_MISMATCH_DETECTED absent direct upstream-contract evidence"
+  },
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false,
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY"
+  },
+  "purpose": "Complete contract classification of the 24 still-unopened fresh eligible AtCoder IDs remaining after R10-A, using the unchanged verifier-contract gate before opening any of their statements.",
+  "relationship": {
+    "coverage_after_r10c_if_completed": "44/44 of the fresh eligible AtCoder remainder",
+    "fresh_eligible_atcoder_count": 44,
+    "r10a_already_frozen_and_classified_count": 20,
+    "r10a_result_commit": "e50e2dfafc32e7f23af0c5f020aab5fd6b9db79f",
+    "r10c_remaining_count": 24,
+    "representativeness": "NOT_RANDOM; NO_BENCHMARK_WIDE_PREVALENCE_CLAIM"
+  },
+  "schema": "triaxis.r10c.verifier_contract_complete_remainder_freeze/v1",
+  "source": {
+    "code_test_count": 86,
+    "commit": "948a17288782d5120778da16b4cf1cad9305d8b4",
+    "repo": "EverMind-AI/EvoAgentBench",
+    "split_blob_sha": "590137fc1e1f82034f7a3f5e7a448c055dc8c766",
+    "split_path": "benchmark/data/splits/code_implementation.json"
+  },
+  "task_order": [
+    "abc320_c",
+    "abc322_c",
+    "abc328_b",
+    "abc339_b",
+    "abc357_e",
+    "abc358_a",
+    "abc359_e",
+    "abc361_e",
+    "abc372_f",
+    "abc374_c",
+    "abc375_b",
+    "abc381_b",
+    "abc384_c",
+    "abc387_b",
+    "abc390_c",
+    "arc182_d",
+    "arc183_d",
+    "arc184_c",
+    "arc186_c",
+    "arc186_d",
+    "arc188_d",
+    "arc190_d",
+    "arc194_a",
+    "arc195_d"
+  ]
+}

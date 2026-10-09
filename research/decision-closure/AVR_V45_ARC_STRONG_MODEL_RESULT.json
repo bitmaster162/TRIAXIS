@@ -1,0 +1,46 @@
+{
+  "schema": "triaxis.avr.v45.result/v0.1",
+  "batch": "V45",
+  "contest": "arc190",
+  "preselection_exclusion": {
+    "contest": "arc191",
+    "reason": "fallback search exposed official C editorial content before prereg; C would have been selected",
+    "protocol_excluded_added": 1
+  },
+  "source_binding_repair": {
+    "status": "REPAIRED_BEFORE_EXECUTION",
+    "receipt_commit": "8a3872609d3cc79e5da4544e9124f18b94e33282",
+    "candidate_execution_before_repair": false
+  },
+  "tasks": {
+    "D": {
+      "score": 900,
+      "m0": "PASS",
+      "final": "CLAIM_GRADE_M0_PASS",
+      "x1": null
+    },
+    "E": {
+      "score": 1100,
+      "m0": "FAIL",
+      "final": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT",
+      "x1": null
+    },
+    "B": {
+      "score": 800,
+      "m0": "COMPILE_FAIL",
+      "final": "PERFORMANCE_QUARANTINE_WITH_FROZEN_COMPILE_DEFECT",
+      "x1": null
+    }
+  },
+  "delta": {
+    "claim_grade_tasks": 1,
+    "m0_passes": 1,
+    "final_passes": 1,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 2,
+    "protocol_excluded": 1
+  },
+  "scientific_interpretation": "V45 adds one fresh ceiling M0 pass and two anti-gaming quarantines. E exposes a genuine greedy correctness failure and B a frozen compile defect, but neither is eligible for X1 because the underlying frozen architectures violate official constraints. No new causal-lift rescue evidence.",
+  "status": "POSITIVE_NOT_CONFIRMATORY"
+}

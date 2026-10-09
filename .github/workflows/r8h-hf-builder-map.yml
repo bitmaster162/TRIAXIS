@@ -1,0 +1,37 @@
+name: R8-H Verify HF Builder Mapping
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-hf-builder-map.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  mapping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Clone metadata and print config/file mapping only
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth 1 https://huggingface.co/datasets/livecodebench/code_generation_lite dataset_repo
+          cd dataset_repo
+          echo "HF_DATASET_HEAD=$(git rev-parse HEAD)"
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path('code_generation_lite.py').read_text(encoding='utf-8')
+          lines=text.splitlines()
+          for i,line in enumerate(lines,1):
+              low=line.lower()
+              if 'release_v6' in low or 'test6.jsonl' in low or '_urls' in low or 'builderconfig' in low:
+                  start=max(1,i-3); end=min(len(lines),i+3)
+                  print(f'--- lines {start}-{end} ---')
+                  for j in range(start,end+1):
+                      print(f'{j}: {lines[j-1]}')
+          PY

@@ -1,0 +1,26 @@
+{
+  "schema": "triaxis.avr_v33_postfreeze_editorial_audit/v0.1",
+  "batch": "V33",
+  "audit_timing": "after scoring freeze",
+  "downgrade_only_rule": true,
+  "tasks": {
+    "arc210_d": {
+      "final": "FAIL",
+      "editorial": "https://atcoder.jp/contests/arc210/editorial/14589",
+      "finding": "Odd-N matching characterization is confirmed. Even-N has additional winning families and Bob obstructions: disjoint P3s, C4, a triangle-with-leaves obstruction, plus A2-A5 winning families. M0 even-N characterization was incomplete.",
+      "score_change": "none; frozen FAIL confirmed"
+    },
+    "arc210_e": {
+      "final": "PASS",
+      "editorial": "https://atcoder.jp/contests/arc210/editorial/14527",
+      "finding": "Official solution confirms the multiplicative compression invariant: sums within a ratio-r-connected block may discard interiors/aggregate frequencies; retained state count is O(log_r(sum A)). This independently corroborates M0 component-compression structure.",
+      "score_change": "provisional PASS -> claim-grade PASS"
+    },
+    "arc210_f": {
+      "final": "PERFORMANCE_QUARANTINE",
+      "editorial": "https://atcoder.jp/contests/arc210/editorial/14591",
+      "finding": "Official solution confirms weighted Bezout/Manhattan geometry for one difference and bounds each query to three target representatives, then requires 2D rectangular/trapezoidal aggregate queries in about O((N+Q)(log N+log Q)). M0 pair cost is correct but O(NQ) aggregation is constraint-unsafe.",
+      "score_change": "none; quarantine confirmed"
+    }
+  }
+}

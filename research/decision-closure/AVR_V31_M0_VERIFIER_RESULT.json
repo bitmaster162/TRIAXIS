@@ -1,0 +1,53 @@
+{
+  "schema": "triaxis.avr_v31.m0_verifier_result/v0.1",
+  "status": "M0_SCORED_BEFORE_X1",
+  "timestamp_local": "2026-08-11T23:37:00+07:00",
+  "m0_freeze_sha256": "ce2f98083774ec9e919e28204169cf937e94965557f27776d727b683e2b7d345",
+  "results": {
+    "arc214_d": {
+      "m0": "PASS",
+      "official_sample": "PASS",
+      "independent_verifier": "For every N=2..13, enumerate all monotone path scores from candidate output; require nonnegative cells, unique final scores, and max score <=6000000.",
+      "largest_case": {
+        "N": 13,
+        "path_count": 2704156,
+        "unique_scores": 2704156,
+        "max_score": 2704155
+      },
+      "claim_grade_pending_postfreeze_audit": true
+    },
+    "arc214_e": {
+      "m0": "PASS",
+      "official_sample": "PASS",
+      "independent_verifier": "Exact visible-sequence reachability by number of adjacent swaps on small N, checked only at multiples of K.",
+      "cases": 47449,
+      "mismatches": 0,
+      "claim_grade_pending_postfreeze_audit": true
+    },
+    "arc214_f": {
+      "m0": "FAIL",
+      "official_sample": "PASS",
+      "independent_verifier": "Enumerate original wall patterns on small grids; for each, enumerate destroyed-wall subsets by cardinality and run exact automaton reachability with last-direction state.",
+      "exhaustive_grids": 2212,
+      "representative_failure": {
+        "H": 3,
+        "W": 4,
+        "grid": [
+          ".#..",
+          ".#..",
+          "..#."
+        ],
+        "expected_min_destroyed_walls": 1,
+        "m0_actual": 2
+      },
+      "failure_class": "REPEATED_DESTROYED_WALL_DOUBLE_CHARGE",
+      "x1_activated": true
+    }
+  },
+  "editorial_or_gold_opened": false,
+  "governance": {
+    "max_x1_corrections_per_failed_task": 1,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false
+  }
+}

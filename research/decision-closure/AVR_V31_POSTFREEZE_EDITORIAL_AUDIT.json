@@ -1,0 +1,66 @@
+{
+  "governance": {
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "PRODUCTION_CHANGE": false
+  },
+  "methodological_update": {
+    "finding": "Small exhaustive correctness alone is insufficient when the candidate compresses persistent/global state into a local-state heuristic.",
+    "next_protocol_rule": "For a provisional rescue whose candidate omits an obviously persistent/global latent state, require either a proof-equivalent invariant or an independent scalable/reference oracle beyond bounded-small exhaustive before claim-grade promotion."
+  },
+  "schema": "triaxis.avr_v31.postfreeze_editorial_audit/v0.1",
+  "scoring_freeze_sha256": "3bd20b6f885c263b0e0947400cb8c1f4ee298ca2b26c65256191ae29f5a6b19b",
+  "status": "COMPLETE",
+  "tasks": {
+    "arc214_d": {
+      "corroboration": [
+        "Official construction assigns all path scores tightly as consecutive integers from 0 through C(2N-2,N-1)-1.",
+        "Official derivation uses lexicographic path ranking and consecutive score intervals, matching the frozen combinatorial-rank construction at the structural level."
+      ],
+      "frozen_score": "M0_PASS",
+      "official_editorial_url": "https://atcoder.jp/contests/arc214/editorial/15858",
+      "postfreeze_adjudication": "CLAIM_GRADE_PASS",
+      "score_changed": false
+    },
+    "arc214_e": {
+      "corroboration": [
+        "Official editorial uses stable occurrence matching to obtain the inversion-minimal permutation P.",
+        "It requires cK >= inv(p) and cK congruent to inv(p) mod 2.",
+        "The opposite-parity optimum is obtained by one correspondence swap between equal values; its inversion increase is 1 plus twice a rectangle point count.",
+        "Only adjacent equal-value occurrences need be considered and all rectangle counts can be computed by sweep plus BIT in O(N log N), matching the frozen M0 structure."
+      ],
+      "frozen_score": "M0_PASS",
+      "official_editorial_url": "https://atcoder.jp/contests/arc214/editorial/15859?lang=en",
+      "postfreeze_adjudication": "CLAIM_GRADE_PASS",
+      "score_changed": false
+    },
+    "arc214_f": {
+      "audit_execution_exact_frozen_hash_matched": true,
+      "claim_grade_task": true,
+      "frozen_score": "M0_FAIL_X1_PASS_ON_PREFREEZE_VERIFIER",
+      "frozen_x1_sha256": "acd12964616d05b29098c0c5dadf3cb26d905cd51994dd5f18c91d2cfaa20a9f",
+      "official_counterexample": {
+        "H": 7,
+        "W": 6,
+        "frozen_x1_actual": 3,
+        "grid": [
+          "..#...",
+          "......",
+          "####..",
+          "......",
+          "..####",
+          "......",
+          "...#.."
+        ],
+        "official_correct_answer": 2
+      },
+      "official_editorial_url": "https://atcoder.jp/contests/arc214/editorial/15861",
+      "postfreeze_adjudication": "X1_FAIL_POSTFREEZE_EXTERNAL_COUNTEREXAMPLE",
+      "score_change_policy": "Post-freeze audit may downgrade a provisional verifier PASS when new independent authoritative evidence falsifies it; it may not retroactively upgrade a failed frozen arm.",
+      "score_changed": "X1 provisional PASS -> final FAIL",
+      "structural_finding": "The official exact solution is a wall-graph minimum vertex cut/maxflow formulation. The frozen local-state shortest-path correction does not model persistent destroyed-wall sets and is not exact.",
+      "x1_claim_grade_pass": false
+    }
+  },
+  "timestamp_local": "2026-08-11T23:46:00+07:00"
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "triaxis.avr_v34_scoring_freeze/v0.1",
+  "version": "V34",
+  "verifier_result_sha256": "0b3c5ba5f60a47ca41da127201eabbe4f537d5886291af98eb64fd2db272c189",
+  "editorial_opened_before_scoring_freeze": false,
+  "frozen_classification": {
+    "arc209_c": "PERFORMANCE_QUARANTINE",
+    "arc209_d": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+    "arc209_e": "PERFORMANCE_QUARANTINE"
+  },
+  "rescues": 0,
+  "harms": 0,
+  "x1_local_regressions": 1,
+  "rule": "post-freeze editorial/gold may downgrade or corroborate; it may not upgrade a frozen failure/quarantine or manufacture a rescue"
+}

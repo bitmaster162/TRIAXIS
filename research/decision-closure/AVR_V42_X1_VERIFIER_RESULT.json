@@ -1,0 +1,57 @@
+{
+  "schema": "triaxis.avr.v42.x1_verifier/v0.1",
+  "batch": "V42",
+  "contest": "arc194",
+  "task": "D",
+  "x1_source_sha256": "e6203d86fd82af650d38ba19b03a266e397a81fc6314e0d7a7d99572e65a7b24",
+  "frozen_trigger": {
+    "input": "8\n(()())()\n",
+    "expected": "2",
+    "x1_actual": "2",
+    "status": "PASS"
+  },
+  "official_samples": {
+    "sample1": {
+      "expected": 2,
+      "actual": 2,
+      "status": "PASS"
+    },
+    "sample2": {
+      "expected": 1,
+      "actual": 1,
+      "status": "PASS"
+    }
+  },
+  "independent_regression": {
+    "oracle": "full BFS of every legal balanced-substring reverse+flip orbit",
+    "corpus": "all 196 valid-parenthesis strings of lengths 2,4,6,8,10,12",
+    "cases": 196,
+    "mismatches": 0
+  },
+  "proof_equivalent_gate": {
+    "invariant": "Every legal balanced substring is a consecutive sequence of sibling subtrees under one parent, or a consecutive sequence of forest roots. reverse+flip maps that sequence to reversed order with every selected subtree mirrored; it never changes parent-child membership.",
+    "completeness": "Any adjacent sibling swap is realizable by reverse+flip on the two-subtree block followed by reverse+flip on each singleton subtree. Therefore arbitrary sibling/root permutations are reachable; recursive operations independently realize every ordered representation of each unordered rooted subtree.",
+    "counting": "For each unordered rooted-tree type, ways = multinomial(child type multiplicities) * product(child_type_ways^multiplicity). Apply the same multinomial at the forest-root level.",
+    "status": "PASS"
+  },
+  "constraint_gate": {
+    "official_N_max": 5000,
+    "deep_chain": {
+      "N": 5000,
+      "elapsed_seconds": 0.0,
+      "rss_kb": 4112,
+      "output": 1
+    },
+    "all_roots": {
+      "N": 5000,
+      "elapsed_seconds": 0.0,
+      "rss_kb": 3728,
+      "output": 1
+    },
+    "complexity": "O(N log N) deterministic map/sort implementation; O(N) tree storage",
+    "status": "PASS"
+  },
+  "second_x1_used": false,
+  "pre_editorial_classification": "PROVISIONAL_CLAIM_GRADE_CLEAN_X1_RESCUE_POSTFREEZE_DOWNGRADE_ONLY",
+  "editorial_or_gold_used": false
+}

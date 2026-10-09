@@ -1,0 +1,42 @@
+name: R8-H HF Dataset Repository Inventory
+
+on:
+  push:
+    branches:
+      - 'research/decision-closure-ebd-v0.3'
+    paths:
+      - '.github/workflows/r8h-hf-repo-inventory.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Frozen scope
+        run: |
+          echo 'DATASET=livecodebench/code_generation_lite'
+          echo 'PURPOSE=DATA_ACCESS_INSTRUMENT_REPAIR_ONLY'
+          echo 'B0_UNCHANGED=1'
+          echo 'NO_TASK_CONTENT_OUTPUT=1'
+      - name: Clone metadata without LFS payloads
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth 1 https://huggingface.co/datasets/livecodebench/code_generation_lite dataset_repo
+          cd dataset_repo
+          echo "HF_DATASET_HEAD=$(git rev-parse HEAD)"
+          echo '===TRACKED_FILES_BEGIN==='
+          git ls-files | sort
+          echo '===TRACKED_FILES_END==='
+          echo '===LFS_POINTERS_BEGIN==='
+          while IFS= read -r f; do
+            if head -n 1 "$f" 2>/dev/null | grep -q '^version https://git-lfs.github.com/spec/v1'; then
+              echo "FILE=$f"
+              cat "$f"
+            fi
+          done < <(git ls-files)
+          echo '===LFS_POINTERS_END==='

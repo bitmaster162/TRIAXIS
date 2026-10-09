@@ -1,0 +1,64 @@
+{
+  "adjudication": {
+    "claim_grade_pass": "exact/verifiable correctness plus constraint safety",
+    "full_rescue": "M0 claim-grade FAIL -> one X1 claim-grade PASS, no second correction, no gold leakage",
+    "persistent_fail": "scoreable failure remains after allowed X1",
+    "quarantine": "unsoundness/constraint safety cannot be established without invalid inference"
+  },
+  "contest": {
+    "completed": true,
+    "editorial_or_solution_opened_before_freeze": false,
+    "fresh_against_v21_v31": true,
+    "id": "arc213",
+    "metadata_only_selection": true,
+    "name": "AtCoder Regular Contest 213 (Div. 1)",
+    "selected": [
+      {
+        "label": "B",
+        "name": "Hamming Distance is not 1",
+        "score": 800,
+        "task": "arc213_b"
+      },
+      {
+        "label": "C",
+        "name": "Double X",
+        "score": 900,
+        "task": "arc213_c"
+      },
+      {
+        "label": "D",
+        "name": "Minimize Inversion",
+        "score": 1100,
+        "task": "arc213_d"
+      }
+    ],
+    "selected_statements_opened_before_freeze": false,
+    "selection_rule": "Take the three highest-score non-A tasks from a fresh completed ARC not opened in V21-V31, using contest/task metadata only."
+  },
+  "governance": {
+    "auto_merge": false,
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "deploy_permission": "DENY",
+    "merge_permission": "DENY",
+    "production_change": false
+  },
+  "predecessor_head": "93a70f4a4c3cd278e2e825d6e288f28c3f973eb2",
+  "runtime": {
+    "M0": "one-shot implementation from official statement only",
+    "X1": "at most one bounded correction from frozen verifier counterexample only",
+    "model": "GPT-5.6 Sol"
+  },
+  "schema": "triaxis.avr_v32.arc_strong_model_preregistration/v0.1",
+  "status": "FROZEN_BEFORE_SELECTED_STATEMENT_EXPOSURE",
+  "timestamp_local": "2026-08-11T23:54:49+07:00",
+  "verification": {
+    "all_m0_sources_freeze_before_any_candidate_execution": true,
+    "constraint_performance_check_required": true,
+    "editorial_gold_after_scoring_freeze_only": true,
+    "global_state_gate": "If candidate compresses persistent/global latent state into local/bounded state, rescue promotion requires proof-equivalent invariant or independent scalable/reference oracle beyond bounded-small exhaustive.",
+    "independent_executable_verifier_required": true,
+    "official_samples_allowed_after_source_freeze": true,
+    "postfreeze_authority": "downgrade-only; cannot manufacture rescue"
+  }
+}

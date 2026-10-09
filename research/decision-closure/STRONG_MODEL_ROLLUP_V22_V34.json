@@ -1,0 +1,28 @@
+{
+  "schema": "triaxis.strong_model_external_rollup_v22_v34/v0.1",
+  "claim_grade_external_tasks_total": 30,
+  "M0_pass": "21/30",
+  "X1_pass": "24/30",
+  "full_task_rescues": 3,
+  "harms": 0,
+  "x1_local_regressions_not_counted_as_paired_harms": 1,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks_not_counted": 8,
+  "protocol_excluded_not_counted": 1,
+  "paired_exact_two_sided_p": 0.25,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 3,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v34_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 0,
+    "X1_pass_added": 0,
+    "rescues_added": 0,
+    "harms_added": 0,
+    "quarantined_added": 2,
+    "persistent_failures_added": 1,
+    "x1_local_regressions": 1
+  },
+  "methodological_delta": "V34 directly falsified the idea that repairing the frozen counterexample is sufficient evidence for rescue: D X1 fixed its trigger but failed another exhaustive case. C/E also reinforced that exactness without official-constraint scalability remains quarantine.",
+  "decision": "CONTINUE_V35_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; REQUIRE X1 REGRESSION CORPUS IN ADDITION TO TRIGGER REPAIR; DO_NOT_FORCE_X1; KEEP_GLOBAL_STATE_AND_CONSTRAINT_GATES"
+}

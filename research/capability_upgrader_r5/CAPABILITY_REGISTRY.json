@@ -1,0 +1,43 @@
+{
+  "base_model": "GPT-5.6 Sol",
+  "collapse_rule": "If full TRIAXIS adds no reproducible lift over the minimal capability router across the preregistered replication set, collapse the cognitive architecture to detector/router/verifier/gate/memory.",
+  "donor_mechanisms": {
+    "D_DOC_SKILL": ["current primary docs", "MCP/tool schema injection", "task-specific skills"],
+    "D_LONG_HORIZON": ["persistent state ledger", "stage checkpoints", "fresh-process probes", "self-test saturation"],
+    "D_MULTIMODAL": ["vision inspection", "diagram/layout extraction", "cross-modal checks"],
+    "D_NEGATIVE_CONTROL": ["known-solved warm-up", "instrument validation", "stop on failed control"],
+    "D_PARALLEL_SEARCH": ["independent hypotheses", "parallel decomposition", "cross-check"],
+    "D_REPO_BEHAVIOR": ["behavioral test reconstruction", "dependency graph", "integration matrix", "clean-env replay"],
+    "D_VERIFY_EXACT": ["symbolic simulator", "property tests", "differential oracle", "proof checker"]
+  },
+  "empirical_history": [
+    {"case": "AGC051 F / 2400", "failure": "wrong reachability model", "final": "PASS", "repair": "exact symbolic verifier + representation change"},
+    {"case": "AGC044 F / 2400 matched R4", "failure": "wrong automorphism criterion", "full_triaxis": "PASS", "incremental_full_lift": 0, "minimal": "PASS"},
+    {"case": "ContinuityOS forensic replay", "failure": "hidden init-order defect + invalid wheel-scope test", "repair": "scope/instrument separation + fresh-process reasoning"},
+    {"case": "Hadamard 668 lane", "failure": "search method failed known 428 warm-up", "repair": "negative-control stop"}
+  ],
+  "failure_taxonomy": {
+    "F1_SEMANTIC_MODEL": "solves wrong semantic problem",
+    "F2_STATE_DRIFT": "long-horizon state/dependency drift",
+    "F3_SEARCH_COVERAGE": "search family misses mechanism",
+    "F4_INSTRUMENT_INVALID": "tool/test/environment invalid for claim",
+    "F5_REPO_SCALE": "local correctness fails integration/behavior",
+    "F6_FRESHNESS": "stale API/docs/knowledge",
+    "F7_MULTIMODAL": "critical non-text evidence missed",
+    "F8_COMPUTE": "exact executable computation required",
+    "F9_STOPPING": "bad value-of-information/compute allocation"
+  },
+  "objective": "Detect weak capability slices and raise verified task performance toward current frontier-family target levels using the smallest effective combination of mechanisms, tools, and actually connected external models.",
+  "promotion_rule": "Promote a donor only if it produces reproducible verified lift over minimal proposer+verifier on its targeted failure class without offsetting harms or material cost veto.",
+  "public_gap_snapshot": [
+    {"base": "GPT-5.6 Sol", "base_score": 64.6, "classification": "repo_scale_software_repair_gap", "frontier_score": "80.3 / 80.0", "frontier_target": "Claude Mythos 5 / Fable 5", "gap_pp": "15.7 / 15.4", "surface": "SWE-Bench Pro"},
+    {"base": "GPT-5.6 Sol", "base_score": "not listed on Jul-24 public snapshot", "classification": "behavioral_program_reconstruction_frontier_gap", "frontier_score": "GPT-5.5 xhigh 0.5% fully resolved; Claude Opus 4.8 0%", "frontier_target": "frontier remains extremely low", "surface": "ProgramBench"}
+  ],
+  "schema": "triaxis.capability_registry/v0.1",
+  "snapshot_date": "2026-08-12",
+  "target_families": {
+    "anthropic": {"mechanisms": ["long-horizon autonomy", "self-testing", "multi-stage execution", "sub-agent delegation"], "representative": "Claude Fable 5"},
+    "google": {"mechanisms": ["multimodal reasoning", "MCP workflows", "current-doc grounding", "skill injection", "fast agent loops"], "representative": "Gemini 3.1 Pro / 3.5 Flash"},
+    "openai": {"mechanisms": ["deep reasoning", "parallel workstreams", "terminal/tool execution", "long context"], "representative": "GPT-5.6 Sol / Ultra"}
+  }
+}

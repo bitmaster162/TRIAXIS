@@ -1,0 +1,12 @@
+{
+  "candidate_execution_before_freeze": false,
+  "editorial_opened_before_freeze": false,
+  "prereg_sha256": "ea5f2116aa5bd7ac0efd7c7971133fe4dfff7fa813629a85a4b9924c7453f296",
+  "schema": "triaxis.avr_v35_m0_freeze/v0.1",
+  "sources": {
+    "arc208_c_m0.cpp": "87581ec083810a207265c766647d84ed8ad6764e6a07dee649f100676751103f",
+    "arc208_d_m0.cpp": "121892b3455ef606507d5e3145a2d1bfd1166ffa47d44ea760bf5b3a499cae1e",
+    "arc208_e_m0.cpp": "1492b2f711bd4db6496a1e363da034582b03d228ec38e9672d2fda16637dc94c"
+  },
+  "version": "V35"
+}

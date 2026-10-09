@@ -1,0 +1,41 @@
+{
+  "schema": "triaxis.avr.v53.source_binding/v0.1",
+  "batch": "V53",
+  "candidate_compile_before_binding_verification": false,
+  "candidate_execution_before_binding_verification": false,
+  "status": "PASS_AFTER_REPAIR",
+  "provenance_repair_is_x1": false,
+  "files": {
+    "F": {
+      "frozen_sha256": "9c2829c05016405ca27229c9409bc90df0949890134315509ed66054da3826de",
+      "expected_git_blob": "a3be5b1c5c5ee50575199a11c246c9b17f155b66",
+      "initial_git_blob": "a3be5b1c5c5ee50575199a11c246c9b17f155b66",
+      "status": "PASS",
+      "repair_required": false
+    },
+    "E": {
+      "frozen_sha256": "6387e2cc31755c62470335fcb6d327e98d7988ec49009a81fe8483f77f3c0826",
+      "expected_git_blob": "69b33b64d00753222659a16b8551d4f78e803d14",
+      "initial_git_blob": "75e4cd33c14289057df1268460afb59af30a650f",
+      "repair_commits": [
+        "2ea71c4ab339439d54c1d95b1290db928177ad7e"
+      ],
+      "final_git_blob": "69b33b64d00753222659a16b8551d4f78e803d14",
+      "status": "PASS_AFTER_REPAIR",
+      "repair_required": true
+    },
+    "D": {
+      "frozen_sha256": "f797d3e44368dcd48defa5a83f6f30b6f1730f23cbe973f4b6f14e2d97042e5c",
+      "expected_git_blob": "dfb0d68a525ab2c77582ee4b61187b80ab16a8d6",
+      "initial_git_blob": "df132dafef9147efc1791c558e2bad25603c538f",
+      "repair_commits": [
+        "395073d832b32db9b4d705e5caf0ded97e721a15",
+        "348d8f439c5c040a234f176d1ff7213404494941"
+      ],
+      "intermediate_git_blob": "c4ed14f30b8648d2d753416f5be629140dfde8e6",
+      "final_git_blob": "dfb0d68a525ab2c77582ee4b61187b80ab16a8d6",
+      "status": "PASS_AFTER_REPAIR",
+      "repair_required": true
+    }
+  }
+}

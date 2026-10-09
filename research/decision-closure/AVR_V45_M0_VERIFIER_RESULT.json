@@ -1,0 +1,85 @@
+{
+  "schema": "triaxis.avr.v45.m0_verifier/v0.1",
+  "batch": "V45",
+  "contest": "arc190",
+  "source_binding_repair_commit": "8a3872609d3cc79e5da4544e9124f18b94e33282",
+  "compile_gate": {
+    "D": "PASS",
+    "E": "PASS",
+    "B": {
+      "status": "FAIL",
+      "defect": "masks declared vector<vector<uint64_t>> but used as per-level vectors of bitset-vectors"
+    }
+  },
+  "official_samples": {
+    "D": {
+      "status": "PASS",
+      "sample_sets": 3
+    },
+    "E": {
+      "status": "FAIL",
+      "sample1": "PASS",
+      "sample2_expected": [0,49,59,31,151,21],
+      "sample2_actual": [0,49,49,21,147,21]
+    },
+    "B": {
+      "status": "NOT_RUN_COMPILE_FAIL"
+    }
+  },
+  "independent_verification": {
+    "D": {
+      "oracle": "enumerate every replacement of each zero by 1..p-1, compute each B^p directly, sum modulo p",
+      "random_cases": 480,
+      "random_domain": "p in {2,3,5,7}, N<=3, replacement-space capped <=5000",
+      "exhaustive_cases": 97,
+      "exhaustive_domain": "all 2x2 A over F_2 and F_3",
+      "mismatches": 0,
+      "proof_gate": "finite-field moment: sum_{x in F_p*}x^m is -1 iff (p-1)|m and 0 otherwise; total word length p permits at most one zero variable with exponent p-1. For p>=5 only zero self-loops can repeat p-1 times with one fixed incident step; p=3 additionally permits zero nonloop e twice with a fixed reverse edge; p=2 has a unique replacement."
+    },
+    "E": {
+      "oracle": "recursive exact maximum over all legal distance-1/2 pair decrements",
+      "exhaustive_sequences": 5460,
+      "domain": "length 1..6, each capacity 0..3",
+      "mismatches": 1368,
+      "minimal_trigger": {
+        "A": [1,2,1],
+        "L": 1,
+        "R": 3,
+        "expected": 2,
+        "actual": 1
+      }
+    },
+    "B": {
+      "oracle_status": "not applicable before compile",
+      "architecture_assessment": "intended exact-cover enumeration is exponential in N^2 even after the local type fix"
+    }
+  },
+  "constraint_gates": {
+    "D": {
+      "input": "N=100,p=999999937,dense fixed nonzero matrix",
+      "elapsed_seconds": 0.1944,
+      "status": "PASS",
+      "frozen_complexity": "O(N^3 log p)"
+    },
+    "E": {
+      "official": "N,Q<=200000",
+      "frozen_complexity": "O(sum query lengths), worst O(NQ)",
+      "status": "FAIL"
+    },
+    "B": {
+      "official": "N<=1e7,Q<=2e5",
+      "frozen_complexity": "exponential exact-cover enumeration",
+      "status": "FAIL"
+    }
+  },
+  "x1": {
+    "activated": false,
+    "reason": "E has a real frozen correctness failure and B a compile defect, but both frozen architectures are independently constraint-unsafe; local repairs cannot qualify for claim-grade rescue. D has no frozen failure."
+  },
+  "pre_editorial_classification": {
+    "D": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT",
+    "B": "PERFORMANCE_QUARANTINE_WITH_FROZEN_COMPILE_DEFECT"
+  },
+  "editorial_or_gold_used": false
+}

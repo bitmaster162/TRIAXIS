@@ -1,0 +1,34 @@
+{
+  "confirmatory": false,
+  "contest": "arc207",
+  "delta": {
+    "M0_pass_added": 1,
+    "claim_grade_tasks_added": 3,
+    "final_pass_added": 1,
+    "full_task_rescues_added": 0,
+    "paired_harms_added": 0,
+    "persistent_failures_added": 2,
+    "quarantined_added": 0,
+    "x1_local_regressions_added": 1
+  },
+  "interpretation": "V36 adds no causal-lift evidence. It contributes one clean strong-model M0 ceiling pass and two claim-grade persistent failures. Both X1 corrections repaired their frozen trigger but failed independent regression, demonstrating the value of the V34 regression gate.",
+  "schema": "triaxis.avr_v36_arc_strong_model_result/v0.1",
+  "tasks": {
+    "arc207_c": {
+      "M0": "FAIL",
+      "X1": "FAIL_AFTER_TRIGGER_REPAIR",
+      "final": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1"
+    },
+    "arc207_d": {
+      "M0": "PASS",
+      "X1": "NOT_ACTIVATED",
+      "final": "CLAIM_GRADE_M0_PASS"
+    },
+    "arc207_e": {
+      "M0": "FAIL",
+      "X1": "FAIL_AFTER_TRIGGER_REPAIR",
+      "final": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1"
+    }
+  },
+  "version": "V36"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "triaxis.strong_model_external_rollup_v22_v37/v0.1",
+  "claim_grade_external_tasks_total": 36,
+  "M0_pass": "24/36",
+  "X1_pass": "28/36",
+  "full_task_rescues": 4,
+  "harms": 0,
+  "x1_local_regressions_not_counted_as_paired_harms": 2,
+  "partial_repairs_not_counted": 1,
+  "quarantined_tasks_not_counted": 11,
+  "protocol_excluded_not_counted": 1,
+  "paired_exact_two_sided_p": 0.125,
+  "confirmatory": false,
+  "clean_rescues_needed_for_p_le_0_05_if_harms_remain_zero": 2,
+  "status": "POSITIVE_NOT_CONFIRMATORY",
+  "v37_delta": {
+    "claim_grade_tasks_added": 1,
+    "M0_pass_added": 0,
+    "X1_pass_added": 1,
+    "rescues_added": 1,
+    "harms_added": 0,
+    "quarantined_added": 2
+  },
+  "methodological_delta": "V37 is the first clean rescue after the V34 trigger+regression hardening: the X1 correction repaired the frozen failure, passed independent regression, supplied a proof-equivalent structural invariant, was constraint-safe on a max-style case, and was independently corroborated post-freeze by the official editorial.",
+  "decision": "CONTINUE_V38_PLUS_ON_FRESH_HARD_EXTERNAL_TASKS; REQUIRE_TRIGGER_PLUS_REGRESSION_PLUS_CONSTRAINT_GLOBAL_GATES; TWO_ADDITIONAL_CLEAN_RESCUES_NEEDED_FOR_P_LE_0_05_IF_HARMS_STAY_ZERO"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "triaxis.avr_v33_m0_freeze/v0.1",
+  "batch": "V33",
+  "contest": "arc210",
+  "candidate_execution_before_freeze": false,
+  "sources": {
+    "arc210_d_m0.cpp": "e71b1deaf680a4d89085a3046f3a1e5d7d1035a7b72fab0eedef575fa76bb1e2",
+    "arc210_e_m0.cpp": "0eb4ccee5c6b3cae5681fea170e9995e48afc2cca385e27b97d1ebe9c3836d61",
+    "arc210_f_m0.cpp": "a335d3935482231766ad66e841418c16d9c4d73184c5d1e0ca698327dc8c2916"
+  },
+  "derivations": {
+    "arc210_d": "Alice iff G is a matching for odd N, or G-v is a matching for some vertex v for even N.",
+    "arc210_e": "Maintain exact multiplicative-gap components of the subset-sum multiset; each component summarized by actual min/max and multiplicity mod 998244353; update by union with shifted copy and merge iff no qualifying 1% gap.",
+    "arc210_f": "Exact single-difference weighted Bezout convex minimization; aggregate implemented directly over all A_i for each query, pending constraint gate."
+  },
+  "editorial_opened": false,
+  "accepted_solution_opened": false
+}

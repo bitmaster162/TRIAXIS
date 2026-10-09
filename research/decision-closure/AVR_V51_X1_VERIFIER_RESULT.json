@@ -1,0 +1,31 @@
+{
+  "schema": "triaxis.avr.v51.x1_verifier/v0.1",
+  "batch": "V51",
+  "task": "C",
+  "source_sha256": "a992a744ea355de9ef88448ae3b6b9a8ea053040108ca64008042f67c1b2c2c8",
+  "trigger": {
+    "input": "6\n0 2 3 5 7 8\n",
+    "expected": "4",
+    "actual_x1": "4",
+    "repaired": true
+  },
+  "official_regression": {
+    "input": "4\n0 1 2 3\n",
+    "expected": "3",
+    "m0": "3",
+    "x1": "2",
+    "regression": true
+  },
+  "independent_diagnostic": {
+    "cases": 848,
+    "x1_mismatches": 817
+  },
+  "constraint_gate": {
+    "N": 1000,
+    "seconds": 0.0675,
+    "status": "PASS"
+  },
+  "second_x1_permitted": false,
+  "rescue_gate": "FAIL",
+  "final": "CLAIM_GRADE_X1_FAILED_WITH_REGRESSION"
+}

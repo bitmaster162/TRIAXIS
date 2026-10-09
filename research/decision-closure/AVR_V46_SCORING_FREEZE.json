@@ -1,0 +1,34 @@
+{
+  "schema": "triaxis.avr.v46.scoring_freeze/v0.1",
+  "batch": "V46",
+  "contest": "arc189",
+  "verifier_commit": "085e596caf6fc3175b378592730ac291ba9704fd",
+  "editorial_opened_before_freeze": false,
+  "gold_opened_before_freeze": false,
+  "scores": {
+    "E": "CLAIM_GRADE_M0_CORRECTNESS_FAIL_NO_X1",
+    "D": "PROVISIONAL_CLAIM_GRADE_M0_PASS",
+    "C": "PROVISIONAL_CLAIM_GRADE_M0_PASS"
+  },
+  "x1_activated": 0,
+  "clean_rescues": 0,
+  "harms": 0,
+  "delta": {
+    "claim_grade_tasks": 3,
+    "m0_passes": 2,
+    "final_passes_provisional": 2,
+    "quarantines": 0,
+    "protocol_excluded": 0
+  },
+  "aggregate_provisional": {
+    "claim_grade_external_tasks": 52,
+    "m0_passes": 38,
+    "final_or_x1_passes": 43,
+    "clean_full_task_rescues": 5,
+    "paired_harms": 0,
+    "quarantined_tasks": 22,
+    "protocol_excluded": 3,
+    "paired_exact_two_sided_p": 0.0625,
+    "confirmatory": false
+  }
+}

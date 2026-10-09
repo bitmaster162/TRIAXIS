@@ -1,0 +1,80 @@
+{
+  "schema": "triaxis.avr_v39_arc_strong_model_preregistration/v0.1",
+  "version": "V39",
+  "contest": {
+    "platform": "AtCoder",
+    "contest_id": "arc199",
+    "title": "AtCoder Regular Contest 199 (Div. 1)",
+    "start": "2025-06-01T21:00:00+09:00",
+    "ended": "2025-06-01T23:30:00+09:00",
+    "rated_range": "1600-2999",
+    "selection_basis": "official AtCoder announcement/top metadata point values only; no ARC199 selected task statements or editorials opened before prereg freeze"
+  },
+  "selected_tasks": [
+    {
+      "task_id": "arc199_b",
+      "letter": "B",
+      "score": 800
+    },
+    {
+      "task_id": "arc199_c",
+      "letter": "C",
+      "score": 900
+    },
+    {
+      "task_id": "arc199_d",
+      "letter": "D",
+      "score": 1000
+    }
+  ],
+  "freshness": {
+    "selected_tasks_fresh": true,
+    "new_protocol_exclusion": {
+      "contest": "arc201",
+      "reason": "pre-prereg search fallback surfaced tasks_print statement snippets; excluded from clean evidence"
+    },
+    "avoid": [
+      "arc217",
+      "arc215",
+      "arc208",
+      "arc207",
+      "arc204",
+      "arc202"
+    ]
+  },
+  "git_baseline": {
+    "repository": "bitmaster162/TRIAXIS",
+    "pr": 7,
+    "main_sha": "ae280d905c63e4ba0bcadb4633f01a1fb9657920",
+    "research_branch": "research/decision-closure-ebd-v0.3",
+    "research_head_before_v39": "dafc956a35e541cbe4e1d554ff0948928a9485c0",
+    "ahead": 199,
+    "behind": 0
+  },
+  "protocol": {
+    "model": "GPT-5.6 Sol",
+    "M0": "one-shot implementation from official statement only",
+    "freeze_all_M0_source_hashes_before_execution": true,
+    "independent_executable_verifier_after_M0_freeze": true,
+    "X1_max_per_task": 1,
+    "X1_only_for_actual_frozen_M0_failure": true,
+    "X1_feedback": "smallest frozen failing input + expected/actual only; no editorial/gold",
+    "x1_rescue_requires_trigger_repair_plus_independent_regression": true,
+    "constraint_gate": "small-case correctness cannot override official-constraint unsafety",
+    "global_state_gate": "bounded-small exhaustive alone insufficient for compressed persistent/global state; require proof-equivalent invariant or scalable/reference oracle",
+    "scoring_freeze_before_editorial": true,
+    "postfreeze_editorial_audit": "downgrade/corroborate only; no score upgrade",
+    "do_not_force_X1": true
+  },
+  "governance": {
+    "TRIAXIS_IS_CONTESTANT": true,
+    "TRIAXIS_IS_ORACLE": false,
+    "PRODUCTION_CHANGE": false,
+    "AUTO_MERGE": false,
+    "MERGE_PERMISSION": "DENY",
+    "deploy_permission": "DENY",
+    "can_trade": false,
+    "capital_permission": "DENY",
+    "DEVIL_DEFAULT": "OFF"
+  }
+}

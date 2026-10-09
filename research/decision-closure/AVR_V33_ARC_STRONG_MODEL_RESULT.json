@@ -1,0 +1,49 @@
+{
+  "schema": "triaxis.avr_v33_arc_strong_model_result/v0.1",
+  "batch": "V33",
+  "contest": "arc210",
+  "selected": [
+    "arc210_d",
+    "arc210_e",
+    "arc210_f"
+  ],
+  "tasks": {
+    "arc210_d": {
+      "score": 800,
+      "M0": "FAIL",
+      "X1": "NOT_ACTIVATED_NO_BOUNDED_GENERAL_CORRECTION",
+      "claim_grade": true,
+      "final": "FAIL"
+    },
+    "arc210_e": {
+      "score": 1000,
+      "M0": "PASS",
+      "X1": "NOT_ACTIVATED_CEILING",
+      "claim_grade": true,
+      "final": "PASS"
+    },
+    "arc210_f": {
+      "score": 1100,
+      "M0": "PERFORMANCE_QUARANTINE",
+      "X1": "NOT_ACTIVATED",
+      "claim_grade": false,
+      "final": "QUARANTINE"
+    }
+  },
+  "v33_claim_grade_delta": {
+    "tasks": 2,
+    "M0_pass": 1,
+    "X1_final_pass": 1,
+    "rescues": 0,
+    "harms": 0,
+    "quarantined": 1
+  },
+  "interpretation": [
+    "V33 adds no causal-lift evidence because no frozen M0 failure was rescued.",
+    "D provides a genuine strong-model claim-grade failure on fresh hard external work; refusing a speculative X1 avoided false rescue.",
+    "E is a clean independent one-shot structural ceiling success at 1000 points.",
+    "F shows correct local mathematics is insufficient when the aggregate layer violates constraints."
+  ],
+  "status": "PASS_WITH_CONDITIONS_NO_NEW_RESCUE",
+  "broad_intelligence_claim": "UNSUPPORTED"
+}

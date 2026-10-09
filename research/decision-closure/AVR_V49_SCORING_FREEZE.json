@@ -1,0 +1,42 @@
+{
+  "schema": "triaxis.avr.v49.scoring_freeze/v0.1",
+  "batch": "V49",
+  "editorial_opened_before_freeze": false,
+  "gold_opened_before_freeze": false,
+  "tasks": {
+    "E": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "x1": false
+    },
+    "A": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "x1": false
+    },
+    "B": {
+      "frozen_score": "CLAIM_GRADE_M0_PASS",
+      "x1": false
+    }
+  },
+  "delta": {
+    "claim_grade": 3,
+    "m0_pass": 3,
+    "final_pass": 3,
+    "clean_rescues": 0,
+    "harms": 0,
+    "quarantines": 0,
+    "protocol_excluded": 0,
+    "x1_activations": 0
+  },
+  "aggregate_provisional": {
+    "claim_grade": 59,
+    "m0_pass": 44,
+    "final_pass": 49,
+    "clean_rescues": 5,
+    "harms": 0,
+    "quarantined": 24,
+    "protocol_excluded": 3,
+    "paired_two_sided_p": 0.0625,
+    "confirmatory": false
+  },
+  "postfreeze_policy": "Official editorial/gold may only corroborate or downgrade; no score upgrade."
+}

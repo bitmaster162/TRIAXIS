@@ -1,0 +1,108 @@
+{
+  "clean_rescues": 0,
+  "editorial_opened": false,
+  "paired_harms": 0,
+  "schema": "triaxis.avr_v36_x1_verifier_result/v0.1",
+  "tasks": {
+    "arc207_c": {
+      "final_pre_editorial": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+      "independent_regression": {
+        "failure_class": "FRONTIER_OF_ONLY_COMPLETED_VALID_PARTITIONS_DROPS_AN_UNFINISHED_NEXT_BLOCK",
+        "first_counterexample": {
+          "A": [
+            2,
+            1,
+            2
+          ],
+          "N": 3,
+          "expected": 2,
+          "m0_actual": 2,
+          "x1_actual": 1
+        },
+        "oracle": "enumerate all partition masks",
+        "status": "FAIL"
+      },
+      "local_regression_vs_m0": true,
+      "second_x1": "FORBIDDEN",
+      "trigger": {
+        "A": [
+          2,
+          1,
+          4,
+          4
+        ],
+        "N": 4,
+        "expected": 3,
+        "x1_actual": 3
+      },
+      "trigger_repair": true
+    },
+    "arc207_d": {
+      "final_pre_editorial": "PROVISIONAL_CLAIM_GRADE_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+      "global_state_reference": {
+        "mismatches": 0,
+        "random_full_minimax_cases_n_m_9_to_24": 92
+      },
+      "m0_trigger": "NONE",
+      "official_max_style_smoke": {
+        "M": 1000,
+        "N": 1000,
+        "local_runtime_seconds_approx": 0.006,
+        "status": "PASS"
+      },
+      "small_exact_reference": {
+        "exhaustive_nm_le_8": 776,
+        "mismatches": 0,
+        "random_n_m_le_8": 1200
+      }
+    },
+    "arc207_e": {
+      "final_pre_editorial": "CLAIM_GRADE_PERSISTENT_FAIL_AFTER_ONE_X1",
+      "independent_regression": {
+        "failure_class": "ONE_STEP_EARLY_EXIT_IS_NOT_A_COMPLETE_REACHABILITY_CORRECTION",
+        "first_counterexample": {
+          "N": 3,
+          "expected": "REACHABLE",
+          "m0_actual": "-1",
+          "oracle_witness_ops": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "s": "001",
+          "t": "100",
+          "x1_actual": "-1"
+        },
+        "oracle": "full binary-string state graph with depth <=N+1",
+        "status": "FAIL"
+      },
+      "local_regression_vs_m0": false,
+      "second_x1": "FORBIDDEN",
+      "trigger": {
+        "N": 3,
+        "expected": "REACHABLE",
+        "s": "001",
+        "t": "011",
+        "x1_witness_ops": [
+          [
+            3,
+            2
+          ]
+        ]
+      },
+      "trigger_repair": true
+    }
+  },
+  "version": "V36",
+  "x1_activations": 2,
+  "x1_local_regressions_not_counted_as_paired_harms": 1
+}

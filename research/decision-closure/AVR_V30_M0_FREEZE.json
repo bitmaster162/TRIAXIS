@@ -1,0 +1,18 @@
+{
+  "candidate_execution_before_freeze": false,
+  "schema": "triaxis.v30.m0_freeze/v0.1",
+  "sources": [
+    {
+      "file": "arc216_b_m0.cpp",
+      "sha256": "5d132f0b802edbdbb3b459acb4da26a4a2f6c563c88e62a8f176d857e634f762"
+    },
+    {
+      "file": "arc216_c_m0.cpp",
+      "sha256": "3255eacf22eebcac3f700fce29ffd7be7a1753a28844c1476067c8b7ab60ac9c"
+    },
+    {
+      "file": "arc216_d_m0.cpp",
+      "sha256": "ed50897f6c7c4f51bcbdad89dd98ffd6abd2fc58e4895d3f5e6ea42fec0bd2b8"
+    }
+  ]
+}

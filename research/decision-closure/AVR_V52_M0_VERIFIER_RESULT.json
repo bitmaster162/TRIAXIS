@@ -1,0 +1,90 @@
+{
+  "schema": "triaxis.avr.v52.m0_verifier/v0.1",
+  "batch": "V52",
+  "compile": {
+    "F": "PASS",
+    "E": "PASS",
+    "D": "PASS"
+  },
+  "official_samples": {
+    "F": "PASS_ALL_3",
+    "E": "PASS_ALL_3",
+    "D": "PASS_ALL_3"
+  },
+  "tasks": {
+    "F": {
+      "provisional": "CLAIM_GRADE_M0_PASS",
+      "independent_exact": {
+        "method": "direct undirected DSU over all N edges for every affine map",
+        "domain": "all N=1..100 and all A,B in [0,N)",
+        "cases": 338350,
+        "mismatches": 0
+      },
+      "proof_gate": [
+        "undirected components of a finite functional graph equal directed cycle count",
+        "CRT decomposes affine map into prime-power dynamical systems; product cycles combine by gcd/lcm",
+        "for p|A the p-primary map contracts to one fixed periodic point",
+        "for unit A with A!=1 mod p translate the unique fixed point to multiplication and count valuation strata by multiplicative order",
+        "for A==1 mod p use f^k(x)-x=S_k((A-1)x+B), valuation strata of the affine h-map, and minimal p-power k annihilating S_k"
+      ],
+      "max_gate": {
+        "N": 1000000,
+        "Q": 100000,
+        "wall_seconds": 0.09,
+        "rss_kb": 1488,
+        "status": "PASS"
+      }
+    },
+    "E": {
+      "provisional": "PERFORMANCE_QUARANTINE",
+      "independent_exact": {
+        "method": "direct enumeration of every k and every A_i",
+        "random_cases": 600,
+        "mismatches": 0
+      },
+      "architecture": "exact sorted-successor simulator O(K log N)",
+      "performance": {
+        "N": 100000,
+        "K": 200000000,
+        "wall_seconds": 2.08,
+        "time_limit_seconds": 2,
+        "official_K_max": 1000000000
+      },
+      "reason": "correctness-exact on verified cases but frozen implementation is outside official constraint envelope"
+    },
+    "D": {
+      "provisional": "CLAIM_GRADE_M0_PASS",
+      "independent_exact": {
+        "method": "full configuration graph BFS shortest paths",
+        "exhaustive_all_pairs": {
+          "domain": "N=2..3, M=2..5",
+          "pairs": 8428,
+          "mismatches": 0
+        },
+        "additional_random": {
+          "domain": "N=2..5, M=2..6",
+          "pairs": 1200,
+          "mismatches": 0
+        }
+      },
+      "proof_gate": [
+        "for M=2 every good path coloring is isolated under a single +/-1 move",
+        "for M>=3 each good modular sequence has a unique integer lift up to global +qM in chamber 0<X[i+1]-X[i]<M",
+        "legal operations are unit-coordinate moves that stay in the same chamber",
+        "between two integer points of this path difference-constraint chamber, a coordinate that moves toward target can always be chosen; blocker propagation terminates unless M=2, so an L1-monotone geodesic exists",
+        "target lifts are Y+qM; minimizing path length is min_q sum_i |Y_i+qM-X_i|, a one-dimensional convex median problem"
+      ],
+      "max_gate": {
+        "N": 200000,
+        "M": 1000000,
+        "wall_seconds": 0.01,
+        "rss_kb": 10904,
+        "status": "PASS"
+      }
+    }
+  },
+  "x1_activated": 0,
+  "protocol_exclusion_delta": 1,
+  "protocol_exclusion": "ARC183 pre-prereg search leakage",
+  "editorial_opened_before_scoring": false
+}

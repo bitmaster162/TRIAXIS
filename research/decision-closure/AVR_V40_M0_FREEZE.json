@@ -1,0 +1,17 @@
+{
+  "batch": "V40",
+  "candidate_compile_before_freeze": false,
+  "candidate_execution_before_freeze": false,
+  "contest": "arc196",
+  "editorial_opened_before_freeze": false,
+  "gold_opened_before_freeze": false,
+  "prereg_commit": "4124bc0e480b37ed3b4c54d7a399a1626869ecf0",
+  "prereg_sha256": "9744cd262e5ce4af1b67b6e84f43e5f04f60bd980bed32651d1efb72e5d5e180",
+  "schema": "triaxis.avr.v40.m0_freeze/v0.1",
+  "selected_statements_opened_after_prereg": true,
+  "sources": {
+    "arc196_b_m0.cpp": "ed63858ea445e27cb75fc8ef2f4e6dfed7ce5cdae867ee34a38f7a3242df5da0",
+    "arc196_c_m0.cpp": "60e9c07e89ed9ae86b885d4e77cd01c3fc736ebc3c3edea283e9264ff6a083e5",
+    "arc196_d_m0.cpp": "bfd071e89fcd07f699d1a3466172d8d15d6aa652f2ee5eecb4c9c2daa0a160d5"
+  }
+}

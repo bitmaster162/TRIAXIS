@@ -1,0 +1,27 @@
+{
+  "schema": "triaxis.avr.v40.postfreeze_editorial_audit/v0.1",
+  "batch": "V40",
+  "contest": "arc196",
+  "scoring_freeze_commit": "b454c0e9a9904ca83b3885955d5939d35a48021c",
+  "scoring_freeze_sha256": "ff578eafe3b3644f7ae8a607ae9e2e1a8785ad08b44960c7cfcb96d27efd668c",
+  "editorials": {
+    "B": {
+      "url": "https://atcoder.jp/contests/arc196/editorial/12639",
+      "finding": "Official solution fixes one binary state per row/column, toggles across A cells, checks toroidal parity, and imposes B-cell consistency as a bipartite graph; consistent answer is 2^(number of connected components). This independently matches the frozen parity-DSU mechanism.",
+      "frozen_score_after_audit": "CLAIM_GRADE_M0_PASS"
+    },
+    "C": {
+      "url": "https://atcoder.jp/contests/arc196/editorial/12640",
+      "finding": "Official solution characterizes a cut exactly as absence of a backward W->B edge across the prefix, matching the frozen p-state invariant. It then uses inclusion-exclusion plus divide-and-conquer FFT for O(N log^2 N), confirming the frozen O(N^2) implementation is not constraint-safe.",
+      "frozen_score_after_audit": "PERFORMANCE_QUARANTINE"
+    },
+    "D": {
+      "url": "https://atcoder.jp/contests/arc196/editorial/12641",
+      "finding": "Official solution uses the same town-potential formulation, then derives laminar interval conditions and a two-pointer/BIT/Zobrist query algorithm in O((N+M) log N + Q). This corroborates correctness of the frozen feasibility semantics while confirming its per-query rebuild is non-scalable.",
+      "frozen_score_after_audit": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "postfreeze_upgrade_performed": false,
+  "score_changed": false,
+  "status": "NO_SCORE_CHANGE"
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "triaxis.avr.v54.m0_verifier/v0.1",
+  "batch": "V54",
+  "first_execution_after_source_binding": true,
+  "official_samples": {
+    "D": {
+      "status": "PASS",
+      "outputs": [
+        "3",
+        "10"
+      ]
+    },
+    "E": {
+      "status": "PASS",
+      "outputs": [
+        "7",
+        "10",
+        "1",
+        "55"
+      ]
+    },
+    "F": {
+      "status": "PASS",
+      "criterion": "candidate output valid and achieves sample maximum scores",
+      "scores": [
+        1,
+        1,
+        0,
+        0,
+        2
+      ]
+    }
+  },
+  "independent_correctness": {
+    "D": {
+      "oracle": "exact 0-1 BFS over (visited_mask,piece,gate)",
+      "exhaustive_labeled_trees_n_le_6": 1441,
+      "random_trees_n_7_to_10": 400,
+      "mismatches": 0
+    },
+    "E": {
+      "oracle": "independent recursive enumeration of all horizontal/vertical attachments",
+      "exhaustive_arrays_n_le_5_dims_1_2": 1364,
+      "mismatches": 0
+    },
+    "F": {
+      "oracle": "complete enumeration of all 3^N output strings",
+      "all_binary_S_n_le_7": 254,
+      "mismatches": 0
+    }
+  },
+  "constraint_gates": {
+    "D": {
+      "official_N": 200000,
+      "max_style_N": 199999,
+      "time_s": 0.02,
+      "rss_kb": 17080,
+      "complexity": "O(N)",
+      "status": "PASS"
+    },
+    "E": {
+      "official_N": 300000,
+      "worst_style": "all rectangles (1,1)",
+      "N_10000_time_s": 1.45,
+      "N_20000_time_s": 5.27,
+      "complexity": "O(N^2)",
+      "status": "PERFORMANCE_QUARANTINE"
+    },
+    "F": {
+      "official_sum_N": 1000000,
+      "worst_style": "all A",
+      "N_300_time_s": 1.15,
+      "N_400_time_s": 3.77,
+      "N_400_rss_kb": 145728,
+      "architecture": "exact difference-state DP with path copies",
+      "status": "PERFORMANCE_QUARANTINE"
+    }
+  },
+  "proof_gates": {
+    "D": {
+      "status": "PASS",
+      "invariant": "minimum cost = N-1 + max(0,L-2), L = number of leaves of minimal subtree connecting original degree>=3 vertices; leaf-pruning computes L"
+    },
+    "E": {
+      "status": "CORRECTNESS_ONLY",
+      "invariant": "for a fixed processed prefix, aggregate area is fixed; any state extendable by next (h,w) must have H=h or W=w, hence at most two relevant states"
+    },
+    "F": {
+      "status": "CORRECTNESS_ONLY",
+      "invariant": "differences (h1-h2,h3-h2) plus accumulated score are a Markov-sufficient exact state; invalid B transitions are excluded"
+    }
+  },
+  "x1": {
+    "activated": false,
+    "reason": "no claim-grade-eligible frozen correctness failure; E/F are performance quarantines"
+  },
+  "provisional_scores": {
+    "D": "CLAIM_GRADE_M0_PASS",
+    "E": "PERFORMANCE_QUARANTINE",
+    "F": "PERFORMANCE_QUARANTINE"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "triaxis.avr_v39_scoring_freeze/v0.1",
+  "version": "V39",
+  "editorial_opened_before_freeze": false,
+  "scores": {
+    "arc199_b": "PERFORMANCE_QUARANTINE_WITH_FROZEN_CORRECTNESS_DEFECT",
+    "arc199_c": "PROVISIONAL_CLAIM_GRADE_M0_PASS_POSTFREEZE_DOWNGRADE_ONLY",
+    "arc199_d": "PERFORMANCE_QUARANTINE"
+  },
+  "x1_activations": 0,
+  "rescues": 0,
+  "harms": 0,
+  "claim_grade_tasks_added": 1,
+  "quarantined_added": 2,
+  "protocol_excluded_added": 1,
+  "notes": {
+    "arc201": "excluded because pre-prereg search fallback exposed statement snippets",
+    "arc199_b": "not eligible for X1 because even the obvious output-order fix leaves exponential 2^N state search at N<=60",
+    "arc199_c": "independent brute/tree + formula + max-constraint evidence supports claim-grade pass before official audit",
+    "arc199_d": "exact small-state semantics but exponential in HW"
+  }
+}
